@@ -1,4 +1,4 @@
-import { Show, createSignal } from 'solid-js';
+import { Show, createEffect, createSignal, onCleanup } from 'solid-js';
 import { WordTranslation } from './parser/simple-md-parser';
 import { nextWord } from './worder/worder';
 
@@ -11,30 +11,56 @@ const Tester = (props: TesterProps) => {
     props.words
   );
   const [currentWord, setCurrentWord] = createSignal<WordTranslation>();
-
-  function start() {
-    next();
-  }
+  const [peek, setPeek] = createSignal(false);
 
   function next() {
     const [word, index] = nextWord(wordsLeft());
 
+    setPeek(false);
     setCurrentWord(word);
     setWordsLeft(w => w.filter((_, i) => i !== index));
   }
 
   const done = () => wordsLeft()?.length === 0;
 
+  createEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'r') {
+        setPeek(true);
+      }
+      if (e.key === 'n') {
+        next();
+      }
+    };
+
+    document.addEventListener('keydown', onKey);
+    onCleanup(() => document.removeEventListener('keydown', onKey));
+  });
+
+  next();
+
   return (
     <div>
-      <p>
-        {currentWord()?.original} - {currentWord()?.translation}
-      </p>
-      <button class="btn-primary" onClick={start}>
-        Start
-      </button>
+      <div
+        class="grid grid-cols-[1fr_2rem_1fr] mb-8 text-2xl"
+        classList={{ invisible: !currentWord() }}
+      >
+        <span class="whitespace-nowrap text-right">
+          <button class="text-md mr-2 link" onClick={() => setPeek(true)}>
+            👁
+          </button>
+          {currentWord()?.original}
+        </span>
+        <span class="text-center text-slate-500">|</span>
+        <span
+          class="whitespace-nowrap text-left"
+          classList={{ invisible: !peek() }}
+        >
+          {currentWord()?.translation}
+        </span>
+      </div>
       <Show when={currentWord() && !done()} fallback={done() && 'done!'}>
-        <button class="btn-primary" onClick={next}>
+        <button class="btn-primary block mx-auto" onClick={next}>
           Next
         </button>
       </Show>

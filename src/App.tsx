@@ -49,15 +49,25 @@ const App: Component = () => {
   }
 
   return (
-    <div>
-      <Show keyed={true} when={fileHandle()}>
-        {fh => <button onClick={() => reuseSource(fh)}>Use {fh.name}</button>}
-      </Show>
-      <button onClick={pickSource}>Pick source</button>
+    <div class="h-full grid bg-zinc-800 text-slate-50">
+      <div class="m-auto flex gap-4">
+        <Show when={!words()}>
+          <Show keyed={true} when={fileHandle()}>
+            {fh => (
+              <button class="btn-primary" onClick={() => reuseSource(fh)}>
+                Open "{fh.name}"
+              </button>
+            )}
+          </Show>
+          <button class="link" onClick={pickSource}>
+            Pick file
+          </button>
+        </Show>
 
-      <Show keyed={true} when={words()}>
-        {w => <Tester words={w} />}
-      </Show>
+        <Show keyed={true} when={words()}>
+          {w => <Tester words={w} />}
+        </Show>
+      </div>
     </div>
   );
 };
