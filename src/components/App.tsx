@@ -1,7 +1,7 @@
 import { createEffect, type Component, createSignal, Show } from 'solid-js';
 import { get, set } from 'idb-keyval';
 import Tester from './Tester';
-import { SimpleMdParser, WordTranslation } from './parser/simple-md-parser';
+import { SimpleMdParser, WordTranslation } from '../parser/simple-md-parser';
 
 const App: Component = () => {
   const mdParser = new SimpleMdParser();

@@ -1,6 +1,6 @@
 import { Show, createEffect, createSignal, onCleanup } from 'solid-js';
-import { WordTranslation } from './parser/simple-md-parser';
-import { nextWord } from './worder/worder';
+import { WordTranslation } from '../parser/simple-md-parser';
+import { nextWord } from '../worder/worder';
 
 interface TesterProps {
   words: WordTranslation[];
