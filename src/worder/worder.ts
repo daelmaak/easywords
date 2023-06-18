@@ -1,8 +1,7 @@
 import { WordTranslation } from '../parser/simple-md-parser';
 
 export function nextWord(
-  words: WordTranslation[],
-  reverse = false
+  words: WordTranslation[]
 ): [WordTranslation, number] | undefined {
   if (!words.length) {
     return undefined;
@@ -11,10 +10,5 @@ export function nextWord(
   const i = Math.floor(Math.random() * words.length);
   const { original, translation } = words[i];
 
-  return [
-    reverse
-      ? { original: translation, translation: original }
-      : { original, translation },
-    i,
-  ];
+  return [{ original, translation }, i];
 }

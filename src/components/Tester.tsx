@@ -1,9 +1,9 @@
 import { Show, createEffect, createSignal, onCleanup } from 'solid-js';
 import { WordTranslation } from '../parser/simple-md-parser';
 import { nextWord } from '../worder/worder';
-import { Toggle } from './Toggle';
 
 interface TesterProps {
+  reverse: boolean;
   words: WordTranslation[];
   onAgain: () => void;
 }
@@ -16,7 +16,6 @@ const Tester = (props: TesterProps) => {
     WordTranslation | undefined
   >();
   const [peek, setPeek] = createSignal(false);
-  const [reverse, setReverse] = createSignal(false);
 
   createEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -32,21 +31,8 @@ const Tester = (props: TesterProps) => {
     onCleanup(() => document.removeEventListener('keydown', onKey));
   });
 
-  function changeReverse(reverse: boolean) {
-    setReverse(reverse);
-
-    const currWord = currentWord();
-
-    if (currWord) {
-      setCurrentWord({
-        original: currWord.translation,
-        translation: currWord.original,
-      });
-    }
-  }
-
   function setNextWord() {
-    const next = nextWord(wordsLeft(), reverse());
+    const next = nextWord(wordsLeft());
 
     if (!next) {
       return setCurrentWord(undefined);
@@ -57,9 +43,14 @@ const Tester = (props: TesterProps) => {
     setWordsLeft(w => w.filter((_, i) => i !== next[1]));
   }
 
+  setNextWord();
+
   const done = () => wordsLeft()?.length === 0 && currentWord() == null;
 
-  setNextWord();
+  const toTranslate = () =>
+    props.reverse ? currentWord()?.translation : currentWord()?.original;
+  const translated = () =>
+    props.reverse ? currentWord()?.original : currentWord()?.translation;
 
   return (
     <div>
@@ -71,26 +62,20 @@ const Tester = (props: TesterProps) => {
           <button class="text-md mr-2 btn-link" onClick={() => setPeek(true)}>
             👁
           </button>
-          {currentWord()?.original}
+          {toTranslate()}
         </span>
         <span class="text-center text-slate-500">|</span>
         <span
           class="whitespace-nowrap text-left"
           classList={{ invisible: !peek() }}
         >
-          {currentWord()?.translation}
+          {translated()}
         </span>
       </div>
       <Show when={currentWord() && !done()}>
         <button class="btn-primary block mx-auto" onClick={setNextWord}>
           Next
         </button>
-        <div class="mt-20 flex justify-center">
-          <Toggle
-            label={<span class="text-slate-300">Reverse</span>}
-            onChange={changeReverse}
-          />
-        </div>
       </Show>
       <Show when={done()}>
         <p class="text-center text-2xl">
