@@ -11,11 +11,39 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+@layer base {
+  body {
+    @apply text-slate-200;
+  }
+}
+
 @layer components {
   .btn-primary {
     @apply py-2 px-4 bg-violet-700 text-white rounded-md shadow-md hover:bg-violet-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75;
   }
+
+  .input {
+    @apply bg-zinc-900 border rounded-md border-solid border-zinc-700 p-2 outline-violet-700;
+  }
+  .input:hover,
+  .input:focus {
+    outline-style: solid;
+    outline-width: 1px;
+  }
+
   .link {
     @apply text-violet-300 hover:text-violet-400;
+  }
+}
+
+@layer utilities {
+  /* Credit to https://dev.to/derick1530/how-to-create-scrollable-element-in-tailwind-without-a-scrollbar-4mbd */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 }

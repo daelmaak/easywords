@@ -7,8 +7,8 @@ const App: Component = () => {
   const [words, setWords] = createSignal<WordTranslation[]>();
 
   return (
-    <div class="h-full grid bg-zinc-800 text-slate-50">
-      <div class="m-auto flex gap-4">
+    <div class="min-h-full grid p-8 bg-zinc-800">
+      <div class="m-auto">
         <Show when={!words()}>
           <WordsInput onWords={setWords} />
         </Show>
