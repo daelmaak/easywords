@@ -3,7 +3,11 @@ import { WordTranslation } from '../parser/simple-md-parser';
 export function nextWord(
   words: WordTranslation[],
   reverse = false
-): [WordTranslation, number] {
+): [WordTranslation, number] | undefined {
+  if (!words.length) {
+    return undefined;
+  }
+
   const i = Math.floor(Math.random() * words.length);
   const { original, translation } = words[i];
 

@@ -6,6 +6,10 @@ import { WordsInput } from './WordsInput';
 const App: Component = () => {
   const [words, setWords] = createSignal<WordTranslation[]>();
 
+  function reset() {
+    setWords();
+  }
+
   return (
     <div class="min-h-full grid p-8 bg-zinc-800">
       <div class="m-auto">
@@ -14,15 +18,14 @@ const App: Component = () => {
         </Show>
 
         <Show keyed={true} when={words()}>
-          {w => <Tester words={w} />}
+          {w => <Tester words={w} onAgain={reset} />}
         </Show>
       </div>
-      <button
-        class="btn-link fixed bottom-4 right-8 text-sm"
-        onClick={() => setWords()}
-      >
-        Go back
-      </button>
+      <Show when={words()}>
+        <button class="btn-link fixed bottom-4 right-8 text-sm" onClick={reset}>
+          Go back
+        </button>
+      </Show>
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { Toggle } from './Toggle';
 
 interface TesterProps {
   words: WordTranslation[];
+  onAgain: () => void;
 }
 
 const Tester = (props: TesterProps) => {
@@ -23,7 +24,7 @@ const Tester = (props: TesterProps) => {
         setPeek(true);
       }
       if (e.key === 'n') {
-        next();
+        setNextWord();
       }
     };
 
@@ -44,17 +45,21 @@ const Tester = (props: TesterProps) => {
     }
   }
 
-  function next() {
-    const [word, index] = nextWord(wordsLeft(), reverse());
+  function setNextWord() {
+    const next = nextWord(wordsLeft(), reverse());
+
+    if (!next) {
+      return setCurrentWord(undefined);
+    }
 
     setPeek(false);
-    setCurrentWord(word);
-    setWordsLeft(w => w.filter((_, i) => i !== index));
+    setCurrentWord(next[0]);
+    setWordsLeft(w => w.filter((_, i) => i !== next[1]));
   }
 
-  const done = () => wordsLeft()?.length === 0;
+  const done = () => wordsLeft()?.length === 0 && currentWord() == null;
 
-  next();
+  setNextWord();
 
   return (
     <div>
@@ -76,17 +81,25 @@ const Tester = (props: TesterProps) => {
           {currentWord()?.translation}
         </span>
       </div>
-      <Show when={currentWord() && !done()} fallback={done() && 'done!'}>
-        <button class="btn-primary block mx-auto" onClick={next}>
+      <Show when={currentWord() && !done()}>
+        <button class="btn-primary block mx-auto" onClick={setNextWord}>
           Next
         </button>
+        <div class="mt-20 flex justify-center">
+          <Toggle
+            label={<span class="text-slate-300">Reverse</span>}
+            onChange={changeReverse}
+          />
+        </div>
       </Show>
-      <div class="mt-20 flex justify-center">
-        <Toggle
-          label={<span class="text-slate-300">Reverse</span>}
-          onChange={changeReverse}
-        />
-      </div>
+      <Show when={done()}>
+        <p class="text-center text-2xl">
+          <i class="mr-4 text-green-600 font-semibold">✓</i>Done!
+        </p>
+        <button class="btn-primary block mx-auto mt-8" onClick={props.onAgain}>
+          Again
+        </button>
+      </Show>
     </div>
   );
 };
