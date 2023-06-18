@@ -1,11 +1,12 @@
 import { Show, createSignal, type Component } from 'solid-js';
 import { WordTranslation } from '../parser/simple-md-parser';
-import Tester from './Tester';
+import Tester, { TestMode } from './Tester';
 import { WordsInput } from './WordsInput';
 import { Toggle } from './Toggle';
 
 const App: Component = () => {
   const [words, setWords] = createSignal<WordTranslation[]>();
+  const [mode, setMode] = createSignal<TestMode>('guess');
   const [reverse, setReverse] = createSignal(false);
 
   function reset() {
@@ -20,12 +21,20 @@ const App: Component = () => {
         </Show>
 
         <Show keyed={true} when={words()}>
-          {w => <Tester reverse={reverse()} words={w} onAgain={reset} />}
+          {w => (
+            <Tester
+              mode={mode()}
+              reverse={reverse()}
+              words={w}
+              onAgain={reset}
+            />
+          )}
         </Show>
-        <div class="mt-20 flex justify-center">
+        <div class="mt-20 flex justify-center gap-4 text-slate-400">
+          <Toggle label="Reverse" onChange={() => setReverse(!reverse())} />
           <Toggle
-            label={<span class="text-slate-300">Reverse</span>}
-            onChange={() => setReverse(!reverse())}
+            label="Write words"
+            onChange={() => setMode(mode() === 'guess' ? 'write' : 'guess')}
           />
         </div>
       </div>

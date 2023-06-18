@@ -1,10 +1,14 @@
 import { Show, createEffect, createSignal, onCleanup } from 'solid-js';
 import { WordTranslation } from '../parser/simple-md-parser';
 import { nextWord } from '../worder/worder';
+import { WriteTester } from './WriteTester';
+
+export type TestMode = 'guess' | 'write';
 
 interface TesterProps {
   reverse: boolean;
   words: WordTranslation[];
+  mode: TestMode;
   onAgain: () => void;
 }
 
@@ -19,6 +23,9 @@ const Tester = (props: TesterProps) => {
 
   createEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (props.mode !== 'guess') {
+        return;
+      }
       if (e.key === 'r') {
         setPeek(true);
       }
@@ -55,22 +62,31 @@ const Tester = (props: TesterProps) => {
   return (
     <div>
       <div
-        class="grid grid-cols-[1fr_2rem_1fr] mb-8 text-2xl"
+        class="mb-8 grid grid-cols-[1fr_2rem_1fr] items-center text-2xl"
         classList={{ invisible: !currentWord() }}
       >
         <span class="whitespace-nowrap text-right">
-          <button class="text-md mr-2 btn-link" onClick={() => setPeek(true)}>
+          <button
+            class="text-md mr-2 btn-link"
+            onClick={() => setPeek(!peek())}
+          >
             👁
           </button>
           {toTranslate()}
         </span>
         <span class="text-center text-slate-500">|</span>
-        <span
-          class="whitespace-nowrap text-left"
-          classList={{ invisible: !peek() }}
-        >
-          {translated()}
-        </span>
+        {props.mode === 'write' ? (
+          <Show keyed={true} when={translated()}>
+            {t => <WriteTester peek={peek()} translation={t} />}
+          </Show>
+        ) : (
+          <span
+            class="whitespace-nowrap text-left"
+            classList={{ invisible: !peek() }}
+          >
+            {translated()}
+          </span>
+        )}
       </div>
       <Show when={currentWord() && !done()}>
         <button class="btn-primary block mx-auto" onClick={setNextWord}>
