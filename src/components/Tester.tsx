@@ -1,6 +1,7 @@
 import { Show, createEffect, createSignal, onCleanup } from 'solid-js';
 import { WordTranslation } from '../parser/simple-md-parser';
 import { nextWord } from '../worder/worder';
+import { Toggle } from './Toggle';
 
 interface TesterProps {
   words: WordTranslation[];
@@ -10,18 +11,11 @@ const Tester = (props: TesterProps) => {
   const [wordsLeft, setWordsLeft] = createSignal<WordTranslation[]>(
     props.words
   );
-  const [currentWord, setCurrentWord] = createSignal<WordTranslation>();
+  const [currentWord, setCurrentWord] = createSignal<
+    WordTranslation | undefined
+  >();
   const [peek, setPeek] = createSignal(false);
-
-  function next() {
-    const [word, index] = nextWord(wordsLeft());
-
-    setPeek(false);
-    setCurrentWord(word);
-    setWordsLeft(w => w.filter((_, i) => i !== index));
-  }
-
-  const done = () => wordsLeft()?.length === 0;
+  const [reverse, setReverse] = createSignal(false);
 
   createEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -36,6 +30,29 @@ const Tester = (props: TesterProps) => {
     document.addEventListener('keydown', onKey);
     onCleanup(() => document.removeEventListener('keydown', onKey));
   });
+
+  function changeReverse(reverse: boolean) {
+    setReverse(reverse);
+
+    const currWord = currentWord();
+
+    if (currWord) {
+      setCurrentWord({
+        original: currWord.translation,
+        translation: currWord.original,
+      });
+    }
+  }
+
+  function next() {
+    const [word, index] = nextWord(wordsLeft(), reverse());
+
+    setPeek(false);
+    setCurrentWord(word);
+    setWordsLeft(w => w.filter((_, i) => i !== index));
+  }
+
+  const done = () => wordsLeft()?.length === 0;
 
   next();
 
@@ -64,6 +81,12 @@ const Tester = (props: TesterProps) => {
           Next
         </button>
       </Show>
+      <div class="mt-20 flex justify-center">
+        <Toggle
+          label={<span class="text-slate-300">Reverse</span>}
+          onChange={changeReverse}
+        />
+      </div>
     </div>
   );
 };
