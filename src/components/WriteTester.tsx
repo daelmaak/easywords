@@ -1,13 +1,27 @@
-import { Show, createEffect, createSignal } from 'solid-js';
+import { Show, createEffect, createSignal, onMount } from 'solid-js';
 
 export interface WriteTesterProps {
   peek: boolean;
   translation: string;
+  onNextWord: () => void;
 }
 
 export function WriteTester(props: WriteTesterProps) {
   let inputRef: HTMLInputElement | undefined;
   const [valid, setValid] = createSignal<boolean | undefined>();
+
+  onMount(() => {
+    inputRef?.focus();
+  });
+
+  // NOTE: executes always when props.translation changes
+  createEffect(() => {
+    if (inputRef) {
+      inputRef.value = '';
+    }
+    setValid(undefined);
+    return props.translation;
+  });
 
   function checkText(text: string) {
     setValid(props.translation.includes(text));
@@ -15,6 +29,11 @@ export function WriteTester(props: WriteTesterProps) {
 
   function onSubmit(e: Event) {
     e.preventDefault();
+
+    // Was already validated successfully before. So we can move on to the next word.
+    if (valid()) {
+      return props.onNextWord();
+    }
 
     const text = inputRef?.value;
 
@@ -24,12 +43,6 @@ export function WriteTester(props: WriteTesterProps) {
 
     checkText(text);
   }
-
-  // NOTE: executes always when props.translation changes
-  createEffect(() => {
-    setValid(undefined);
-    return props.translation;
-  });
 
   return (
     <form class="relative whitespace-nowrap" onSubmit={onSubmit}>
