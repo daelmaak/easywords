@@ -63,7 +63,7 @@ const Tester = (props: TesterProps) => {
         classList={{ invisible: !currentWord() }}
       >
         <span class="whitespace-nowrap text-right">
-          <button class="text-md mr-2 link" onClick={() => setPeek(true)}>
+          <button class="text-md mr-2 btn-link" onClick={() => setPeek(true)}>
             👁
           </button>
           {currentWord()?.original}

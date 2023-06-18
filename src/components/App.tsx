@@ -17,6 +17,12 @@ const App: Component = () => {
           {w => <Tester words={w} />}
         </Show>
       </div>
+      <button
+        class="btn-link fixed bottom-4 right-8 text-sm"
+        onClick={() => setWords()}
+      >
+        Go back
+      </button>
     </div>
   );
 };

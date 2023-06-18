@@ -66,7 +66,7 @@ export function WordsInput(props: WordsInputProps) {
       <div class="mx-auto flex gap-4 justify-center">
         <Show keyed={true} when={fileHandle()}>
           {fh => (
-            <button class="link" onClick={() => reuseFile(fh)}>
+            <button class="btn-link" onClick={() => reuseFile(fh)}>
               Open "{fh.name}"
             </button>
           )}

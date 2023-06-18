@@ -8,3 +8,4 @@
 3. ~~Reverse~~
 4. ~~Copy paste words into the program to make the word choice more fine grained~~
 5. Progress bar
+6. Go back to source pick
