@@ -1,4 +1,10 @@
-import { Show, createEffect, createSignal, onMount } from 'solid-js';
+import {
+  Show,
+  createEffect,
+  createMemo,
+  createSignal,
+  onMount,
+} from 'solid-js';
 
 export interface WriteTesterProps {
   peek: boolean;
@@ -23,8 +29,16 @@ export function WriteTester(props: WriteTesterProps) {
     return props.translation;
   });
 
+  const tokenizedTranslation = createMemo(() => tokenize(props.translation));
+
   function checkText(text: string) {
-    setValid(props.translation.includes(text));
+    const tokenizedText = tokenize(text);
+    setValid(
+      tokenizedText.every(
+        // NOTE: Here I match the words partly so that I can for example cover both singular and plural forms at the same time
+        t => tokenizedTranslation().some(tt => tt.includes(t))
+      )
+    );
   }
 
   function onSubmit(e: Event) {
@@ -42,6 +56,10 @@ export function WriteTester(props: WriteTesterProps) {
     }
 
     checkText(text);
+  }
+
+  function tokenize(text: string) {
+    return text.split(/\s+/);
   }
 
   return (

@@ -76,11 +76,13 @@ const Tester = (props: TesterProps) => {
         </span>
         <span class="text-center text-slate-500">|</span>
         {props.mode === 'write' ? (
-          <WriteTester
-            peek={peek()}
-            translation={translated()!}
-            onNextWord={setNextWord}
-          />
+          <Show when={translated() != null}>
+            <WriteTester
+              peek={peek()}
+              translation={translated()!}
+              onNextWord={setNextWord}
+            />
+          </Show>
         ) : (
           <span
             class="whitespace-nowrap text-left"
