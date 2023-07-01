@@ -100,11 +100,6 @@ const Tester = (props: TesterProps) => {
         <button class="btn-primary block mx-auto" onClick={setNextWord}>
           Next
         </button>
-        <progress
-          class="progress block mx-auto w-80 mt-20"
-          max="100"
-          value={percentageDone()}
-        ></progress>
       </Show>
       <Show when={done()}>
         <p class="text-center text-2xl">
@@ -114,6 +109,11 @@ const Tester = (props: TesterProps) => {
           Again
         </button>
       </Show>
+      <progress
+        class="progress block mx-auto w-80 mt-20"
+        max="100"
+        value={percentageDone()}
+      ></progress>
     </div>
   );
 };
