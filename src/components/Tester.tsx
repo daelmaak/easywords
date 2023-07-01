@@ -59,6 +59,10 @@ const Tester = (props: TesterProps) => {
   const translated = () =>
     props.reverse ? currentWord()?.original : currentWord()?.translation;
 
+  const percentageDone = () =>
+    // +1 because the current word was already subtracted from wordsLeft
+    (1 - (wordsLeft().length + 1) / props.words.length) * 100;
+
   return (
     <div>
       <div
@@ -96,6 +100,11 @@ const Tester = (props: TesterProps) => {
         <button class="btn-primary block mx-auto" onClick={setNextWord}>
           Next
         </button>
+        <progress
+          class="progress block mx-auto w-80 mt-20"
+          max="100"
+          value={percentageDone()}
+        ></progress>
       </Show>
       <Show when={done()}>
         <p class="text-center text-2xl">

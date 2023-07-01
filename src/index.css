@@ -38,6 +38,19 @@ i {
   .btn-link {
     @apply text-violet-300 hover:text-violet-400;
   }
+
+  .progress {
+    @apply h-2 rounded-md overflow-hidden appearance-none bg-zinc-600;
+  }
+  .progress::-webkit-progress-bar {
+    @apply bg-zinc-600;
+  }
+  .progress::-webkit-progress-value {
+    @apply bg-green-600;
+  }
+  .progress::-moz-progress-bar {
+    @apply bg-green-600;
+  }
 }
 
 @layer utilities {
