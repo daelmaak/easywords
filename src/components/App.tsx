@@ -6,7 +6,7 @@ import { Toggle } from './Toggle';
 
 const App: Component = () => {
   const [words, setWords] = createSignal<WordTranslation[]>();
-  const [mode, setMode] = createSignal<TestMode>('guess');
+  const [mode, setMode] = createSignal<TestMode>('write');
   const [reverse, setReverse] = createSignal(false);
 
   function reset() {
@@ -33,6 +33,7 @@ const App: Component = () => {
         <div class="mt-20 flex justify-center gap-4 text-slate-400">
           <Toggle label="Reverse" onChange={() => setReverse(!reverse())} />
           <Toggle
+            defaultValue={mode() === 'write'}
             label="Write words"
             onChange={() => setMode(mode() === 'guess' ? 'write' : 'guess')}
           />
