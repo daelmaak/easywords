@@ -10,7 +10,7 @@ interface TesterProps {
   reverse: boolean;
   words: WordTranslation[];
   mode: TestMode;
-  onAgain: () => void;
+  reset: () => void;
 }
 
 const Tester = (props: TesterProps) => {
@@ -39,6 +39,11 @@ const Tester = (props: TesterProps) => {
     document.addEventListener('keydown', onKey);
     onCleanup(() => document.removeEventListener('keydown', onKey));
   });
+
+  function repeat() {
+    setWordsLeft(props.words);
+    setNextWord();
+  }
 
   function setNextWord() {
     const current = currentWord();
@@ -120,9 +125,14 @@ const Tester = (props: TesterProps) => {
         <p class="text-center text-2xl">
           <i class="mr-4 text-green-600 font-semibold">✓</i>Done!
         </p>
-        <button class="btn-primary block mx-auto mt-8" onClick={props.onAgain}>
-          Again
-        </button>
+        <div class="mx-auto mt-8 text-center">
+          <button class="btn-primary" onClick={repeat}>
+            Again
+          </button>
+          <button class="btn-link ml-4" onClick={props.reset}>
+            Pick different words
+          </button>
+        </div>
       </Show>
       <Progress
         percentage={percentageDone()}

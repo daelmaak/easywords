@@ -22,12 +22,7 @@ const App: Component = () => {
 
         <Show keyed={true} when={words()}>
           {w => (
-            <Tester
-              mode={mode()}
-              reverse={reverse()}
-              words={w}
-              onAgain={reset}
-            />
+            <Tester mode={mode()} reverse={reverse()} words={w} reset={reset} />
           )}
         </Show>
         <div class="mt-20 flex justify-center gap-4 text-slate-400">
