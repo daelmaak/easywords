@@ -21,6 +21,7 @@ const Tester = (props: TesterProps) => {
     WordTranslation | undefined
   >();
   const [peek, setPeek] = createSignal(false);
+  let currentWordMistake = false;
 
   createEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -40,22 +41,33 @@ const Tester = (props: TesterProps) => {
   });
 
   function setNextWord() {
-    const next = nextWord(wordsLeft());
+    const current = currentWord();
+    let wsLeft = wordsLeft();
+
+    if (current) {
+      wsLeft = wsLeft.filter(w => w.original !== current.original);
+
+      // I check the lenght because it means user would get the last word twice
+      // which doesn't make sense even though he made a mistake.
+      if (!currentWordMistake || wsLeft.length === 0) {
+        setWordsLeft(wsLeft);
+      }
+      currentWordMistake = false;
+    }
+
+    const next = nextWord(wsLeft);
 
     if (!next) {
       return setCurrentWord(undefined);
     }
 
     setPeek(false);
-    setCurrentWord(next[0]);
-    setWordsLeft(w => w.filter((_, i) => i !== next[1]));
+    setCurrentWord(next);
   }
 
   setNextWord();
 
-  const wordsLeftCount = () => wordsLeft().length + (!!currentWord() ? 1 : 0);
-
-  const done = () => wordsLeftCount() === 0;
+  const done = () => wordsLeft().length === 0;
 
   const toTranslate = () =>
     props.reverse ? currentWord()?.translation : currentWord()?.original;
@@ -63,7 +75,7 @@ const Tester = (props: TesterProps) => {
     props.reverse ? currentWord()?.original : currentWord()?.translation;
 
   const percentageDone = () =>
-    (1 - wordsLeftCount() / props.words.length) * 100;
+    (1 - wordsLeft().length / props.words.length) * 100;
 
   return (
     <div>
@@ -86,6 +98,7 @@ const Tester = (props: TesterProps) => {
             <WriteTester
               peek={peek()}
               translation={translated()!}
+              onMistake={() => (currentWordMistake = true)}
               onNextWord={setNextWord}
             />
           </Show>
