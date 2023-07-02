@@ -9,7 +9,7 @@ import {
 export interface WriteTesterProps {
   peek: boolean;
   translation: string;
-  onMistake?: () => void;
+  onValidated?: (valid: boolean) => void;
   onNextWord: () => void;
 }
 
@@ -30,9 +30,21 @@ export function WriteTester(props: WriteTesterProps) {
     return props.translation;
   });
 
+  createEffect(() => {
+    if (props.peek && valid() == null) {
+      validateText();
+    }
+  });
+
   const tokenizedTranslation = createMemo(() => tokenize(props.translation));
 
-  function validateText(text: string) {
+  function validateText() {
+    const text = inputRef?.value;
+
+    if (!text) {
+      return;
+    }
+
     const tokenizedText = tokenize(text);
     const valid = tokenizedText.every(
       // NOTE: Here I match the words partly so that I can for example cover both singular and plural forms at the same time
@@ -40,9 +52,7 @@ export function WriteTester(props: WriteTesterProps) {
     );
     setValid(valid);
 
-    if (!valid) {
-      props.onMistake?.();
-    }
+    props.onValidated?.(valid);
   }
 
   function onSubmit(e: Event) {
@@ -53,13 +63,7 @@ export function WriteTester(props: WriteTesterProps) {
       return props.onNextWord();
     }
 
-    const text = inputRef?.value;
-
-    if (!text) {
-      return;
-    }
-
-    validateText(text);
+    validateText();
   }
 
   function tokenize(text: string) {

@@ -21,7 +21,7 @@ const Tester = (props: TesterProps) => {
     WordTranslation | undefined
   >();
   const [peek, setPeek] = createSignal(false);
-  let currentWordMistake = false;
+  let currentWordValid: boolean | undefined = undefined;
 
   createEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -49,15 +49,18 @@ const Tester = (props: TesterProps) => {
     const current = currentWord();
     let wsLeft = wordsLeft();
 
+    // only one last word, looking up next doesn't make sense
+    if (wsLeft.length === 1 && !currentWordValid) {
+      return;
+    }
+
     if (current) {
       wsLeft = wsLeft.filter(w => w.original !== current.original);
 
-      // I check the lenght because it means user would get the last word twice
-      // which doesn't make sense even though he made a mistake.
-      if (!currentWordMistake || wsLeft.length === 0) {
+      if (currentWordValid) {
         setWordsLeft(wsLeft);
       }
-      currentWordMistake = false;
+      currentWordValid = undefined;
     }
 
     const next = nextWord(wsLeft);
@@ -68,6 +71,10 @@ const Tester = (props: TesterProps) => {
 
     setPeek(false);
     setCurrentWord(next);
+  }
+
+  function togglePeek() {
+    setPeek(!peek());
   }
 
   setNextWord();
@@ -89,10 +96,7 @@ const Tester = (props: TesterProps) => {
         classList={{ invisible: !currentWord() }}
       >
         <span class="whitespace-nowrap text-right">
-          <button
-            class="text-md mr-2 btn-link"
-            onClick={() => setPeek(!peek())}
-          >
+          <button class="text-md mr-2 btn-link" onClick={togglePeek}>
             👁
           </button>
           {toTranslate()}
@@ -103,7 +107,7 @@ const Tester = (props: TesterProps) => {
             <WriteTester
               peek={peek()}
               translation={translated()!}
-              onMistake={() => (currentWordMistake = true)}
+              onValidated={valid => (currentWordValid = valid)}
               onNextWord={setNextWord}
             />
           </Show>
