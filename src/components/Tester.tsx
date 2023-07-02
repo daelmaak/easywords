@@ -2,6 +2,7 @@ import { Show, createEffect, createSignal, onCleanup } from 'solid-js';
 import { WordTranslation } from '../parser/simple-md-parser';
 import { nextWord } from '../worder/worder';
 import { WriteTester } from './WriteTester';
+import { Progress } from './Progress';
 
 export type TestMode = 'guess' | 'write';
 
@@ -52,7 +53,9 @@ const Tester = (props: TesterProps) => {
 
   setNextWord();
 
-  const done = () => wordsLeft()?.length === 0 && currentWord() == null;
+  const wordsLeftCount = () => wordsLeft().length + (!!currentWord() ? 1 : 0);
+
+  const done = () => wordsLeftCount() === 0;
 
   const toTranslate = () =>
     props.reverse ? currentWord()?.translation : currentWord()?.original;
@@ -60,8 +63,7 @@ const Tester = (props: TesterProps) => {
     props.reverse ? currentWord()?.original : currentWord()?.translation;
 
   const percentageDone = () =>
-    // +1 because the current word was already subtracted from wordsLeft
-    (1 - (wordsLeft().length + 1) / props.words.length) * 100;
+    (1 - wordsLeftCount() / props.words.length) * 100;
 
   return (
     <div>
@@ -109,11 +111,7 @@ const Tester = (props: TesterProps) => {
           Again
         </button>
       </Show>
-      <progress
-        class="progress block mx-auto w-80 mt-20"
-        max="100"
-        value={percentageDone()}
-      ></progress>
+      <Progress percentage={percentageDone()} class="mt-20 mx-auto w-80" />
     </div>
   );
 };
