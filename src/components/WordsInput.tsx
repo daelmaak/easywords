@@ -1,5 +1,5 @@
 import { get, set } from 'idb-keyval';
-import { Ref, Show, createEffect, createSignal } from 'solid-js';
+import { Show, createEffect, createSignal } from 'solid-js';
 import { SimpleMdParser, WordTranslation } from '../parser/simple-md-parser';
 
 export interface WordsInputProps {
@@ -7,8 +7,6 @@ export interface WordsInputProps {
 }
 
 export function WordsInput(props: WordsInputProps) {
-  let wordsTextareaRef: HTMLTextAreaElement | undefined;
-
   const [fileHandle, setFileHandle] = createSignal<
     FileSystemHandle | undefined
   >(undefined);
@@ -30,7 +28,7 @@ export function WordsInput(props: WordsInputProps) {
 
     try {
       [fileHandle] = await window.showOpenFilePicker();
-    } catch (ignored) {}
+    } catch {}
 
     if (!fileHandle) {
       return;
@@ -49,9 +47,11 @@ export function WordsInput(props: WordsInputProps) {
     parseSource(text);
   }
 
-  function applyText() {
-    const text = wordsTextareaRef?.value ?? '';
-    parseSource(text);
+  function onCPFormSubmit(e: SubmitEvent) {
+    e.preventDefault();
+
+    const formdata = new FormData(e.target as HTMLFormElement);
+    parseSource(formdata.get('copypastesource') as string);
   }
 
   function parseSource(text: string) {
@@ -59,6 +59,12 @@ export function WordsInput(props: WordsInputProps) {
     const words = mdParser.parse(text);
 
     props.onWords(words);
+  }
+
+  function onKeyDownInCPForm(event: KeyboardEvent) {
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+      (event.currentTarget as HTMLFormElement).requestSubmit();
+    }
   }
 
   return (
@@ -77,14 +83,14 @@ export function WordsInput(props: WordsInputProps) {
       </div>
       <form
         class="mt-8 p-2 bg-zinc-700 rounded-md min-w-[20rem]"
-        onSubmit={applyText}
+        onKeyDown={onKeyDownInCPForm}
+        onSubmit={onCPFormSubmit}
       >
         <textarea
           class="peer input no-scrollbar block min-w-full [&:not(&:placeholder-shown)]:min-h-[10rem] text-sm whitespace-pre"
           name="copypastesource"
           placeholder="Or paste words here"
           rows="1"
-          ref={wordsTextareaRef}
         ></textarea>
         <button class="peer-[:placeholder-shown]:hidden btn-primary mt-4 shadow-zinc-800">
           Apply
