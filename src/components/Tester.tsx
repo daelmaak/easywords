@@ -111,7 +111,11 @@ const Tester = (props: TesterProps) => {
           Again
         </button>
       </Show>
-      <Progress percentage={percentageDone()} class="mt-20 mx-auto w-80" />
+      <Progress
+        percentage={percentageDone()}
+        ariaLabel="Words done percentage"
+        class="mt-20 mx-auto w-80"
+      />
     </div>
   );
 };
