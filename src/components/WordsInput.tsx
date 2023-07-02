@@ -96,6 +96,16 @@ export function WordsInput(props: WordsInputProps) {
           Apply
         </button>
       </form>
+      <div class="mt-8 text-xs text-center text-zinc-400">
+        words have to be in format:
+        <figure>
+          <pre class="mt-2">
+            original - translation
+            <br />
+            original2 - translation2
+          </pre>
+        </figure>
+      </div>
     </div>
   );
 }
