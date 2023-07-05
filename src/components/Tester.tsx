@@ -107,7 +107,9 @@ const Tester = (props: TesterProps) => {
             <WriteTester
               peek={peek()}
               translation={translated()!}
-              onValidated={valid => (currentWordValid = valid)}
+              onValidated={valid =>
+                currentWordValid == null && (currentWordValid = valid)
+              }
               onNextWord={setNextWord}
             />
           </Show>

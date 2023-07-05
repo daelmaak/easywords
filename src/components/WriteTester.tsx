@@ -42,6 +42,7 @@ export function WriteTester(props: WriteTesterProps) {
     const text = inputRef?.value;
 
     if (!text) {
+      props.onValidated?.(false);
       return;
     }
 
