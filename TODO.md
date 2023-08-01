@@ -10,3 +10,6 @@
 5. ~~Progress bar~~
 6. ~~Go back to source pick~~
 7. Store words that I didn't guess, so that I can repeat them sooner or later
+8. Add handwriting recognition
+9. Adapt design to mobile
+10. Store last words

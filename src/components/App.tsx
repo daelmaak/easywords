@@ -17,7 +17,7 @@ const App: Component = () => {
     <div class="min-h-full grid p-8 bg-zinc-800">
       <div class="m-auto">
         <Show when={!words()}>
-          <WordsInput onWords={setWords} />
+          <WordsInput onWords={setWords} reverse={reverse()} />
         </Show>
 
         <Show keyed={true} when={words()}>
