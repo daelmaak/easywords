@@ -9,8 +9,9 @@ import {
 export interface WriteTesterProps {
   peek: boolean;
   translation: string;
-  onValidated?: (valid: boolean) => void;
   onNextWord: () => void;
+  onPeek: () => void;
+  onValidated?: (valid: boolean) => void;
 }
 
 export function WriteTester(props: WriteTesterProps) {
@@ -65,6 +66,16 @@ export function WriteTester(props: WriteTesterProps) {
     }
 
     validateText();
+
+    // NOTE: This handles the case where use resigned on giving an answer. So for his convenience, we let him submit which first
+    // shows him the right answer and then it moves to next word on second submit.
+    if (inputRef?.value === '') {
+      if (props.peek) {
+        props.onNextWord();
+      } else {
+        props.onPeek();
+      }
+    }
   }
 
   function tokenize(text: string) {
