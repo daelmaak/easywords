@@ -50,7 +50,7 @@ const Tester = (props: TesterProps) => {
     let wsLeft = wordsLeft();
 
     // only one last word, looking up next doesn't make sense
-    if (wsLeft.length === 1 && !currentWordValid) {
+    if (wsLeft.length === 1 && currentWordValid === false) {
       return;
     }
 
@@ -71,6 +71,12 @@ const Tester = (props: TesterProps) => {
 
     setPeek(false);
     setCurrentWord(next);
+  }
+
+  function onWordValidated(valid: boolean) {
+    if (currentWordValid == null || wordsLeft().length === 1) {
+      currentWordValid = valid;
+    }
   }
 
   function togglePeek() {
@@ -109,9 +115,7 @@ const Tester = (props: TesterProps) => {
               translation={translated()!}
               onNextWord={setNextWord}
               onPeek={() => setPeek(true)}
-              onValidated={valid =>
-                currentWordValid == null && (currentWordValid = valid)
-              }
+              onValidated={onWordValidated}
             />
           </Show>
         ) : (
