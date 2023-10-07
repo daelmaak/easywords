@@ -50,8 +50,7 @@ export function WriteTester(props: WriteTesterProps) {
     const tokenizedText = tokenize(text);
     const valid = tokenizedText.every(t =>
       // TODO: when the accents don't match, I should produce a warning
-      // NOTE: Here I match the words partly so that I can for example cover both singular and plural forms at the same time
-      tokenizedTranslation().some(tt => deaccent(tt).includes(deaccent(t)))
+      tokenizedTranslation().some(tt => deaccent(tt) === deaccent(t))
     );
     setValid(valid);
 
