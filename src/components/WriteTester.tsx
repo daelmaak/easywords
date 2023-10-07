@@ -48,9 +48,10 @@ export function WriteTester(props: WriteTesterProps) {
     }
 
     const tokenizedText = tokenize(text);
-    const valid = tokenizedText.every(
+    const valid = tokenizedText.every(t =>
+      // TODO: when the accents don't match, I should produce a warning
       // NOTE: Here I match the words partly so that I can for example cover both singular and plural forms at the same time
-      t => tokenizedTranslation().some(tt => tt.includes(t))
+      tokenizedTranslation().some(tt => deaccent(tt).includes(deaccent(t)))
     );
     setValid(valid);
 
@@ -80,6 +81,10 @@ export function WriteTester(props: WriteTesterProps) {
 
   function tokenize(text: string) {
     return text.split(/\s+/);
+  }
+
+  function deaccent(word: string) {
+    return word.normalize('NFD').replace(/\p{Diacritic}/gu, '');
   }
 
   return (
