@@ -10,6 +10,8 @@ interface TesterProps {
   reverse: boolean;
   words: WordTranslation[];
   mode: TestMode;
+  done: (invalidWords?: WordTranslation[]) => void;
+  repeat: () => void;
   reset: () => void;
 }
 
@@ -21,6 +23,7 @@ const Tester = (props: TesterProps) => {
     WordTranslation | undefined
   >();
   const [peek, setPeek] = createSignal(false);
+  let invalidWords: WordTranslation[] = [];
   let currentWordValid: boolean | undefined = undefined;
 
   createEffect(() => {
@@ -41,6 +44,7 @@ const Tester = (props: TesterProps) => {
   });
 
   function repeat() {
+    props.repeat();
     setWordsLeft(props.words);
     setNextWord();
   }
@@ -66,7 +70,10 @@ const Tester = (props: TesterProps) => {
     const next = nextWord(wsLeft);
 
     if (!next) {
-      return setCurrentWord(undefined);
+      props.done(invalidWords);
+      setCurrentWord();
+      invalidWords = [];
+      return;
     }
 
     setPeek(false);
@@ -76,6 +83,17 @@ const Tester = (props: TesterProps) => {
   function onWordValidated(valid: boolean) {
     if (currentWordValid == null || wordsLeft().length === 1) {
       currentWordValid = valid;
+    }
+
+    const word = currentWord();
+
+    if (
+      !valid &&
+      word &&
+      // TODO: @daelmaak not very performant is it? Optimize
+      invalidWords.every(w => w.original !== word.original)
+    ) {
+      invalidWords.push(word);
     }
   }
 

@@ -3,28 +3,62 @@ import { WordTranslation } from '../parser/simple-md-parser';
 import Tester, { TestMode } from './Tester';
 import { WordsInput } from './WordsInput';
 import { Toggle } from './Toggle';
+import { Results } from './Results';
 
 const App: Component = () => {
   const [words, setWords] = createSignal<WordTranslation[]>();
   const [mode, setMode] = createSignal<TestMode>('write');
   const [reverse, setReverse] = createSignal(false);
+  const [invalidWords, setInvalidWords] = createSignal<WordTranslation[]>();
 
-  function reset() {
+  function onDone(invalidWords?: WordTranslation[]) {
+    setInvalidWords(invalidWords);
+  }
+
+  function onRepeat() {
+    setInvalidWords();
+  }
+
+  function onReset() {
+    setInvalidWords();
     setWords();
+  }
+
+  function onTryInvalidWords(invalidWords: WordTranslation[]) {
+    setInvalidWords();
+    setWords(invalidWords);
+  }
+
+  function selectWords(words: WordTranslation[]) {
+    setInvalidWords();
+    setWords(words);
   }
 
   return (
     <div class="min-h-full grid p-8 bg-zinc-800">
       <div class="m-auto">
         <Show when={!words()}>
-          <WordsInput onWords={setWords} reverse={reverse()} />
+          <WordsInput onWords={selectWords} reverse={reverse()} />
         </Show>
 
         <Show keyed={true} when={words()}>
           {w => (
-            <Tester mode={mode()} reverse={reverse()} words={w} reset={reset} />
+            <Tester
+              mode={mode()}
+              reverse={reverse()}
+              words={w}
+              done={onDone}
+              repeat={onRepeat}
+              reset={onReset}
+            />
           )}
         </Show>
+
+        <Results
+          invalidWords={invalidWords()}
+          tryInvalidWords={onTryInvalidWords}
+        />
+
         <div class="mt-20 flex justify-center gap-4 text-slate-400">
           <Toggle label="Reverse" onChange={() => setReverse(!reverse())} />
           <Toggle
@@ -36,7 +70,10 @@ const App: Component = () => {
       </div>
 
       <Show when={words()}>
-        <button class="btn-link fixed bottom-4 right-8 text-sm" onClick={reset}>
+        <button
+          class="btn-link fixed bottom-4 right-8 text-sm"
+          onClick={onReset}
+        >
           Go back
         </button>
       </Show>
