@@ -1,9 +1,9 @@
 import { Show, createSignal, type Component } from 'solid-js';
 import { WordTranslation } from '../parser/simple-md-parser';
-import Tester, { TestMode } from './Tester';
-import { WordsInput } from './WordsInput';
-import { Toggle } from './Toggle';
 import { Results } from './Results';
+import Tester, { TestMode } from './Tester';
+import { Toggle } from './Toggle';
+import { WordsInput } from './WordsInput';
 
 const App: Component = () => {
   const [words, setWords] = createSignal<WordTranslation[]>();
@@ -13,6 +13,7 @@ const App: Component = () => {
 
   function onDone(invalidWords?: WordTranslation[]) {
     setInvalidWords(invalidWords);
+    setWords();
   }
 
   function onRepeat() {

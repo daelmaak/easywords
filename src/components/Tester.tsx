@@ -1,8 +1,8 @@
 import { Show, createEffect, createSignal, onCleanup } from 'solid-js';
 import { WordTranslation } from '../parser/simple-md-parser';
 import { nextWord } from '../worder/worder';
-import { WriteTester } from './WriteTester';
 import { Progress } from './Progress';
+import { WriteTester } from './WriteTester';
 
 export type TestMode = 'guess' | 'write';
 
@@ -70,14 +70,17 @@ const Tester = (props: TesterProps) => {
     const next = nextWord(wsLeft);
 
     if (!next) {
-      props.done(invalidWords);
-      setCurrentWord();
-      invalidWords = [];
-      return;
+      return finish();
     }
 
     setPeek(false);
     setCurrentWord(next);
+  }
+
+  function finish() {
+    props.done(wordsLeft());
+    setCurrentWord();
+    invalidWords = [];
   }
 
   function onWordValidated(valid: boolean) {
@@ -146,9 +149,14 @@ const Tester = (props: TesterProps) => {
         )}
       </div>
       <Show when={currentWord() && !done()}>
-        <button class="btn-primary block mx-auto" onClick={setNextWord}>
-          Next
-        </button>
+        <div class="flex justify-center gap-4">
+          <button class="btn-primary" onClick={setNextWord}>
+            Next
+          </button>
+          <button class="btn-link" onClick={finish}>
+            Finish
+          </button>
+        </div>
       </Show>
       <Show when={done()}>
         <p class="text-center text-2xl">

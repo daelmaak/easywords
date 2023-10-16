@@ -34,7 +34,7 @@ export function Results(props: ResultsProps) {
         invalidWords.length > 0 && (
           <section class="mx-auto mt-10 flex flex-col">
             <h2 class="mb-4 text-lg text-center">
-              Those are the words you had hard time guessing
+              Words you had hard time guessing or didn't manage:
             </h2>
             <textarea
               class="input text-center"
