@@ -79,7 +79,7 @@ export function WriteTester(props: WriteTesterProps) {
   }
 
   function tokenize(text: string) {
-    return text.split(/\s*,?\s*/);
+    return text.split(/[\s,]+/);
   }
 
   function deaccent(word: string) {
