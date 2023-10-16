@@ -1,4 +1,5 @@
-import { Show, createSignal, type Component } from 'solid-js';
+import { get, set } from 'idb-keyval';
+import { Show, createEffect, createSignal, type Component } from 'solid-js';
 import { WordTranslation } from '../parser/simple-md-parser';
 import { Results } from './Results';
 import Tester, { TestMode } from './Tester';
@@ -6,14 +7,20 @@ import { Toggle } from './Toggle';
 import { WordsInput } from './WordsInput';
 
 const App: Component = () => {
+  const [lastWords, setLastWords] = createSignal<WordTranslation[]>();
   const [words, setWords] = createSignal<WordTranslation[]>();
   const [mode, setMode] = createSignal<TestMode>('write');
   const [reverse, setReverse] = createSignal(false);
   const [invalidWords, setInvalidWords] = createSignal<WordTranslation[]>();
 
-  function onDone(invalidWords?: WordTranslation[]) {
-    setInvalidWords(invalidWords);
+  createEffect(async () => {
+    setLastWords(await get<WordTranslation[]>('last-words'));
+  });
+
+  async function onDone(invalidWords?: WordTranslation[]) {
     setWords();
+    setInvalidWords(invalidWords);
+    await storeWords(invalidWords);
   }
 
   function onRepeat() {
@@ -30,16 +37,25 @@ const App: Component = () => {
     setWords(invalidWords);
   }
 
-  function selectWords(words: WordTranslation[]) {
+  async function selectWords(words: WordTranslation[]) {
     setInvalidWords();
     setWords(words);
+    await storeWords(words);
+  }
+
+  async function storeWords(words?: WordTranslation[]) {
+    await set('last-words', words);
   }
 
   return (
     <div class="min-h-full grid p-8 bg-zinc-800">
       <div class="m-auto">
         <Show when={!words()}>
-          <WordsInput onWords={selectWords} reverse={reverse()} />
+          <WordsInput
+            onWordsSelect={selectWords}
+            reverse={reverse()}
+            storedWords={lastWords()}
+          />
         </Show>
 
         <Show keyed={true} when={words()}>

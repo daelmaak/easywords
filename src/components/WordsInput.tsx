@@ -1,10 +1,11 @@
-import style from './WordsInput.module.css';
 import { get, set } from 'idb-keyval';
 import { Show, createEffect, createSignal } from 'solid-js';
 import { SimpleMdParser, WordTranslation } from '../parser/simple-md-parser';
+import style from './WordsInput.module.css';
 
 export interface WordsInputProps {
-  onWords: (words: WordTranslation[]) => void;
+  storedWords?: WordTranslation[];
+  onWordsSelect: (words: WordTranslation[]) => void;
   reverse: boolean;
 }
 
@@ -12,11 +13,9 @@ export function WordsInput(props: WordsInputProps) {
   const [fileHandle, setFileHandle] = createSignal<
     FileSystemHandle | undefined
   >(undefined);
-  const [lastWords, setLastWords] = createSignal<WordTranslation[]>();
 
   createEffect(async () => {
     setFileHandle(await get<FileSystemHandle>('file-handle'));
-    setLastWords(await get<WordTranslation[]>('last-words'));
   });
 
   async function reuseFile(fileHandle: FileSystemHandle) {
@@ -52,7 +51,7 @@ export function WordsInput(props: WordsInputProps) {
   }
 
   function applyLastWords(lastWords: WordTranslation[]) {
-    props.onWords(lastWords);
+    props.onWordsSelect(lastWords);
   }
 
   async function onCPFormSubmit(e: SubmitEvent) {
@@ -61,15 +60,14 @@ export function WordsInput(props: WordsInputProps) {
     const formdata = new FormData(e.target as HTMLFormElement);
     const words = parseSource(formdata.get('copypastesource') as string);
 
-    setLastWords(words);
-    await set('last-words', words);
+    props.onWordsSelect(words);
   }
 
   function parseSource(text: string) {
     const mdParser = new SimpleMdParser();
     const words = mdParser.parse(text);
 
-    props.onWords(words);
+    props.onWordsSelect(words);
 
     return words;
   }
@@ -89,7 +87,7 @@ export function WordsInput(props: WordsInputProps) {
 
   return (
     <div>
-      <Show when={lastWords()} keyed={true}>
+      <Show when={props.storedWords} keyed={true}>
         {lws => (
           <button
             class={`block mx-auto text-center ${style.reuseWords}`}
