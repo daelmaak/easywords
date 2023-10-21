@@ -10,7 +10,7 @@ interface TesterProps {
   reverse: boolean;
   words: WordTranslation[];
   mode: TestMode;
-  done: (invalidWords?: WordTranslation[]) => void;
+  done: (leftoverWords?: WordTranslation[]) => void;
   repeat: () => void;
   reset: () => void;
 }
@@ -80,6 +80,7 @@ const Tester = (props: TesterProps) => {
   function finish() {
     props.done(wordsLeft());
     setCurrentWord();
+    setWordsLeft([]);
     invalidWords = [];
   }
 

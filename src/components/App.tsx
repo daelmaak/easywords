@@ -1,6 +1,7 @@
 import { get, set } from 'idb-keyval';
 import { Show, createEffect, createSignal, type Component } from 'solid-js';
 import { WordTranslation } from '../parser/simple-md-parser';
+import { mergeWords } from '../util/merge-arrays';
 import { Results } from './Results';
 import Tester, { TestMode } from './Tester';
 import { Toggle } from './Toggle';
@@ -17,10 +18,13 @@ const App: Component = () => {
     setLastWords(await get<WordTranslation[]>('last-words'));
   });
 
-  async function onDone(invalidWords?: WordTranslation[]) {
+  async function onDone(leftOverWords?: WordTranslation[]) {
     setWords();
-    setInvalidWords(invalidWords);
-    await storeWords(invalidWords);
+
+    const invalidAndLeftoverWords = mergeWords(invalidWords(), leftOverWords);
+
+    setInvalidWords(invalidAndLeftoverWords);
+    await storeWords(invalidAndLeftoverWords);
   }
 
   function onRepeat() {
