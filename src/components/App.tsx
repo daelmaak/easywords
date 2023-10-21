@@ -1,7 +1,6 @@
 import { get, set } from 'idb-keyval';
 import { Show, createEffect, createSignal, type Component } from 'solid-js';
 import { WordTranslation } from '../parser/simple-md-parser';
-import { mergeWords } from '../util/merge-arrays';
 import { Results } from './Results';
 import Tester, { TestMode } from './Tester';
 import { Toggle } from './Toggle';
@@ -13,32 +12,33 @@ const App: Component = () => {
   const [mode, setMode] = createSignal<TestMode>('write');
   const [reverse, setReverse] = createSignal(false);
   const [invalidWords, setInvalidWords] = createSignal<WordTranslation[]>();
+  const [done, setDone] = createSignal(false);
 
   createEffect(async () => {
     setLastWords(await get<WordTranslation[]>('last-words'));
   });
 
   async function onDone(leftOverWords?: WordTranslation[]) {
-    setWords();
-
-    const invalidAndLeftoverWords = mergeWords(invalidWords(), leftOverWords);
-
-    setInvalidWords(invalidAndLeftoverWords);
-    await storeWords(invalidAndLeftoverWords);
+    setDone(true);
+    setInvalidWords(leftOverWords);
+    await storeWords(leftOverWords);
   }
 
   function onRepeat() {
     setInvalidWords();
+    setDone(false);
   }
 
   function onReset() {
     setInvalidWords();
     setWords();
+    setDone(false);
   }
 
   function onTryInvalidWords(invalidWords: WordTranslation[]) {
     setInvalidWords();
     setWords(invalidWords);
+    setDone(false);
   }
 
   async function selectWords(words: WordTranslation[]) {
@@ -54,7 +54,7 @@ const App: Component = () => {
   return (
     <div class="min-h-full grid p-8 bg-zinc-800">
       <div class="m-auto">
-        <Show when={!words()}>
+        <Show when={!words() && !done()}>
           <WordsInput
             onWordsSelect={selectWords}
             reverse={reverse()}
@@ -62,23 +62,29 @@ const App: Component = () => {
           />
         </Show>
 
-        <Show keyed={true} when={words()}>
-          {w => (
-            <Tester
-              mode={mode()}
-              reverse={reverse()}
-              words={w}
-              done={onDone}
-              repeat={onRepeat}
-              reset={onReset}
-            />
-          )}
+        <Show when={!done()}>
+          <Show keyed={true} when={words()}>
+            {w => (
+              <Tester
+                mode={mode()}
+                reverse={reverse()}
+                words={w}
+                done={onDone}
+                repeat={onRepeat}
+                reset={onReset}
+              />
+            )}
+          </Show>
         </Show>
 
-        <Results
-          invalidWords={invalidWords()}
-          tryInvalidWords={onTryInvalidWords}
-        />
+        <Show when={done()}>
+          <Results
+            invalidWords={invalidWords()}
+            repeat={onRepeat}
+            reset={onReset}
+            tryInvalidWords={onTryInvalidWords}
+          />
+        </Show>
 
         <div class="mt-20 flex justify-center gap-4 text-slate-400">
           <Toggle label="Reverse" onChange={() => setReverse(!reverse())} />

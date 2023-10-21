@@ -3,6 +3,7 @@ import { WordTranslation } from '../parser/simple-md-parser';
 import { nextWord } from '../worder/worder';
 import { Progress } from './Progress';
 import { WriteTester } from './WriteTester';
+import { mergeWords } from '../util/merge-arrays';
 
 export type TestMode = 'guess' | 'write';
 
@@ -78,7 +79,9 @@ const Tester = (props: TesterProps) => {
   }
 
   function finish() {
-    props.done(wordsLeft());
+    const invalidAndLeftoverWords = mergeWords(invalidWords, wordsLeft());
+    props.done(invalidAndLeftoverWords);
+
     setCurrentWord();
     setWordsLeft([]);
     invalidWords = [];
@@ -159,19 +162,7 @@ const Tester = (props: TesterProps) => {
           </button>
         </div>
       </Show>
-      <Show when={done()}>
-        <p class="text-center text-2xl">
-          <i class="mr-4 text-green-600 font-semibold">✓</i>Done!
-        </p>
-        <div class="mx-auto mt-8 text-center">
-          <button class="btn-primary" onClick={repeat}>
-            Again
-          </button>
-          <button class="btn-link ml-4" onClick={props.reset}>
-            Pick different words
-          </button>
-        </div>
-      </Show>
+
       <Progress
         percentage={percentageDone()}
         ariaLabel="Words done percentage"
