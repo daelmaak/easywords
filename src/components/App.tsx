@@ -1,9 +1,9 @@
 import { get, set } from 'idb-keyval';
 import { Show, createEffect, createSignal, type Component } from 'solid-js';
 import { WordTranslation } from '../parser/simple-md-parser';
+import { Config } from './Config';
 import { Results } from './Results';
 import Tester, { TestMode } from './Tester';
-import { Toggle } from './Toggle';
 import { WordsInput } from './WordsInput';
 
 const App: Component = () => {
@@ -86,14 +86,7 @@ const App: Component = () => {
           />
         </Show>
 
-        <div class="mt-20 flex justify-center gap-4 text-slate-400">
-          <Toggle label="Reverse" onChange={() => setReverse(!reverse())} />
-          <Toggle
-            defaultValue={mode() === 'write'}
-            label="Write words"
-            onChange={() => setMode(mode() === 'guess' ? 'write' : 'guess')}
-          />
-        </div>
+        <Config modeChange={setMode} reverseTranslations={setReverse} />
       </div>
 
       <Show when={words()}>
