@@ -1,6 +1,6 @@
 import { get, set } from 'idb-keyval';
 import { Show, createEffect, createSignal } from 'solid-js';
-import { SimpleMdParser, WordTranslation } from '../parser/simple-md-parser';
+import { SimpleMdParser, WordTranslation } from '../../parser/simple-md-parser';
 import style from './WordsInput.module.css';
 
 export interface WordsInputProps {

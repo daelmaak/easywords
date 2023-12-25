@@ -1,6 +1,6 @@
 import { get, set } from 'idb-keyval';
 import { Show, createEffect, createSignal, type Component } from 'solid-js';
-import { WordTranslation } from '../parser/simple-md-parser';
+import { WordTranslation } from '../../parser/simple-md-parser';
 import { Config } from './Config';
 import { Results } from './Results';
 import Tester, { TestMode } from './Tester';
