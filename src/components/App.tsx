@@ -1,5 +1,5 @@
 import { Component, createSignal } from 'solid-js';
-import VocabularyView from './VocabularyView';
+import VocabularyView from './vocabulary/VocabularyView';
 
 type View = 'vocabulary' | 'conjugations';
 

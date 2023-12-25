@@ -1,5 +1,5 @@
 import { Show } from 'solid-js';
-import { WordTranslation } from '../parser/simple-md-parser';
+import { WordTranslation } from '../../parser/simple-md-parser';
 
 interface ResultsProps {
   invalidWords?: WordTranslation[];
