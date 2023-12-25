@@ -1,4 +1,5 @@
 import { Component, createSignal } from 'solid-js';
+import { ConjugationsView } from './conjugations/ConjugationsView';
 import VocabularyView from './vocabulary/VocabularyView';
 
 type View = 'vocabulary' | 'conjugations';
@@ -19,7 +20,11 @@ const App: Component = () => {
         </a>
       </nav>
       <main class="m-auto grid">
-        {currentView() === 'vocabulary' ? <VocabularyView /> : null}
+        {currentView() === 'vocabulary' ? (
+          <VocabularyView />
+        ) : (
+          <ConjugationsView />
+        )}
       </main>
     </div>
   );
