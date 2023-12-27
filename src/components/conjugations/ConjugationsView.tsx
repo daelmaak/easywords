@@ -1,43 +1,34 @@
 import { Component, createSignal } from 'solid-js';
+import { fetchConjugationsByTense } from '../../api/conjugations-api';
+import { ConjugationsByTense } from '../../models/conjugation';
 import { Chips } from './Chips';
+import { ConjugationsTester } from './ConjugationsTester';
 import { VerbInput } from './VerbInput';
 
 export const ConjugationsView: Component = () => {
+  const [conjugations, setConjugations] = createSignal<ConjugationsByTense>({});
   const [selectedCategories, setSelectedCategories] = createSignal<string[]>(
     []
   );
 
+  const categories = () => Object.keys(conjugations());
+  const selectedConjugations = () =>
+    selectedCategories().map(c => ({
+      tense: c,
+      conjugations: conjugations()[c],
+    }));
+
   const applyVerb = async (verb: string) => {
-    const res = await fetch(
-      `https://daelmaak.pythonanywhere.com/api/conjugations?verb=${verb}`
-    );
-
-    const conjugations = await res.json();
-
-    const categories: string[] = [];
-
-    for (const conjugation of conjugations) {
-      const category = conjugation[1];
-
-      if (categories.includes(category)) {
-        continue;
-      }
-      categories.push(category);
-    }
-
-    setSelectedCategories(categories);
-
-    console.log(categories);
+    const conjugationsByTense = await fetchConjugationsByTense(verb);
+    setConjugations(conjugationsByTense);
   };
 
   return (
     <div>
       <VerbInput onApplyVerb={applyVerb} />
       <div class="mt-8"></div>
-      <Chips
-        chips={selectedCategories()}
-        onChipsSelected={() => {}} // TODO
-      />
+      <Chips chips={categories()} onChipsSelected={setSelectedCategories} />
+      <ConjugationsTester conjugations={selectedConjugations()} />
     </div>
   );
 };
