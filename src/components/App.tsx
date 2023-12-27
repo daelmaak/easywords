@@ -1,31 +1,21 @@
-import { Component, createSignal } from 'solid-js';
-import { ConjugationsView } from './conjugations/ConjugationsView';
-import VocabularyView from './vocabulary/VocabularyView';
+import { Component, JSX } from 'solid-js';
 
-type View = 'vocabulary' | 'conjugations';
+interface Props {
+  children?: JSX.Element;
+}
 
-const App: Component = () => {
-  const [currentView, setCurrentView] = createSignal<View>('vocabulary');
-
-  const switchView = (view: View) => () => setCurrentView(view);
-
+const App: Component<Props> = props => {
   return (
     <div class="min-h-full p-8 bg-zinc-800 flex flex-col">
       <nav class="flex gap-4">
-        <a class="cursor-pointer" onClick={switchView('vocabulary')}>
+        <a class="cursor-pointer" href="/vocabulary">
           Vocabulary
         </a>
-        <a class="cursor-pointer" onClick={switchView('conjugations')}>
+        <a class="cursor-pointer" href="/conjugations">
           Conjugations
         </a>
       </nav>
-      <main class="m-auto grid">
-        {currentView() === 'vocabulary' ? (
-          <VocabularyView />
-        ) : (
-          <ConjugationsView />
-        )}
-      </main>
+      <main class="m-auto grid">{props.children}</main>
     </div>
   );
 };
