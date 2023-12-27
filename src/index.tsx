@@ -1,8 +1,10 @@
-/* @refresh reload */
+import { HashRouter, Route } from '@solidjs/router';
 import { render } from 'solid-js/web';
 
-import './index.css';
 import App from './components/App';
+import { ConjugationsView } from './components/conjugations/ConjugationsView';
+import VocabularyView from './components/vocabulary/VocabularyView';
+import './index.css';
 
 const root = document.getElementById('root');
 
@@ -12,4 +14,13 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
-render(() => <App />, root!);
+render(
+  () => (
+    <HashRouter root={App}>
+      <Route path="/" component={VocabularyView} />
+      <Route path="/vocabulary" component={VocabularyView} />
+      <Route path="/conjugations" component={ConjugationsView} />
+    </HashRouter>
+  ),
+  root!
+);
