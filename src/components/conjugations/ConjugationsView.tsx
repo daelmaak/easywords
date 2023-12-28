@@ -24,7 +24,7 @@ export const ConjugationsView: Component = () => {
   };
 
   return (
-    <div>
+    <div class="flex flex-col items-center">
       <VerbInput onApplyVerb={applyVerb} />
       <div class="mt-8"></div>
       <Chips chips={categories()} onChipsSelected={setSelectedCategories} />
