@@ -1,26 +1,24 @@
-import { Component, For, createSignal } from 'solid-js';
+import { Component, For } from 'solid-js';
 
 interface ChipsProps {
   chips: string[];
-  onChipsSelected(chips: string[]): void;
+  selectedChips: string[];
+  onChipsSelected(selectedChips: string[]): void;
 }
 
 export const Chips: Component<ChipsProps> = props => {
-  const [selectedChips, setSelectedChips] = createSignal<string[]>([]);
-
   const chipSelections = () =>
     props.chips.map(chip => ({
       chip,
-      selected: selectedChips().includes(chip),
+      selected: props.selectedChips.includes(chip),
     }));
 
   const onChipsSelected = (chip: string, selected: boolean) => {
     if (selected) {
-      setSelectedChips(selectedChips().concat([chip]));
+      props.onChipsSelected(props.selectedChips.concat(chip));
     } else {
-      setSelectedChips(selectedChips().filter(c => c !== chip));
+      props.onChipsSelected(props.selectedChips.filter(c => c !== chip));
     }
-    props.onChipsSelected(selectedChips());
   };
 
   return (
@@ -46,7 +44,7 @@ interface ChipProps {
 
 const Chip: Component<ChipProps> = props => (
   <li
-    class="px-3 py-1 border border-solid rounded-lg border-zinc-400 text-sm text-zinc-300"
+    class="px-3 py-1 border border-solid rounded-lg border-zinc-400 text-sm text-zinc-300 cursor-pointer"
     onClick={props.onSelected}
   >
     {props.chip}
