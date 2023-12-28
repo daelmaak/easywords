@@ -1,27 +1,33 @@
 import { Component, Show, createSignal } from 'solid-js';
-import { ConjugationsByTense } from '../conjugation';
+import {
+  Conjugation,
+  groupConjugationsByMood,
+  groupConjugationsByTense,
+} from '../conjugation';
 import { fetchConjugationsByTense } from '../conjugations-api';
-import { Chips } from './Chips';
 import { ConjugationsTester } from './ConjugationsTester';
+import { TenseFilter } from './TenseFilter';
 import { VerbInput } from './VerbInput';
 
 export const ConjugationsView: Component = () => {
-  const [conjugations, setConjugations] = createSignal<ConjugationsByTense>({});
+  const [conjugations, setConjugations] = createSignal<Conjugation[]>([]);
   const [selectedCategories, setSelectedCategories] = createSignal<string[]>(
     []
   );
   const [testingDone, setTestingDone] = createSignal(false);
 
-  const categories = () => Object.keys(conjugations());
+  const conjugationsByTense = () => groupConjugationsByTense(conjugations());
+  const conjugationsByMood = () => groupConjugationsByMood(conjugations());
+
   const selectedConjugations = () =>
     selectedCategories().map(c => ({
       tense: c,
-      conjugations: conjugations()[c],
+      conjugations: conjugationsByTense()[c],
     }));
 
   const applyVerb = async (verb: string) => {
-    const conjugationsByTense = await fetchConjugationsByTense(verb);
-    setConjugations(conjugationsByTense);
+    const conjugations = await fetchConjugationsByTense(verb);
+    setConjugations(conjugations);
   };
 
   const selectCategories = (selectedCategories: string[]) => {
@@ -41,10 +47,10 @@ export const ConjugationsView: Component = () => {
     <div class="flex flex-col items-center">
       <VerbInput onApplyVerb={applyVerb} />
       <div class="mt-8"></div>
-      <Chips
-        chips={categories()}
-        selectedChips={selectedCategories()}
-        onChipsSelected={selectCategories}
+      <TenseFilter
+        conjugationsByMood={conjugationsByMood()}
+        selectedTenses={selectedCategories()}
+        onChange={selectCategories}
       />
       <div class="mt-8"></div>
       <Show when={!testingDone()}>
