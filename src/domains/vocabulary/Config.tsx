@@ -1,7 +1,7 @@
 import { get, set } from 'idb-keyval';
 import { Component, Show, createEffect, createSignal } from 'solid-js';
+import { Toggle } from '../../components/Toggle';
 import { TestMode } from './Tester';
-import { Toggle } from '../Toggle';
 
 interface ConfigProps {
   reverseTranslations: (reverse: boolean) => void;

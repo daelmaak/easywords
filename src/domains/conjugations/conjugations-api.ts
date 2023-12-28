@@ -1,4 +1,4 @@
-import { ConjugationsByTense } from '../models/conjugation';
+import { ConjugationsByTense } from './conjugation';
 
 export async function fetchConjugationsByTense(
   verb: string
