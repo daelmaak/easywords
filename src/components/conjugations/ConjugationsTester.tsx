@@ -7,48 +7,51 @@ interface Props {
   conjugations: ConjugationByTense[];
 }
 
+interface ConjugationValidations {
+  [tense: string]: { conjugation: Conjugation; valid: boolean }[];
+}
+
 export const ConjugationsTester: Component<Props> = props => {
-  const [_currentConjugation, setCurrentConjugation] =
-    createSignal<ConjugationByTense>();
-  const [invalidConjugations, setInvalidConjugations] = createStore<
-    ConjugationByTense[]
-  >([]);
+  const [currentConjugationIndex, setCurrentConjugationIndex] = createSignal(0);
+
+  const [conjugationValidations, setConjugationValidations] =
+    createStore<ConjugationValidations>({});
 
   const currentConjugation = () =>
-    _currentConjugation() ?? props.conjugations[0];
+    props.conjugations[currentConjugationIndex()];
 
   const isLastConjugation = () =>
-    currentConjugation().tense === props.conjugations.at(-1)?.tense;
+    currentConjugationIndex() === props.conjugations.length - 1;
+
+  const conjugationInvalid = (c: Conjugation) =>
+    conjugationValidations[currentConjugation().tense]?.some(
+      cc => cc.conjugation.person === c.person && cc.valid === false
+    );
 
   const onValidated = (conjugation: Conjugation, valid: boolean) => {
-    if (valid) {
-      return;
-    }
-
     const currentTense = currentConjugation().tense;
-    const invalidConjugationExists = invalidConjugations.every(
-      ic => ic.tense !== currentTense
-    );
 
-    if (invalidConjugationExists) {
-      setInvalidConjugations([
-        ...invalidConjugations,
-        { tense: currentTense, conjugations: [] },
-      ]);
+    if (!conjugationValidations[currentTense]) {
+      setConjugationValidations(currentTense, []);
     }
 
-    setInvalidConjugations(
-      invalidConjugation =>
-        invalidConjugation.tense === currentConjugation().tense,
-      'conjugations',
-      conjugations => conjugations.concat([conjugation])
+    const alreadyValidated = conjugationValidations[currentTense].some(
+      c => c.conjugation.person === conjugation.person
     );
+
+    // Only first try is taken into account. That's because I want the user to practice
+    // the conjugations he/she got wrong.
+    if (!alreadyValidated) {
+      setConjugationValidations(currentTense, cjs =>
+        cjs.concat([{ conjugation, valid }])
+      );
+    }
   };
 
   const conjugationInvalid = (c: Conjugation) =>
-    invalidConjugations
-      .find(ic => ic.tense === currentConjugation().tense)
-      ?.conjugations.some(cc => cc.conjugatedVerb === c.conjugatedVerb);
+    conjugationValidations[currentConjugation().tense]?.some(
+      cc => cc.conjugation.person === c.person && cc.valid === false
+    );
 
   return (
     <Show keyed={true} when={currentConjugation()}>
