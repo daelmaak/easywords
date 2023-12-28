@@ -7,10 +7,10 @@ import {
 } from 'solid-js';
 
 export interface WriteTesterProps {
-  peek: boolean;
+  peek?: boolean;
   translation: string;
-  onNextWord: () => void;
-  onPeek: () => void;
+  onDone?: () => void;
+  onPeek?: () => void;
   onValidated?: (valid: boolean) => void;
 }
 
@@ -62,7 +62,7 @@ export function WriteTester(props: WriteTesterProps) {
 
     // Was already validated successfully before. So we can move on to the next word.
     if (valid()) {
-      return props.onNextWord();
+      return props.onDone?.();
     }
 
     validateText();
@@ -71,9 +71,9 @@ export function WriteTester(props: WriteTesterProps) {
     // shows him the right answer and then it moves to next word on second submit.
     if (inputRef?.value === '') {
       if (props.peek) {
-        props.onNextWord();
+        props.onDone?.();
       } else {
-        props.onPeek();
+        props.onPeek?.();
       }
     }
   }
@@ -89,8 +89,8 @@ export function WriteTester(props: WriteTesterProps) {
   return (
     <form class="relative whitespace-nowrap" onSubmit={onSubmit}>
       <span
-        class="absolute left-2 top-[-2rem] text-base"
-        classList={{ invisible: !props.peek && !valid() }}
+        class="absolute left-2 bottom-[-1.5rem] text-base"
+        classList={{ invisible: !props.peek }}
       >
         {props.translation}
       </span>
