@@ -2,8 +2,8 @@ import { HashRouter, Route } from '@solidjs/router';
 import { render } from 'solid-js/web';
 
 import App from './components/App';
-import { ConjugationsView } from './components/conjugations/ConjugationsView';
-import VocabularyView from './components/vocabulary/VocabularyView';
+import { ConjugationsView } from './domains/conjugations/components/ConjugationsView';
+import { VocabularyView } from './domains/vocabulary/VocabularyView';
 import './index.css';
 
 const root = document.getElementById('root');

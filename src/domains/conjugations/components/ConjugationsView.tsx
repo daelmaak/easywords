@@ -1,6 +1,6 @@
 import { Component, Show, createSignal } from 'solid-js';
-import { fetchConjugationsByTense } from '../../api/conjugations-api';
-import { ConjugationsByTense } from '../../models/conjugation';
+import { ConjugationsByTense } from '../conjugation';
+import { fetchConjugationsByTense } from '../conjugations-api';
 import { Chips } from './Chips';
 import { ConjugationsTester } from './ConjugationsTester';
 import { VerbInput } from './VerbInput';

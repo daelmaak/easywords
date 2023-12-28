@@ -6,7 +6,7 @@ import { Results } from './Results';
 import Tester, { TestMode } from './Tester';
 import { WordsInput } from './WordsInput';
 
-const App: Component = () => {
+export const VocabularyView: Component = () => {
   const [lastWords, setLastWords] = createSignal<WordTranslation[]>();
   const [words, setWords] = createSignal<WordTranslation[]>();
   const [mode, setMode] = createSignal<TestMode>('write');
@@ -98,5 +98,3 @@ const App: Component = () => {
     </>
   );
 };
-
-export default App;
