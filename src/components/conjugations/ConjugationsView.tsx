@@ -1,4 +1,4 @@
-import { Component, createSignal } from 'solid-js';
+import { Component, Show, createSignal } from 'solid-js';
 import { fetchConjugationsByTense } from '../../api/conjugations-api';
 import { ConjugationsByTense } from '../../models/conjugation';
 import { Chips } from './Chips';
@@ -10,6 +10,7 @@ export const ConjugationsView: Component = () => {
   const [selectedCategories, setSelectedCategories] = createSignal<string[]>(
     []
   );
+  const [testingDone, setTestingDone] = createSignal(false);
 
   const categories = () => Object.keys(conjugations());
   const selectedConjugations = () =>
@@ -23,12 +24,39 @@ export const ConjugationsView: Component = () => {
     setConjugations(conjugationsByTense);
   };
 
+  const selectCategories = (selectedCategories: string[]) => {
+    setSelectedCategories(selectedCategories);
+
+    if (testingDone()) {
+      setTestingDone(false);
+    }
+  };
+
+  const onTestingDone = () => {
+    setTestingDone(true);
+    setSelectedCategories([]);
+  };
+
   return (
     <div class="flex flex-col items-center">
       <VerbInput onApplyVerb={applyVerb} />
       <div class="mt-8"></div>
-      <Chips chips={categories()} onChipsSelected={setSelectedCategories} />
-      <ConjugationsTester conjugations={selectedConjugations()} />
+      <Chips
+        chips={categories()}
+        selectedChips={selectedCategories()}
+        onChipsSelected={selectCategories}
+      />
+      <div class="mt-8"></div>
+      <Show when={!testingDone()}>
+        <ConjugationsTester
+          conjugations={selectedConjugations()}
+          onDone={onTestingDone}
+        />
+      </Show>
+      <Show when={testingDone()}>
+        Done!
+        {/* TODO: Results */}
+      </Show>
     </div>
   );
 };

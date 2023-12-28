@@ -5,6 +5,7 @@ import { WriteTester } from '../vocabulary/WriteTester';
 
 interface Props {
   conjugations: ConjugationByTense[];
+  onDone(): void;
 }
 
 interface ConjugationValidations {
@@ -13,7 +14,6 @@ interface ConjugationValidations {
 
 export const ConjugationsTester: Component<Props> = props => {
   const [currentConjugationIndex, setCurrentConjugationIndex] = createSignal(0);
-  const [done, setDone] = createSignal(false);
 
   const [conjugationValidations, setConjugationValidations] =
     createStore<ConjugationValidations>({});
@@ -51,42 +51,33 @@ export const ConjugationsTester: Component<Props> = props => {
 
   const nextOrFinish = () => {
     if (isLastConjugation()) {
-      return void setDone(true);
+      return props.onDone();
     }
     setCurrentConjugationIndex(i => i + 1);
   };
 
   return (
-    <>
-      <Show when={!done()}>
-        <Show keyed={true} when={currentConjugation()}>
-          {conjugation => (
-            <div>
-              <h2>{conjugation.tense}</h2>
-              <For each={conjugation.conjugations}>
-                {c => (
-                  <div class="mt-8 flex gap-2">
-                    <span>{c.person}</span>
-                    <WriteTester
-                      translation={c.conjugatedVerb}
-                      peek={conjugationInvalid(c)}
-                      onValidated={valid => onValidated(c, valid)}
-                    />
-                  </div>
-                )}
-              </For>
-              <button class="btn-primary" type="button" onClick={nextOrFinish}>
-                {isLastConjugation() ? 'Finish' : 'Next'}
-              </button>
-            </div>
-          )}
-        </Show>
-      </Show>
-
-      <Show when={done()}>
-        Done!
-        {/* TODO: Results */}
-      </Show>
-    </>
+    <Show keyed={true} when={currentConjugation()}>
+      {conjugation => (
+        <div>
+          <h2>{conjugation.tense}</h2>
+          <For each={conjugation.conjugations}>
+            {c => (
+              <div class="mt-8 flex gap-2">
+                <span>{c.person}</span>
+                <WriteTester
+                  translation={c.conjugatedVerb}
+                  peek={conjugationInvalid(c)}
+                  onValidated={valid => onValidated(c, valid)}
+                />
+              </div>
+            )}
+          </For>
+          <button class="btn-primary" type="button" onClick={nextOrFinish}>
+            {isLastConjugation() ? 'Finish' : 'Next'}
+          </button>
+        </div>
+      )}
+    </Show>
   );
 };
