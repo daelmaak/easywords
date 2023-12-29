@@ -1,4 +1,4 @@
-import { Conjugation } from './conjugation';
+import { Conjugation, removeMoodFromTense } from './conjugation';
 
 export async function fetchConjugationsByTense(
   verb: string
@@ -11,7 +11,7 @@ export async function fetchConjugationsByTense(
 
   return conjugations.map(c => ({
     mood: c[0],
-    tense: c[1],
+    tense: removeMoodFromTense(c[1], c[0]),
     person: c[2],
     conjugatedVerb: c[3],
   }));
