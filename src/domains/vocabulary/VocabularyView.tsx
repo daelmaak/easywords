@@ -52,7 +52,7 @@ export const VocabularyView: Component = () => {
   }
 
   return (
-    <>
+    <div class="m-auto">
       <Show when={!words() && !done()}>
         <WordsInput
           onWordsSelect={selectWords}
@@ -95,6 +95,6 @@ export const VocabularyView: Component = () => {
           Go back
         </button>
       </Show>
-    </>
+    </div>
   );
 };
