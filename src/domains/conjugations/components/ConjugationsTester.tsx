@@ -73,7 +73,11 @@ export const ConjugationsTester: Component<Props> = props => {
               </div>
             )}
           </For>
-          <button class="btn-primary" type="button" onClick={nextOrFinish}>
+          <button
+            class="btn-primary block mt-8 ml-auto"
+            type="button"
+            onClick={nextOrFinish}
+          >
             {isLastConjugation() ? 'Finish' : 'Next'}
           </button>
         </div>
