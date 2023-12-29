@@ -55,3 +55,7 @@ export function groupConjugationsByMood(
     return acc;
   }, {} as ConjugationsByMood);
 }
+
+export function removeMoodFromTense(tense: string, mood: string): string {
+  return tense.replace(mood + ' ', '');
+}
