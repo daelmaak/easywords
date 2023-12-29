@@ -8,6 +8,7 @@ import {
 
 export interface WriteTesterProps {
   peek?: boolean;
+  strict?: boolean;
   translation: string;
   onDone?: () => void;
   onPeek?: () => void;
@@ -50,7 +51,9 @@ export function WriteTester(props: WriteTesterProps) {
     const tokenizedText = tokenize(text);
     const valid = tokenizedText.every(t =>
       // TODO: when the accents don't match, I should produce a warning
-      tokenizedTranslation().some(tt => deaccent(tt) === deaccent(t))
+      tokenizedTranslation().some(tt =>
+        props.strict ? tt === t : deaccent(tt) === deaccent(t)
+      )
     );
     setValid(valid);
 

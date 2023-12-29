@@ -68,6 +68,7 @@ export const ConjugationsTester: Component<Props> = props => {
                 <WriteTester
                   translation={c.conjugatedVerb}
                   peek={conjugationInvalid(c)}
+                  strict={true}
                   onValidated={valid => onValidated(c, valid)}
                 />
               </div>
