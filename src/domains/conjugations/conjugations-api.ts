@@ -10,7 +10,7 @@ export async function fetchConjugationsByTense(
   const conjugations = (await res.json()) as [string, string, string, string][];
 
   return conjugations
-    .filter(([, , , verb]) => verb)
+    .filter(([, , person, verb]) => verb && person !== 'vós') // 2p plural is not used in Portuguese
     .map(c => ({
       mood: c[0],
       tense: removeMoodFromTense(c[1], c[0]),
