@@ -9,10 +9,12 @@ export async function fetchConjugationsByTense(
 
   const conjugations = (await res.json()) as [string, string, string, string][];
 
-  return conjugations.map(c => ({
-    mood: c[0],
-    tense: removeMoodFromTense(c[1], c[0]),
-    person: c[2],
-    conjugatedVerb: c[3],
-  }));
+  return conjugations
+    .filter(([, , , verb]) => verb)
+    .map(c => ({
+      mood: c[0],
+      tense: removeMoodFromTense(c[1], c[0]),
+      person: c[2],
+      conjugatedVerb: c[3],
+    }));
 }
