@@ -1,6 +1,7 @@
-import { Component, For } from 'solid-js';
+import { Component, For, createSignal } from 'solid-js';
 import { Checkbox } from '../../../components/Checkbox';
 import { ConjugationsByMood } from '../conjugation';
+import { Chips } from './Chips';
 
 interface Props {
   conjugationsByMood: ConjugationsByMood;
@@ -9,6 +10,10 @@ interface Props {
 }
 
 export const TenseFilter: Component<Props> = props => {
+  const [selectedMoods, setSelectedMoods] = createSignal<string[]>([]);
+
+  const moods = () => Object.keys(props.conjugationsByMood);
+
   const onSelected = (tense: string, checked: boolean) => {
     if (checked) {
       props.onChange(props.selectedTenses.concat(tense));
@@ -18,12 +23,18 @@ export const TenseFilter: Component<Props> = props => {
   };
 
   return (
-    <div>
-      <For each={Object.entries(props.conjugationsByMood)}>
-        {([mood, conjugationsByTense]) => (
+    <div class="flex flex-col items-center">
+      <Chips
+        chips={moods()}
+        selectedChips={selectedMoods()}
+        onChipsSelected={setSelectedMoods}
+      />
+      <div class="mt-4"></div>
+      <For each={selectedMoods()}>
+        {mood => (
           <div>
             <div class="text-lg">{mood}</div>
-            <For each={conjugationsByTense}>
+            <For each={props.conjugationsByMood[mood]}>
               {({ tense }) => (
                 <Checkbox
                   id={tense}
