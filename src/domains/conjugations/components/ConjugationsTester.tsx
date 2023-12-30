@@ -14,7 +14,6 @@ interface ConjugationValidations {
 
 export const ConjugationsTester: Component<Props> = props => {
   const [currentConjugationIndex, setCurrentConjugationIndex] = createSignal(0);
-
   const [conjugationValidations, setConjugationValidations] =
     createStore<ConjugationValidations>({});
 
@@ -28,6 +27,10 @@ export const ConjugationsTester: Component<Props> = props => {
     conjugationValidations[currentConjugation().tense]?.some(
       cc => cc.conjugation.person === c.person && cc.valid === false
     );
+
+  const onFirstWriteTesterRendered = (ref: HTMLInputElement) => {
+    ref.focus();
+  };
 
   const onValidated = (conjugation: Conjugation, valid: boolean) => {
     const currentTense = currentConjugation().tense;
@@ -63,7 +66,7 @@ export const ConjugationsTester: Component<Props> = props => {
           <h2>{conjugation.tense}</h2>
           <table>
             <For each={conjugation.conjugations}>
-              {c => (
+              {(c, i) => (
                 <tr class="mt-8 flex gap-2">
                   <th class="w-12 text-right font-normal">
                     <span class="align-sub">{c.person}</span>
@@ -72,6 +75,9 @@ export const ConjugationsTester: Component<Props> = props => {
                     <WriteTester
                       translation={c.conjugatedVerb}
                       peek={conjugationInvalid(c)}
+                      onReady={
+                        i() === 0 ? onFirstWriteTesterRendered : undefined
+                      }
                       strict={true}
                       validateOnBlur={true}
                       onValidated={valid => onValidated(c, valid)}

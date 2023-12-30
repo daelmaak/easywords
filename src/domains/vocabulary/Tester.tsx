@@ -140,6 +140,7 @@ const Tester = (props: TesterProps) => {
               translation={translated()!}
               onDone={setNextWord}
               onPeek={() => setPeek(true)}
+              onReady={el => el.focus()}
               onValidated={onWordValidated}
             />
           </Show>

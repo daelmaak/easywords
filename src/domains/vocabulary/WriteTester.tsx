@@ -1,4 +1,5 @@
 import {
+  Component,
   Show,
   createEffect,
   createMemo,
@@ -13,16 +14,13 @@ export interface WriteTesterProps {
   validateOnBlur?: boolean;
   onDone?: () => void;
   onPeek?: () => void;
+  onReady?: (input: HTMLInputElement) => void;
   onValidated?: (valid: boolean) => void;
 }
 
-export function WriteTester(props: WriteTesterProps) {
+export const WriteTester: Component<WriteTesterProps> = props => {
   let inputRef: HTMLInputElement | undefined;
   const [valid, setValid] = createSignal<boolean | undefined>();
-
-  onMount(() => {
-    inputRef?.focus();
-  });
 
   // NOTE: executes always when props.translation changes
   createEffect(() => {
@@ -36,6 +34,12 @@ export function WriteTester(props: WriteTesterProps) {
   createEffect(() => {
     if (props.peek && valid() == null) {
       validateText();
+    }
+  });
+
+  onMount(() => {
+    if (props.onReady && inputRef) {
+      props.onReady(inputRef);
     }
   });
 
@@ -119,4 +123,4 @@ export function WriteTester(props: WriteTesterProps) {
       </span>
     </form>
   );
-}
+};
