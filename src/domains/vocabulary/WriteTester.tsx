@@ -110,13 +110,13 @@ export function WriteTester(props: WriteTesterProps) {
       >
         {props.translation}
       </span>
-      <input ref={inputRef} class="input w-60" type="text" onBlur={onBlur} />
+      <input ref={inputRef} class="input w-56" type="text" onBlur={onBlur} />
       <button class="invisible" />
-      <Show when={valid() != null}>
-        <span class="ml-2">
+      <span class="inline-block ml-2 w-6">
+        <Show when={valid() != null}>
           {valid() ? <i class="text-green-600">✓</i> : <i>❌</i>}
-        </span>
-      </Show>
+        </Show>
+      </span>
     </form>
   );
 }

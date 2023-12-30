@@ -61,22 +61,29 @@ export const ConjugationsTester: Component<Props> = props => {
       {conjugation => (
         <div>
           <h2>{conjugation.tense}</h2>
-          <For each={conjugation.conjugations}>
-            {c => (
-              <div class="mt-8 flex gap-2">
-                <span>{c.person}</span>
-                <WriteTester
-                  translation={c.conjugatedVerb}
-                  peek={conjugationInvalid(c)}
-                  strict={true}
-                  validateOnBlur={true}
-                  onValidated={valid => onValidated(c, valid)}
-                />
-              </div>
-            )}
-          </For>
+          <table>
+            <For each={conjugation.conjugations}>
+              {c => (
+                <tr class="mt-8 flex gap-2">
+                  <th class="w-12 text-right font-normal">
+                    <span class="align-sub">{c.person}</span>
+                  </th>
+                  <td>
+                    <WriteTester
+                      translation={c.conjugatedVerb}
+                      peek={conjugationInvalid(c)}
+                      strict={true}
+                      validateOnBlur={true}
+                      onValidated={valid => onValidated(c, valid)}
+                    />
+                  </td>
+                </tr>
+              )}
+            </For>
+          </table>
+
           <button
-            class="btn-primary block mt-8 ml-auto"
+            class="btn-primary block mt-8 mr-8 ml-auto"
             type="button"
             onClick={nextOrFinish}
           >
