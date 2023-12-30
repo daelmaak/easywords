@@ -10,6 +10,7 @@ export interface WriteTesterProps {
   peek?: boolean;
   strict?: boolean;
   translation: string;
+  validateOnBlur?: boolean;
   onDone?: () => void;
   onPeek?: () => void;
   onValidated?: (valid: boolean) => void;
@@ -40,12 +41,12 @@ export function WriteTester(props: WriteTesterProps) {
 
   const tokenizedTranslation = createMemo(() => tokenize(props.translation));
 
-  function validateText() {
+  function validateText(): boolean {
     const text = inputRef?.value;
 
     if (!text) {
       props.onValidated?.(false);
-      return;
+      return false;
     }
 
     const tokenizedText = tokenize(text);
@@ -58,6 +59,18 @@ export function WriteTester(props: WriteTesterProps) {
     setValid(valid);
 
     props.onValidated?.(valid);
+
+    return valid;
+  }
+
+  function onBlur() {
+    if (!props.validateOnBlur || inputRef?.value === '') {
+      return;
+    }
+    // Call onDone only once
+    if (!valid() && validateText()) {
+      props.onDone?.();
+    }
   }
 
   function onSubmit(e: Event) {
@@ -97,7 +110,7 @@ export function WriteTester(props: WriteTesterProps) {
       >
         {props.translation}
       </span>
-      <input ref={inputRef} class="input w-60" type="text" />
+      <input ref={inputRef} class="input w-60" type="text" onBlur={onBlur} />
       <button class="invisible" />
       <Show when={valid() != null}>
         <span class="ml-2">
