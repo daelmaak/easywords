@@ -11,10 +11,16 @@ export async function fetchConjugationsByTense(
 
   return conjugations
     .filter(([, , person, verb]) => verb && person !== 'vós') // 2p plural is not used in Portuguese
-    .map(c => ({
-      mood: c[0],
-      tense: removeMoodFromTense(c[1], c[0]),
-      person: c[2],
-      conjugatedVerb: c[3],
-    }));
+    .map(c => {
+      return {
+        mood: c[0],
+        tense: capitalizeFirstLetter(removeMoodFromTense(c[1], c[0])),
+        person: c[2],
+        conjugatedVerb: c[3],
+      };
+    });
+}
+
+function capitalizeFirstLetter(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }
