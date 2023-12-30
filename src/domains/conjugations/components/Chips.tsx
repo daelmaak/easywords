@@ -44,8 +44,11 @@ interface ChipProps {
 
 const Chip: Component<ChipProps> = props => (
   <li
-    class="px-3 py-1 bg-zinc-700 rounded-lg text-sm text-zinc-300 cursor-pointer"
-    classList={{ 'font-semibold text-zinc-900 bg-violet-500': props.selected }}
+    class="px-3 py-1 rounded-lg text-sm cursor-pointer"
+    classList={{
+      'bg-zinc-700 text-zinc-300': !props.selected,
+      'font-semibold text-zinc-900 bg-violet-500': props.selected,
+    }}
     onClick={props.onSelected}
   >
     {props.chip}
