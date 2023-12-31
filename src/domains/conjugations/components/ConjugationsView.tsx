@@ -49,6 +49,7 @@ export const ConjugationsView: Component = () => {
       <div class="mt-8"></div>
       <TenseFilter
         conjugationsByMood={conjugationsByMood()}
+        lang={'pt'}
         selectedTenses={selectedCategories()}
         onChange={selectCategories}
       />
