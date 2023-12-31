@@ -1,10 +1,12 @@
+import { Lang } from '../../model/lang';
 import { Conjugation, removeMoodFromTense } from './conjugation';
 
 export async function fetchConjugationsByTense(
-  verb: string
+  verb: string,
+  lang: Lang
 ): Promise<Conjugation[]> {
   const res = await fetch(
-    `https://daelmaak.pythonanywhere.com/api/conjugations?verb=${verb}`
+    `https://daelmaak.pythonanywhere.com/api/conjugations/${verb}?lang=${lang}`
   );
 
   const conjugations = (await res.json()) as [string, string, string, string][];

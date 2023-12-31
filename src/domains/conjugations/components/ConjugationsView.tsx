@@ -1,4 +1,5 @@
-import { Component, Show, createSignal } from 'solid-js';
+import { Component, Show, createSignal, useContext } from 'solid-js';
+import { LangContext } from '../../../components/language-context';
 import {
   Conjugation,
   groupConjugationsByMood,
@@ -10,6 +11,7 @@ import { TenseFilter } from './TenseFilter';
 import { VerbInput } from './VerbInput';
 
 export const ConjugationsView: Component = () => {
+  const lang = useContext(LangContext);
   const [conjugations, setConjugations] = createSignal<Conjugation[]>([]);
   const [selectedCategories, setSelectedCategories] = createSignal<string[]>(
     []
@@ -26,7 +28,7 @@ export const ConjugationsView: Component = () => {
     }));
 
   const applyVerb = async (verb: string) => {
-    const conjugations = await fetchConjugationsByTense(verb);
+    const conjugations = await fetchConjugationsByTense(verb, lang());
     setConjugations(conjugations);
   };
 
@@ -49,7 +51,7 @@ export const ConjugationsView: Component = () => {
       <div class="mt-8"></div>
       <TenseFilter
         conjugationsByMood={conjugationsByMood()}
-        lang={'pt'}
+        lang={lang()}
         selectedTenses={selectedCategories()}
         onChange={selectCategories}
       />
