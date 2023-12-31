@@ -63,7 +63,7 @@ export const ConjugationsTester: Component<Props> = props => {
     <Show keyed={true} when={currentConjugation()}>
       {conjugation => (
         <div>
-          <h2>{conjugation.tense}</h2>
+          <h2 class="text-lg">{conjugation.tense}</h2>
           <table>
             <For each={conjugation.conjugations}>
               {(c, i) => (
