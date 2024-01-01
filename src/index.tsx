@@ -19,7 +19,10 @@ render(
     <HashRouter root={App}>
       <Route path="/" component={VocabularyView} />
       <Route path="/vocabulary" component={VocabularyView} />
-      <Route path="/conjugations" component={ConjugationsView} />
+      <Route
+        path={['/conjugations', '/conjugations/:verb']}
+        component={ConjugationsView}
+      />
     </HashRouter>
   ),
   root!

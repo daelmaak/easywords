@@ -2,6 +2,7 @@ import { Component } from 'solid-js';
 
 interface Props {
   onApplyVerb(verb: string): void;
+  ref?: HTMLInputElement;
 }
 
 export const VerbInput: Component<Props> = props => {
@@ -17,7 +18,7 @@ export const VerbInput: Component<Props> = props => {
 
   return (
     <form onSubmit={applyVerb}>
-      <input name="verb" class="input" />
+      <input name="verb" class="input" ref={props.ref} />
       <button class="ml-2 btn-primary">Run</button>
     </form>
   );
