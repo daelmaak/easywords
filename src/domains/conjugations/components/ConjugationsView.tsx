@@ -1,5 +1,7 @@
-import { Component, Show, createSignal, useContext } from 'solid-js';
+import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
+import { Component, Show, createSignal, onMount, useContext } from 'solid-js';
 import { LangContext } from '../../../components/language-context';
+import { navigateTo } from '../../../util/routing';
 import {
   Conjugation,
   groupConjugationsByMood,
@@ -11,6 +13,11 @@ import { TenseFilter } from './TenseFilter';
 import { VerbInput } from './VerbInput';
 
 export const ConjugationsView: Component = () => {
+  const params = useParams();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  let verbInputEl: HTMLInputElement | undefined;
+
   const lang = useContext(LangContext);
   const [conjugations, setConjugations] = createSignal<Conjugation[]>([]);
   const [selectedCategories, setSelectedCategories] = createSignal<string[]>(
@@ -27,7 +34,20 @@ export const ConjugationsView: Component = () => {
       conjugations: conjugationsByTense()[c],
     }));
 
-  const applyVerb = async (verb: string) => {
+  onMount(() => {
+    const verb = params.verb;
+
+    if (verb) {
+      applyVerb(verb, false);
+      verbInputEl!.value = verb;
+    }
+  });
+
+  const applyVerb = async (verb: string, follow = true) => {
+    if (follow) {
+      navigateTo(`/conjugations/${verb}`, { navigate, searchParams });
+    }
+
     const conjugations = await fetchConjugationsByTense(verb, lang());
     setConjugations(conjugations);
   };
@@ -47,7 +67,7 @@ export const ConjugationsView: Component = () => {
 
   return (
     <div class="flex flex-col items-center">
-      <VerbInput onApplyVerb={applyVerb} />
+      <VerbInput onApplyVerb={applyVerb} ref={verbInputEl} />
       <div class="mt-8"></div>
       <TenseFilter
         conjugationsByMood={conjugationsByMood()}
