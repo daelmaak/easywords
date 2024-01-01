@@ -1,4 +1,5 @@
-import { Component, For, JSX, createSignal } from 'solid-js';
+import { useSearchParams } from '@solidjs/router';
+import { Component, For, JSX } from 'solid-js';
 import { Lang, langs } from '../model/lang';
 import { LangContext } from './language-context';
 
@@ -7,11 +8,16 @@ interface Props {
 }
 
 const App: Component<Props> = props => {
-  // TODO: apply previously selected language
-  const [lang, setLang] = createSignal<Lang>('pt');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const currentLang = () => (searchParams.lang as Lang) ?? 'pt';
+
+  const changeLang = (value: string) => {
+    setSearchParams({ lang: value as Lang });
+  };
 
   return (
-    <LangContext.Provider value={lang}>
+    <LangContext.Provider value={currentLang}>
       <div class="min-h-full p-8 bg-zinc-800 flex flex-col">
         <nav class="flex gap-4">
           <a class="cursor-pointer" href="/vocabulary">
@@ -22,7 +28,8 @@ const App: Component<Props> = props => {
           </a>
           <select
             class="select ml-auto"
-            onChange={e => setLang(e.currentTarget.value as Lang)}
+            onChange={e => changeLang(e.currentTarget.value)}
+            value={currentLang()}
           >
             <For each={langs}>
               {lang => <option value={lang}>{lang}</option>}
