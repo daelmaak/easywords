@@ -1,7 +1,8 @@
 import { Component, For, createSignal } from 'solid-js';
 import { Checkbox } from '../../../components/Checkbox';
 import { Lang } from '../../../model/lang';
-import { ConjugationsByMood } from '../conjugation';
+import { capitalizeFirstLetter } from '../../../util/string';
+import { ConjugationsByMood, removeMoodFromTense } from '../conjugation';
 import { sortTenses } from '../tenses-priority';
 import { Chips } from './Chips';
 
@@ -45,7 +46,9 @@ export const TenseFilter: Component<Props> = props => {
               {tense => (
                 <Checkbox
                   id={tense}
-                  label={tense}
+                  label={capitalizeFirstLetter(
+                    removeMoodFromTense(tense, mood)
+                  )}
                   onChange={checked => onSelected(tense, checked)}
                 />
               )}
