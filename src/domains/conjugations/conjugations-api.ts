@@ -16,13 +16,9 @@ export async function fetchConjugationsByTense(
     .map(c => {
       return {
         mood: c[0],
-        tense: capitalizeFirstLetter(removeMoodFromTense(c[1], c[0])),
+        tense: c[1],
         person: c[2],
         conjugatedVerb: c[3],
       };
     });
-}
-
-function capitalizeFirstLetter(string: string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
 }

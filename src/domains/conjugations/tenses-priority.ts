@@ -9,9 +9,9 @@ type PreferredTenses = {
 const preferredTenses: PreferredTenses = {
   pt: {
     Indicativo: [
-      'presente',
-      'pretérito imperfeito',
-      'pretérito perfeito simples',
+      'indicativo presente',
+      'indicativo pretérito imperfeito',
+      'indicativo pretérito perfeito simples',
     ],
   },
   es: {},
