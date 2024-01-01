@@ -64,32 +64,34 @@ export const ConjugationsTester: Component<Props> = props => {
       {conjugation => (
         <div>
           <h2 class="text-lg">{conjugation.tense}</h2>
-          <table>
-            <For each={conjugation.conjugations}>
-              {(c, i) => (
-                <tr class="mt-8 flex gap-2">
-                  <th class="w-12 text-right font-normal">
-                    <span class="align-sub">{c.person}</span>
-                  </th>
-                  <td>
-                    <WriteTester
-                      translation={c.conjugatedVerb}
-                      peek={conjugationInvalid(c)}
-                      onReady={
-                        i() === 0 ? onFirstWriteTesterRendered : undefined
-                      }
-                      strict={true}
-                      validateOnBlur={true}
-                      onValidated={valid => onValidated(c, valid)}
-                    />
-                  </td>
-                </tr>
-              )}
-            </For>
+          <table class="border-separate border-spacing-y-8">
+            <tbody>
+              <For each={conjugation.conjugations}>
+                {(c, i) => (
+                  <tr>
+                    <th class="text-right font-normal">
+                      <span class="mr-2">{c.person}</span>
+                    </th>
+                    <td>
+                      <WriteTester
+                        translation={c.conjugatedVerb}
+                        peek={conjugationInvalid(c)}
+                        onReady={
+                          i() === 0 ? onFirstWriteTesterRendered : undefined
+                        }
+                        strict={true}
+                        validateOnBlur={true}
+                        onValidated={valid => onValidated(c, valid)}
+                      />
+                    </td>
+                  </tr>
+                )}
+              </For>
+            </tbody>
           </table>
 
           <button
-            class="btn-primary block mt-8 mr-8 ml-auto"
+            class="btn-primary block mr-8 ml-auto"
             type="button"
             onClick={nextOrFinish}
           >
