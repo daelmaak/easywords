@@ -9,7 +9,7 @@ interface Props {
 }
 
 interface ConjugationValidations {
-  [tense: string]: { conjugation: Conjugation; valid: boolean }[];
+  [tense: string]: { conjugation: Conjugation; valid: boolean }[] | undefined;
 }
 
 export const ConjugationsTester: Component<Props> = props => {
@@ -18,13 +18,13 @@ export const ConjugationsTester: Component<Props> = props => {
     createStore<ConjugationValidations>({});
 
   const currentConjugation = () =>
-    props.conjugations[currentConjugationIndex()];
+    props.conjugations.at(currentConjugationIndex());
 
   const isLastConjugation = () =>
     currentConjugationIndex() === props.conjugations.length - 1;
 
   const conjugationInvalid = (c: Conjugation) =>
-    conjugationValidations[currentConjugation().tense]?.some(
+    conjugationValidations[c.tense]?.some(
       cc => cc.conjugation.person === c.person && cc.valid === false
     );
 
@@ -33,13 +33,13 @@ export const ConjugationsTester: Component<Props> = props => {
   };
 
   const onValidated = (conjugation: Conjugation, valid: boolean) => {
-    const currentTense = currentConjugation().tense;
+    const currentTense = conjugation.tense;
 
     if (!conjugationValidations[currentTense]) {
       setConjugationValidations(currentTense, []);
     }
 
-    const alreadyValidated = conjugationValidations[currentTense].some(
+    const alreadyValidated = conjugationValidations[currentTense]?.some(
       c => c.conjugation.person === conjugation.person
     );
 
@@ -47,7 +47,7 @@ export const ConjugationsTester: Component<Props> = props => {
     // the conjugations he/she got wrong.
     if (!alreadyValidated) {
       setConjugationValidations(currentTense, cjs =>
-        cjs.concat([{ conjugation, valid }])
+        cjs!.concat([{ conjugation, valid }])
       );
     }
   };
@@ -60,13 +60,13 @@ export const ConjugationsTester: Component<Props> = props => {
   };
 
   return (
-    <Show keyed={true} when={currentConjugation()}>
+    <Show when={currentConjugation()}>
       {conjugation => (
         <div>
-          <h2 class="text-lg">{conjugation.tense}</h2>
+          <h2 class="text-lg">{conjugation().tense}</h2>
           <table class="border-separate border-spacing-y-8">
             <tbody>
-              <For each={conjugation.conjugations}>
+              <For each={conjugation().conjugations}>
                 {(c, i) => (
                   <tr>
                     <th class="text-right font-normal">
