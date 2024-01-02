@@ -126,7 +126,7 @@ export const VocabularyTester = (props: TesterProps) => {
         class="mb-8 grid grid-cols-[1fr_2rem_1fr] items-center text-2xl"
         classList={{ invisible: !currentWord() }}
       >
-        <span class="whitespace-nowrap text-right">
+        <span class="text-right">
           <button class="text-md mr-2 btn-link" onClick={togglePeek}>
             👁
           </button>
@@ -145,10 +145,7 @@ export const VocabularyTester = (props: TesterProps) => {
             />
           </Show>
         ) : (
-          <span
-            class="whitespace-nowrap text-left"
-            classList={{ invisible: !peek() }}
-          >
+          <span class="text-left" classList={{ invisible: !peek() }}>
             {translated()}
           </span>
         )}
