@@ -1,21 +1,21 @@
 import { get, set } from 'idb-keyval';
 import { Component, Show, createEffect, createSignal } from 'solid-js';
 import { Toggle } from '../../components/Toggle';
-import { TestMode } from './Tester';
+import { VocabularyTestMode } from './Tester';
 
 interface ConfigProps {
   reverseTranslations: (reverse: boolean) => void;
-  modeChange: (mode: TestMode) => void;
+  modeChange: (mode: VocabularyTestMode) => void;
 }
 
 export const Config: Component<ConfigProps> = props => {
   const [loaded, setLoaded] = createSignal(false);
 
-  let storedMode: TestMode | undefined;
+  let storedMode: VocabularyTestMode | undefined;
   let storedReverseTranslations: boolean | undefined;
 
   createEffect(async () => {
-    storedMode = (await get<TestMode>('config.mode')) ?? 'write';
+    storedMode = (await get<VocabularyTestMode>('config.mode')) ?? 'write';
     storedReverseTranslations =
       (await get<boolean>('config.reverseTranslations')) ?? false;
 
@@ -25,7 +25,7 @@ export const Config: Component<ConfigProps> = props => {
     setLoaded(true);
   });
 
-  async function changeMode(mode: TestMode) {
+  async function changeMode(mode: VocabularyTestMode) {
     props.modeChange(mode);
     await set('config.mode', mode);
   }
