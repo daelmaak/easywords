@@ -1,6 +1,7 @@
 import { useSearchParams } from '@solidjs/router';
 import { Component, For, JSX } from 'solid-js';
 import { Lang, langs } from '../model/lang';
+import { A } from './A';
 import { LangContext } from './language-context';
 
 interface Props {
@@ -20,12 +21,8 @@ const App: Component<Props> = props => {
     <LangContext.Provider value={currentLang}>
       <div class="min-h-full p-8 bg-zinc-800 flex flex-col">
         <nav class="flex gap-4">
-          <a class="cursor-pointer" href="/vocabulary">
-            Vocabulary
-          </a>
-          <a class="cursor-pointer" href="/conjugations">
-            Conjugations
-          </a>
+          <A href="/vocabulary">Vocabulary</A>
+          <A href="/conjugations">Conjugations</A>
           <select
             class="select ml-auto"
             onChange={e => changeLang(e.currentTarget.value)}
