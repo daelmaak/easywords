@@ -3,13 +3,13 @@ import { Show, createEffect, createSignal, type Component } from 'solid-js';
 import { WordTranslation } from '../../parser/simple-md-parser';
 import { Config } from './Config';
 import { Results } from './Results';
-import Tester, { TestMode } from './Tester';
+import { VocabularyTestMode, VocabularyTester } from './Tester';
 import { WordsInput } from './WordsInput';
 
 export const VocabularyView: Component = () => {
   const [lastWords, setLastWords] = createSignal<WordTranslation[]>();
   const [words, setWords] = createSignal<WordTranslation[]>();
-  const [mode, setMode] = createSignal<TestMode>('write');
+  const [mode, setMode] = createSignal<VocabularyTestMode>('write');
   const [reverse, setReverse] = createSignal(false);
   const [invalidWords, setInvalidWords] = createSignal<WordTranslation[]>();
   const [done, setDone] = createSignal(false);
@@ -64,7 +64,7 @@ export const VocabularyView: Component = () => {
       <Show when={!done()}>
         <Show keyed={true} when={words()}>
           {w => (
-            <Tester
+            <VocabularyTester
               mode={mode()}
               reverse={reverse()}
               words={w}

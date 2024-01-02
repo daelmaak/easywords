@@ -5,18 +5,18 @@ import { mergeWords } from '../../util/merge-arrays';
 import { nextWord } from '../../worder/worder';
 import { WriteTester } from './WriteTester';
 
-export type TestMode = 'guess' | 'write';
+export type VocabularyTestMode = 'guess' | 'write';
 
 interface TesterProps {
   reverse: boolean;
   words: WordTranslation[];
-  mode: TestMode;
+  mode: VocabularyTestMode;
   done: (leftoverWords?: WordTranslation[]) => void;
   repeat: () => void;
   reset: () => void;
 }
 
-const Tester = (props: TesterProps) => {
+export const VocabularyTester = (props: TesterProps) => {
   const [wordsLeft, setWordsLeft] = createSignal<WordTranslation[]>(
     props.words
   );
@@ -172,5 +172,3 @@ const Tester = (props: TesterProps) => {
     </div>
   );
 };
-
-export default Tester;
