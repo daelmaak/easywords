@@ -86,7 +86,7 @@ export function WordsInput(props: WordsInputProps) {
   };
 
   return (
-    <div>
+    <>
       <Show when={props.storedWords} keyed={true}>
         {lws => (
           <button
@@ -103,12 +103,12 @@ export function WordsInput(props: WordsInputProps) {
       </Show>
       <p class="text-center my-4 text-zinc-400">/</p>
       <form
-        class="p-2 bg-zinc-700 rounded-md min-w-[20rem]"
+        class="p-2 bg-zinc-700 rounded-md"
         onKeyDown={onKeyDownInCPForm}
         onSubmit={onCPFormSubmit}
       >
         <textarea
-          class="peer input no-scrollbar block min-w-full [&:not(&:placeholder-shown)]:min-h-[10rem] text-sm whitespace-pre"
+          class="peer input no-scrollbar block min-w-full [&:not(&:placeholder-shown)]:min-h-[10rem] text-sm  whitespace-pre"
           name="copypastesource"
           placeholder="Or paste words here"
           rows="1"
@@ -142,6 +142,6 @@ export function WordsInput(props: WordsInputProps) {
           </button>
         </div>
       </Show>
-    </div>
+    </>
   );
 }

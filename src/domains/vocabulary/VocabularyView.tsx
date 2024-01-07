@@ -10,6 +10,7 @@ export const VocabularyView: Component = () => {
   const [lastWords, setLastWords] = createSignal<WordTranslation[]>();
   const [words, setWords] = createSignal<WordTranslation[]>();
   const [mode, setMode] = createSignal<VocabularyTestMode>('write');
+  const [repeatInvalid, setRepeatInvalid] = createSignal(false);
   const [reverse, setReverse] = createSignal(false);
   const [invalidWords, setInvalidWords] = createSignal<WordTranslation[]>();
   const [done, setDone] = createSignal(false);
@@ -54,11 +55,13 @@ export const VocabularyView: Component = () => {
   return (
     <div class="m-auto">
       <Show when={!words() && !done()}>
-        <WordsInput
-          onWordsSelect={selectWords}
-          reverse={reverse()}
-          storedWords={lastWords()}
-        />
+        <div class="mx-auto max-w-[25rem]">
+          <WordsInput
+            onWordsSelect={selectWords}
+            reverse={reverse()}
+            storedWords={lastWords()}
+          />
+        </div>
       </Show>
 
       <Show when={!done()}>
@@ -66,6 +69,7 @@ export const VocabularyView: Component = () => {
           {w => (
             <VocabularyTester
               mode={mode()}
+              repeatInvalid={repeatInvalid()}
               reverse={reverse()}
               words={w}
               done={onDone}
@@ -85,7 +89,11 @@ export const VocabularyView: Component = () => {
         />
       </Show>
 
-      <Config modeChange={setMode} reverseTranslations={setReverse} />
+      <Config
+        modeChange={setMode}
+        onRepeatInvalid={setRepeatInvalid}
+        reverseTranslations={setReverse}
+      />
 
       <Show when={words()}>
         <button

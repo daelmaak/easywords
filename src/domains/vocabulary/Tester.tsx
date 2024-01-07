@@ -8,6 +8,7 @@ import { WriteTester } from './WriteTester';
 export type VocabularyTestMode = 'guess' | 'write';
 
 interface TesterProps {
+  repeatInvalid: boolean;
   reverse: boolean;
   words: WordTranslation[];
   mode: VocabularyTestMode;
@@ -56,7 +57,7 @@ export const VocabularyTester = (props: TesterProps) => {
     if (current) {
       wsLeft = wsLeft.filter(w => w.original !== current.original);
 
-      if (currentWordValid) {
+      if (currentWordValid || !props.repeatInvalid) {
         setWordsLeft(wsLeft);
       }
       currentWordValid = undefined;
