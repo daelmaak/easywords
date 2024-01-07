@@ -1,17 +1,24 @@
 import { get, set } from 'idb-keyval';
 import { Show, createEffect, createSignal, type Component } from 'solid-js';
+import { createStore } from 'solid-js/store';
 import { WordTranslation } from '../../parser/simple-md-parser';
 import { Results } from './Results';
-import { VocabularyTestMode, VocabularyTester } from './Tester';
-import { VocabularySettings } from './VocabularySettings';
+import { VocabularyTester } from './Tester';
+import {
+  VocabularySettings,
+  VocabularyUserSettings,
+} from './VocabularySettings';
 import { WordsInput } from './WordsInput';
 
 export const VocabularyView: Component = () => {
+  const [vocabularySettings, setVocabularySettings] =
+    createStore<VocabularyUserSettings>({
+      mode: 'write',
+      reverseTranslations: false,
+      repeatInvalid: false,
+    });
   const [lastWords, setLastWords] = createSignal<WordTranslation[]>();
   const [words, setWords] = createSignal<WordTranslation[]>();
-  const [mode, setMode] = createSignal<VocabularyTestMode>('write');
-  const [repeatInvalid, setRepeatInvalid] = createSignal(false);
-  const [reverse, setReverse] = createSignal(false);
   const [invalidWords, setInvalidWords] = createSignal<WordTranslation[]>();
   const [done, setDone] = createSignal(false);
 
@@ -58,7 +65,7 @@ export const VocabularyView: Component = () => {
         <div class="mx-auto max-w-[25rem]">
           <WordsInput
             onWordsSelect={selectWords}
-            reverse={reverse()}
+            reverse={vocabularySettings.reverseTranslations}
             storedWords={lastWords()}
           />
         </div>
@@ -68,9 +75,9 @@ export const VocabularyView: Component = () => {
         <Show keyed={true} when={words()}>
           {w => (
             <VocabularyTester
-              mode={mode()}
-              repeatInvalid={repeatInvalid()}
-              reverse={reverse()}
+              mode={vocabularySettings.mode}
+              repeatInvalid={vocabularySettings.repeatInvalid}
+              reverse={vocabularySettings.reverseTranslations}
               words={w}
               done={onDone}
               repeat={onRepeat}
@@ -90,9 +97,8 @@ export const VocabularyView: Component = () => {
       </Show>
 
       <VocabularySettings
-        modeChange={setMode}
-        onRepeatInvalid={setRepeatInvalid}
-        reverseTranslations={setReverse}
+        settings={vocabularySettings}
+        onChange={setVocabularySettings}
       />
 
       <Show when={words()}>

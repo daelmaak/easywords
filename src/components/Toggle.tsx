@@ -1,20 +1,13 @@
-import { onMount } from 'solid-js';
 import type { JSX } from 'solid-js/jsx-runtime';
 
 export interface ToggleProps {
-  defaultValue?: boolean;
+  checked?: boolean;
   label?: string | JSX.Element;
   onChange: (checked: boolean) => void;
 }
 
 export function Toggle(props: ToggleProps) {
   let checkboxRef: HTMLInputElement | undefined;
-
-  onMount(() => {
-    if (checkboxRef && props.defaultValue) {
-      checkboxRef.checked = true;
-    }
-  });
 
   return (
     <label class="flex items-center gap-2 cursor-pointer">
@@ -23,6 +16,7 @@ export function Toggle(props: ToggleProps) {
         <input
           type="checkbox"
           class="peer hidden"
+          checked={props.checked}
           ref={checkboxRef}
           onChange={e => props.onChange((e.target as HTMLInputElement).checked)}
         />

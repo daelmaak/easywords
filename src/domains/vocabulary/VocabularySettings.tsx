@@ -3,66 +3,60 @@ import { Component, Show, createEffect, createSignal } from 'solid-js';
 import { Toggle } from '../../components/Toggle';
 import { VocabularyTestMode } from './Tester';
 
+export interface VocabularyUserSettings {
+  mode: VocabularyTestMode;
+  reverseTranslations: boolean;
+  repeatInvalid: boolean;
+}
+
 interface Props {
-  onRepeatInvalid: (repeat: boolean) => void;
-  reverseTranslations: (reverse: boolean) => void;
-  modeChange: (mode: VocabularyTestMode) => void;
+  settings: VocabularyUserSettings;
+  onChange: (settings: VocabularyUserSettings) => void;
 }
 
 export const VocabularySettings: Component<Props> = props => {
   const [loaded, setLoaded] = createSignal(false);
 
-  let storedMode: VocabularyTestMode | undefined;
-  let storedReverseTranslations: boolean | undefined;
-  let storedRepeatInvalid: boolean | undefined;
-
   createEffect(async () => {
-    storedMode =
-      (await get<VocabularyTestMode>('config.vocabulary.mode')) ?? 'write';
-    storedReverseTranslations =
-      (await get<boolean>('config.vocabulary.reverseTranslations')) ?? false;
-    storedRepeatInvalid =
-      (await get<boolean>('config.vocabulary.repeatInvalid')) ?? false;
+    const storedSettings = await retrieveSetting();
 
-    props.modeChange(storedMode);
-    props.reverseTranslations(storedReverseTranslations);
-    props.onRepeatInvalid(storedRepeatInvalid);
-
+    props.onChange(storedSettings);
     setLoaded(true);
   });
 
-  async function changeMode(mode: VocabularyTestMode) {
-    props.modeChange(mode);
-    await set('config.vocabulary.mode', mode);
+  function changeSetting(key: keyof VocabularyUserSettings, value: any) {
+    const updatedSettings = { ...props.settings, [key]: value };
+
+    props.onChange(updatedSettings);
+    set(`config.vocabulary`, updatedSettings);
   }
 
-  async function changeReverseTranslations(reverse: boolean) {
-    props.reverseTranslations(reverse);
-    await set('config.vocabulary.reverseTranslations', reverse);
-  }
-
-  async function setRepeatInvalid(repeat: boolean) {
-    props.onRepeatInvalid(repeat);
-    await set('config.vocabulary.repeatInvalid', repeat);
+  async function retrieveSetting() {
+    const storedSettings = await get<Partial<VocabularyUserSettings>>(
+      `config.vocabulary`
+    );
+    return Object.assign({}, props.settings, storedSettings);
   }
 
   return (
     <Show when={loaded()}>
       <div class="mt-20 flex flex-wrap justify-center gap-4 text-slate-400">
         <Toggle
-          defaultValue={storedReverseTranslations}
+          checked={props.settings.reverseTranslations}
           label="Reverse"
-          onChange={changeReverseTranslations}
+          onChange={checked => changeSetting('reverseTranslations', checked)}
         />
         <Toggle
-          defaultValue={storedRepeatInvalid}
+          checked={props.settings.repeatInvalid}
           label="Repeat incorrect words"
-          onChange={checked => setRepeatInvalid(checked)}
+          onChange={checked => changeSetting('repeatInvalid', checked)}
         />
         <Toggle
-          defaultValue={storedMode === 'write'}
+          checked={props.settings.mode === 'write'}
           label="Write words"
-          onChange={checked => changeMode(checked ? 'write' : 'guess')}
+          onChange={checked =>
+            changeSetting('mode', checked ? 'write' : 'pick')
+          }
         />
       </div>
     </Show>
