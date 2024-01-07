@@ -44,12 +44,6 @@ export const VocabularyTester = (props: TesterProps) => {
     onCleanup(() => document.removeEventListener('keydown', onKey));
   });
 
-  function repeat() {
-    props.repeat();
-    setWordsLeft(props.words);
-    setNextWord();
-  }
-
   function setNextWord() {
     const current = currentWord();
     let wsLeft = wordsLeft();
@@ -88,6 +82,12 @@ export const VocabularyTester = (props: TesterProps) => {
   }
 
   function onWordValidated(valid: boolean) {
+    if (valid) {
+      // Just make sure the user sees the correct translations, because maybe she
+      // guessed only one of the words that are in the translation.
+      setPeek(true);
+    }
+
     if (currentWordValid == null || wordsLeft().length === 1) {
       currentWordValid = valid;
     }
