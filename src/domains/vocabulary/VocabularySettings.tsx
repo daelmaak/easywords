@@ -3,13 +3,13 @@ import { Component, Show, createEffect, createSignal } from 'solid-js';
 import { Toggle } from '../../components/Toggle';
 import { VocabularyTestMode } from './Tester';
 
-interface ConfigProps {
+interface Props {
   onRepeatInvalid: (repeat: boolean) => void;
   reverseTranslations: (reverse: boolean) => void;
   modeChange: (mode: VocabularyTestMode) => void;
 }
 
-export const Config: Component<ConfigProps> = props => {
+export const VocabularySettings: Component<Props> = props => {
   const [loaded, setLoaded] = createSignal(false);
 
   let storedMode: VocabularyTestMode | undefined;

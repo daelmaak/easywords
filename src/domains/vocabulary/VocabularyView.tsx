@@ -1,9 +1,9 @@
 import { get, set } from 'idb-keyval';
 import { Show, createEffect, createSignal, type Component } from 'solid-js';
 import { WordTranslation } from '../../parser/simple-md-parser';
-import { Config } from './Config';
 import { Results } from './Results';
 import { VocabularyTestMode, VocabularyTester } from './Tester';
+import { VocabularySettings } from './VocabularySettings';
 import { WordsInput } from './WordsInput';
 
 export const VocabularyView: Component = () => {
@@ -89,7 +89,7 @@ export const VocabularyView: Component = () => {
         />
       </Show>
 
-      <Config
+      <VocabularySettings
         modeChange={setMode}
         onRepeatInvalid={setRepeatInvalid}
         reverseTranslations={setReverse}
