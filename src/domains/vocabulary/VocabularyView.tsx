@@ -20,15 +20,20 @@ export const VocabularyView: Component = () => {
   const [lastWords, setLastWords] = createSignal<WordTranslation[]>();
   const [words, setWords] = createSignal<WordTranslation[]>();
   const [invalidWords, setInvalidWords] = createSignal<WordTranslation[]>();
+  const [removedWords, setRemovedWords] = createSignal<WordTranslation[]>();
   const [done, setDone] = createSignal(false);
 
   createEffect(async () => {
     setLastWords(await get<WordTranslation[]>('last-words'));
   });
 
-  async function onDone(leftOverWords?: WordTranslation[]) {
+  async function onDone(
+    leftOverWords?: WordTranslation[],
+    removedWords?: WordTranslation[]
+  ) {
     setDone(true);
     setInvalidWords(leftOverWords);
+    setRemovedWords(removedWords);
     await storeWords(leftOverWords);
   }
 
@@ -90,6 +95,8 @@ export const VocabularyView: Component = () => {
       <Show when={done()}>
         <Results
           invalidWords={invalidWords()}
+          removedWords={removedWords()}
+          words={words()}
           repeat={onRepeat}
           reset={onReset}
           tryInvalidWords={onTryInvalidWords}

@@ -8,6 +8,7 @@ import {
 } from 'solid-js';
 
 export interface WriteTesterProps {
+  autoFocus?: boolean;
   peek?: boolean;
   strict?: boolean;
   translation: string;
@@ -26,6 +27,10 @@ export const WriteTester: Component<WriteTesterProps> = props => {
   createEffect(() => {
     if (inputRef) {
       inputRef.value = '';
+
+      if (props.autoFocus) {
+        inputRef.focus();
+      }
     }
     setValid(undefined);
     return props.translation;

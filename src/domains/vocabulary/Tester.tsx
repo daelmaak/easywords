@@ -12,7 +12,10 @@ interface TesterProps {
   reverse: boolean;
   words: WordTranslation[];
   mode: VocabularyTestMode;
-  done: (leftoverWords?: WordTranslation[]) => void;
+  done: (
+    leftoverWords?: WordTranslation[],
+    removedWords?: WordTranslation[]
+  ) => void;
   repeat: () => void;
   reset: () => void;
 }
@@ -26,7 +29,18 @@ export const VocabularyTester = (props: TesterProps) => {
   >();
   const [peek, setPeek] = createSignal(false);
   let invalidWords: WordTranslation[] = [];
+  let removedWords: WordTranslation[] = [];
   let currentWordValid: boolean | undefined = undefined;
+
+  const done = () => wordsLeft().length === 0;
+
+  const toTranslate = () =>
+    props.reverse ? currentWord()?.translation : currentWord()?.original;
+  const translated = () =>
+    props.reverse ? currentWord()?.original : currentWord()?.translation;
+
+  const percentageDone = () =>
+    (1 - wordsLeft().length / props.words.length) * 100;
 
   createEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -75,7 +89,7 @@ export const VocabularyTester = (props: TesterProps) => {
 
   function finish() {
     const invalidAndLeftoverWords = mergeWords(invalidWords, wordsLeft());
-    props.done(invalidAndLeftoverWords);
+    props.done(invalidAndLeftoverWords, removedWords);
 
     setCurrentWord();
     setWordsLeft([]);
@@ -105,21 +119,22 @@ export const VocabularyTester = (props: TesterProps) => {
     }
   }
 
+  function removeWord() {
+    const word = currentWord();
+
+    if (!word) {
+      return;
+    }
+    removedWords.push(word);
+    setWordsLeft(wordsLeft().filter(w => w.original !== word.original));
+    setNextWord();
+  }
+
   function togglePeek() {
     setPeek(!peek());
   }
 
   setNextWord();
-
-  const done = () => wordsLeft().length === 0;
-
-  const toTranslate = () =>
-    props.reverse ? currentWord()?.translation : currentWord()?.original;
-  const translated = () =>
-    props.reverse ? currentWord()?.original : currentWord()?.translation;
-
-  const percentageDone = () =>
-    (1 - wordsLeft().length / props.words.length) * 100;
 
   return (
     <div>
@@ -128,8 +143,19 @@ export const VocabularyTester = (props: TesterProps) => {
         classList={{ invisible: !currentWord() }}
       >
         <span class="text-right">
-          <button class="text-md mr-2 btn-link" onClick={togglePeek}>
+          <button
+            title="Peek"
+            class="text-md mr-2 translate-y-[1px] btn-link"
+            onClick={togglePeek}
+          >
             👁
+          </button>
+          <button
+            title="Remove word"
+            class="text-md mr-4 translate-y-[1px] btn-link"
+            onClick={removeWord}
+          >
+            🗑
           </button>
           {toTranslate()}
         </span>
@@ -137,11 +163,11 @@ export const VocabularyTester = (props: TesterProps) => {
         {props.mode === 'write' ? (
           <Show when={translated() != null}>
             <WriteTester
+              autoFocus
               peek={peek()}
               translation={translated()!}
               onDone={setNextWord}
               onPeek={() => setPeek(true)}
-              onReady={el => el.focus()}
               onValidated={onWordValidated}
             />
           </Show>
