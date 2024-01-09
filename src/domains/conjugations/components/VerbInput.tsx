@@ -18,8 +18,13 @@ export const VerbInput: Component<Props> = props => {
 
   return (
     <form onSubmit={applyVerb}>
-      <input name="verb" class="input" ref={props.ref} />
-      <button class="ml-2 btn-primary">Run</button>
+      <input
+        name="verb"
+        class="input"
+        placeholder="Verb in infinitive"
+        ref={props.ref}
+      />
+      <button class="ml-2 btn-primary">Search</button>
     </form>
   );
 };

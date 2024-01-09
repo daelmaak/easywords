@@ -67,6 +67,7 @@ export const ConjugationsView: Component = () => {
 
   return (
     <div class="flex flex-col items-center">
+      <h2 class="mb-4 text-zinc-300">Insert verb to conjugate</h2>
       <VerbInput onApplyVerb={applyVerb} ref={verbInputEl} />
       <div class="mt-8"></div>
       <TenseFilter
