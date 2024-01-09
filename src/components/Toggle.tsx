@@ -20,7 +20,7 @@ export function Toggle(props: ToggleProps) {
           ref={checkboxRef}
           onChange={e => props.onChange((e.target as HTMLInputElement).checked)}
         />
-        <div class="rounded-full w-4 h-4 bg-slate-100 ml-0 peer-checked:ml-4 transition-[margin-left]"></div>
+        <div class="rounded-full w-4 h-4 bg-zinc-100 ml-0 peer-checked:ml-4 transition-[margin-left]"></div>
       </div>
     </label>
   );

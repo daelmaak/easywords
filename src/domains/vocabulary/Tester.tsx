@@ -159,7 +159,7 @@ export const VocabularyTester = (props: TesterProps) => {
           </button>
           {toTranslate()}
         </span>
-        <span class="text-center text-slate-500">|</span>
+        <span class="text-center text-zinc-500">|</span>
         {props.mode === 'write' ? (
           <Show when={translated() != null}>
             <WriteTester

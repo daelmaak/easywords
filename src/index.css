@@ -21,7 +21,7 @@ i {
 
 @layer base {
   body {
-    @apply text-slate-200;
+    @apply text-zinc-200;
   }
 }
 
