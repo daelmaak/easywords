@@ -4,8 +4,12 @@ import {
   createEffect,
   createMemo,
   createSignal,
-  onMount,
 } from 'solid-js';
+
+export interface WriteTesterInstance {
+  input: HTMLInputElement;
+  validate: () => boolean;
+}
 
 export interface WriteTesterProps {
   autoFocus?: boolean;
@@ -15,13 +19,15 @@ export interface WriteTesterProps {
   validateOnBlur?: boolean;
   onDone?: () => void;
   onPeek?: () => void;
-  onReady?: (input: HTMLInputElement) => void;
+  onReady?: (tester: WriteTesterInstance) => void;
   onValidated?: (valid: boolean) => void;
 }
 
 export const WriteTester: Component<WriteTesterProps> = props => {
   let inputRef: HTMLInputElement | undefined;
-  const [valid, setValid] = createSignal<boolean | undefined>();
+  const [valid, setValidInternal] = createSignal<boolean | undefined>();
+
+  const tokenizedTranslation = createMemo(() => tokenize(props.translation));
 
   // NOTE: executes always when props.translation changes
   createEffect(() => {
@@ -32,7 +38,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
         inputRef.focus();
       }
     }
-    setValid(undefined);
+    setValidInternal(undefined);
     return props.translation;
   });
 
@@ -42,19 +48,21 @@ export const WriteTester: Component<WriteTesterProps> = props => {
     }
   });
 
-  onMount(() => {
-    if (props.onReady && inputRef) {
-      props.onReady(inputRef);
-    }
-  });
+  const onInputMount = (input: HTMLInputElement) => {
+    inputRef = input;
+    props.onReady?.({ input, validate: validateText });
+  };
 
-  const tokenizedTranslation = createMemo(() => tokenize(props.translation));
+  function setValid(valid: boolean) {
+    setValidInternal(valid);
+    props.onValidated?.(valid);
+  }
 
   function validateText(): boolean {
     const text = inputRef?.value;
 
     if (!text) {
-      props.onValidated?.(false);
+      setValid(false);
       return false;
     }
 
@@ -66,8 +74,6 @@ export const WriteTester: Component<WriteTesterProps> = props => {
       )
     );
     setValid(valid);
-
-    props.onValidated?.(valid);
 
     return valid;
   }
@@ -119,7 +125,12 @@ export const WriteTester: Component<WriteTesterProps> = props => {
       >
         {props.translation}
       </span>
-      <input ref={inputRef} class="input w-56" type="text" onBlur={onBlur} />
+      <input
+        ref={onInputMount}
+        class="input w-56"
+        type="text"
+        onBlur={onBlur}
+      />
       <button class="invisible" />
       <span class="inline-block ml-2 w-6">
         <Show when={valid() != null}>

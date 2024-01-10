@@ -1,6 +1,6 @@
-import { Component, For, Show, createSignal } from 'solid-js';
+import { Component, For, Show, createEffect, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { WriteTester } from '../../vocabulary/WriteTester';
+import { WriteTester, WriteTesterInstance } from '../../vocabulary/WriteTester';
 import { Conjugation, ConjugationByTense } from '../conjugation';
 
 interface Props {
@@ -16,6 +16,20 @@ export const ConjugationsTester: Component<Props> = props => {
   const [currentConjugationIndex, setCurrentConjugationIndex] = createSignal(0);
   const [conjugationValidations, setConjugationValidations] =
     createStore<ConjugationValidations>({});
+  let validators: Array<() => boolean> = [];
+
+  // NOTE: Resets validators when current conjugation table changes
+  createEffect(() => {
+    validators = [];
+    return currentConjugationIndex();
+  });
+
+  const onTesterReady = (index: number) => (tester: WriteTesterInstance) => {
+    if (index === 0) {
+      tester.input.focus();
+    }
+    validators.push(tester.validate);
+  };
 
   const currentConjugation = () =>
     props.conjugations.at(currentConjugationIndex());
@@ -27,10 +41,6 @@ export const ConjugationsTester: Component<Props> = props => {
     conjugationValidations[c.tense]?.some(
       cc => cc.conjugation.person === c.person && cc.valid === false
     );
-
-  const onFirstWriteTesterRendered = (ref: HTMLInputElement) => {
-    ref.focus();
-  };
 
   const onValidated = (conjugation: Conjugation, valid: boolean) => {
     const currentTense = conjugation.tense;
@@ -53,6 +63,11 @@ export const ConjugationsTester: Component<Props> = props => {
   };
 
   const nextOrFinish = () => {
+    const allValid = validators.map(v => v()).every(v => v);
+    if (!allValid) {
+      return;
+    }
+
     if (isLastConjugation()) {
       return props.onDone();
     }
@@ -76,9 +91,7 @@ export const ConjugationsTester: Component<Props> = props => {
                       <WriteTester
                         translation={c.conjugatedVerb}
                         peek={conjugationInvalid(c)}
-                        onReady={
-                          i() === 0 ? onFirstWriteTesterRendered : undefined
-                        }
+                        onReady={onTesterReady(i())}
                         strict={true}
                         validateOnBlur={true}
                         onValidated={valid => onValidated(c, valid)}
