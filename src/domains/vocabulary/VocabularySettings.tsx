@@ -1,7 +1,7 @@
 import { get, set } from 'idb-keyval';
 import { Component, Show, createEffect, createSignal } from 'solid-js';
 import { Toggle } from '../../components/Toggle';
-import { VocabularyTestMode } from './Tester';
+import { VocabularyTestMode } from './VocabularyTester';
 
 export interface VocabularyUserSettings {
   mode: VocabularyTestMode;

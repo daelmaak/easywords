@@ -1,16 +1,16 @@
 import { get, set } from 'idb-keyval';
-import { Show, createEffect, createSignal, type Component } from 'solid-js';
+import { createEffect, createSignal, Show } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { WordTranslation } from '../../parser/simple-md-parser';
 import { Results } from './Results';
-import { VocabularyTester } from './Tester';
+import { VocabularyTester } from './VocabularyTester';
 import {
   VocabularySettings,
   VocabularyUserSettings,
 } from './VocabularySettings';
 import { WordsInput } from './WordsInput';
 
-export const VocabularyView: Component = () => {
+export const VocabularyView = () => {
   const [vocabularySettings, setVocabularySettings] =
     createStore<VocabularyUserSettings>({
       mode: 'write',
