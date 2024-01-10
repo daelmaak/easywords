@@ -144,18 +144,18 @@ export const VocabularyTester = (props: TesterProps) => {
       >
         <span class="text-right">
           <button
-            title="Peek"
-            class="text-md mr-2 translate-y-[1px] btn-link"
-            onClick={togglePeek}
-          >
-            👁
-          </button>
-          <button
             title="Remove word"
-            class="text-md mr-4 translate-y-[1px] btn-link"
+            class="text-md mr-2 translate-y-[1px] btn-link"
             onClick={removeWord}
           >
             🗑
+          </button>
+          <button
+            title="Peek"
+            class="text-md mr-4 translate-y-[1px] btn-link"
+            onClick={togglePeek}
+          >
+            👁
           </button>
           {toTranslate()}
         </span>
