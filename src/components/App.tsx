@@ -33,7 +33,7 @@ const App: Component<Props> = props => {
             </For>
           </select>
         </nav>
-        <main class="h-full w-full py-8 grid">{props.children}</main>
+        <main class="flex-grow w-full py-8 grid">{props.children}</main>
       </div>
     </LangContext.Provider>
   );

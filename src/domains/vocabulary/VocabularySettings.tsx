@@ -40,7 +40,7 @@ export const VocabularySettings: Component<Props> = props => {
 
   return (
     <Show when={loaded()}>
-      <div class="mt-20 flex flex-wrap justify-center gap-4 text-sm text-zinc-400">
+      <div class="flex flex-wrap justify-center gap-4 text-sm text-zinc-400">
         <Toggle
           checked={props.settings.reverseTranslations}
           label="Reverse"
