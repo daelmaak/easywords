@@ -88,20 +88,24 @@ export function WordsInput(props: WordsInputProps) {
   return (
     <>
       <Show when={props.storedWords} keyed={true}>
-        {lws => (
-          <button
-            class={`block mx-auto text-center ${style.reuseWords}`}
-            type="button"
-            onClick={_ => applyLastWords(lws)}
-          >
-            <p class="btn-link mb-2">Use last words</p>
-            {lastWordsSample(lws).map(w => (
-              <p>{w}</p>
-            ))}
-          </button>
-        )}
+        {lws =>
+          lws.length > 0 && (
+            <>
+              <button
+                class={`block mx-auto text-center ${style.reuseWords}`}
+                type="button"
+                onClick={_ => applyLastWords(lws)}
+              >
+                <p class="btn-link mb-2">Use last words</p>
+                {lastWordsSample(lws).map(w => (
+                  <p>{w}</p>
+                ))}
+              </button>
+              <p class="text-center my-4 text-zinc-400">/</p>
+            </>
+          )
+        }
       </Show>
-      <p class="text-center my-4 text-zinc-400">/</p>
       <form
         class="p-2 bg-zinc-700 rounded-md"
         onKeyDown={onKeyDownInCPForm}
