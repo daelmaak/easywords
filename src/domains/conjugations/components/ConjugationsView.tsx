@@ -24,6 +24,7 @@ export const ConjugationsView: Component = () => {
     []
   );
   const [testingDone, setTestingDone] = createSignal(false);
+  const [verbLoading, setVerbLoading] = createSignal(false);
 
   const conjugationsByTense = () => groupConjugationsByTense(conjugations());
   const conjugationsByMood = () => groupConjugationsByMood(conjugations());
@@ -48,8 +49,11 @@ export const ConjugationsView: Component = () => {
       navigateTo(`/conjugations/${verb}`, { navigate, searchParams });
     }
 
+    setVerbLoading(true);
+
     const conjugations = await fetchConjugationsByTense(verb, lang());
     setConjugations(conjugations);
+    setVerbLoading(false);
   };
 
   const selectCategories = (selectedCategories: string[]) => {
@@ -68,7 +72,11 @@ export const ConjugationsView: Component = () => {
   return (
     <div class="flex flex-col items-center">
       <h2 class="mb-4 text-zinc-300">Insert verb to conjugate</h2>
-      <VerbInput onApplyVerb={applyVerb} ref={verbInputEl} />
+      <VerbInput
+        onApplyVerb={applyVerb}
+        ref={verbInputEl}
+        verbLoading={verbLoading()}
+      />
       <div class="mt-8"></div>
       <TenseFilter
         conjugationsByMood={conjugationsByMood()}

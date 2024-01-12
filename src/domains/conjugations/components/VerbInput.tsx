@@ -1,8 +1,10 @@
 import { Component } from 'solid-js';
+import { Button } from '../../../components/Button';
 
 interface Props {
   onApplyVerb(verb: string): void;
   ref?: HTMLInputElement;
+  verbLoading: boolean;
 }
 
 export const VerbInput: Component<Props> = props => {
@@ -17,14 +19,16 @@ export const VerbInput: Component<Props> = props => {
   };
 
   return (
-    <form onSubmit={applyVerb}>
+    <form onSubmit={applyVerb} class="flex">
       <input
         name="verb"
         class="input"
         placeholder="Verb in infinitive"
         ref={props.ref}
       />
-      <button class="ml-2 btn-primary">Search</button>
+      <Button class="ml-2 btn-primary" loading={props.verbLoading}>
+        Search
+      </Button>
     </form>
   );
 };
