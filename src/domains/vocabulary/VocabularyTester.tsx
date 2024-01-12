@@ -1,4 +1,10 @@
-import { Show, createEffect, createSignal, onCleanup } from 'solid-js';
+import {
+  type Component,
+  Show,
+  createEffect,
+  createSignal,
+  onCleanup,
+} from 'solid-js';
 import { Progress } from '../../components/Progress';
 import { WordTranslation } from '../../parser/simple-md-parser';
 import { mergeWords } from '../../util/merge-arrays';
@@ -20,7 +26,9 @@ interface TesterProps {
   reset: () => void;
 }
 
-export const VocabularyTester = (props: TesterProps) => {
+export const VocabularyTester: Component<TesterProps> = (
+  props: TesterProps
+) => {
   const [wordsLeft, setWordsLeft] = createSignal<WordTranslation[]>(
     props.words
   );
