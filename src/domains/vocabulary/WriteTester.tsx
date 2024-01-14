@@ -20,7 +20,7 @@ export interface WriteTesterProps {
   onDone?: () => void;
   onPeek?: () => void;
   onReady?: (tester: WriteTesterInstance) => void;
-  onValidated?: (valid: boolean) => void;
+  onValidated?: (valid: boolean, answer: string) => void;
 }
 
 export const WriteTester: Component<WriteTesterProps> = props => {
@@ -53,16 +53,16 @@ export const WriteTester: Component<WriteTesterProps> = props => {
     props.onReady?.({ input, validate: validateText });
   };
 
-  function setValid(valid: boolean) {
+  function setValid(valid: boolean, text: string) {
     setValidInternal(valid);
-    props.onValidated?.(valid);
+    props.onValidated?.(valid, text);
   }
 
   function validateText(): boolean {
     const text = inputRef?.value;
 
     if (!text) {
-      setValid(false);
+      setValid(false, '');
       return false;
     }
 
@@ -73,7 +73,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
         props.strict ? tt === t : deaccent(tt) === deaccent(t)
       )
     );
-    setValid(valid);
+    setValid(valid, text);
 
     return valid;
   }
