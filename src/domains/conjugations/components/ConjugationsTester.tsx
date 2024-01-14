@@ -5,11 +5,13 @@ import { Conjugation, ConjugationByTense } from '../conjugation';
 
 interface Props {
   conjugations: ConjugationByTense[];
-  onDone(): void;
+  onDone(validationResults: ConjugationValidations): void;
 }
 
-interface ConjugationValidations {
-  [tense: string]: { conjugation: Conjugation; valid: boolean }[] | undefined;
+export interface ConjugationValidations {
+  [tense: string]:
+    | { conjugation: Conjugation; answer: string; valid: boolean }[]
+    | undefined;
 }
 
 export const ConjugationsTester: Component<Props> = props => {
@@ -42,7 +44,11 @@ export const ConjugationsTester: Component<Props> = props => {
       cc => cc.conjugation.person === c.person && cc.valid === false
     );
 
-  const onValidated = (conjugation: Conjugation, valid: boolean) => {
+  const onValidated = (
+    conjugation: Conjugation,
+    valid: boolean,
+    answer: string
+  ) => {
     const currentTense = conjugation.tense;
 
     if (!conjugationValidations[currentTense]) {
@@ -57,19 +63,16 @@ export const ConjugationsTester: Component<Props> = props => {
     // the conjugations he/she got wrong.
     if (!alreadyValidated) {
       setConjugationValidations(currentTense, cjs =>
-        cjs!.concat([{ conjugation, valid }])
+        cjs!.concat([{ conjugation, valid, answer }])
       );
     }
   };
 
   const nextOrFinish = () => {
-    const allValid = validators.map(v => v()).every(v => v);
-    if (!allValid) {
-      return;
-    }
+    // const allValid = validators.map(v => v()).every(v => v);
 
     if (isLastConjugation()) {
-      return props.onDone();
+      return props.onDone(conjugationValidations);
     }
     setCurrentConjugationIndex(i => i + 1);
   };
@@ -94,7 +97,9 @@ export const ConjugationsTester: Component<Props> = props => {
                         onReady={onTesterReady(i())}
                         strict={true}
                         validateOnBlur={true}
-                        onValidated={valid => onValidated(c, valid)}
+                        onValidated={(valid, answer) =>
+                          onValidated(c, valid, answer)
+                        }
                       />
                     </td>
                   </tr>

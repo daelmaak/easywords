@@ -8,7 +8,11 @@ import {
   groupConjugationsByTense,
 } from '../conjugation';
 import { fetchConjugationsByTense } from '../conjugations-api';
-import { ConjugationsTester } from './ConjugationsTester';
+import { ConjugationsResults } from './ConjugationsResults';
+import {
+  ConjugationsTester,
+  ConjugationValidations,
+} from './ConjugationsTester';
 import { TenseFilter } from './TenseFilter';
 import { VerbInput } from './VerbInput';
 
@@ -22,6 +26,8 @@ export const ConjugationsView: Component = () => {
   const [conjugations, setConjugations] = createSignal<Conjugation[]>([]);
   const [selectedMoods, setSelectedMoods] = createSignal<string[]>([]);
   const [selectedTenses, setSelectedTenses] = createSignal<string[]>([]);
+  const [conjugationsResults, setConjugationsResults] =
+    createSignal<ConjugationValidations>({});
   const [testingDone, setTestingDone] = createSignal(false);
   const [verbLoading, setVerbLoading] = createSignal(false);
 
@@ -65,13 +71,15 @@ export const ConjugationsView: Component = () => {
     }
   };
 
-  const onTestingDone = () => {
+  const onTestingDone = (validationResults: ConjugationValidations) => {
     setTestingDone(true);
+    setConjugationsResults(validationResults);
     setSelectedTenses([]);
   };
 
   const reset = () => {
     setConjugations([]);
+    setConjugationsResults({});
     setSelectedMoods([]);
     setSelectedTenses([]);
     setTestingDone(false);
@@ -102,8 +110,7 @@ export const ConjugationsView: Component = () => {
         />
       </Show>
       <Show when={testingDone()}>
-        Done!
-        {/* TODO: Results */}
+        <ConjugationsResults conjugationsResults={conjugationsResults()} />
       </Show>
     </div>
   );
