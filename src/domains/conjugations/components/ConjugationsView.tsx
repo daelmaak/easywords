@@ -20,9 +20,8 @@ export const ConjugationsView: Component = () => {
 
   const lang = useContext(LangContext);
   const [conjugations, setConjugations] = createSignal<Conjugation[]>([]);
-  const [selectedCategories, setSelectedCategories] = createSignal<string[]>(
-    []
-  );
+  const [selectedMoods, setSelectedMoods] = createSignal<string[]>([]);
+  const [selectedTenses, setSelectedTenses] = createSignal<string[]>([]);
   const [testingDone, setTestingDone] = createSignal(false);
   const [verbLoading, setVerbLoading] = createSignal(false);
 
@@ -30,7 +29,7 @@ export const ConjugationsView: Component = () => {
   const conjugationsByMood = () => groupConjugationsByMood(conjugations());
 
   const selectedConjugations = () =>
-    selectedCategories().map(c => ({
+    selectedTenses().map(c => ({
       tense: c,
       conjugations: conjugationsByTense()[c],
     }));
@@ -45,6 +44,8 @@ export const ConjugationsView: Component = () => {
   });
 
   const applyVerb = async (verb: string, follow = true) => {
+    reset();
+
     if (follow) {
       navigateTo(`/conjugations/${verb}`, { navigate, searchParams });
     }
@@ -56,8 +57,8 @@ export const ConjugationsView: Component = () => {
     setVerbLoading(false);
   };
 
-  const selectCategories = (selectedCategories: string[]) => {
-    setSelectedCategories(selectedCategories);
+  const selectTenses = (selectedTenses: string[]) => {
+    setSelectedTenses(selectedTenses);
 
     if (testingDone()) {
       setTestingDone(false);
@@ -66,7 +67,13 @@ export const ConjugationsView: Component = () => {
 
   const onTestingDone = () => {
     setTestingDone(true);
-    setSelectedCategories([]);
+    setSelectedTenses([]);
+  };
+
+  const reset = () => {
+    setTestingDone(false);
+    setConjugations([]);
+    setSelectedTenses([]);
   };
 
   return (
@@ -81,8 +88,10 @@ export const ConjugationsView: Component = () => {
       <TenseFilter
         conjugationsByMood={conjugationsByMood()}
         lang={lang()}
-        selectedTenses={selectedCategories()}
-        onChange={selectCategories}
+        selectedMoods={selectedMoods()}
+        selectedTenses={selectedTenses()}
+        onSelectedMoods={setSelectedMoods}
+        onSelectedTenses={selectTenses}
       />
       <div class="mt-8"></div>
       <Show when={!testingDone()}>

@@ -1,4 +1,4 @@
-import { Component, For, createSignal } from 'solid-js';
+import { Component, For } from 'solid-js';
 import { Checkbox } from '../../../components/Checkbox';
 import { Lang } from '../../../model/lang';
 import { capitalizeFirstLetter } from '../../../util/string';
@@ -9,13 +9,13 @@ import { Chips } from './Chips';
 interface Props {
   conjugationsByMood: ConjugationsByMood;
   lang: Lang;
+  selectedMoods: string[];
   selectedTenses: string[];
-  onChange(tenses: string[]): void;
+  onSelectedTenses(tenses: string[]): void;
+  onSelectedMoods(moods: string[]): void;
 }
 
 export const TenseFilter: Component<Props> = props => {
-  const [selectedMoods, setSelectedMoods] = createSignal<string[]>([]);
-
   const moods = () => Object.keys(props.conjugationsByMood);
   const tenses = (mood: string) =>
     props.conjugationsByMood[mood].map(c => c.tense);
@@ -24,9 +24,9 @@ export const TenseFilter: Component<Props> = props => {
 
   const onSelected = (tense: string, checked: boolean) => {
     if (checked) {
-      props.onChange(props.selectedTenses.concat(tense));
+      props.onSelectedTenses(props.selectedTenses.concat(tense));
     } else {
-      props.onChange(props.selectedTenses.filter(t => t !== tense));
+      props.onSelectedTenses(props.selectedTenses.filter(t => t !== tense));
     }
   };
 
@@ -34,11 +34,11 @@ export const TenseFilter: Component<Props> = props => {
     <div class="flex flex-col items-center">
       <Chips
         chips={moods()}
-        selectedChips={selectedMoods()}
-        onChipsSelected={setSelectedMoods}
+        selectedChips={props.selectedMoods}
+        onChipsSelected={props.onSelectedMoods}
       />
       <div class="mt-4"></div>
-      <For each={selectedMoods()}>
+      <For each={props.selectedMoods}>
         {mood => (
           <div>
             <div class="text-lg">{mood}</div>
