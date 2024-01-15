@@ -71,9 +71,10 @@ export const ConjugationsView: Component = () => {
   };
 
   const reset = () => {
-    setTestingDone(false);
     setConjugations([]);
+    setSelectedMoods([]);
     setSelectedTenses([]);
+    setTestingDone(false);
   };
 
   return (
