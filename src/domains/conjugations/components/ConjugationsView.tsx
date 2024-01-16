@@ -28,17 +28,28 @@ export const ConjugationsView: Component = () => {
   const [selectedTenses, setSelectedTenses] = createSignal<string[]>([]);
   const [conjugationsResults, setConjugationsResults] =
     createSignal<ConjugationValidations>({});
+  const [practiceIncorrect, setPracticeIncorrect] = createSignal(false);
   const [testingDone, setTestingDone] = createSignal(false);
   const [verbLoading, setVerbLoading] = createSignal(false);
 
-  const conjugationsByTense = () => groupConjugationsByTense(conjugations());
+  const incorrectConjugations = () =>
+    Object.values(conjugationsResults())
+      .flat()
+      .filter(c => !c.valid)
+      .map(c => c.conjugation);
+
   const conjugationsByMood = () => groupConjugationsByMood(conjugations());
 
-  const selectedConjugations = () =>
-    selectedTenses().map(c => ({
+  const selectedConjugations = () => {
+    const conjugationsByTense = groupConjugationsByTense(
+      practiceIncorrect() ? incorrectConjugations() : conjugations()
+    );
+
+    return selectedTenses().map(c => ({
       tense: c,
-      conjugations: conjugationsByTense()[c],
+      conjugations: conjugationsByTense[c],
     }));
+  };
 
   onMount(() => {
     const verb = params.verb;
@@ -87,6 +98,7 @@ export const ConjugationsView: Component = () => {
   const onTryAgain = () => {
     setConjugationsResults({});
     setTestingDone(false);
+    setPracticeIncorrect(false);
   };
 
   const onTryDifferent = () => {
@@ -94,14 +106,11 @@ export const ConjugationsView: Component = () => {
     setSelectedMoods([]);
     setSelectedTenses([]);
     setTestingDone(false);
+    setPracticeIncorrect(false);
   };
 
   const onPracticeIncorrect = () => {
-    const incorrectTenses = Object.keys(conjugationsResults()).filter(
-      tense =>
-        conjugationsResults()[tense]?.some(c => c.valid === false) ?? false
-    );
-    setSelectedTenses(incorrectTenses);
+    setPracticeIncorrect(true);
     setTestingDone(false);
   };
 
