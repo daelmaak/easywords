@@ -63,6 +63,14 @@ export const ConjugationsView: Component = () => {
     setVerbLoading(false);
   };
 
+  const reset = () => {
+    setConjugations([]);
+    setConjugationsResults({});
+    setSelectedMoods([]);
+    setSelectedTenses([]);
+    setTestingDone(false);
+  };
+
   const selectTenses = (selectedTenses: string[]) => {
     setSelectedTenses(selectedTenses);
 
@@ -74,14 +82,26 @@ export const ConjugationsView: Component = () => {
   const onTestingDone = (validationResults: ConjugationValidations) => {
     setTestingDone(true);
     setConjugationsResults(validationResults);
-    setSelectedTenses([]);
   };
 
-  const reset = () => {
-    setConjugations([]);
+  const onTryAgain = () => {
+    setConjugationsResults({});
+    setTestingDone(false);
+  };
+
+  const onTryDifferent = () => {
     setConjugationsResults({});
     setSelectedMoods([]);
     setSelectedTenses([]);
+    setTestingDone(false);
+  };
+
+  const onPracticeIncorrect = () => {
+    const incorrectTenses = Object.keys(conjugationsResults()).filter(
+      tense =>
+        conjugationsResults()[tense]?.some(c => c.valid === false) ?? false
+    );
+    setSelectedTenses(incorrectTenses);
     setTestingDone(false);
   };
 
@@ -110,7 +130,12 @@ export const ConjugationsView: Component = () => {
         />
       </Show>
       <Show when={testingDone()}>
-        <ConjugationsResults conjugationsResults={conjugationsResults()} />
+        <ConjugationsResults
+          conjugationsResults={conjugationsResults()}
+          onTryAgain={onTryAgain}
+          onTryDifferent={onTryDifferent}
+          onPracticeIncorrect={onPracticeIncorrect}
+        />
       </Show>
     </div>
   );

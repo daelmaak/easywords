@@ -4,6 +4,9 @@ import { ConjugationValidations } from './ConjugationsTester';
 
 interface Props {
   conjugationsResults: ConjugationValidations;
+  onPracticeIncorrect: () => void;
+  onTryAgain: () => void;
+  onTryDifferent: () => void;
 }
 
 export const ConjugationsResults: Component<Props> = props => {
@@ -38,6 +41,11 @@ export const ConjugationsResults: Component<Props> = props => {
             </div>
           )}
         </For>
+      </div>
+      <div>
+        <button onClick={props.onTryAgain}>Try again</button>
+        <button onClick={props.onPracticeIncorrect}>Practice incorrect</button>
+        <button onClick={props.onTryDifferent}>Try different</button>
       </div>
     </div>
   );
