@@ -9,9 +9,11 @@ interface Props {
 }
 
 export interface ConjugationValidations {
-  [tense: string]:
-    | { conjugation: Conjugation; answer: string; valid: boolean }[]
-    | undefined;
+  [tense: string]: {
+    conjugation: Conjugation;
+    answer: string;
+    valid: boolean;
+  }[];
 }
 
 export const ConjugationsTester: Component<Props> = props => {
