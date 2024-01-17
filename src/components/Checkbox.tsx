@@ -1,6 +1,7 @@
 import { Component } from 'solid-js';
 
 export interface CheckboxProps {
+  checked?: boolean;
   label: string;
   id: string;
   onChange(checked: boolean): void;
@@ -15,6 +16,7 @@ export const Checkbox: Component<CheckboxProps> = props => {
       >
         <input
           type="checkbox"
+          checked={props.checked}
           class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all checked:border-violet-700 checked:bg-violet-700"
           id={props.id}
           onChange={e => props.onChange(e.currentTarget.checked)}
