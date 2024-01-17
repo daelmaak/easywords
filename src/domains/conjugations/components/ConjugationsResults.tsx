@@ -44,7 +44,7 @@ export const ConjugationsResults: Component<Props> = props => {
                             'text-red-500': !conjugationResult.valid,
                           }}
                         >
-                          {conjugationResult.answer}
+                          {conjugationResult.answer || '-'}
                         </td>
                       </tr>
                     )}
