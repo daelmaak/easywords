@@ -30,6 +30,10 @@ i {
     @apply py-2 px-4 bg-violet-700 text-white rounded-md shadow-md hover:bg-violet-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75;
   }
 
+  .btn-secondary {
+    @apply py-2 px-4 bg-zinc-800 text-violet-400 rounded-md shadow-md hover:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75;
+  }
+
   .btn-link {
     @apply text-violet-300 hover:text-violet-400;
   }
