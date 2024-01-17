@@ -46,6 +46,7 @@ export const TenseFilter: Component<Props> = props => {
               {tense => (
                 <Checkbox
                   id={tense}
+                  checked={props.selectedTenses.includes(tense)}
                   label={capitalizeFirstLetter(
                     removeMoodFromTense(tense, mood)
                   )}
