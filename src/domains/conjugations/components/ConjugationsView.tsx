@@ -116,7 +116,7 @@ export const ConjugationsView: Component = () => {
 
   return (
     <div class="flex flex-col items-center">
-      <h2 class="mb-4 text-zinc-300">Insert verb to conjugate</h2>
+      <h2 class="mb-4">Insert verb to conjugate</h2>
       <VerbInput
         onApplyVerb={applyVerb}
         ref={verbInputEl}
@@ -139,12 +139,15 @@ export const ConjugationsView: Component = () => {
         />
       </Show>
       <Show when={testingDone()}>
-        <ConjugationsResults
-          conjugationsResults={conjugationsResults()}
-          onTryAgain={onTryAgain}
-          onTryDifferent={onTryDifferent}
-          onPracticeIncorrect={onPracticeIncorrect}
-        />
+        <>
+          <hr class="w-3/4 mt-6 mb-12 border-zinc-500" />
+          <ConjugationsResults
+            conjugationsResults={conjugationsResults()}
+            onTryAgain={onTryAgain}
+            onTryDifferent={onTryDifferent}
+            onPracticeIncorrect={onPracticeIncorrect}
+          />
+        </>
       </Show>
     </div>
   );
