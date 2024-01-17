@@ -1,11 +1,12 @@
 import { Component, JSX, splitProps } from 'solid-js';
 import { Spinner } from './Spinner';
 
-interface Props {
+interface Props extends JSX.CustomEventHandlersCamelCase<HTMLButtonElement> {
   children: JSX.Element;
   class?: string;
   loading?: boolean;
   type?: JSX.ButtonHTMLAttributes<HTMLButtonElement>['type'];
+  style?: 'primary' | 'secondary';
 }
 
 export const Button: Component<Props> = props => {
@@ -14,11 +15,14 @@ export const Button: Component<Props> = props => {
     'children',
     'loading',
   ]);
+  const style = () => props.style ?? 'primary';
   return (
     <button
-      class="btn-primary relative"
+      class="relative"
       classList={{
         [props.class ?? '']: true,
+        'btn-primary': style() === 'primary',
+        'btn-secondary': style() === 'secondary',
       }}
       {...buttonProps}
     >
