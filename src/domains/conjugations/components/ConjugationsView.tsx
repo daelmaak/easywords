@@ -123,16 +123,16 @@ export const ConjugationsView: Component = () => {
         verbLoading={verbLoading()}
       />
       <div class="mt-8"></div>
-      <TenseFilter
-        conjugationsByMood={conjugationsByMood()}
-        lang={lang()}
-        selectedMoods={selectedMoods()}
-        selectedTenses={selectedTenses()}
-        onSelectedMoods={setSelectedMoods}
-        onSelectedTenses={selectTenses}
-      />
-      <div class="mt-8"></div>
       <Show when={!testingDone()}>
+        <TenseFilter
+          conjugationsByMood={conjugationsByMood()}
+          lang={lang()}
+          selectedMoods={selectedMoods()}
+          selectedTenses={selectedTenses()}
+          onSelectedMoods={setSelectedMoods}
+          onSelectedTenses={selectTenses}
+        />
+        <div class="mt-8"></div>
         <ConjugationsTester
           conjugations={selectedConjugations()}
           onDone={onTestingDone}
