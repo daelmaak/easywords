@@ -1,5 +1,6 @@
 import { For } from 'solid-js';
 import { Component } from 'solid-js';
+import { Button } from '../../../components/Button';
 import { ConjugationValidations } from './ConjugationsTester';
 
 interface Props {
@@ -42,10 +43,16 @@ export const ConjugationsResults: Component<Props> = props => {
           )}
         </For>
       </div>
-      <div>
-        <button onClick={props.onTryAgain}>Try again</button>
-        <button onClick={props.onPracticeIncorrect}>Practice incorrect</button>
-        <button onClick={props.onTryDifferent}>Try different</button>
+      <div class="mt-4 flex gap-2">
+        <Button style="secondary" onClick={props.onTryAgain}>
+          Try again
+        </Button>
+        <Button style="secondary" onClick={props.onPracticeIncorrect}>
+          Practice incorrect
+        </Button>
+        <Button style="secondary" onClick={props.onTryDifferent}>
+          Try different
+        </Button>
       </div>
     </div>
   );
