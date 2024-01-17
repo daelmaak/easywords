@@ -1,4 +1,4 @@
-import { Component, For, Show, createEffect, createSignal } from 'solid-js';
+import { Component, createSignal, For, Show } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { WriteTester, WriteTesterInstance } from '../../vocabulary/WriteTester';
 import { Conjugation, ConjugationByTense } from '../conjugation';
@@ -21,12 +21,6 @@ export const ConjugationsTester: Component<Props> = props => {
   const [conjugationValidations, setConjugationValidations] =
     createStore<ConjugationValidations>({});
   let validators: Array<() => boolean> = [];
-
-  // NOTE: Resets validators when current conjugation table changes
-  createEffect(() => {
-    validators = [];
-    return currentConjugationIndex();
-  });
 
   const onTesterReady = (index: number) => (tester: WriteTesterInstance) => {
     if (index === 0) {
@@ -71,7 +65,8 @@ export const ConjugationsTester: Component<Props> = props => {
   };
 
   const nextOrFinish = () => {
-    // const allValid = validators.map(v => v()).every(v => v);
+    validators.forEach(v => v());
+    validators = []; // Validators need to be reset for the next conjugations
 
     if (isLastConjugation()) {
       return props.onDone(conjugationValidations);
