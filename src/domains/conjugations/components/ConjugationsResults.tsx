@@ -1,4 +1,4 @@
-import { For } from 'solid-js';
+import { For, Show } from 'solid-js';
 import { Component } from 'solid-js';
 import { Button } from '../../../components/Button';
 import { ConjugationValidations } from './ConjugationsTester';
@@ -11,6 +11,11 @@ interface Props {
 }
 
 export const ConjugationsResults: Component<Props> = props => {
+  const someInvalid = () =>
+    Object.values(props.conjugationsResults).some(conjugationsResult =>
+      conjugationsResult.every(c => !c.valid)
+    );
+
   return (
     <div>
       <h2 class="text-center text-2xl font-semibold">Results</h2>
@@ -59,9 +64,11 @@ export const ConjugationsResults: Component<Props> = props => {
         <Button style="secondary" onClick={props.onTryAgain}>
           Try again
         </Button>
-        <Button style="secondary" onClick={props.onPracticeIncorrect}>
-          Practice incorrect
-        </Button>
+        <Show when={someInvalid()}>
+          <Button style="secondary" onClick={props.onPracticeIncorrect}>
+            Practice incorrect
+          </Button>{' '}
+        </Show>
         <Button style="secondary" onClick={props.onTryDifferent}>
           Try different
         </Button>
