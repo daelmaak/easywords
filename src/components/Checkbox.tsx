@@ -17,7 +17,7 @@ export const Checkbox: Component<CheckboxProps> = props => {
         <input
           type="checkbox"
           checked={props.checked}
-          class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all checked:border-violet-700 checked:bg-violet-700"
+          class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border-2 border-zinc-500 transition-all checked:border-violet-700 checked:bg-violet-700"
           id={props.id}
           onChange={e => props.onChange(e.currentTarget.checked)}
         />
@@ -39,7 +39,7 @@ export const Checkbox: Component<CheckboxProps> = props => {
         </span>
       </label>
       <label
-        class="mt-px font-light text-zinc-300 cursor-pointer select-none"
+        class="mt-[-1px] font-light text-zinc-300 cursor-pointer select-none"
         for={props.id}
       >
         {props.label}
