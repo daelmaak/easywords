@@ -13,7 +13,7 @@ import {
   ConjugationsTester,
   ConjugationValidations,
 } from './ConjugationsTester';
-import { TenseFilter } from './TenseFilter';
+import { TenseFilter } from './tense-filter/TenseFilter';
 import { VerbInput } from './VerbInput';
 
 export const ConjugationsView: Component = () => {
