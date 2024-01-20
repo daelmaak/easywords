@@ -12,9 +12,9 @@ interface Props {
 
 export const ConjugationsResults: Component<Props> = props => {
   const someInvalid = () =>
-    Object.values(props.conjugationsResults).some(conjugationsResult =>
-      conjugationsResult.every(c => !c.valid)
-    );
+    Object.values(props.conjugationsResults)
+      .flat()
+      .some(cr => cr.valid === false);
 
   return (
     <div>
