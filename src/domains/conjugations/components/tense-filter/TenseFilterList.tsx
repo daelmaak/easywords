@@ -1,4 +1,4 @@
-import { Component, createSignal, For, Show } from 'solid-js';
+import { Component, createMemo, createSignal, For, Show } from 'solid-js';
 import { Checkbox } from '../../../../components/Checkbox';
 import { Lang } from '../../../../model/lang';
 import { capitalizeFirstLetter } from '../../../../util/string';
@@ -16,12 +16,12 @@ interface Props {
 export const TenseFilterList: Component<Props> = props => {
   const [expanded, setExpanded] = createSignal(false);
 
-  const sortedTenses = () =>
-    sortTenses(
-      props.lang,
-      props.mood,
-      expanded() ? props.tenses : props.tenses.slice(0, 4)
-    );
+  const sortedTenses = createMemo(() =>
+    sortTenses(props.lang, props.mood, props.tenses)
+  );
+
+  const currentTenses = () =>
+    expanded() ? sortedTenses() : sortedTenses().slice(0, 4);
 
   const onSelected = (tense: string, checked: boolean) => {
     if (checked) {
@@ -35,7 +35,7 @@ export const TenseFilterList: Component<Props> = props => {
     <div>
       <div class="text-md">{props.mood}</div>
       <ul class="flex flex-wrap">
-        <For each={sortedTenses()}>
+        <For each={currentTenses()}>
           {tense => (
             <li>
               <Checkbox
