@@ -45,10 +45,16 @@ export const ConjugationsView: Component = () => {
       practiceIncorrect() ? incorrectConjugations() : conjugations()
     );
 
-    return selectedTenses().map(c => ({
-      tense: c,
-      conjugations: conjugationsByTense[c],
-    }));
+    return (
+      selectedTenses()
+        .map(tense => ({
+          tense,
+          conjugations: conjugationsByTense[tense],
+        }))
+        // Filter out tenses that have no conjugations. This can happen only when
+        // practicing incorrect conjugations.
+        .filter(c => c.conjugations?.length > 0)
+    );
   };
 
   onMount(() => {
