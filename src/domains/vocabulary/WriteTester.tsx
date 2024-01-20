@@ -4,6 +4,7 @@ import {
   createEffect,
   createMemo,
   createSignal,
+  onMount,
 } from 'solid-js';
 
 export interface WriteTesterInstance {
@@ -29,6 +30,13 @@ export const WriteTester: Component<WriteTesterProps> = props => {
 
   const tokenizedTranslation = createMemo(() => tokenize(props.translation));
 
+  onMount(() => {
+    if (!inputRef) {
+      return;
+    }
+    props.onReady?.({ input: inputRef, validate: validateText });
+  });
+
   // NOTE: executes always when props.translation changes
   createEffect(() => {
     if (inputRef) {
@@ -47,11 +55,6 @@ export const WriteTester: Component<WriteTesterProps> = props => {
       validateText();
     }
   });
-
-  const onInputMount = (input: HTMLInputElement) => {
-    inputRef = input;
-    props.onReady?.({ input, validate: validateText });
-  };
 
   function setValid(valid: boolean, text: string) {
     setValidInternal(valid);
@@ -125,12 +128,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
       >
         {props.translation}
       </span>
-      <input
-        ref={onInputMount}
-        class="input w-56"
-        type="text"
-        onBlur={onBlur}
-      />
+      <input ref={inputRef} class="input w-56" type="text" onBlur={onBlur} />
       <button class="invisible" />
       <span class="inline-block ml-2 w-6">
         <Show when={valid() != null}>
