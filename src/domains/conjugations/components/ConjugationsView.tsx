@@ -81,10 +81,10 @@ export const ConjugationsView: Component = () => {
   };
 
   const reset = () => {
-    setConjugations([]);
-    setConjugationsResults({});
     setSelectedMoods([]);
     setSelectedTenses([]);
+    setConjugationsResults({});
+    setConjugations([]);
     setTestingDone(false);
   };
 
