@@ -7,13 +7,7 @@ interface ChipsProps {
 }
 
 export const Chips: Component<ChipsProps> = props => {
-  const chipSelections = () =>
-    props.chips.map(chip => ({
-      chip,
-      selected: props.selectedChips.includes(chip),
-    }));
-
-  const onChipsSelected = (chip: string, selected: boolean) => {
+  const toggleChip = (chip: string, selected: boolean) => {
     if (selected) {
       props.onChipsSelected(props.selectedChips.concat(chip));
     } else {
@@ -23,14 +17,16 @@ export const Chips: Component<ChipsProps> = props => {
 
   return (
     <ul class="flex flex-wrap gap-3">
-      <For each={chipSelections()}>
-        {item => (
-          <Chip
-            chip={item.chip}
-            selected={item.selected}
-            onSelected={() => onChipsSelected(item.chip, !item.selected)}
-          />
-        )}
+      <For each={props.chips}>
+        {chip => {
+          return (
+            <Chip
+              chip={chip}
+              selected={props.selectedChips.includes(chip)}
+              onToggled={selected => toggleChip(chip, selected)}
+            />
+          );
+        }}
       </For>
     </ul>
   );
@@ -39,18 +35,20 @@ export const Chips: Component<ChipsProps> = props => {
 interface ChipProps {
   chip: string;
   selected: boolean;
-  onSelected: () => void;
+  onToggled: (selected: boolean) => void;
 }
 
 const Chip: Component<ChipProps> = props => (
   <li
-    class="px-3 py-1 rounded-lg text-sm cursor-pointer"
+    class="rounded-lg text-sm cursor-pointer"
     classList={{
       'bg-zinc-700 text-zinc-300': !props.selected,
       'font-semibold text-zinc-900 bg-violet-500': props.selected,
     }}
-    onClick={props.onSelected}
+    onClick={() => props.onToggled(!props.selected)}
   >
-    {props.chip}
+    <button class="px-3 py-1" type="button">
+      {props.chip}
+    </button>
   </li>
 );
