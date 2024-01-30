@@ -27,7 +27,7 @@ interface ConjugationsViewState {
   verbLoading: boolean;
 }
 
-const initialState: ConjugationsViewState = {
+const getInitialState: () => ConjugationsViewState = () => ({
   conjugations: [],
   selectedMoods: [],
   selectedTenses: [],
@@ -35,7 +35,7 @@ const initialState: ConjugationsViewState = {
   practiceIncorrect: false,
   testingDone: false,
   verbLoading: false,
-};
+});
 
 export const ConjugationsView: Component = () => {
   const params = useParams();
@@ -44,7 +44,9 @@ export const ConjugationsView: Component = () => {
   let verbInputEl: HTMLInputElement | undefined;
 
   const lang = useContext(LangContext);
-  const [state, setState] = createStore<ConjugationsViewState>(initialState);
+  const [state, setState] = createStore<ConjugationsViewState>(
+    getInitialState()
+  );
 
   const incorrectConjugations = () =>
     Object.values(state.conjugationsResults)
@@ -97,7 +99,7 @@ export const ConjugationsView: Component = () => {
     });
   };
 
-  const reset = () => setState(initialState);
+  const reset = () => setState(getInitialState());
 
   const selectTenses = (selectedTenses: string[]) => {
     setState({ selectedTenses });
@@ -121,7 +123,7 @@ export const ConjugationsView: Component = () => {
 
   const onTryDifferent = () => {
     setState({
-      ...initialState,
+      ...getInitialState(),
       conjugations: state.conjugations,
     });
   };
