@@ -1,5 +1,8 @@
 import { Lang } from '../../model/lang';
-import { Conjugation, removeMoodFromTense } from './conjugation';
+import { Conjugation } from './conjugation';
+
+// Regarding 2p, it would be nice to map it to more readable forms
+const unusedPersons = ['vós', '2p'];
 
 export async function fetchConjugationsByTense(
   verb: string,
@@ -12,7 +15,7 @@ export async function fetchConjugationsByTense(
   const conjugations = (await res.json()) as [string, string, string, string][];
 
   return conjugations
-    .filter(([, , person, verb]) => verb && person !== 'vós') // 2p plural is not used in Portuguese
+    .filter(([, , person, verb]) => verb && !unusedPersons.includes(person)) // 2p plural is not used in Portuguese
     .map(c => {
       return {
         mood: c[0],
