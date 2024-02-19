@@ -6,7 +6,7 @@ interface Props extends JSX.CustomEventHandlersCamelCase<HTMLButtonElement> {
   class?: string;
   loading?: boolean;
   type?: JSX.ButtonHTMLAttributes<HTMLButtonElement>['type'];
-  style?: 'primary' | 'secondary';
+  style?: 'primary' | 'secondary' | 'link';
 }
 
 export const Button: Component<Props> = props => {
@@ -23,6 +23,7 @@ export const Button: Component<Props> = props => {
         [props.class ?? '']: true,
         'btn-primary': style() === 'primary',
         'btn-secondary': style() === 'secondary',
+        'btn-link': style() === 'link',
       }}
       {...buttonProps}
     >
