@@ -57,7 +57,7 @@ i {
   }
 
   .select {
-    @apply bg-zinc-800 border rounded-md border-solid border-zinc-700 p-2 outline-violet-700;
+    @apply bg-zinc-800 border rounded-md border-none p-2 outline-violet-700;
   }
 
   .spinner {

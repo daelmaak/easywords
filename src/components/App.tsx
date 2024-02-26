@@ -1,10 +1,11 @@
 import { useSearchParams } from '@solidjs/router';
-import { Component, For, JSX } from 'solid-js';
+import { Component, For, JSX, createResource } from 'solid-js';
+import { AccountButton } from '../domains/auth/AccountButton';
+import { AuthDialog } from '../domains/auth/AuthDialog';
+import { supabase } from '../lib/supabase-client';
 import { Lang, langs } from '../model/lang';
 import { A } from './A';
 import { LangContext } from './language-context';
-import { Button } from './Button';
-import { AuthDialog } from '../domains/auth/AuthDialog';
 
 interface Props {
   children?: JSX.Element;
@@ -12,6 +13,9 @@ interface Props {
 
 const App: Component<Props> = props => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [loggedIn, { mutate: setLoggedIn }] = createResource(
+    async () => (await supabase.auth.getSession()).data.session?.user != null
+  );
   let authDialogRef: HTMLDialogElement | undefined;
 
   const currentLang = () => (searchParams.lang as Lang) ?? 'pt';
@@ -21,8 +25,8 @@ const App: Component<Props> = props => {
   };
 
   const onSignIn = () => {
-    console.log('signed in');
     authDialogRef?.close();
+    setLoggedIn(true);
   };
 
   const onSignUp = () => {
@@ -30,15 +34,24 @@ const App: Component<Props> = props => {
     authDialogRef?.close();
   };
 
+  const onSignOut = async () => {
+    await supabase.auth.signOut();
+    setLoggedIn(false);
+  };
+
   return (
     <LangContext.Provider value={currentLang}>
       <div class="min-h-full p-8 bg-zinc-800 flex flex-col">
-        <nav class="flex items-center gap-4">
+        <nav class="flex items-center gap-4 text-zinc-400">
           <A href="/vocabulary">Vocabulary</A>
           <A href="/conjugations">Conjugations</A>
-          <Button onClick={() => authDialogRef?.showModal()}>Log in</Button>
+          <AccountButton
+            loggedIn={!!loggedIn()}
+            onSignIn={() => authDialogRef?.showModal()}
+            onSignOut={onSignOut}
+          />
           <select
-            class="select ml-auto"
+            class="select"
             onChange={e => changeLang(e.currentTarget.value)}
             value={currentLang()}
           >
