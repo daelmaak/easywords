@@ -41,7 +41,7 @@ const App: Component<Props> = props => {
 
   return (
     <LangContext.Provider value={currentLang}>
-      <div class="min-h-full p-8 bg-zinc-800 flex flex-col">
+      <div class="min-h-full py-4 px-8 bg-zinc-800 flex flex-col">
         <nav class="flex items-center gap-4 text-zinc-400">
           <A href="/vocabulary">Vocabulary</A>
           <A href="/conjugations">Conjugations</A>
