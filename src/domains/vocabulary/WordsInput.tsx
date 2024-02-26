@@ -1,10 +1,8 @@
 import { get, set } from 'idb-keyval';
 import { Show, createEffect, createSignal } from 'solid-js';
 import { SimpleMdParser, WordTranslation } from '../../parser/simple-md-parser';
-import style from './WordsInput.module.css';
 
 export interface WordsInputProps {
-  storedWords?: WordTranslation[];
   onWordsSelect: (words: WordTranslation[]) => void;
   reverse: boolean;
 }
@@ -78,34 +76,8 @@ export function WordsInput(props: WordsInputProps) {
     }
   }
 
-  const lastWordsSample = (lastWords: WordTranslation[]) => {
-    const words = lastWords.slice(0, 3);
-    return props.reverse
-      ? words.map(w => w.translation)
-      : words.map(w => w.original);
-  };
-
   return (
     <>
-      <Show when={props.storedWords} keyed={true}>
-        {lws =>
-          lws.length > 0 && (
-            <>
-              <button
-                class={`block mx-auto text-center ${style.reuseWords}`}
-                type="button"
-                onClick={_ => applyLastWords(lws)}
-              >
-                <p class="btn-link mb-2">Use last words</p>
-                {lastWordsSample(lws).map(w => (
-                  <p>{w}</p>
-                ))}
-              </button>
-              <p class="text-center my-4 text-zinc-400">/</p>
-            </>
-          )
-        }
-      </Show>
       <form
         class="p-2 bg-zinc-700 rounded-md"
         onKeyDown={onKeyDownInCPForm}

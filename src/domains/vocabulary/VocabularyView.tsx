@@ -1,5 +1,4 @@
-import { get, set } from 'idb-keyval';
-import { Show, createEffect, createSignal } from 'solid-js';
+import { Show, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { WordTranslation } from '../../parser/simple-md-parser';
 import { Results } from './Results';
@@ -17,15 +16,10 @@ export const VocabularyView = () => {
       reverseTranslations: false,
       repeatInvalid: false,
     });
-  const [lastWords, setLastWords] = createSignal<WordTranslation[]>();
   const [words, setWords] = createSignal<WordTranslation[]>();
   const [invalidWords, setInvalidWords] = createSignal<WordTranslation[]>();
   const [removedWords, setRemovedWords] = createSignal<WordTranslation[]>();
   const [done, setDone] = createSignal(false);
-
-  createEffect(async () => {
-    setLastWords(await get<WordTranslation[]>('last-words'));
-  });
 
   async function onDone(
     leftOverWords?: WordTranslation[],
@@ -34,7 +28,6 @@ export const VocabularyView = () => {
     setDone(true);
     setInvalidWords(leftOverWords);
     setRemovedWords(removedWords);
-    await storeWords(leftOverWords);
   }
 
   function onRepeat() {
@@ -57,11 +50,6 @@ export const VocabularyView = () => {
   async function selectWords(words: WordTranslation[]) {
     setInvalidWords();
     setWords(words);
-    await storeWords(words);
-  }
-
-  async function storeWords(words?: WordTranslation[]) {
-    await set('last-words', words);
   }
 
   return (
@@ -72,7 +60,6 @@ export const VocabularyView = () => {
             <WordsInput
               onWordsSelect={selectWords}
               reverse={vocabularySettings.reverseTranslations}
-              storedWords={lastWords()}
             />
           </div>
         </Show>
