@@ -33,6 +33,7 @@ export const Button: Component<Props> = props => {
         </span>
       )}
       <span
+        class="inline-flex items-end gap-1"
         classList={{
           invisible: local.loading,
         }}
