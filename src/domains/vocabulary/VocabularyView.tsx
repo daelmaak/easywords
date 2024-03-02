@@ -1,4 +1,4 @@
-import { Show, createSignal } from 'solid-js';
+import { Show, createEffect, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { WordTranslation } from '../../parser/simple-md-parser';
 import { Results } from './Results';
@@ -8,6 +8,7 @@ import {
 } from './VocabularySettings';
 import { VocabularyTester } from './VocabularyTester';
 import { WordsInput } from './WordsInput';
+import { fetchVocabulary } from './resources/vocabulary-resources';
 
 export const VocabularyView = () => {
   const [vocabularySettings, setVocabularySettings] =
@@ -20,6 +21,13 @@ export const VocabularyView = () => {
   const [invalidWords, setInvalidWords] = createSignal<WordTranslation[]>();
   const [removedWords, setRemovedWords] = createSignal<WordTranslation[]>();
   const [done, setDone] = createSignal(false);
+
+  const [vocabularyLists] = fetchVocabulary;
+
+  createEffect(() => {
+    console.log(vocabularyLists());
+    return vocabularyLists();
+  });
 
   async function onDone(
     leftOverWords?: WordTranslation[],
