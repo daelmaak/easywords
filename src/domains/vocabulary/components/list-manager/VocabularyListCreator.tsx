@@ -6,7 +6,7 @@ interface Props {}
 
 export const VocabularyListCreator: Component<Props> = () => {
   return (
-    <form>
+    <form data-testid="list-creator">
       <input class="input"></input>
       <input class="input"></input>
       <Button>
