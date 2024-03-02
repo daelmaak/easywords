@@ -3,7 +3,7 @@ import { render } from 'solid-js/web';
 
 import App from './components/App';
 import { ConjugationsView } from './domains/conjugations/components/ConjugationsView';
-import { VocabularyView } from './domains/vocabulary/VocabularyView';
+import { VocabularyView } from './domains/vocabulary/components/VocabularyView';
 import './index.css';
 
 const root = document.getElementById('root');

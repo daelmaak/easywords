@@ -1,16 +1,14 @@
-import { Show, createEffect, createSignal } from 'solid-js';
+import { Show, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { WordTranslation } from '../../parser/simple-md-parser';
+import { WordTranslation } from '../../../parser/simple-md-parser';
 import { Results } from './Results';
 import {
   VocabularySettings,
   VocabularyUserSettings,
 } from './VocabularySettings';
 import { VocabularyTester } from './VocabularyTester';
-import { WordsInput } from './WordsInput';
-import { fetchVocabulary } from './resources/vocabulary-resources';
-import { Button } from '../../components/Button';
-import { Icon } from '../../components/Icon';
+import { VocabularyListManager } from './list-manager/VocabularyListManager';
+import { fetchVocabulary } from '../resources/vocabulary-resources';
 
 export const VocabularyView = () => {
   const [vocabularySettings, setVocabularySettings] =
@@ -23,13 +21,6 @@ export const VocabularyView = () => {
   const [invalidWords, setInvalidWords] = createSignal<WordTranslation[]>();
   const [removedWords, setRemovedWords] = createSignal<WordTranslation[]>();
   const [done, setDone] = createSignal(false);
-
-  const [vocabularyLists] = fetchVocabulary;
-
-  createEffect(() => {
-    console.log(vocabularyLists());
-    return vocabularyLists();
-  });
 
   async function onDone(
     leftOverWords?: WordTranslation[],
@@ -65,15 +56,7 @@ export const VocabularyView = () => {
   return (
     <div class="h-full grid grid-rows-[auto_4rem_1rem]">
       <div class="m-auto">
-        <Show when={!words() && !done()}>
-          <div class="flex flex-col items-center gap-4">
-            <h2 class="text-xl text-center">Create your first vocabulary!</h2>
-            <Button class="" onClick={() => {}}>
-              Create
-              <Icon icon="plus" />
-            </Button>
-          </div>
-        </Show>
+        <VocabularyListManager fetchVocabulary={fetchVocabulary} />
 
         <Show when={!done()}>
           <Show keyed={true} when={words()}>
