@@ -9,6 +9,8 @@ import {
 import { VocabularyTester } from './VocabularyTester';
 import { WordsInput } from './WordsInput';
 import { fetchVocabulary } from './resources/vocabulary-resources';
+import { Button } from '../../components/Button';
+import { Icon } from '../../components/Icon';
 
 export const VocabularyView = () => {
   const [vocabularySettings, setVocabularySettings] =
@@ -64,26 +66,33 @@ export const VocabularyView = () => {
     <div class="h-full grid grid-rows-[auto_4rem_1rem]">
       <div class="m-auto">
         <Show when={!words() && !done()}>
-          <div class="w-[min(80vw,_25rem)]">
-            <WordsInput
-              onWordsSelect={selectWords}
-              reverse={vocabularySettings.reverseTranslations}
-            />
+          <div class="flex flex-col items-center gap-4">
+            <h2 class="text-xl text-center">Create your first vocabulary!</h2>
+            <Button class="" onClick={() => {}}>
+              Create
+              <Icon icon="plus" />
+            </Button>
           </div>
         </Show>
 
         <Show when={!done()}>
           <Show keyed={true} when={words()}>
             {w => (
-              <VocabularyTester
-                mode={vocabularySettings.mode}
-                repeatInvalid={vocabularySettings.repeatInvalid}
-                reverse={vocabularySettings.reverseTranslations}
-                words={w}
-                done={onDone}
-                repeat={onRepeat}
-                reset={onReset}
-              />
+              <>
+                <VocabularyTester
+                  mode={vocabularySettings.mode}
+                  repeatInvalid={vocabularySettings.repeatInvalid}
+                  reverse={vocabularySettings.reverseTranslations}
+                  words={w}
+                  done={onDone}
+                  repeat={onRepeat}
+                  reset={onReset}
+                />
+                <VocabularySettings
+                  settings={vocabularySettings}
+                  onChange={setVocabularySettings}
+                />
+              </>
             )}
           </Show>
         </Show>
@@ -99,11 +108,6 @@ export const VocabularyView = () => {
           />
         </Show>
       </div>
-
-      <VocabularySettings
-        settings={vocabularySettings}
-        onChange={setVocabularySettings}
-      />
 
       <Show when={words()}>
         <button
