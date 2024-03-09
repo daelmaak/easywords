@@ -2,7 +2,7 @@ import { cleanup, render, screen } from '@solidjs/testing-library';
 import { createResource } from 'solid-js';
 import { afterEach, expect, it, vi } from 'vitest';
 import { VocabularyListManager } from './VocabularyListManager';
-import { VocabularyList } from '../../vocabulary-model';
+import { VocabularyListApi } from '../../vocabulary-model';
 
 afterEach(() => {
   cleanup();
@@ -25,6 +25,6 @@ it('should render a vocabulary list creator after transition from empty vocabula
 
 function setup() {
   return {
-    fetchVocabularyList: createResource<VocabularyList[]>(() => []),
+    fetchVocabularyList: createResource<VocabularyListApi[]>(() => []),
   };
 }

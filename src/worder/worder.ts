@@ -1,4 +1,4 @@
-import { WordTranslation } from '../parser/simple-md-parser';
+import { WordTranslation } from '~/model/word-translation';
 
 export function nextWord(
   words: WordTranslation[]

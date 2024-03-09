@@ -7,5 +7,5 @@ export interface VocabularyItem {
 export interface VocabularyList {
   id: number;
   name: string;
-  vocabulary_items: VocabularyItem[];
+  vocabularyItems: VocabularyItem[];
 }
