@@ -1,15 +1,15 @@
 import { Show, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { WordTranslation } from '~/model/word-translation';
+import { createVocabularyList } from '../resources/vocabulary-api';
+import { fetchVocabulary } from '../resources/vocabulary-resources';
 import { Results } from './Results';
 import {
   VocabularySettings,
   VocabularyUserSettings,
 } from './VocabularySettings';
 import { VocabularyTester } from './VocabularyTester';
-import { VocabularyListManager } from './list-manager/VocabularyListManager';
-import { fetchVocabulary } from '../resources/vocabulary-resources';
-import { createVocabularyList } from '../resources/vocabulary-api';
+import { VocabularyManager } from './list-manager/VocabularyManager';
 
 export const VocabularyView = () => {
   const [vocabularySettings, setVocabularySettings] =
@@ -52,7 +52,7 @@ export const VocabularyView = () => {
   return (
     <div class="h-full w-full grid">
       <div class="my-auto w-full">
-        <VocabularyListManager
+        <VocabularyManager
           createVocabulary={createVocabularyList}
           fetchVocabulary={fetchVocabulary}
         />

@@ -10,7 +10,7 @@ interface Props {
   onListCreate: (name: string, words: WordTranslation[]) => void;
 }
 
-export const VocabularyListCreator: Component<Props> = props => {
+export const VocabularyCreator: Component<Props> = props => {
   const [words, setWords] = createSignal<WordTranslation[]>([]);
 
   const submit = (event: Event) => {

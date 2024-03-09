@@ -1,8 +1,8 @@
 import { cleanup, render, screen } from '@solidjs/testing-library';
 import { createResource } from 'solid-js';
 import { afterEach, expect, it, vi } from 'vitest';
-import { VocabularyListManager } from './VocabularyListManager';
-import { VocabularyListApi } from '../../vocabulary-model';
+import { VocabularyManager } from './VocabularyManager';
+import { VocabularyList } from '../../vocabulary-model';
 
 afterEach(() => {
   cleanup();
@@ -11,7 +11,12 @@ afterEach(() => {
 
 it('should render a vocabulary list creator after transition from empty vocabulary widget', async () => {
   const { fetchVocabularyList } = setup();
-  render(() => <VocabularyListManager fetchVocabulary={fetchVocabularyList} />);
+  render(() => (
+    <VocabularyManager
+      createVocabulary={async () => true}
+      fetchVocabulary={fetchVocabularyList}
+    />
+  ));
 
   const emptyScreenWidget = screen.getByTestId('empty-vocabulary-list');
   expect(emptyScreenWidget).toBeTruthy();
@@ -25,6 +30,6 @@ it('should render a vocabulary list creator after transition from empty vocabula
 
 function setup() {
   return {
-    fetchVocabularyList: createResource<VocabularyListApi[]>(() => []),
+    fetchVocabularyList: createResource<VocabularyList[]>(() => []),
   };
 }

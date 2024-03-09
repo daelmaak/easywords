@@ -4,7 +4,7 @@ import { createStore } from 'solid-js/store';
 import { Button } from '~/components/ui/button';
 import { WordTranslation } from '~/model/word-translation';
 import { VocabularyList } from '../../vocabulary-model';
-import { VocabularyListCreator } from './VocabularyListCreator';
+import { VocabularyCreator } from './VocabularyCreator';
 import { Skeleton } from '~/components/ui/skeleton';
 
 interface Props {
@@ -19,7 +19,7 @@ interface State {
   showCreator: boolean;
 }
 
-export const VocabularyListManager: Component<Props> = props => {
+export const VocabularyManager: Component<Props> = props => {
   const [vocabularyLists] = props.fetchVocabulary;
   const [state, setState] = createStore<State>({
     showCreator: false,
@@ -52,7 +52,7 @@ export const VocabularyListManager: Component<Props> = props => {
           </div>
         </Show>
         <Show when={state.showCreator}>
-          <VocabularyListCreator onListCreate={createList} />
+          <VocabularyCreator onListCreate={createList} />
         </Show>
         <Show when={!noLists() && !state.showCreator}>You have lists</Show>
       </Show>
