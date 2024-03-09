@@ -1,13 +1,30 @@
 import { get, set } from 'idb-keyval';
-import { Show, createEffect, createSignal } from 'solid-js';
-import { SimpleMdParser, WordTranslation } from '../../parser/simple-md-parser';
+import { HiOutlineXMark } from 'solid-icons/hi';
+import { For, JSX, Show, createEffect, createSignal } from 'solid-js';
+import { Badge } from '~/components/ui/badge';
+import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
+import { Label } from '~/components/ui/label';
+import {
+  RadioGroup,
+  RadioGroupItem,
+  RadioGroupItemLabel,
+} from '~/components/ui/radio-group';
+import { Textarea } from '~/components/ui/textarea';
+import { SimpleMdParser, WordTranslation } from '~/parser/simple-md-parser';
+
+export type WordsInputMode = 'text' | 'form';
+export const wordsInputModes: WordsInputMode[] = ['text', 'form'];
 
 export interface WordsInputProps {
-  onWordsSelect: (words: WordTranslation[]) => void;
-  reverse: boolean;
+  onWordsSelect?: (words: WordTranslation[]) => void;
+  children?: JSX.Element;
 }
 
 export function WordsInput(props: WordsInputProps) {
+  const [mode, setMode] = createSignal<WordsInputMode>('form');
+  const [words, setWords] = createSignal<WordTranslation[]>([]);
+
   const [fileHandle, setFileHandle] = createSignal<
     FileSystemHandle | undefined
   >(undefined);
@@ -48,61 +65,108 @@ export function WordsInput(props: WordsInputProps) {
     parseSource(text);
   }
 
-  function applyLastWords(lastWords: WordTranslation[]) {
-    props.onWordsSelect(lastWords);
-  }
-
-  async function onCPFormSubmit(e: SubmitEvent) {
+  async function onAddWord(e: SubmitEvent) {
     e.preventDefault();
 
     const formdata = new FormData(e.target as HTMLFormElement);
-    const words = parseSource(formdata.get('copypastesource') as string);
+    let original = formdata.get('original') as string;
+    let translation = formdata.get('translation') as string;
 
-    props.onWordsSelect(words);
+    if (!original || !translation) {
+      return;
+    }
+
+    original = original.trim();
+    translation = translation.trim();
+
+    setWords(w => w.concat({ original, translation }));
+
+    const form = e.target as HTMLFormElement;
+    form.reset();
+    form.querySelector('input')?.focus();
   }
 
   function parseSource(text: string) {
     const mdParser = new SimpleMdParser();
     const words = mdParser.parse(text);
 
-    props.onWordsSelect(words);
+    props.onWordsSelect?.(words);
 
     return words;
   }
 
-  function onKeyDownInCPForm(event: KeyboardEvent) {
-    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
-      (event.currentTarget as HTMLFormElement).requestSubmit();
-    }
+  function removeWord(word: WordTranslation) {
+    setWords(w => w.filter(w => w.original !== word.original));
   }
 
   return (
     <>
-      <form
-        class="p-2 bg-zinc-700 rounded-md"
-        onKeyDown={onKeyDownInCPForm}
-        onSubmit={onCPFormSubmit}
+      <RadioGroup
+        class="flex mb-4"
+        value={mode()}
+        onChange={m => setMode(m as WordsInputMode)}
       >
-        <textarea
-          class="peer input no-scrollbar block min-w-full [&:not(&:placeholder-shown)]:min-h-[10rem] text-sm  whitespace-pre"
-          name="copypastesource"
-          placeholder="Or paste words here"
-          rows="1"
-        ></textarea>
-        <button class="peer-[:placeholder-shown]:hidden btn-primary mt-4 shadow-zinc-800">
-          Apply
-        </button>
-      </form>
-      <div class="mt-2 text-xs text-center text-zinc-400">
-        words have to be in format:
-        <figure>
-          <pre class="mt-2">
-            original - translation
-            <br />
-            original2 - translation2
-          </pre>
-        </figure>
-      </div>
+        <For each={wordsInputModes}>
+          {mode => (
+            <RadioGroupItem value={mode}>
+              <RadioGroupItemLabel>{mode}</RadioGroupItemLabel>
+            </RadioGroupItem>
+          )}
+        </For>
+      </RadioGroup>
+
+      <Show when={mode() === 'form'}>
+        <form class="flex gap-2" id="words-form-input" onSubmit={onAddWord}>
+          <div class="flex flex-col gap-2">
+            <Label class="text-xs" for="original">
+              Original
+            </Label>
+            <Input id="original" name="original" />
+          </div>
+          <div class="flex flex-col gap-2">
+            <Label class="text-xs" for="translation">
+              Translation
+            </Label>
+            <Input id="translation" name="translation" />
+          </div>
+          <Button
+            class="ml-auto self-end"
+            form="words-form-input"
+            variant="link"
+            type="submit"
+          >
+            Add
+          </Button>
+        </form>
+        <div class="flex flex-wrap gap-2">
+          <For each={words()}>
+            {word => (
+              <Badge class="text-sm" variant="secondary">
+                {word.original} - {word.translation}
+                <HiOutlineXMark
+                  class="ml-1 cursor-pointer"
+                  onClick={() => removeWord(word)}
+                />
+              </Badge>
+            )}
+          </For>
+        </div>
+      </Show>
+
+      <Show when={mode() === 'text'}>
+        <Textarea id="words-input" name="words-input"></Textarea>
+        <div class="mt-2 text-xs text-center text-zinc-400">
+          words have to be in format:
+          <figure>
+            <pre class="mt-2">
+              original - translation
+              <br />
+              original2 - translation2
+            </pre>
+          </figure>
+        </div>
+      </Show>
+
       <Show when={false}>
         <p class="text-center my-4 text-zinc-400">/</p>
         <div class="mx-auto flex gap-4 justify-center">
