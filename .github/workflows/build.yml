@@ -1,0 +1,29 @@
+name: Build
+
+on:
+  push:
+    branches-ignore: [main]
+
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8.5.0
+
+      - name: Install
+        run: pnpm i
+
+      - name: Build
+        run: pnpm build
+
+      - name: Test
+        run: pnpm test
