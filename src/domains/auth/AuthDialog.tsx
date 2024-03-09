@@ -1,7 +1,17 @@
-import { Component, Show, createSignal } from 'solid-js';
-import { supabase } from '../../lib/supabase-client';
-import { Button } from '../../components/Button';
 import { AuthError } from '@supabase/supabase-js';
+import { Component, Show, createSignal } from 'solid-js';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '~/components/ui/dialog';
+import { Input } from '~/components/ui/input';
+import { Label } from '~/components/ui/label';
+import { supabase } from '../../lib/supabase-client';
+import { Button } from '~/components/ui/button';
 
 type AuthMode = 'signin' | 'signup';
 
@@ -9,7 +19,6 @@ interface Props {
   mode: AuthMode;
   onSignIn: () => void;
   onSignUp: () => void;
-  ref: HTMLDialogElement | undefined;
 }
 
 export const AuthDialog: Component<Props> = props => {
@@ -59,41 +68,58 @@ export const AuthDialog: Component<Props> = props => {
   };
 
   return (
-    <dialog ref={props.ref} class="w-80">
-      <h2 class="mb-4 text-zinc-200 text-xl text-center">
-        {mode() === 'signin' ? 'Sign in' : 'Sign up'}
-      </h2>
-      <form class="flex flex-col" onSubmit={onSubmit}>
-        <label for="email">Email</label>
-        <input name="email" id="email" type="email" class="input mt-1 mb-4" />
-        <label for="password">Password</label>
-        <input
-          name="password"
-          id="password"
-          type="password"
-          class="input mt-1 mb-6"
-        />
-        <Show when={authError()}>
-          {error => <span class="text-red-500">{error().message}</span>}
-        </Show>
-        <Button type="submit">
-          {mode() === 'signin' ? 'Sign in' : 'Sign up'}
-        </Button>
-      </form>
-      <p class="mt-4 text-center text-sm">
-        <Show when={mode() === 'signin'}>
-          New here?{' '}
-          <Button style="link" onClick={() => changeMode('signup')}>
-            Create an account.
+    <Dialog>
+      <DialogTrigger as={Button}>Sign In</DialogTrigger>
+      <DialogContent class="w-96 sm:max-w-full"  onPointerDownOutside={e => e.preventDefault()}>
+        <DialogHeader>
+          <DialogTitle>
+            {mode() === 'signin' ? 'Sign in' : 'Sign up'}
+          </DialogTitle>
+        </DialogHeader>
+        <form class="grid gap-4 pt-4" onSubmit={onSubmit}>
+          <div class="mb-4 flex flex-col gap-2">
+            <Label for="email">Email</Label>
+            <Input name="email" id="email" type="email" class="col-span-3" />
+          </div>
+          <div class="mb-4 flex flex-col gap-2">
+            <Label for="password">Password</Label>
+            <Input
+              name="password"
+              id="password"
+              type="password"
+              class="col-span-3"
+            />
+          </div>
+          <Show when={authError()}>
+            {error => <span class="text-red-500">{error().message}</span>}
+          </Show>
+          <Button type="submit">
+            {mode() === 'signin' ? 'Sign in' : 'Sign up'}
           </Button>
-        </Show>
-        <Show when={mode() === 'signup'}>
-          or{' '}
-          <Button style="link" onClick={() => changeMode('signin')}>
-            sign into your account.
-          </Button>
-        </Show>
-      </p>
-    </dialog>
+        </form>
+        <p class="text-center">
+          <Show when={mode() === 'signin'}>
+            New here?
+            <Button
+              class="px-2"
+              variant="link"
+              onClick={() => changeMode('signup')}
+            >
+              Create an account.
+            </Button>
+          </Show>
+          <Show when={mode() === 'signup'}>
+            or
+            <Button
+              class="px-2"
+              variant="link"
+              onClick={() => changeMode('signin')}
+            >
+              sign into your account.
+            </Button>
+          </Show>
+        </p>
+      </DialogContent>
+    </Dialog>
   );
 };

@@ -1,9 +1,9 @@
+import { HiSolidPlus } from 'solid-icons/hi';
 import { Component, ResourceReturn, Show } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { Button } from '../../../../components/Button';
-import { Icon } from '../../../../components/Icon';
-import { VocabularyListCreator } from './VocabularyListCreator';
+import { Button } from '~/components/ui/button';
 import { VocabularyList } from '../../vocabulary-model';
+import { VocabularyListCreator } from './VocabularyListCreator';
 
 interface Props {
   fetchVocabulary: ResourceReturn<VocabularyList[]>;
@@ -30,8 +30,8 @@ export const VocabularyListManager: Component<Props> = props => {
         >
           <h2 class="text-xl text-center">Create your first vocabulary!</h2>
           <Button type="button" onClick={() => setState('showCreator', true)}>
+            <HiSolidPlus size={20} />
             Create
-            <Icon icon="plus" />
           </Button>
         </div>
       </Show>

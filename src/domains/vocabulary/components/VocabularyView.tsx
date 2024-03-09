@@ -54,8 +54,8 @@ export const VocabularyView = () => {
   }
 
   return (
-    <div class="h-full grid grid-rows-[auto_4rem_1rem]">
-      <div class="m-auto">
+    <div class="h-full w-full grid">
+      <div class="my-auto w-full">
         <VocabularyListManager fetchVocabulary={fetchVocabulary} />
 
         <Show when={!done()}>
