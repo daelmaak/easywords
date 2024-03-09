@@ -23,30 +23,25 @@ export const VocabularyCreator: Component<Props> = props => {
   };
 
   return (
-    <Card class="mx-auto w-[min(30rem,100%)]">
-      <CardHeader>
-        <h2>Your new vocabulary list</h2>
-      </CardHeader>
-      <CardContent>
-        <form
-          class="card"
-          data-testid="list-creator"
-          id="list-creator-form"
-          onSubmit={submit}
-        >
-          <div class="mb-4 flex flex-col gap-2">
-            <Label for="list-name">List name</Label>
-            <Input id="list-name" name="listName" />
-          </div>
-        </form>
+    <>
+      <form
+        class="card"
+        data-testid="list-creator"
+        id="list-creator-form"
+        onSubmit={submit}
+      >
         <div class="mb-4 flex flex-col gap-2">
-          <Label>Words</Label>
-          <WordsInput onWordsChange={setWords} />
+          <Label for="list-name">List name</Label>
+          <Input id="list-name" name="listName" />
         </div>
-        <Button class="w-full" form="list-creator-form" type="submit">
-          Create
-        </Button>
-      </CardContent>
-    </Card>
+      </form>
+      <div class="mb-4 flex flex-col gap-2">
+        <Label>Words</Label>
+        <WordsInput onWordsChange={setWords} />
+      </div>
+      <Button class="w-full" form="list-creator-form" type="submit">
+        Create
+      </Button>
+    </>
   );
 };
