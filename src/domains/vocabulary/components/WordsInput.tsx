@@ -1,6 +1,5 @@
-import { get, set } from 'idb-keyval';
 import { HiOutlineXMark } from 'solid-icons/hi';
-import { For, JSX, Show, createEffect, createSignal } from 'solid-js';
+import { For, Show, createSignal } from 'solid-js';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
@@ -11,59 +10,25 @@ import {
   RadioGroupItemLabel,
 } from '~/components/ui/radio-group';
 import { Textarea } from '~/components/ui/textarea';
-import { SimpleMdParser, WordTranslation } from '~/parser/simple-md-parser';
+import { WordTranslation } from '~/model/word-translation';
+
+const l10n: { mode: Record<WordsInputMode, string> } = {
+  mode: {
+    text: 'raw',
+    form: 'interactive',
+  },
+};
 
 export type WordsInputMode = 'text' | 'form';
-export const wordsInputModes: WordsInputMode[] = ['text', 'form'];
+export const wordsInputModes: WordsInputMode[] = ['form', 'text'];
 
 export interface WordsInputProps {
-  onWordsSelect?: (words: WordTranslation[]) => void;
-  children?: JSX.Element;
+  onWordsChange?: (words: WordTranslation[]) => void;
 }
 
 export function WordsInput(props: WordsInputProps) {
   const [mode, setMode] = createSignal<WordsInputMode>('form');
   const [words, setWords] = createSignal<WordTranslation[]>([]);
-
-  const [fileHandle, setFileHandle] = createSignal<
-    FileSystemHandle | undefined
-  >(undefined);
-
-  createEffect(async () => {
-    setFileHandle(await get<FileSystemHandle>('file-handle'));
-  });
-
-  async function reuseFile(fileHandle: FileSystemHandle) {
-    if ((await fileHandle.requestPermission()) !== 'granted') {
-      return;
-    }
-
-    applyFile(fileHandle);
-  }
-
-  async function pickFile() {
-    let fileHandle: FileSystemHandle | undefined;
-
-    try {
-      [fileHandle] = await window.showOpenFilePicker();
-    } catch {}
-
-    if (!fileHandle) {
-      return;
-    }
-
-    setFileHandle(fileHandle);
-    set('file-handle', fileHandle);
-
-    applyFile(fileHandle);
-  }
-
-  async function applyFile(fileHandle: FileSystemHandle) {
-    const file = await fileHandle.getFile();
-    const text = await file.text();
-
-    parseSource(text);
-  }
 
   async function onAddWord(e: SubmitEvent) {
     e.preventDefault();
@@ -84,19 +49,13 @@ export function WordsInput(props: WordsInputProps) {
     const form = e.target as HTMLFormElement;
     form.reset();
     form.querySelector('input')?.focus();
-  }
 
-  function parseSource(text: string) {
-    const mdParser = new SimpleMdParser();
-    const words = mdParser.parse(text);
-
-    props.onWordsSelect?.(words);
-
-    return words;
+    props.onWordsChange?.(words());
   }
 
   function removeWord(word: WordTranslation) {
     setWords(w => w.filter(w => w.original !== word.original));
+    props.onWordsChange?.(words());
   }
 
   return (
@@ -109,7 +68,9 @@ export function WordsInput(props: WordsInputProps) {
         <For each={wordsInputModes}>
           {mode => (
             <RadioGroupItem value={mode}>
-              <RadioGroupItemLabel>{mode}</RadioGroupItemLabel>
+              <RadioGroupItemLabel class="text-xs">
+                {l10n.mode[mode]}
+              </RadioGroupItemLabel>
             </RadioGroupItem>
           )}
         </For>
@@ -118,16 +79,16 @@ export function WordsInput(props: WordsInputProps) {
       <Show when={mode() === 'form'}>
         <form class="flex gap-2" id="words-form-input" onSubmit={onAddWord}>
           <div class="flex flex-col gap-2">
-            <Label class="text-xs" for="original">
+            <Label class="text-xs" for="word-original">
               Original
             </Label>
-            <Input id="original" name="original" />
+            <Input id="word-original" name="original" />
           </div>
           <div class="flex flex-col gap-2">
-            <Label class="text-xs" for="translation">
+            <Label class="text-xs" for="word-translation">
               Translation
             </Label>
-            <Input id="translation" name="translation" />
+            <Input id="word-translation" name="translation" />
           </div>
           <Button
             class="ml-auto self-end"
@@ -164,22 +125,6 @@ export function WordsInput(props: WordsInputProps) {
               original2 - translation2
             </pre>
           </figure>
-        </div>
-      </Show>
-
-      <Show when={false}>
-        <p class="text-center my-4 text-zinc-400">/</p>
-        <div class="mx-auto flex gap-4 justify-center">
-          <Show keyed={true} when={fileHandle()}>
-            {fh => (
-              <button class="btn-link" onClick={() => reuseFile(fh)}>
-                Open "{fh.name}"
-              </button>
-            )}
-          </Show>
-          <button class="btn-link" onClick={pickFile}>
-            Pick file
-          </button>
         </div>
       </Show>
     </>

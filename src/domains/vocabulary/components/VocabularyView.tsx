@@ -1,6 +1,6 @@
 import { Show, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { WordTranslation } from '../../../parser/simple-md-parser';
+import { WordTranslation } from '~/model/word-translation';
 import { Results } from './Results';
 import {
   VocabularySettings,
@@ -9,6 +9,7 @@ import {
 import { VocabularyTester } from './VocabularyTester';
 import { VocabularyListManager } from './list-manager/VocabularyListManager';
 import { fetchVocabulary } from '../resources/vocabulary-resources';
+import { createVocabularyList } from '../resources/vocabulary-api';
 
 export const VocabularyView = () => {
   const [vocabularySettings, setVocabularySettings] =
@@ -48,15 +49,13 @@ export const VocabularyView = () => {
     setDone(false);
   }
 
-  async function selectWords(words: WordTranslation[]) {
-    setInvalidWords();
-    setWords(words);
-  }
-
   return (
     <div class="h-full w-full grid">
       <div class="my-auto w-full">
-        <VocabularyListManager fetchVocabulary={fetchVocabulary} />
+        <VocabularyListManager
+          createVocabulary={createVocabularyList}
+          fetchVocabulary={fetchVocabulary}
+        />
 
         <Show when={!done()}>
           <Show keyed={true} when={words()}>

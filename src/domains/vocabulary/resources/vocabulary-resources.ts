@@ -1,21 +1,6 @@
-import { createResource } from 'solid-js';
-import { supabase } from '../../../lib/supabase-client';
-import { ResourceReturn } from 'solid-js';
+import { ResourceReturn, createResource } from 'solid-js';
+import { fetchVocabularyLists } from './vocabulary-api';
 import { VocabularyList } from '../vocabulary-model';
 
-export const fetchVocabulary: ResourceReturn<VocabularyList[]> = createResource(
-  async () => {
-    const result = await supabase.from('vocabulary_lists').select(
-      `
-    id, 
-    name,
-    vocabulary_items (
-      id,
-      original,
-      translation
-    )`
-    );
-
-    return result.data ?? [];
-  }
-);
+export const fetchVocabulary: ResourceReturn<VocabularyList[]> =
+  createResource(fetchVocabularyLists);

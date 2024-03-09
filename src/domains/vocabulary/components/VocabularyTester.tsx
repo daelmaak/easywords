@@ -6,7 +6,7 @@ import {
   onCleanup,
 } from 'solid-js';
 import { Progress } from '../../../components/Progress';
-import { WordTranslation } from '../../../parser/simple-md-parser';
+import { WordTranslation } from '~/model/word-translation';
 import { mergeWords } from '../../../util/merge-arrays';
 import { nextWord } from '../../../worder/worder';
 import { WriteTester } from './WriteTester';
