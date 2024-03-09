@@ -1,7 +1,7 @@
 import { Show, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { WordTranslation } from '~/model/word-translation';
-import { createVocabularyList } from '../resources/vocabulary-api';
+import { vocabularyApi } from '../resources/vocabulary-api';
 import { fetchVocabulary } from '../resources/vocabulary-resources';
 import { Results } from './Results';
 import {
@@ -9,7 +9,7 @@ import {
   VocabularyUserSettings,
 } from './VocabularySettings';
 import { VocabularyTester } from './VocabularyTester';
-import { VocabularyManager } from './list-manager/VocabularyManager';
+import { VocabularyOverview } from './list-manager/VocabularyOverview';
 
 export const VocabularyView = () => {
   const [vocabularySettings, setVocabularySettings] =
@@ -51,45 +51,43 @@ export const VocabularyView = () => {
 
   return (
     <div class="h-full w-full grid">
-      <div class="my-auto w-full">
-        <VocabularyManager
-          createVocabulary={createVocabularyList}
-          fetchVocabulary={fetchVocabulary}
+      <VocabularyOverview
+        vocabularyApi={vocabularyApi}
+        fetchVocabulary={fetchVocabulary}
+      />
+
+      <Show when={!done()}>
+        <Show keyed={true} when={words()}>
+          {w => (
+            <>
+              <VocabularyTester
+                mode={vocabularySettings.mode}
+                repeatInvalid={vocabularySettings.repeatInvalid}
+                reverse={vocabularySettings.reverseTranslations}
+                words={w}
+                done={onDone}
+                repeat={onRepeat}
+                reset={onReset}
+              />
+              <VocabularySettings
+                settings={vocabularySettings}
+                onChange={setVocabularySettings}
+              />
+            </>
+          )}
+        </Show>
+      </Show>
+
+      <Show when={done()}>
+        <Results
+          invalidWords={invalidWords()}
+          removedWords={removedWords()}
+          words={words()}
+          repeat={onRepeat}
+          reset={onReset}
+          tryInvalidWords={onTryInvalidWords}
         />
-
-        <Show when={!done()}>
-          <Show keyed={true} when={words()}>
-            {w => (
-              <>
-                <VocabularyTester
-                  mode={vocabularySettings.mode}
-                  repeatInvalid={vocabularySettings.repeatInvalid}
-                  reverse={vocabularySettings.reverseTranslations}
-                  words={w}
-                  done={onDone}
-                  repeat={onRepeat}
-                  reset={onReset}
-                />
-                <VocabularySettings
-                  settings={vocabularySettings}
-                  onChange={setVocabularySettings}
-                />
-              </>
-            )}
-          </Show>
-        </Show>
-
-        <Show when={done()}>
-          <Results
-            invalidWords={invalidWords()}
-            removedWords={removedWords()}
-            words={words()}
-            repeat={onRepeat}
-            reset={onReset}
-            tryInvalidWords={onTryInvalidWords}
-          />
-        </Show>
-      </div>
+      </Show>
 
       <Show when={words()}>
         <button

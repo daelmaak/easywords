@@ -48,3 +48,18 @@ export const createVocabularyList = async (
 
   return !itemsResult.error;
 };
+
+export const deleteVocabularyList = async (id: number) => {
+  const result = await supabase.from('vocabulary_lists').delete().match({ id });
+
+  return !result.error;
+};
+
+export const vocabularyApi = {
+  fetchVocabularyLists,
+  createVocabularyList,
+  deleteVocabularyList,
+};
+
+export type VocabularyApi = typeof vocabularyApi;
+
