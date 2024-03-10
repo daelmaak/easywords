@@ -30,7 +30,7 @@ export function WordsInput(props: WordsInputProps) {
   const [mode, setMode] = createSignal<WordsInputMode>('form');
   const [words, setWords] = createSignal<WordTranslation[]>([]);
 
-  async function onAddWord(e: SubmitEvent) {
+  function onAddWord(e: SubmitEvent) {
     e.preventDefault();
 
     const formdata = new FormData(e.target as HTMLFormElement);
@@ -51,6 +51,20 @@ export function WordsInput(props: WordsInputProps) {
     form.querySelector('input')?.focus();
 
     props.onWordsChange?.(words());
+  }
+
+  function onAddWordsFromTextArea(e: Event) {
+    const textarea = e.target as HTMLTextAreaElement;
+    const words = textarea.value
+      .split('\n')
+      .filter(l => l)
+      .map(line => {
+        const [original, translation] = line.split(' - ').map(w => w.trim());
+        return { original, translation };
+      });
+
+    setWords(words);
+    props.onWordsChange?.(words);
   }
 
   function removeWord(word: WordTranslation) {
@@ -115,7 +129,11 @@ export function WordsInput(props: WordsInputProps) {
       </Show>
 
       <Show when={mode() === 'text'}>
-        <Textarea id="words-input" name="words-input"></Textarea>
+        <Textarea
+          id="words-input"
+          name="words-input"
+          onBlur={onAddWordsFromTextArea}
+        ></Textarea>
         <div class="mt-2 text-xs text-center text-zinc-400">
           words have to be in format:
           <figure>
