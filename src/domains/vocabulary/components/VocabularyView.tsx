@@ -50,7 +50,7 @@ export const VocabularyView = () => {
   }
 
   return (
-    <div class="h-full w-full grid">
+    <>
       <VocabularyOverview
         vocabularyApi={vocabularyApi}
         fetchVocabulary={fetchVocabulary}
@@ -97,6 +97,6 @@ export const VocabularyView = () => {
           Go back
         </button>
       </Show>
-    </div>
+    </>
   );
 };
