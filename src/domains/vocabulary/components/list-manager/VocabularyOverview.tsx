@@ -58,7 +58,7 @@ export const VocabularyOverview: Component<Props> = props => {
           </Sheet>
         </div>
 
-        <section class="h-full flex flex-wrap gap-4">
+        <section class="h-full flex flex-col sm:grid sm:items-start sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
           <For
             each={vocabularies()}
             fallback={
@@ -77,15 +77,18 @@ export const VocabularyOverview: Component<Props> = props => {
                     onClick={() => onDeleteVocabulary(list.id)}
                   />
                 </CardHeader>
-                <CardContent>
+                <CardContent class="max-h-80 overflow-hidden">
                   <ul>
-                    <For each={list.vocabularyItems}>
+                    <For each={list.vocabularyItems.slice(0, 10)}>
                       {item => (
                         <li>
                           {item.original} - {item.translation}
                         </li>
                       )}
                     </For>
+                    <Show when={list.vocabularyItems.length > 10}>
+                      <li class="text-center">...</li>
+                    </Show>
                   </ul>
                 </CardContent>
               </Card>
