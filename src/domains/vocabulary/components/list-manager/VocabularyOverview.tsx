@@ -51,7 +51,7 @@ export const VocabularyOverview: Component<Props> = props => {
             open={createVocabularyOpen()}
             onOpenChange={open => setCreateVocabularyOpen(open)}
           >
-            <SheetContent size="content">
+            <SheetContent class="w-svw sm:w-[30rem]">
               <h2 class="text-lg font-bold mb-4">New vocabulary list</h2>
               <VocabularyCreator onListCreate={onCreateVocabulary} />
             </SheetContent>

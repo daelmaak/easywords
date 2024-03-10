@@ -1,10 +1,9 @@
 import { Component, createSignal } from 'solid-js';
 import { Button } from '~/components/ui/button';
-import { Card, CardContent, CardHeader } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
-import { WordsInput } from '../WordsInput';
 import { WordTranslation } from '~/model/word-translation';
+import { WordsInput } from '../WordsInput';
 
 interface Props {
   onListCreate: (name: string, words: WordTranslation[]) => void;
@@ -25,7 +24,7 @@ export const VocabularyCreator: Component<Props> = props => {
   return (
     <>
       <form
-        class="card"
+        class="w-full"
         data-testid="list-creator"
         id="list-creator-form"
         onSubmit={submit}
