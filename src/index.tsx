@@ -1,4 +1,4 @@
-import { HashRouter, Route } from '@solidjs/router';
+import { Router, Route } from '@solidjs/router';
 import { render } from 'solid-js/web';
 
 import App from './components/App';
@@ -16,14 +16,14 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 
 render(
   () => (
-    <HashRouter root={App}>
+    <Router root={App}>
       <Route path="/" component={VocabularyView} />
       <Route path="/vocabulary" component={VocabularyView} />
       <Route
         path={['/conjugations', '/conjugations/:verb']}
         component={ConjugationsView}
       />
-    </HashRouter>
+    </Router>
   ),
   root!
 );
