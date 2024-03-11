@@ -1,17 +1,14 @@
 import { Show, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { WordTranslation } from '~/model/word-translation';
-import { vocabularyApi } from '../resources/vocabulary-api';
-import { fetchVocabulary } from '../resources/vocabulary-resources';
 import { Results } from './Results';
 import {
   VocabularySettings,
   VocabularyUserSettings,
 } from './VocabularySettings';
 import { VocabularyTester } from './VocabularyTester';
-import { VocabularyOverview } from './list-manager/VocabularyOverview';
 
-export const VocabularyView = () => {
+export const VocabularyTestPage = () => {
   const [vocabularySettings, setVocabularySettings] =
     createStore<VocabularyUserSettings>({
       mode: 'write',
@@ -51,11 +48,6 @@ export const VocabularyView = () => {
 
   return (
     <>
-      <VocabularyOverview
-        vocabularyApi={vocabularyApi}
-        fetchVocabulary={fetchVocabulary}
-      />
-
       <Show when={!done()}>
         <Show keyed={true} when={words()}>
           {w => (
