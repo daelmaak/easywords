@@ -68,30 +68,11 @@ export const VocabularyOverview: Component<Props> = props => {
             }
           >
             {list => (
-              <Card>
-                <CardHeader class="flex flex-row justify-between items-center gap-4">
-                  <CardTitle>{list.name}</CardTitle>
-                  <HiOutlineTrash
-                    class="cursor-pointer"
-                    size={16}
-                    onClick={() => onDeleteVocabulary(list.id)}
-                  />
-                </CardHeader>
-                <CardContent class="max-h-80 overflow-hidden">
-                  <ul>
-                    <For each={list.vocabularyItems.slice(0, 10)}>
-                      {item => (
-                        <li>
-                          {item.original} - {item.translation}
-                        </li>
-                      )}
-                    </For>
-                    <Show when={list.vocabularyItems.length > 10}>
-                      <li class="text-center">...</li>
-                    </Show>
-                  </ul>
-                </CardContent>
-              </Card>
+              <VocabularyCard
+                list={list}
+                onDeleteVocabulary={onDeleteVocabulary}
+                onTestVocabulary={onTestVocabulary}
+              />
             )}
           </For>
         </section>
