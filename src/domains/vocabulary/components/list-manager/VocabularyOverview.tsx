@@ -1,13 +1,14 @@
-import { HiOutlinePlus, HiOutlineTrash } from 'solid-icons/hi';
+import { useNavigate } from '@solidjs/router';
+import { HiOutlinePlus } from 'solid-icons/hi';
 import { Component, For, ResourceReturn, Show, createSignal } from 'solid-js';
 import { Button } from '~/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { Sheet, SheetContent } from '~/components/ui/sheet';
+import { Skeleton } from '~/components/ui/skeleton';
 import { WordTranslation } from '~/model/word-translation';
 import { VocabularyApi } from '../../resources/vocabulary-api';
 import { VocabularyList } from '../../vocabulary-model';
+import { VocabularyCard } from './VocabularyCard';
 import { VocabularyCreator } from './VocabularyCreator';
-import { Skeleton } from '~/components/ui/skeleton';
 
 type Props = {
   fetchVocabulary: ResourceReturn<VocabularyList[]>;
@@ -17,6 +18,8 @@ type Props = {
 export const VocabularyOverview: Component<Props> = props => {
   const [vocabularies, vocabulariesAction] = props.fetchVocabulary;
   const [createVocabularyOpen, setCreateVocabularyOpen] = createSignal(false);
+
+  const navigate = useNavigate();
 
   const loading = () => vocabularies() == null;
 
@@ -37,6 +40,10 @@ export const VocabularyOverview: Component<Props> = props => {
     if (success) {
       vocabulariesAction.mutate(l => l?.filter(list => list.id !== id));
     }
+  }
+
+  function onTestVocabulary(id: number) {
+    navigate(`/vocabulary/${id}/test`);
   }
 
   return (

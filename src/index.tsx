@@ -1,9 +1,10 @@
-import { Router, Route } from '@solidjs/router';
+import { Route, Router } from '@solidjs/router';
 import { render } from 'solid-js/web';
 
 import App from './components/App';
 import { ConjugationsView } from './domains/conjugations/components/ConjugationsView';
-import { VocabularyView } from './domains/vocabulary/components/VocabularyView';
+import { VocabularyTestPage } from './domains/vocabulary/components/VocabularyTestPage';
+import { VocabularyPage } from './domains/vocabulary/components/list-manager/VocabularyPage';
 import './index.css';
 
 const root = document.getElementById('root');
@@ -17,12 +18,15 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 render(
   () => (
     <Router root={App}>
-      <Route path="/" component={VocabularyView} />
-      <Route path="/vocabulary" component={VocabularyView} />
+      <Route path="/vocabulary">
+        <Route path="/" component={VocabularyPage} />
+        <Route path="/:id/test" component={VocabularyTestPage} />
+      </Route>
       <Route
         path={['/conjugations', '/conjugations/:verb']}
         component={ConjugationsView}
       />
+      <Route path="/" component={VocabularyPage} />
     </Router>
   ),
   root!

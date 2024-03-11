@@ -42,11 +42,12 @@ export const VocabularyCard: Component<Props> = props => {
         </ul>
       </CardContent>
       <CardFooter>
-        <Button class="ml-auto" size="sm">
-          <HiOutlineAcademicCap
-            class="mr-1"
-            onClick={() => props.onTestVocabulary(props.list.id)}
-          />
+        <Button
+          class="ml-auto"
+          size="sm"
+          onClick={() => props.onTestVocabulary(props.list.id)}
+        >
+          <HiOutlineAcademicCap class="mr-1" />
           Test
         </Button>
       </CardFooter>
