@@ -66,19 +66,23 @@ export const VocabularyTestPage = () => {
         <Show keyed={true} when={words()}>
           {w => (
             <>
-              <VocabularyTester
-                mode={vocabularySettings.mode}
-                repeatInvalid={vocabularySettings.repeatInvalid}
-                reverse={vocabularySettings.reverseTranslations}
-                words={w}
-                done={onDone}
-                repeat={onRepeat}
-                reset={onReset}
-              />
-              <VocabularySettings
-                settings={vocabularySettings}
-                onChange={setVocabularySettings}
-              />
+              <div class="m-auto">
+                <VocabularyTester
+                  mode={vocabularySettings.mode}
+                  repeatInvalid={vocabularySettings.repeatInvalid}
+                  reverse={vocabularySettings.reverseTranslations}
+                  words={w}
+                  done={onDone}
+                  repeat={onRepeat}
+                  reset={onReset}
+                />
+              </div>
+              <div class="mt-auto">
+                <VocabularySettings
+                  settings={vocabularySettings}
+                  onChange={setVocabularySettings}
+                />
+              </div>
             </>
           )}
         </Show>

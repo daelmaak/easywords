@@ -1,3 +1,4 @@
+import { HiOutlineCheck, HiOutlineXCircle } from 'solid-icons/hi';
 import {
   Component,
   Show,
@@ -6,6 +7,7 @@ import {
   createSignal,
   onMount,
 } from 'solid-js';
+import { Input } from '~/components/ui/input';
 
 export interface WriteTesterInstance {
   input: HTMLInputElement;
@@ -121,18 +123,22 @@ export const WriteTester: Component<WriteTesterProps> = props => {
   }
 
   return (
-    <form class="relative whitespace-nowrap" onSubmit={onSubmit}>
+    <form class="relative flex items-center" onSubmit={onSubmit}>
       <span
-        class="absolute left-2 bottom-[-1.5rem] text-base"
+        class="absolute left-2 top-[-2rem] text-base"
         classList={{ invisible: !props.peek }}
       >
         {props.translation}
       </span>
-      <input ref={inputRef} class="input w-56" type="text" onBlur={onBlur} />
+      <Input ref={inputRef} class="text-lg w-56" type="text" onBlur={onBlur} />
       <button class="invisible" />
       <span class="inline-block ml-2 w-6">
         <Show when={valid() != null}>
-          {valid() ? <i class="text-green-600">✓</i> : <i>❌</i>}
+          {valid() ? (
+            <HiOutlineCheck class="text-primary" size={32} />
+          ) : (
+            <HiOutlineXCircle class="text-red-500" size={32} />
+          )}
         </Show>
       </span>
     </form>
