@@ -2,8 +2,8 @@ import { Component, createSignal } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
+import { WordsInput } from '~/domains/vocabulary-testing/components/WordsInput';
 import { WordTranslation } from '~/model/word-translation';
-import { WordsInput } from '../WordsInput';
 
 interface Props {
   onListCreate: (name: string, words: WordTranslation[]) => void;

@@ -2,9 +2,9 @@ import { Component, createSignal, For, Show } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { Conjugation, ConjugationByTense } from '../conjugation';
 import {
-  WriteTester,
   WriteTesterInstance,
-} from '../../vocabulary/components/WriteTester';
+  WriteTester,
+} from '~/domains/vocabulary-testing/components/WriteTester';
 
 interface Props {
   conjugations: ConjugationByTense[];
