@@ -1,6 +1,6 @@
 import { get, set } from 'idb-keyval';
 import { Component, Show, createEffect, createSignal } from 'solid-js';
-import { Toggle } from '../../../components/Toggle';
+import { Switch } from '~/components/ui/switch';
 import { VocabularyTestMode } from './VocabularyTester';
 
 export interface VocabularyUserSettings {
@@ -40,18 +40,18 @@ export const VocabularySettings: Component<Props> = props => {
 
   return (
     <Show when={loaded()}>
-      <div class="flex flex-wrap justify-center gap-4 text-sm text-zinc-400">
-        <Toggle
+      <div class="flex flex-wrap justify-center gap-4">
+        <Switch
           checked={props.settings.reverseTranslations}
           label="Reverse"
           onChange={checked => changeSetting('reverseTranslations', checked)}
         />
-        <Toggle
+        <Switch
           checked={props.settings.repeatInvalid}
           label="Repeat incorrect words"
           onChange={checked => changeSetting('repeatInvalid', checked)}
         />
-        <Toggle
+        <Switch
           checked={props.settings.mode === 'write'}
           label="Write words"
           onChange={checked =>

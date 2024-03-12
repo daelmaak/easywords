@@ -5,11 +5,13 @@ import {
   createSignal,
   onCleanup,
 } from 'solid-js';
-import { Progress } from '../../../components/Progress';
 import { WordTranslation } from '~/model/word-translation';
 import { mergeWords } from '../../../util/merge-arrays';
 import { nextWord } from '../../../worder/worder';
 import { WriteTester } from './WriteTester';
+import { Button } from '~/components/ui/button';
+import { HiOutlineEye, HiOutlineTrash } from 'solid-icons/hi';
+import { Progress } from '~/components/ui/progress';
 
 export type VocabularyTestMode = 'guess' | 'write';
 
@@ -145,26 +147,30 @@ export const VocabularyTester: Component<TesterProps> = (
   setNextWord();
 
   return (
-    <div>
+    <>
       <div
-        class="mb-8 grid grid-cols-[1fr_2rem_1fr] items-center text-2xl"
+        class="mb-10 grid grid-cols-[1fr_2rem_1fr] items-start text-2xl"
         classList={{ invisible: !currentWord() }}
       >
-        <span class="text-right">
-          <button
-            title="Remove word"
-            class="text-md mr-2 translate-y-[1px] btn-link"
+        <span class="flex items-center justify-end">
+          <Button
+            class="translate-y-[1px] opacity-60"
+            title="Remove word from vocabulary"
+            size="icon"
+            variant="ghost"
             onClick={removeWord}
           >
-            🗑
-          </button>
-          <button
+            <HiOutlineTrash size={24} />
+          </Button>
+          <Button
+            class="mr-2 translate-y-[1px] opacity-60"
             title="Peek"
-            class="text-md mr-4 translate-y-[1px] btn-link"
+            size="icon"
+            variant="ghost"
             onClick={togglePeek}
           >
-            👁
-          </button>
+            <HiOutlineEye size={24} />
+          </Button>
           {toTranslate()}
         </span>
         <span class="text-center text-zinc-500">|</span>
@@ -187,20 +193,20 @@ export const VocabularyTester: Component<TesterProps> = (
       </div>
       <Show when={currentWord() && !done()}>
         <div class="flex justify-center gap-4">
-          <button class="btn-primary" onClick={setNextWord}>
+          <Button class="btn-primary" variant="outline" onClick={setNextWord}>
             Next
-          </button>
-          <button class="btn-link" onClick={finish}>
-            Finish
-          </button>
+          </Button>
+          <Button class="btn-link" variant="outline" onClick={finish}>
+            Finish test
+          </Button>
         </div>
       </Show>
 
       <Progress
-        percentage={percentageDone()}
-        ariaLabel="Words done percentage"
+        value={percentageDone()}
+        aria-label="Words done percentage"
         class="mt-20 mx-auto w-80"
       />
-    </div>
+    </>
   );
 };
