@@ -1,5 +1,6 @@
 import { HiOutlineAcademicCap, HiOutlineTrash } from 'solid-icons/hi';
 import { Component, For, Show } from 'solid-js';
+import { Button } from '~/components/ui/button';
 import {
   Card,
   CardContent,
@@ -7,8 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/ui/card';
-import { VocabularyList } from '../../vocabulary-model';
-import { Button } from '~/components/ui/button';
+import { VocabularyList } from '../vocabulary-model';
 
 export type Props = {
   list: VocabularyList;

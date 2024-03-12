@@ -5,10 +5,10 @@ import { Button } from '~/components/ui/button';
 import { Sheet, SheetContent } from '~/components/ui/sheet';
 import { Skeleton } from '~/components/ui/skeleton';
 import { WordTranslation } from '~/model/word-translation';
-import { VocabularyApi } from '../../resources/vocabulary-api';
-import { VocabularyList } from '../../vocabulary-model';
 import { VocabularyCard } from './VocabularyCard';
 import { VocabularyCreator } from './VocabularyCreator';
+import { VocabularyApi } from '../resources/vocabulary-api';
+import { VocabularyList } from '../vocabulary-model';
 
 type Props = {
   fetchVocabulary: ResourceReturn<VocabularyList[]>;

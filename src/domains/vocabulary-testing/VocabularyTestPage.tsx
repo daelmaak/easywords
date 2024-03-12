@@ -1,12 +1,12 @@
 import { Show, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { WordTranslation } from '~/model/word-translation';
-import { Results } from './Results';
+import { Results } from './components/Results';
 import {
   VocabularySettings,
   VocabularyUserSettings,
-} from './VocabularySettings';
-import { VocabularyTester } from './VocabularyTester';
+} from './components/VocabularySettings';
+import { VocabularyTester } from './components/VocabularyTester';
 
 export const VocabularyTestPage = () => {
   const [vocabularySettings, setVocabularySettings] =

@@ -3,8 +3,8 @@ import { render } from 'solid-js/web';
 
 import App from './components/App';
 import { ConjugationsView } from './domains/conjugations/components/ConjugationsView';
-import { VocabularyTestPage } from './domains/vocabulary/components/VocabularyTestPage';
-import { VocabularyPage } from './domains/vocabulary/components/list-manager/VocabularyPage';
+import { VocabulariesPage } from './domains/vocabularies/VocabulariesPage';
+import { VocabularyTestPage } from './domains/vocabulary-testing/VocabularyTestPage';
 import './index.css';
 
 const root = document.getElementById('root');
@@ -19,14 +19,14 @@ render(
   () => (
     <Router root={App}>
       <Route path="/vocabulary">
-        <Route path="/" component={VocabularyPage} />
+        <Route path="/" component={VocabulariesPage} />
         <Route path="/:id/test" component={VocabularyTestPage} />
       </Route>
       <Route
         path={['/conjugations', '/conjugations/:verb']}
         component={ConjugationsView}
       />
-      <Route path="/" component={VocabularyPage} />
+      <Route path="/" component={VocabulariesPage} />
     </Router>
   ),
   root!
