@@ -10,16 +10,15 @@ import { VocabularyCreator } from './VocabularyCreator';
 import { VocabularyApi } from '../resources/vocabulary-api';
 import { VocabularyList } from '../vocabulary-model';
 
-type Props = {
-  fetchVocabulary: ResourceReturn<VocabularyList[]>;
+export type Props = {
+  fetchVocabularies: ResourceReturn<VocabularyList[]>;
   vocabularyApi: VocabularyApi;
+  onTestVocabulary: (id: number) => void;
 };
 
 export const VocabularyOverview: Component<Props> = props => {
-  const [vocabularies, vocabulariesAction] = props.fetchVocabulary;
+  const [vocabularies, vocabulariesAction] = props.fetchVocabularies;
   const [createVocabularyOpen, setCreateVocabularyOpen] = createSignal(false);
-
-  const navigate = useNavigate();
 
   const loading = () => vocabularies() == null;
 
@@ -40,10 +39,6 @@ export const VocabularyOverview: Component<Props> = props => {
     if (success) {
       vocabulariesAction.mutate(l => l?.filter(list => list.id !== id));
     }
-  }
-
-  function onTestVocabulary(id: number) {
-    navigate(`/vocabulary/${id}/test`);
   }
 
   return (
@@ -78,7 +73,7 @@ export const VocabularyOverview: Component<Props> = props => {
               <VocabularyCard
                 list={list}
                 onDeleteVocabulary={onDeleteVocabulary}
-                onTestVocabulary={onTestVocabulary}
+                onTestVocabulary={props.onTestVocabulary}
               />
             )}
           </For>

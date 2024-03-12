@@ -1,8 +1,11 @@
 import { cleanup, render, screen } from '@solidjs/testing-library';
 import { createResource } from 'solid-js';
 import { afterEach, expect, it, vi } from 'vitest';
-import { VocabularyList } from '../../vocabulary-model';
-import { VocabularyOverview } from './VocabularyOverview';
+import { VocabularyList } from '../vocabulary-model';
+import {
+  VocabularyOverview,
+  Props as VocabularyOverviewProps,
+} from './VocabularyOverview';
 
 afterEach(() => {
   cleanup();
@@ -10,11 +13,12 @@ afterEach(() => {
 });
 
 it('should render an empty vocabulary overview if none exist', async () => {
-  const { fetchVocabularyList, vocabularyApi } = setup();
+  const { fetchVocabularies, vocabularyApi, onTestVocabulary } = setup();
   render(() => (
     <VocabularyOverview
       vocabularyApi={vocabularyApi}
-      fetchVocabulary={fetchVocabularyList}
+      fetchVocabularies={fetchVocabularies}
+      onTestVocabulary={onTestVocabulary}
     />
   ));
 
@@ -24,11 +28,12 @@ it('should render an empty vocabulary overview if none exist', async () => {
 
 function setup() {
   return {
-    fetchVocabularyList: createResource<VocabularyList[]>(() => []),
+    fetchVocabularies: createResource<VocabularyList[]>(() => []),
     vocabularyApi: {
       createVocabularyList: async () => Promise.resolve(true),
       deleteVocabularyList: async () => Promise.resolve(true),
       fetchVocabularyLists: async () => [],
     },
-  };
+    onTestVocabulary: vi.fn(),
+  } satisfies VocabularyOverviewProps;
 }
