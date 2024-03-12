@@ -1,6 +1,8 @@
-import { Show, createSignal } from 'solid-js';
+import { useParams } from '@solidjs/router';
+import { Show, createEffect, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { WordTranslation } from '~/model/word-translation';
+import { fetchVocabulary } from '../vocabularies/resources/vocabulary-resources';
 import { Results } from './components/Results';
 import {
   VocabularySettings,
@@ -9,6 +11,9 @@ import {
 import { VocabularyTester } from './components/VocabularyTester';
 
 export const VocabularyTestPage = () => {
+  const params = useParams();
+  const vocabulary = () => fetchVocabulary(+params.id);
+
   const [vocabularySettings, setVocabularySettings] =
     createStore<VocabularyUserSettings>({
       mode: 'write',
@@ -19,6 +24,15 @@ export const VocabularyTestPage = () => {
   const [invalidWords, setInvalidWords] = createSignal<WordTranslation[]>();
   const [removedWords, setRemovedWords] = createSignal<WordTranslation[]>();
   const [done, setDone] = createSignal(false);
+
+  createEffect(() => {
+    const vocab = vocabulary();
+
+    if (vocab) {
+      setWords(vocab.vocabularyItems);
+    }
+    return vocab;
+  });
 
   async function onDone(
     leftOverWords?: WordTranslation[],
