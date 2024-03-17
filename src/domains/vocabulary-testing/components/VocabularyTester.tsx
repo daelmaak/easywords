@@ -11,7 +11,11 @@ import { nextWord } from '../../../worder/worder';
 import { WriteTester } from './WriteTester';
 import { Button } from '~/components/ui/button';
 import { HiOutlineEye, HiOutlinePencil, HiOutlineTrash } from 'solid-icons/hi';
-import { Progress } from '~/components/ui/progress';
+import {
+  Progress,
+  ProgressLabel,
+  ProgressValueLabel,
+} from '~/components/ui/progress';
 
 export type VocabularyTestMode = 'guess' | 'write';
 
@@ -38,6 +42,7 @@ export const VocabularyTester: Component<TesterProps> = (
     WordTranslation | undefined
   >();
   const [peek, setPeek] = createSignal(false);
+
   let invalidWords: WordTranslation[] = [];
   let removedWords: WordTranslation[] = [];
   let currentWordValid: boolean | undefined = undefined;
@@ -214,7 +219,12 @@ export const VocabularyTester: Component<TesterProps> = (
         value={percentageDone()}
         aria-label="Words done percentage"
         class="mt-20 mx-auto w-full"
-      />
+        getValueLabel={({ value }) => `${Math.round(value)}% done`}
+      >
+        <div class="text-center">
+          <ProgressValueLabel />
+        </div>
+      </Progress>
     </>
   );
 };
