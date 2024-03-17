@@ -125,14 +125,14 @@ export const WriteTester: Component<WriteTesterProps> = props => {
   return (
     <form class="relative flex items-center" onSubmit={onSubmit}>
       <span
-        class="absolute left-2 top-[-2rem] text-base"
+        class="absolute left-2 bottom-[-2rem] text-base"
         classList={{ invisible: !props.peek }}
       >
         {props.translation}
       </span>
       <Input ref={inputRef} class="text-lg w-56" type="text" onBlur={onBlur} />
       <button class="invisible" />
-      <span class="inline-block ml-2 w-6">
+      <div class="absolute right-[-1rem] translate-x-full w-8 h-8">
         <Show when={valid() != null}>
           {valid() ? (
             <HiOutlineCheck class="text-primary" size={32} />
@@ -140,7 +140,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
             <HiOutlineXCircle class="text-red-500" size={32} />
           )}
         </Show>
-      </span>
+      </div>
     </form>
   );
 };

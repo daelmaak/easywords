@@ -10,7 +10,7 @@ import { mergeWords } from '../../../util/merge-arrays';
 import { nextWord } from '../../../worder/worder';
 import { WriteTester } from './WriteTester';
 import { Button } from '~/components/ui/button';
-import { HiOutlineEye, HiOutlineTrash } from 'solid-icons/hi';
+import { HiOutlineEye, HiOutlinePencil, HiOutlineTrash } from 'solid-icons/hi';
 import { Progress } from '~/components/ui/progress';
 
 export type VocabularyTestMode = 'guess' | 'write';
@@ -149,10 +149,10 @@ export const VocabularyTester: Component<TesterProps> = (
   return (
     <>
       <div
-        class="mb-10 grid grid-cols-[1fr_2rem_1fr] items-start text-2xl"
+        class="flex flex-wrap flex-col justify-center items-center gap-4 sm:flex-nowrap text-2xl"
         classList={{ invisible: !currentWord() }}
       >
-        <span class="flex items-center justify-end">
+        <div class="flex items-center justify-end">
           <Button
             class="translate-y-[1px] opacity-60"
             title="Remove word from vocabulary"
@@ -160,7 +160,16 @@ export const VocabularyTester: Component<TesterProps> = (
             variant="ghost"
             onClick={removeWord}
           >
-            <HiOutlineTrash size={24} />
+            <HiOutlineTrash size={20} />
+          </Button>
+          <Button
+            class="translate-y-[1px] opacity-60"
+            title="Peek"
+            size="icon"
+            variant="ghost"
+            onClick={togglePeek}
+          >
+            <HiOutlinePencil size={20} />
           </Button>
           <Button
             class="mr-2 translate-y-[1px] opacity-60"
@@ -169,11 +178,10 @@ export const VocabularyTester: Component<TesterProps> = (
             variant="ghost"
             onClick={togglePeek}
           >
-            <HiOutlineEye size={24} />
+            <HiOutlineEye size={20} />
           </Button>
-          {toTranslate()}
-        </span>
-        <span class="text-center text-zinc-500">|</span>
+        </div>
+        <div>{toTranslate()}</div>
         {props.mode === 'write' ? (
           <Show when={translated() != null}>
             <WriteTester
@@ -192,7 +200,7 @@ export const VocabularyTester: Component<TesterProps> = (
         )}
       </div>
       <Show when={currentWord() && !done()}>
-        <div class="flex justify-center gap-4">
+        <div class="mt-12 flex justify-center gap-4">
           <Button class="btn-primary" variant="outline" onClick={setNextWord}>
             Next
           </Button>
@@ -205,7 +213,7 @@ export const VocabularyTester: Component<TesterProps> = (
       <Progress
         value={percentageDone()}
         aria-label="Words done percentage"
-        class="mt-20 mx-auto w-80"
+        class="mt-20 mx-auto w-full"
       />
     </>
   );
