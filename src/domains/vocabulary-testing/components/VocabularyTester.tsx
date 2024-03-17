@@ -1,21 +1,12 @@
-import {
-  type Component,
-  Show,
-  createEffect,
-  createSignal,
-  onCleanup,
-} from 'solid-js';
+import { HiOutlineEye, HiOutlinePencil, HiOutlineTrash } from 'solid-icons/hi';
+import { Component, Show, createEffect, onCleanup } from 'solid-js';
+import { createStore } from 'solid-js/store';
+import { Button } from '~/components/ui/button';
+import { Progress, ProgressValueLabel } from '~/components/ui/progress';
 import { WordTranslation } from '~/model/word-translation';
 import { mergeWords } from '../../../util/merge-arrays';
 import { nextWord } from '../../../worder/worder';
 import { WriteTester } from './WriteTester';
-import { Button } from '~/components/ui/button';
-import { HiOutlineEye, HiOutlinePencil, HiOutlineTrash } from 'solid-icons/hi';
-import {
-  Progress,
-  ProgressLabel,
-  ProgressValueLabel,
-} from '~/components/ui/progress';
 
 export type VocabularyTestMode = 'guess' | 'write';
 
@@ -32,30 +23,40 @@ interface TesterProps {
   reset: () => void;
 }
 
+interface State {
+  wordsLeft: WordTranslation[];
+  currentWord: WordTranslation | undefined;
+  peek: boolean;
+  editing: boolean;
+}
+
 export const VocabularyTester: Component<TesterProps> = (
   props: TesterProps
 ) => {
-  const [wordsLeft, setWordsLeft] = createSignal<WordTranslation[]>(
-    props.words
-  );
-  const [currentWord, setCurrentWord] = createSignal<
-    WordTranslation | undefined
-  >();
-  const [peek, setPeek] = createSignal(false);
+  const [store, setStore] = createStore<State>({
+    wordsLeft: props.words,
+    currentWord: undefined,
+    peek: false,
+    editing: false,
+  });
 
   let invalidWords: WordTranslation[] = [];
   let removedWords: WordTranslation[] = [];
   let currentWordValid: boolean | undefined = undefined;
 
-  const done = () => wordsLeft().length === 0;
+  const done = () => store.wordsLeft.length === 0;
 
   const toTranslate = () =>
-    props.reverse ? currentWord()?.translation : currentWord()?.original;
+    props.reverse
+      ? store.currentWord?.translation
+      : store.currentWord?.original;
   const translated = () =>
-    props.reverse ? currentWord()?.original : currentWord()?.translation;
+    props.reverse
+      ? store.currentWord?.original
+      : store.currentWord?.translation;
 
   const percentageDone = () =>
-    (1 - wordsLeft().length / props.words.length) * 100;
+    (1 - store.wordsLeft.length / props.words.length) * 100;
 
   createEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -63,7 +64,7 @@ export const VocabularyTester: Component<TesterProps> = (
         return;
       }
       if (e.key === 'r') {
-        setPeek(true);
+        setStore('peek', true);
       }
       if (e.key === 'n') {
         setNextWord();
@@ -75,8 +76,8 @@ export const VocabularyTester: Component<TesterProps> = (
   });
 
   function setNextWord() {
-    const current = currentWord();
-    let wsLeft = wordsLeft();
+    const current = store.currentWord;
+    let wsLeft = store.wordsLeft;
 
     // only one last word, looking up next doesn't make sense
     if (wsLeft.length === 1 && currentWordValid === false) {
@@ -87,7 +88,7 @@ export const VocabularyTester: Component<TesterProps> = (
       wsLeft = wsLeft.filter(w => w.original !== current.original);
 
       if (currentWordValid || !props.repeatInvalid) {
-        setWordsLeft(wsLeft);
+        setStore('wordsLeft', wsLeft);
       }
       currentWordValid = undefined;
     }
@@ -98,16 +99,20 @@ export const VocabularyTester: Component<TesterProps> = (
       return finish();
     }
 
-    setPeek(false);
-    setCurrentWord(next);
+    setStore({
+      currentWord: next,
+      peek: false,
+    });
   }
 
   function finish() {
-    const invalidAndLeftoverWords = mergeWords(invalidWords, wordsLeft());
+    const invalidAndLeftoverWords = mergeWords(invalidWords, store.wordsLeft);
     props.done(invalidAndLeftoverWords, removedWords);
 
-    setCurrentWord();
-    setWordsLeft([]);
+    setStore({
+      currentWord: undefined,
+      wordsLeft: [],
+    });
     invalidWords = [];
   }
 
@@ -115,14 +120,14 @@ export const VocabularyTester: Component<TesterProps> = (
     if (valid) {
       // Just make sure the user sees the correct translations, because maybe she
       // guessed only one of the words that are in the translation.
-      setPeek(true);
+      setStore('peek', true);
     }
 
-    if (currentWordValid == null || wordsLeft().length === 1) {
+    if (currentWordValid == null || store.wordsLeft.length === 1) {
       currentWordValid = valid;
     }
 
-    const word = currentWord();
+    const word = store.currentWord;
 
     if (
       !valid &&
@@ -135,18 +140,19 @@ export const VocabularyTester: Component<TesterProps> = (
   }
 
   function removeWord() {
-    const word = currentWord();
+    const word = store.currentWord;
 
     if (!word) {
       return;
     }
     removedWords.push(word);
-    setWordsLeft(wordsLeft().filter(w => w.original !== word.original));
+
+    setStore('wordsLeft', wl => wl.filter(w => w.original !== word.original));
     setNextWord();
   }
 
   function togglePeek() {
-    setPeek(!peek());
+    setStore('peek', peek => !peek);
   }
 
   setNextWord();
@@ -155,7 +161,7 @@ export const VocabularyTester: Component<TesterProps> = (
     <>
       <div
         class="flex flex-wrap flex-col justify-center items-center gap-4 sm:flex-nowrap text-2xl"
-        classList={{ invisible: !currentWord() }}
+        classList={{ invisible: !store.currentWord }}
       >
         <div class="flex items-center justify-end">
           <Button
@@ -191,20 +197,20 @@ export const VocabularyTester: Component<TesterProps> = (
           <Show when={translated() != null}>
             <WriteTester
               autoFocus
-              peek={peek()}
+              peek={store.peek}
               translation={translated()!}
               onDone={setNextWord}
-              onPeek={() => setPeek(true)}
+              onPeek={() => setStore('peek', true)}
               onValidated={onWordValidated}
             />
           </Show>
         ) : (
-          <span class="text-left" classList={{ invisible: !peek() }}>
+          <span class="text-left" classList={{ invisible: !store.peek }}>
             {translated()}
           </span>
         )}
       </div>
-      <Show when={currentWord() && !done()}>
+      <Show when={store.currentWord && !done()}>
         <div class="mt-12 flex justify-center gap-4">
           <Button class="btn-primary" variant="outline" onClick={setNextWord}>
             Next
@@ -216,9 +222,9 @@ export const VocabularyTester: Component<TesterProps> = (
       </Show>
 
       <Progress
-        value={percentageDone()}
         aria-label="Words done percentage"
         class="mt-20 mx-auto w-full"
+        value={percentageDone()}
         getValueLabel={({ value }) => `${Math.round(value)}% done`}
       >
         <div class="text-center">
