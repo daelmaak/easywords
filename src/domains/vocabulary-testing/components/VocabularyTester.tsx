@@ -2,7 +2,10 @@ import { HiOutlineEye, HiOutlinePencil, HiOutlineTrash } from 'solid-icons/hi';
 import { Component, Show, createEffect, onCleanup } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { Button } from '~/components/ui/button';
+import { Dialog, DialogContent } from '~/components/ui/dialog';
 import { Progress, ProgressValueLabel } from '~/components/ui/progress';
+import { WordCreator } from '~/domains/vocabularies/components/WordCreator';
+import { VocabularyItem } from '~/domains/vocabularies/vocabulary-model';
 import { WordTranslation } from '~/model/word-translation';
 import { mergeWords } from '../../../util/merge-arrays';
 import { nextWord } from '../../../worder/worder';
@@ -13,19 +16,20 @@ export type VocabularyTestMode = 'guess' | 'write';
 interface TesterProps {
   repeatInvalid: boolean;
   reverse: boolean;
-  words: WordTranslation[];
+  words: VocabularyItem[];
   mode: VocabularyTestMode;
   done: (
     leftoverWords?: WordTranslation[],
     removedWords?: WordTranslation[]
   ) => void;
+  editWord: (word: VocabularyItem) => void;
   repeat: () => void;
   reset: () => void;
 }
 
 interface State {
-  wordsLeft: WordTranslation[];
-  currentWord: WordTranslation | undefined;
+  wordsLeft: VocabularyItem[];
+  currentWord: VocabularyItem | undefined;
   peek: boolean;
   editing: boolean;
 }
@@ -116,6 +120,22 @@ export const VocabularyTester: Component<TesterProps> = (
     invalidWords = [];
   }
 
+  function onEditWord(original: string, translation: string) {
+    setStore('editing', false);
+
+    if (!store.currentWord) {
+      return;
+    }
+
+    const updatedWord = {
+      ...store.currentWord,
+      original,
+      translation,
+    } satisfies VocabularyItem;
+
+    props.editWord(updatedWord);
+  }
+
   function onWordValidated(valid: boolean) {
     if (valid) {
       // Just make sure the user sees the correct translations, because maybe she
@@ -178,7 +198,7 @@ export const VocabularyTester: Component<TesterProps> = (
             title="Peek"
             size="icon"
             variant="ghost"
-            onClick={togglePeek}
+            onClick={() => setStore('editing', !store.editing)}
           >
             <HiOutlinePencil size={20} />
           </Button>
@@ -192,7 +212,23 @@ export const VocabularyTester: Component<TesterProps> = (
             <HiOutlineEye size={20} />
           </Button>
         </div>
+
+        <Dialog
+          open={store.editing}
+          onOpenChange={open => setStore('editing', open)}
+        >
+          <DialogContent class="w-svw sm:w-[30rem]">
+            <h2 class="text-lg font-bold mb-4">Edit word</h2>
+            <WordCreator
+              ctaLabel="Update"
+              value={store.currentWord}
+              onChange={onEditWord}
+            />
+          </DialogContent>
+        </Dialog>
+
         <div>{toTranslate()}</div>
+
         {props.mode === 'write' ? (
           <Show when={translated() != null}>
             <WriteTester

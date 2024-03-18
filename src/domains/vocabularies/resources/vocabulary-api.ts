@@ -1,5 +1,6 @@
 import { supabase } from '~/lib/supabase-client';
 import { WordTranslation } from '~/model/word-translation';
+import { VocabularyItem } from '../vocabulary-model';
 
 export const fetchVocabularyLists = async () => {
   const result = await supabase.from('vocabulary_lists').select(
@@ -55,11 +56,20 @@ export const deleteVocabularyList = async (id: number) => {
   return !result.error;
 };
 
+export const updateVocabularyItem = async (item: VocabularyItem) => {
+  const result = await supabase
+    .from('vocabulary_items')
+    .update(item)
+    .match({ id: item.id });
+
+  return !result.error;
+};
+
 export const vocabularyApi = {
   fetchVocabularyLists,
   createVocabularyList,
   deleteVocabularyList,
+  updateVocabularyItem,
 };
 
 export type VocabularyApi = typeof vocabularyApi;
-

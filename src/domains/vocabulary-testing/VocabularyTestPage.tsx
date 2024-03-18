@@ -2,7 +2,11 @@ import { useParams } from '@solidjs/router';
 import { Show, createEffect, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { WordTranslation } from '~/model/word-translation';
-import { fetchVocabulary } from '../vocabularies/resources/vocabulary-resources';
+import {
+  fetchVocabulary,
+  updateVocabularyItem,
+} from '../vocabularies/resources/vocabulary-resources';
+import { VocabularyItem } from '../vocabularies/vocabulary-model';
 import { Results } from './components/Results';
 import {
   VocabularySettings,
@@ -12,7 +16,8 @@ import { VocabularyTester } from './components/VocabularyTester';
 
 export const VocabularyTestPage = () => {
   const params = useParams();
-  const vocabulary = () => fetchVocabulary(+params.id);
+  const listId = +params.id;
+  const vocabulary = () => fetchVocabulary(listId);
 
   const [vocabularySettings, setVocabularySettings] =
     createStore<VocabularyUserSettings>({
@@ -20,7 +25,7 @@ export const VocabularyTestPage = () => {
       reverseTranslations: false,
       repeatInvalid: false,
     });
-  const [words, setWords] = createSignal<WordTranslation[]>();
+  const [words, setWords] = createSignal<VocabularyItem[]>();
   const [invalidWords, setInvalidWords] = createSignal<WordTranslation[]>();
   const [removedWords, setRemovedWords] = createSignal<WordTranslation[]>();
   const [done, setDone] = createSignal(false);
@@ -43,6 +48,10 @@ export const VocabularyTestPage = () => {
     setRemovedWords(removedWords);
   }
 
+  function onEditWord(word: VocabularyItem) {
+    updateVocabularyItem(listId, word);
+  }
+
   function onRepeat() {
     setInvalidWords();
     setDone(false);
@@ -54,7 +63,7 @@ export const VocabularyTestPage = () => {
     setDone(false);
   }
 
-  function onTryInvalidWords(invalidWords: WordTranslation[]) {
+  function onTryInvalidWords(invalidWords: VocabularyItem[]) {
     setInvalidWords();
     setWords(invalidWords);
     setDone(false);
@@ -73,6 +82,7 @@ export const VocabularyTestPage = () => {
                   reverse={vocabularySettings.reverseTranslations}
                   words={w}
                   done={onDone}
+                  editWord={onEditWord}
                   repeat={onRepeat}
                   reset={onReset}
                 />
