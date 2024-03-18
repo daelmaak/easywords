@@ -29,7 +29,7 @@ interface TesterProps {
 
 interface State {
   wordsLeft: VocabularyItem[];
-  currentWord: VocabularyItem | undefined;
+  currentWordId: number | undefined;
   peek: boolean;
   editing: boolean;
 }
@@ -39,7 +39,7 @@ export const VocabularyTester: Component<TesterProps> = (
 ) => {
   const [store, setStore] = createStore<State>({
     wordsLeft: props.words,
-    currentWord: undefined,
+    currentWordId: undefined,
     peek: false,
     editing: false,
   });
@@ -48,16 +48,14 @@ export const VocabularyTester: Component<TesterProps> = (
   let removedWords: WordTranslation[] = [];
   let currentWordValid: boolean | undefined = undefined;
 
+  const currentWord = () => props.words.find(w => w.id === store.currentWordId);
+
   const done = () => store.wordsLeft.length === 0;
 
   const toTranslate = () =>
-    props.reverse
-      ? store.currentWord?.translation
-      : store.currentWord?.original;
+    props.reverse ? currentWord()?.translation : currentWord()?.original;
   const translated = () =>
-    props.reverse
-      ? store.currentWord?.original
-      : store.currentWord?.translation;
+    props.reverse ? currentWord()?.original : currentWord()?.translation;
 
   const percentageDone = () =>
     (1 - store.wordsLeft.length / props.words.length) * 100;
@@ -80,7 +78,7 @@ export const VocabularyTester: Component<TesterProps> = (
   });
 
   function setNextWord() {
-    const current = store.currentWord;
+    const current = currentWord();
     let wsLeft = store.wordsLeft;
 
     // only one last word, looking up next doesn't make sense
@@ -104,7 +102,7 @@ export const VocabularyTester: Component<TesterProps> = (
     }
 
     setStore({
-      currentWord: next,
+      currentWordId: next.id,
       peek: false,
     });
   }
@@ -114,7 +112,7 @@ export const VocabularyTester: Component<TesterProps> = (
     props.done(invalidAndLeftoverWords, removedWords);
 
     setStore({
-      currentWord: undefined,
+      currentWordId: undefined,
       wordsLeft: [],
     });
     invalidWords = [];
@@ -123,12 +121,14 @@ export const VocabularyTester: Component<TesterProps> = (
   function onEditWord(original: string, translation: string) {
     setStore('editing', false);
 
-    if (!store.currentWord) {
+    const word = currentWord();
+
+    if (!word) {
       return;
     }
 
     const updatedWord = {
-      ...store.currentWord,
+      ...word,
       original,
       translation,
     } satisfies VocabularyItem;
@@ -147,7 +147,7 @@ export const VocabularyTester: Component<TesterProps> = (
       currentWordValid = valid;
     }
 
-    const word = store.currentWord;
+    const word = currentWord();
 
     if (
       !valid &&
@@ -160,7 +160,7 @@ export const VocabularyTester: Component<TesterProps> = (
   }
 
   function removeWord() {
-    const word = store.currentWord;
+    const word = currentWord();
 
     if (!word) {
       return;
@@ -181,7 +181,7 @@ export const VocabularyTester: Component<TesterProps> = (
     <>
       <div
         class="flex flex-wrap flex-col justify-center items-center gap-4 sm:flex-nowrap text-2xl"
-        classList={{ invisible: !store.currentWord }}
+        classList={{ invisible: !currentWord() }}
       >
         <div class="flex items-center justify-end">
           <Button
@@ -221,7 +221,7 @@ export const VocabularyTester: Component<TesterProps> = (
             <h2 class="text-lg font-bold mb-4">Edit word</h2>
             <WordCreator
               ctaLabel="Update"
-              value={store.currentWord}
+              value={currentWord()}
               onChange={onEditWord}
             />
           </DialogContent>
@@ -246,7 +246,7 @@ export const VocabularyTester: Component<TesterProps> = (
           </span>
         )}
       </div>
-      <Show when={store.currentWord && !done()}>
+      <Show when={currentWord() && !done()}>
         <div class="mt-12 flex justify-center gap-4">
           <Button class="btn-primary" variant="outline" onClick={setNextWord}>
             Next

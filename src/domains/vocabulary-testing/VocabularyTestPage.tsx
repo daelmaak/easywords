@@ -72,7 +72,7 @@ export const VocabularyTestPage = () => {
   return (
     <>
       <Show when={!done()}>
-        <Show keyed={true} when={words()}>
+        <Show when={words()}>
           {w => (
             <>
               <div class="m-auto">
@@ -80,7 +80,7 @@ export const VocabularyTestPage = () => {
                   mode={vocabularySettings.mode}
                   repeatInvalid={vocabularySettings.repeatInvalid}
                   reverse={vocabularySettings.reverseTranslations}
-                  words={w}
+                  words={w()}
                   done={onDone}
                   editWord={onEditWord}
                   repeat={onRepeat}
