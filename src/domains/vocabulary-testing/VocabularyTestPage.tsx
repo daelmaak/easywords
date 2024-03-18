@@ -1,4 +1,4 @@
-import { useParams } from '@solidjs/router';
+import { useNavigate, useParams } from '@solidjs/router';
 import { Show, createEffect, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { WordTranslation } from '~/model/word-translation';
@@ -15,6 +15,7 @@ import {
 import { VocabularyTester } from './components/VocabularyTester';
 
 export const VocabularyTestPage = () => {
+  const navigate = useNavigate();
   const params = useParams();
   const listId = +params.id;
   const vocabulary = () => fetchVocabulary(listId);
@@ -50,6 +51,10 @@ export const VocabularyTestPage = () => {
 
   function onEditWord(word: VocabularyItem) {
     updateVocabularyItem(listId, word);
+  }
+
+  function onGoBack() {
+    navigate('/vocabulary');
   }
 
   function onRepeat() {
@@ -112,7 +117,7 @@ export const VocabularyTestPage = () => {
       <Show when={words()}>
         <button
           class="btn-link fixed bottom-4 right-8 text-sm"
-          onClick={onReset}
+          onClick={onGoBack}
         >
           Go back
         </button>
