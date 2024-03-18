@@ -1,14 +1,11 @@
-import { WordTranslation } from '~/model/word-translation';
+import { VocabularyItem } from '~/domains/vocabularies/vocabulary-model';
 
-export function nextWord(
-  words: WordTranslation[]
-): WordTranslation | undefined {
+export function nextWord(words: VocabularyItem[]): VocabularyItem | undefined {
   if (!words.length) {
     return undefined;
   }
 
   const i = Math.floor(Math.random() * words.length);
-  const { original, translation } = words[i];
 
-  return { original, translation };
+  return words[i];
 }

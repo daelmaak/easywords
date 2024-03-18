@@ -1,15 +1,13 @@
 import { HiOutlineXMark } from 'solid-icons/hi';
 import { For, Show, createSignal } from 'solid-js';
 import { Badge } from '~/components/ui/badge';
-import { Button } from '~/components/ui/button';
-import { Input } from '~/components/ui/input';
-import { Label } from '~/components/ui/label';
 import {
   RadioGroup,
   RadioGroupItem,
   RadioGroupItemLabel,
 } from '~/components/ui/radio-group';
 import { Textarea } from '~/components/ui/textarea';
+import { WordCreator } from '~/domains/vocabularies/components/WordCreator';
 import { WordTranslation } from '~/model/word-translation';
 
 const l10n: { mode: Record<WordsInputMode, string> } = {
@@ -30,26 +28,8 @@ export function WordsInput(props: WordsInputProps) {
   const [mode, setMode] = createSignal<WordsInputMode>('form');
   const [words, setWords] = createSignal<WordTranslation[]>([]);
 
-  function onAddWord(e: SubmitEvent) {
-    e.preventDefault();
-
-    const formdata = new FormData(e.target as HTMLFormElement);
-    let original = formdata.get('original') as string;
-    let translation = formdata.get('translation') as string;
-
-    if (!original || !translation) {
-      return;
-    }
-
-    original = original.trim();
-    translation = translation.trim();
-
+  function onAddWord(original: string, translation: string) {
     setWords(w => w.concat({ original, translation }));
-
-    const form = e.target as HTMLFormElement;
-    form.reset();
-    form.querySelector('input')?.focus();
-
     props.onWordsChange?.(words());
   }
 
@@ -91,28 +71,12 @@ export function WordsInput(props: WordsInputProps) {
       </RadioGroup>
 
       <Show when={mode() === 'form'}>
-        <form class="flex gap-2" id="words-form-input" onSubmit={onAddWord}>
-          <div class="flex flex-col gap-2">
-            <Label class="text-xs" for="word-original">
-              Original
-            </Label>
-            <Input id="word-original" name="original" />
-          </div>
-          <div class="flex flex-col gap-2">
-            <Label class="text-xs" for="word-translation">
-              Translation
-            </Label>
-            <Input id="word-translation" name="translation" />
-          </div>
-          <Button
-            class="ml-auto self-end"
-            form="words-form-input"
-            variant="link"
-            type="submit"
-          >
-            Add
-          </Button>
-        </form>
+        <WordCreator
+          ctaLabel="Add"
+          ctaVariant="secondary"
+          onChange={onAddWord}
+        />
+
         <div class="flex flex-wrap gap-2">
           <For each={words()}>
             {word => (
