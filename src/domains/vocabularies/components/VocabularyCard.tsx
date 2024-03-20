@@ -1,4 +1,8 @@
-import { HiOutlineAcademicCap, HiOutlineTrash } from 'solid-icons/hi';
+import {
+  HiOutlineAcademicCap,
+  HiOutlinePencil,
+  HiOutlineTrash,
+} from 'solid-icons/hi';
 import { Component, For, Show } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import {
@@ -13,6 +17,7 @@ import { VocabularyList } from '../vocabulary-model';
 export type Props = {
   list: VocabularyList;
   onDeleteVocabulary: (id: number) => void;
+  onEditVocabulary: (list: VocabularyList) => void;
   onTestVocabulary: (id: number) => void;
 };
 
@@ -21,11 +26,18 @@ export const VocabularyCard: Component<Props> = props => {
     <Card>
       <CardHeader class="flex flex-row justify-between items-center gap-4">
         <CardTitle>{props.list.name}</CardTitle>
-        <HiOutlineTrash
-          class="cursor-pointer"
-          size={16}
-          onClick={() => props.onDeleteVocabulary(props.list.id)}
-        />
+        <div class="flex gap-4">
+          <HiOutlinePencil
+            class="cursor-pointer"
+            size={16}
+            onClick={() => props.onEditVocabulary(props.list)}
+          />
+          <HiOutlineTrash
+            class="cursor-pointer"
+            size={16}
+            onClick={() => props.onDeleteVocabulary(props.list.id)}
+          />
+        </div>
       </CardHeader>
       <CardContent class="overflow-hidden">
         <ul>
