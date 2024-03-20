@@ -3,7 +3,6 @@ import { Component, Show, createSignal } from 'solid-js';
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -70,7 +69,10 @@ export const AuthDialog: Component<Props> = props => {
   return (
     <Dialog>
       <DialogTrigger as={Button}>Sign In</DialogTrigger>
-      <DialogContent class="w-96 sm:max-w-full"  onPointerDownOutside={e => e.preventDefault()}>
+      <DialogContent
+        class="w-96 sm:max-w-full"
+        onPointerDownOutside={e => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle>
             {mode() === 'signin' ? 'Sign in' : 'Sign up'}
