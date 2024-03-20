@@ -1,14 +1,19 @@
-import { useNavigate } from '@solidjs/router';
 import { HiOutlinePlus } from 'solid-icons/hi';
 import { Component, For, ResourceReturn, Show, createSignal } from 'solid-js';
 import { Button } from '~/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+} from '~/components/ui/dialog';
 import { Sheet, SheetContent } from '~/components/ui/sheet';
 import { Skeleton } from '~/components/ui/skeleton';
 import { WordTranslation } from '~/model/word-translation';
-import { VocabularyCard } from './VocabularyCard';
-import { VocabularyCreator } from './VocabularyCreator';
 import { VocabularyApi } from '../resources/vocabulary-api';
 import { VocabularyList } from '../vocabulary-model';
+import { VocabularyCard } from './VocabularyCard';
+import { VocabularyCreator } from './VocabularyCreator';
 
 export type Props = {
   fetchVocabularies: ResourceReturn<VocabularyList[]>;
@@ -19,8 +24,21 @@ export type Props = {
 export const VocabularyOverview: Component<Props> = props => {
   const [vocabularies, vocabulariesAction] = props.fetchVocabularies;
   const [createVocabularyOpen, setCreateVocabularyOpen] = createSignal(false);
+  const [confirmDeletionOf, setConfirmDeletionOf] = createSignal<number>();
 
   const loading = () => vocabularies() == null;
+
+  async function deleteVocabulary(listId: number) {
+    const success = await props.vocabularyApi.deleteVocabularyList(listId);
+
+    if (success) {
+      vocabulariesAction.mutate(l => l?.filter(list => list.id !== listId));
+    }
+  }
+
+  function onCloseDeletionDialog() {
+    setConfirmDeletionOf(undefined);
+  }
 
   async function onCreateVocabulary(name: string, words: WordTranslation[]) {
     const success = await props.vocabularyApi.createVocabularyList(name, words);
@@ -33,12 +51,15 @@ export const VocabularyOverview: Component<Props> = props => {
     return success;
   }
 
-  async function onDeleteVocabulary(id: number) {
-    const success = await props.vocabularyApi.deleteVocabularyList(id);
+  async function onDeleteVocabulary() {
+    const listId = confirmDeletionOf();
+    setConfirmDeletionOf(undefined);
 
-    if (success) {
-      vocabulariesAction.mutate(l => l?.filter(list => list.id !== id));
+    if (listId == null) {
+      return;
     }
+
+    await deleteVocabulary(listId);
   }
 
   return (
@@ -72,12 +93,31 @@ export const VocabularyOverview: Component<Props> = props => {
             {list => (
               <VocabularyCard
                 list={list}
-                onDeleteVocabulary={onDeleteVocabulary}
+                onDeleteVocabulary={listId => setConfirmDeletionOf(listId)}
                 onTestVocabulary={props.onTestVocabulary}
               />
             )}
           </For>
         </section>
+
+        <Dialog
+          open={confirmDeletionOf() != null}
+          onOpenChange={onCloseDeletionDialog}
+        >
+          <DialogContent class="w-80">
+            <DialogHeader>
+              <h2 class="text-lg font-bold">You sure?</h2>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="secondary" onClick={onCloseDeletionDialog}>
+                Cancel
+              </Button>
+              <Button variant="destructive" onClick={onDeleteVocabulary}>
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </Show>
 
       <Show when={loading()}>
