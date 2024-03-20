@@ -172,7 +172,7 @@ const SheetHeader: Component<ComponentProps<'div'>> = props => {
   return (
     <div
       class={cn(
-        'flex flex-col space-y-2 text-center sm:text-left',
+        'flex flex-col space-y-2 text-center sm:text-left mb-4',
         props.class
       )}
       {...rest}

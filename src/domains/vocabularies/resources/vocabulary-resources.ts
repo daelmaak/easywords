@@ -5,11 +5,11 @@ import {
 } from './vocabulary-api';
 import { VocabularyItem, VocabularyList } from '../vocabulary-model';
 
-export const fetchVocabularies: ResourceReturn<VocabularyList[]> =
+export const vocabulariesResource: ResourceReturn<VocabularyList[]> =
   createResource(fetchVocabularyLists);
 
-export const fetchVocabulary = (id: number) => {
-  const [vocabularies] = fetchVocabularies;
+export const vocabularyResource = (id: number) => {
+  const [vocabularies] = vocabulariesResource;
   return vocabularies()?.find(v => v.id === id);
 };
 
@@ -18,10 +18,10 @@ export const updateVocabularyItem = async (
   item: VocabularyItem
 ) => {
   const result = await updateVocabularyItemApi(item);
-  const [_, { mutate }] = fetchVocabularies;
+  const [_, { mutate }] = vocabulariesResource;
 
   if (!result) {
-    return;
+    return false;
   }
 
   mutate(vs =>
@@ -37,4 +37,6 @@ export const updateVocabularyItem = async (
       };
     })
   );
+
+  return true;
 };

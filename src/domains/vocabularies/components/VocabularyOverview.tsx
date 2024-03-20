@@ -7,13 +7,20 @@ import {
   DialogFooter,
   DialogHeader,
 } from '~/components/ui/dialog';
-import { Sheet, SheetContent } from '~/components/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '~/components/ui/sheet';
 import { Skeleton } from '~/components/ui/skeleton';
 import { WordTranslation } from '~/model/word-translation';
 import { VocabularyApi } from '../resources/vocabulary-api';
-import { VocabularyList } from '../vocabulary-model';
+import { VocabularyItem, VocabularyList } from '../vocabulary-model';
 import { VocabularyCard } from './VocabularyCard';
 import { VocabularyCreator } from './VocabularyCreator';
+import { VocabularyEditor } from './VocabularyEditor';
+import { updateVocabularyItem } from '../resources/vocabulary-resources';
 
 export type Props = {
   fetchVocabularies: ResourceReturn<VocabularyList[]>;
@@ -25,6 +32,8 @@ export const VocabularyOverview: Component<Props> = props => {
   const [vocabularies, vocabulariesAction] = props.fetchVocabularies;
   const [createVocabularyOpen, setCreateVocabularyOpen] = createSignal(false);
   const [confirmDeletionOf, setConfirmDeletionOf] = createSignal<number>();
+  const [vocabularyToEdit, setVocabularyToEdit] =
+    createSignal<VocabularyList>();
 
   const loading = () => vocabularies() == null;
 
@@ -62,6 +71,10 @@ export const VocabularyOverview: Component<Props> = props => {
     await deleteVocabulary(listId);
   }
 
+  async function onWordEdited(listId: number, updatedWord: VocabularyItem) {
+    updateVocabularyItem(listId, updatedWord);
+  }
+
   return (
     <div>
       <Show when={!loading()}>
@@ -75,7 +88,9 @@ export const VocabularyOverview: Component<Props> = props => {
             onOpenChange={open => setCreateVocabularyOpen(open)}
           >
             <SheetContent class="w-svw sm:w-[30rem]">
-              <h2 class="text-lg font-bold mb-4">New vocabulary list</h2>
+              <SheetHeader>
+                <SheetTitle>Create new vocabulary</SheetTitle>
+              </SheetHeader>
               <VocabularyCreator onListCreate={onCreateVocabulary} />
             </SheetContent>
           </Sheet>
@@ -94,6 +109,7 @@ export const VocabularyOverview: Component<Props> = props => {
               <VocabularyCard
                 list={list}
                 onDeleteVocabulary={listId => setConfirmDeletionOf(listId)}
+                onEditVocabulary={list => setVocabularyToEdit(list)}
                 onTestVocabulary={props.onTestVocabulary}
               />
             )}
@@ -118,6 +134,29 @@ export const VocabularyOverview: Component<Props> = props => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        <Sheet
+          open={vocabularyToEdit() != null}
+          onOpenChange={() => setVocabularyToEdit(undefined)}
+        >
+          <SheetContent class="w-svw sm:w-[30rem]">
+            <Show when={vocabularyToEdit()}>
+              {vocabulary => (
+                <>
+                  <SheetHeader>
+                    <SheetTitle>
+                      Edit <span class="font-normal">{vocabulary().name}</span>
+                    </SheetTitle>
+                  </SheetHeader>
+                  <VocabularyEditor
+                    vocabulary={vocabulary()}
+                    onWordEdited={w => onWordEdited(vocabulary().id, w)}
+                  />
+                </>
+              )}
+            </Show>
+          </SheetContent>
+        </Sheet>
       </Show>
 
       <Show when={loading()}>
