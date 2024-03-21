@@ -30,9 +30,10 @@ function setup() {
   return {
     fetchVocabularies: createResource<VocabularyList[]>(() => []),
     vocabularyApi: {
-      createVocabularyList: async () => Promise.resolve(true),
-      deleteVocabularyList: async () => Promise.resolve(true),
-      fetchVocabularyLists: async () => [],
+      createVocabularyList: () => Promise.resolve(true),
+      deleteVocabularyList: () => Promise.resolve(true),
+      fetchVocabularyLists: () => Promise.resolve([]),
+      updateVocabularyItem: () => Promise.resolve(true),
     },
     onTestVocabulary: vi.fn(),
   } satisfies VocabularyOverviewProps;
