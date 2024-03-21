@@ -3,7 +3,7 @@ import { Show, createEffect, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { WordTranslation } from '~/model/word-translation';
 import {
-  vocabularyResource,
+  getVocabulary,
   updateVocabularyItem,
 } from '../vocabularies/resources/vocabulary-resources';
 import { VocabularyItem } from '../vocabularies/vocabulary-model';
@@ -18,7 +18,7 @@ export const VocabularyTestPage = () => {
   const navigate = useNavigate();
   const params = useParams();
   const listId = +params.id;
-  const vocabulary = () => vocabularyResource(listId);
+  const vocabulary = () => getVocabulary(listId);
 
   const [vocabularySettings, setVocabularySettings] =
     createStore<VocabularyUserSettings>({

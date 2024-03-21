@@ -6,6 +6,7 @@ import { ConjugationsView } from './domains/conjugations/components/Conjugations
 import { VocabulariesPage } from './domains/vocabularies/VocabulariesPage';
 import { VocabularyTestPage } from './domains/vocabulary-testing/VocabularyTestPage';
 import './index.css';
+import { initApp } from './init/app-init';
 
 const root = document.getElementById('root');
 
@@ -14,6 +15,8 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
     'Root element not found. Did you forget to add it to your index.html? Or maybe the id attribute got mispelled?'
   );
 }
+
+initApp();
 
 render(
   () => (

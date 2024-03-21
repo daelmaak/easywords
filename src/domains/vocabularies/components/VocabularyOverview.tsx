@@ -15,16 +15,18 @@ import {
 } from '~/components/ui/sheet';
 import { Skeleton } from '~/components/ui/skeleton';
 import { WordTranslation } from '~/model/word-translation';
-import { VocabularyApi } from '../resources/vocabulary-api';
+import {
+  createVocabulary,
+  deleteVocabulary,
+  updateVocabularyItem,
+} from '../resources/vocabulary-resources';
 import { VocabularyItem, VocabularyList } from '../vocabulary-model';
 import { VocabularyCard } from './VocabularyCard';
 import { VocabularyCreator } from './VocabularyCreator';
 import { VocabularyEditor } from './VocabularyEditor';
-import { updateVocabularyItem } from '../resources/vocabulary-resources';
 
 export type Props = {
   fetchVocabularies: ResourceReturn<VocabularyList[]>;
-  vocabularyApi: VocabularyApi;
   onTestVocabulary: (id: number) => void;
 };
 
@@ -37,8 +39,8 @@ export const VocabularyOverview: Component<Props> = props => {
 
   const loading = () => vocabularies() == null;
 
-  async function deleteVocabulary(listId: number) {
-    const success = await props.vocabularyApi.deleteVocabularyList(listId);
+  async function doDeleteVocabulary(listId: number) {
+    const success = await deleteVocabulary(listId);
 
     if (success) {
       vocabulariesAction.mutate(l => l?.filter(list => list.id !== listId));
@@ -50,7 +52,7 @@ export const VocabularyOverview: Component<Props> = props => {
   }
 
   async function onCreateVocabulary(name: string, words: WordTranslation[]) {
-    const success = await props.vocabularyApi.createVocabularyList(name, words);
+    const success = await createVocabulary(name, words);
 
     if (success) {
       setCreateVocabularyOpen(false);
@@ -68,7 +70,7 @@ export const VocabularyOverview: Component<Props> = props => {
       return;
     }
 
-    await deleteVocabulary(listId);
+    await doDeleteVocabulary(listId);
   }
 
   async function onWordEdited(listId: number, updatedWord: VocabularyItem) {
