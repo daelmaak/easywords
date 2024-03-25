@@ -1,7 +1,7 @@
 import { For, Show } from 'solid-js';
 import { Component } from 'solid-js';
-import { Button } from '../../../components/Button';
 import { ConjugationValidations } from './ConjugationsTester';
+import { Button } from '~/components/ui/button';
 
 interface Props {
   conjugationsResults: ConjugationValidations;

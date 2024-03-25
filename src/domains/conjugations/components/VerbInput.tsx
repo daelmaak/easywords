@@ -1,5 +1,5 @@
 import { Component } from 'solid-js';
-import { Button } from '../../../components/Button';
+import { Button } from '~/components/ui/button';
 
 interface Props {
   onApplyVerb(verb: string): void;
