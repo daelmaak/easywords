@@ -1,5 +1,6 @@
 export interface VocabularyItem {
   id: number;
+  list_id: number;
   original: string;
   translation: string;
 }

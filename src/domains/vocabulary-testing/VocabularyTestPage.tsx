@@ -4,7 +4,7 @@ import { createStore } from 'solid-js/store';
 import { WordTranslation } from '~/model/word-translation';
 import {
   getVocabulary,
-  updateVocabularyItem,
+  updateVocabularyItems,
 } from '../vocabularies/resources/vocabulary-resources';
 import { VocabularyItem } from '../vocabularies/vocabulary-model';
 import { Results } from './components/Results';
@@ -50,7 +50,7 @@ export const VocabularyTestPage = () => {
   }
 
   function onEditWord(word: VocabularyItem) {
-    updateVocabularyItem(listId, word);
+    updateVocabularyItems(listId, word);
   }
 
   function onGoBack() {

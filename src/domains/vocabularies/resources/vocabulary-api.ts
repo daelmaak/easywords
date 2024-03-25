@@ -9,6 +9,7 @@ const fetchVocabularyLists = async () => {
     name,
     vocabulary_items (
       id,
+      list_id,
       original,
       translation
     )`
@@ -53,11 +54,8 @@ const deleteVocabularyList = async (id: number) => {
   return !result.error;
 };
 
-const updateVocabularyItem = async (item: VocabularyItem) => {
-  const result = await supabase
-    .from('vocabulary_items')
-    .update(item)
-    .match({ id: item.id });
+const updateVocabularyItems = async (items: VocabularyItem[]) => {
+  const result = await supabase.from('vocabulary_items').upsert(items);
 
   return !result.error;
 };
@@ -66,7 +64,7 @@ export const vocabularyApi = {
   fetchVocabularyLists,
   createVocabularyList,
   deleteVocabularyList,
-  updateVocabularyItem,
+  updateVocabularyItem: updateVocabularyItems,
 };
 
 export type VocabularyApi = typeof vocabularyApi;
