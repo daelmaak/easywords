@@ -1,8 +1,14 @@
-import { Component, For, createSignal, splitProps } from 'solid-js';
-import { VocabularyItem, VocabularyList } from '../vocabulary-model';
-import { ComponentProps } from 'solid-js';
-import { Input } from '~/components/ui/input';
+import Fuse from 'fuse.js';
+import {
+  Component,
+  ComponentProps,
+  For,
+  createSignal,
+  splitProps,
+} from 'solid-js';
 import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
+import { VocabularyItem, VocabularyList } from '../vocabulary-model';
 
 interface VocabularyEditorProps {
   vocabulary: VocabularyList;
@@ -11,6 +17,20 @@ interface VocabularyEditorProps {
 
 export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
   const [editedWords, setEditedWords] = createSignal<VocabularyItem[]>([]);
+  const [words, setWords] = createSignal<VocabularyItem[]>(
+    props.vocabulary.vocabularyItems
+  );
+  const fuse = new Fuse(words(), {
+    keys: ['original', 'translation'],
+  });
+
+  function search(query: string) {
+    if (!query) {
+      return setWords(props.vocabulary.vocabularyItems);
+    }
+    const result = fuse.search(query);
+    setWords(result.map(r => r.item));
+  }
 
   function onWordEdited(
     word: VocabularyItem,
@@ -27,8 +47,15 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
 
   return (
     <>
-      <div class="mb-4 flex">
-        <Button class="ml-auto" onClick={onSubmit}>Save changes</Button>
+      <div class="mb-4 flex gap-4">
+        <Input
+          class="w-auto"
+          placeholder="Search..."
+          onInput={e => search(e.target.value)}
+        />
+        <Button class="ml-auto" onClick={onSubmit}>
+          Save changes
+        </Button>
       </div>
       <table>
         <thead class="font-semibold">
@@ -39,7 +66,7 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
           </tr>
         </thead>
         <tbody>
-          <For each={props.vocabulary.vocabularyItems}>
+          <For each={words()}>
             {word => (
               <tr class="h-10">
                 <VocabularyEditorCell
@@ -82,3 +109,5 @@ const VocabularyEditorCell: Component<VocabularyEditorCellProps> = props => {
     </td>
   );
 };
+
+export default VocabularyEditor;

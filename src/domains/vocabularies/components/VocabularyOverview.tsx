@@ -1,5 +1,12 @@
 import { HiOutlinePlus } from 'solid-icons/hi';
-import { Component, For, ResourceReturn, Show, createSignal } from 'solid-js';
+import {
+  Component,
+  For,
+  ResourceReturn,
+  Show,
+  createSignal,
+  lazy,
+} from 'solid-js';
 import { Button } from '~/components/ui/button';
 import {
   Dialog,
@@ -23,7 +30,6 @@ import {
 import { VocabularyItem, VocabularyList } from '../vocabulary-model';
 import { VocabularyCard } from './VocabularyCard';
 import { VocabularyCreator } from './VocabularyCreator';
-import { VocabularyEditor } from './VocabularyEditor';
 
 export type Props = {
   fetchVocabularies: ResourceReturn<VocabularyList[]>;
@@ -38,6 +44,8 @@ export const VocabularyOverview: Component<Props> = props => {
     createSignal<VocabularyList>();
 
   const loading = () => vocabularies() == null;
+
+  const VocabularyEditor = lazy(() => import('./VocabularyEditor'));
 
   function closeWordEditor() {
     setVocabularyToEdit(undefined);
