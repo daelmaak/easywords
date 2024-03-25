@@ -4,7 +4,6 @@ import { Button } from '~/components/ui/button';
 import { AccountButton } from '../domains/auth/AccountButton';
 import { supabase } from '../lib/supabase-client';
 import { Lang, langs } from '../model/lang';
-import { A } from './A';
 import { LangContext } from './language-context';
 
 interface Props {
@@ -39,16 +38,16 @@ const App: Component<Props> = props => {
   return (
     <LangContext.Provider value={currentLang}>
       <nav class="flex items-center">
-        <A href="/vocabulary">
+        <a href="/vocabulary">
           <Button class="text-inherit" variant="link">
             Vocabulary
           </Button>
-        </A>
-        <A href="/conjugations">
+        </a>
+        <a href="/conjugations">
           <Button class="text-inherit" variant="link">
             Conjugations
           </Button>
-        </A>
+        </a>
         <AccountButton
           loggedIn={!!loggedIn()}
           onSignIn={onSignIn}
