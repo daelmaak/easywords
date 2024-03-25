@@ -1,5 +1,6 @@
 import { Component } from 'solid-js';
 import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
 
 interface Props {
   onApplyVerb(verb: string): void;
@@ -20,7 +21,7 @@ export const VerbInput: Component<Props> = props => {
 
   return (
     <form onSubmit={applyVerb} class="flex">
-      <input
+      <Input
         name="verb"
         class="input"
         placeholder="Verb in infinitive"

@@ -2,7 +2,6 @@ import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
 import { Component, onMount, Show, useContext } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { LangContext } from '../../../components/language-context';
-import { navigateTo } from '../../../util/routing';
 import {
   Conjugation,
   groupConjugationsByMood,
@@ -39,7 +38,6 @@ const getInitialState: () => ConjugationsViewState = () => ({
 
 export const ConjugationsView: Component = () => {
   const params = useParams();
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   let verbInputEl: HTMLInputElement | undefined;
 
@@ -86,7 +84,7 @@ export const ConjugationsView: Component = () => {
     reset();
 
     if (follow) {
-      navigateTo(`/conjugations/${verb}`, { navigate, searchParams });
+      navigate(`/conjugations/${verb}`);
     }
 
     setState('verbLoading', true);
@@ -134,7 +132,7 @@ export const ConjugationsView: Component = () => {
 
   return (
     <div class="flex flex-col items-center">
-      <h2 class="mb-4">Insert verb to conjugate</h2>
+      <h1 class="mb-4 text-xl">Insert verb to conjugate</h1>
       <VerbInput
         onApplyVerb={applyVerb}
         ref={verbInputEl}
