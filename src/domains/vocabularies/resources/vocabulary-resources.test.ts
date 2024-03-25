@@ -2,17 +2,19 @@ import { expect, test } from 'vitest';
 import { initTestApp } from '~/init/test-init';
 import {
   getVocabulariesResource,
-  updateVocabularyItem,
+  updateVocabularyItems,
 } from './vocabulary-resources';
+import { VocabularyList } from '../vocabulary-model';
 
 test('updates the vocabularies resources on word edit', async () => {
   const { vocabularyApi } = setup();
-  const vocabulary = {
+  const vocabulary: VocabularyList = {
     id: 1,
     name: 'Test Vocabulary',
     vocabularyItems: [
       {
         id: 1,
+        list_id: 1,
         original: 'original',
         translation: 'translation',
       },
@@ -26,7 +28,7 @@ test('updates the vocabularies resources on word edit', async () => {
   // cleaned up properly.
   const [vocabularies] = getVocabulariesResource();
 
-  await updateVocabularyItem(1, {
+  await updateVocabularyItems(1, {
     ...vocabulary.vocabularyItems[0],
     original: 'new original',
   });

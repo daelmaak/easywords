@@ -47,16 +47,18 @@ export const getVocabulary = (id: number) => {
   return vocabularies()?.find(v => v.id === id);
 };
 
-export const updateVocabularyItem = async (
+export const updateVocabularyItems = async (
   vocabularyId: number,
-  item: VocabularyItem
+  ...itemsToUpdate: VocabularyItem[]
 ) => {
-  const result = await api.updateVocabularyItem(item);
+  const result = await api.updateVocabularyItem(itemsToUpdate);
   const [_, { mutate }] = getVocabulariesResource();
 
   if (!result) {
     return false;
   }
+
+  const updatedItemsMap = new Map(itemsToUpdate.map(i => [i.id, i]));
 
   mutate(vs =>
     vs!.map(v => {
@@ -65,8 +67,8 @@ export const updateVocabularyItem = async (
       }
       return {
         ...v,
-        vocabularyItems: v.vocabularyItems.map(i =>
-          i.id === item.id ? item : i
+        vocabularyItems: v.vocabularyItems.map(
+          i => updatedItemsMap.get(i.id) ?? i
         ),
       };
     })

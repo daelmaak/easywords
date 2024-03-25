@@ -18,7 +18,7 @@ import { WordTranslation } from '~/model/word-translation';
 import {
   createVocabulary,
   deleteVocabulary,
-  updateVocabularyItem,
+  updateVocabularyItems,
 } from '../resources/vocabulary-resources';
 import { VocabularyItem, VocabularyList } from '../vocabulary-model';
 import { VocabularyCard } from './VocabularyCard';
@@ -38,6 +38,10 @@ export const VocabularyOverview: Component<Props> = props => {
     createSignal<VocabularyList>();
 
   const loading = () => vocabularies() == null;
+
+  function closeWordEditor() {
+    setVocabularyToEdit(undefined);
+  }
 
   async function doDeleteVocabulary(listId: number) {
     const success = await deleteVocabulary(listId);
@@ -73,8 +77,9 @@ export const VocabularyOverview: Component<Props> = props => {
     await doDeleteVocabulary(listId);
   }
 
-  async function onWordEdited(listId: number, updatedWord: VocabularyItem) {
-    updateVocabularyItem(listId, updatedWord);
+  async function onWordsEdited(listId: number, updatedWords: VocabularyItem[]) {
+    await updateVocabularyItems(listId, ...updatedWords);
+    closeWordEditor();
   }
 
   return (
@@ -138,10 +143,15 @@ export const VocabularyOverview: Component<Props> = props => {
         </Dialog>
 
         <Sheet
+          modal={true}
           open={vocabularyToEdit() != null}
-          onOpenChange={() => setVocabularyToEdit(undefined)}
+          onOpenChange={closeWordEditor}
         >
-          <SheetContent class="w-svw sm:w-[30rem]">
+          <SheetContent
+            class="w-svw sm:w-[30rem]"
+            onOpenAutoFocus={e => e.preventDefault()}
+            onPointerDownOutside={e => e.preventDefault()}
+          >
             <Show when={vocabularyToEdit()}>
               {vocabulary => (
                 <>
@@ -152,7 +162,7 @@ export const VocabularyOverview: Component<Props> = props => {
                   </SheetHeader>
                   <VocabularyEditor
                     vocabulary={vocabulary()}
-                    onWordEdited={w => onWordEdited(vocabulary().id, w)}
+                    onWordsEdited={ws => onWordsEdited(vocabulary().id, ws)}
                   />
                 </>
               )}
