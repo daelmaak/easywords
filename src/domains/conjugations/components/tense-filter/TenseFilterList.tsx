@@ -1,9 +1,9 @@
 import { Component, createMemo, createSignal, For, Show } from 'solid-js';
-import { Checkbox } from '../../../../components/Checkbox';
 import { Lang } from '../../../../model/lang';
 import { capitalizeFirstLetter } from '../../../../util/string';
 import { removeMoodFromTense } from '../../conjugation';
 import { sortTenses } from '../../tenses-priority';
+import { Checkbox } from '~/components/ui/checkbox';
 
 interface Props {
   lang: Lang;
