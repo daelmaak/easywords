@@ -1,6 +1,7 @@
 import { HiOutlineUser } from 'solid-icons/hi';
 import { Component, Show, createEffect, createSignal } from 'solid-js';
 import { AuthDialog } from './AuthDialog';
+import { Button } from '~/components/ui/button';
 
 interface Props {
   loggedIn: boolean;
@@ -39,7 +40,9 @@ export const AccountButton: Component<Props> = props => {
           class="absolute bottom-[-0.25rem] left-1/2 translate-x-[-50%] translate-y-[100%] px-4 py-2 round-md shadow-lg border border-zinc-700 whitespace-nowrap cursor-pointer"
           open={dropDownOpen()}
         >
-          <button onClick={props.onSignOut}>Sign out</button>
+          <Button size="sm" variant="secondary" onClick={props.onSignOut}>
+            Sign out
+          </Button>
         </dialog>
       </Show>
     </span>

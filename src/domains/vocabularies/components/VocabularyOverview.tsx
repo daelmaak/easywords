@@ -94,9 +94,9 @@ export const VocabularyOverview: Component<Props> = props => {
     <div>
       <Show when={!loading()}>
         <div class="flex justify-between">
-          <h1 class="text-xl font-bold mb-4">Your vocabulary lists</h1>
-          <Button onClick={() => setCreateVocabularyOpen(true)}>
-            <HiOutlinePlus size={20} /> Add vocabulary
+          <h1 class="text-xl font-bold mb-4">Your vocabularies</h1>
+          <Button size="sm" onClick={() => setCreateVocabularyOpen(true)}>
+            <HiOutlinePlus size={16} /> Add vocabulary
           </Button>
           <Sheet
             open={createVocabularyOpen()}
