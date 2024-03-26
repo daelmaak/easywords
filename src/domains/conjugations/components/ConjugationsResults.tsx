@@ -23,9 +23,9 @@ export const ConjugationsResults: Component<Props> = props => {
         <For each={Object.keys(props.conjugationsResults)}>
           {tense => (
             <div class="mt-6 mx-auto">
-              <h3 class="text-center text-lg text-zinc-300">{tense}</h3>
+              <h3 class="text-center text-lg">{tense}</h3>
               <table class="mt-2 border-separate border-spacing-x-4 border-spacing-y-2">
-                <thead class="text-left text-zinc-400">
+                <thead class="text-center opacity-80">
                   <tr>
                     <th></th>
                     <th>Correct</th>
@@ -61,17 +61,15 @@ export const ConjugationsResults: Component<Props> = props => {
         </For>
       </div>
       <div class="mt-12 flex justify-center gap-2">
-        <Button style="secondary" onClick={props.onTryAgain}>
+        <Button variant="secondary" onClick={props.onTryAgain}>
           Try again
         </Button>
         <Show when={someInvalid()}>
-          <Button style="secondary" onClick={props.onPracticeIncorrect}>
+          <Button variant="secondary" onClick={props.onPracticeIncorrect}>
             Practice incorrect
           </Button>{' '}
         </Show>
-        <Button style="secondary" onClick={props.onTryDifferent}>
-          Try different
-        </Button>
+        <Button onClick={props.onTryDifferent}>Try next</Button>
       </div>
     </div>
   );
