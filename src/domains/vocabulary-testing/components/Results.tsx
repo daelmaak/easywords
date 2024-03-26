@@ -1,5 +1,6 @@
 import { Show } from 'solid-js';
 import { WordTranslation } from '../../parser/simple-md-parser';
+import { Button } from '~/components/ui/button';
 
 interface ResultsProps {
   invalidWords?: WordTranslation[];
@@ -48,12 +49,10 @@ export function Results(props: ResultsProps) {
         <i class="mr-4 text-green-600 font-semibold">✓</i>Done!
       </p>
       <div class="mx-auto mt-8 text-center">
-        <button class="btn-primary" onClick={props.repeat}>
-          Again
-        </button>
-        <button class="btn-link ml-4" onClick={props.reset}>
+        <Button onClick={props.repeat}>Again</Button>
+        <Button class="ml-4" variant="secondary" onClick={props.reset}>
           Pick different words
-        </button>
+        </Button>
       </div>
       <Show when={props.invalidWords} keyed>
         {invalidWords =>

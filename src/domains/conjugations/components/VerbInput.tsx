@@ -27,7 +27,7 @@ export const VerbInput: Component<Props> = props => {
         placeholder="Verb in infinitive"
         ref={props.ref}
       />
-      <Button class="ml-2 btn-primary" loading={props.verbLoading}>
+      <Button class="ml-2" loading={props.verbLoading}>
         Search
       </Button>
     </form>

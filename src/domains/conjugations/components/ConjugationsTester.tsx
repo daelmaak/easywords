@@ -5,6 +5,7 @@ import {
   WriteTesterInstance,
   WriteTester,
 } from '~/domains/vocabulary-testing/components/WriteTester';
+import { Button } from '~/components/ui/button';
 
 interface Props {
   conjugations: ConjugationByTense[];
@@ -108,13 +109,13 @@ export const ConjugationsTester: Component<Props> = props => {
             </tbody>
           </table>
 
-          <button
-            class="btn-primary block mr-8 ml-auto"
+          <Button
+            class="block ml-auto"
             type="button"
             onClick={nextOrFinish}
           >
             {isLastConjugation() ? 'Finish' : 'Next'}
-          </button>
+          </Button>
         </div>
       )}
     </Show>

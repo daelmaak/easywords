@@ -248,7 +248,7 @@ export const VocabularyTester: Component<TesterProps> = (
       </div>
       <Show when={currentWord() && !done()}>
         <div class="mt-12 flex justify-center gap-4">
-          <Button class="btn-primary" variant="outline" onClick={setNextWord}>
+          <Button variant="outline" onClick={setNextWord}>
             Next
           </Button>
           <Button class="btn-link" variant="outline" onClick={finish}>

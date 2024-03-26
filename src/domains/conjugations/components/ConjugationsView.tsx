@@ -158,7 +158,6 @@ export const ConjugationsView: Component = () => {
       </Show>
       <Show when={state.testingDone}>
         <>
-          <hr class="w-3/4 mt-6 mb-12 border-zinc-500" />
           <ConjugationsResults
             conjugationsResults={state.conjugationsResults}
             onTryAgain={onTryAgain}
