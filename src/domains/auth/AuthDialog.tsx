@@ -68,7 +68,11 @@ export const AuthDialog: Component<Props> = props => {
 
   return (
     <Dialog>
-      <DialogTrigger as={Button}>Sign In</DialogTrigger>
+      <DialogTrigger>
+        <Button size="sm" variant="outline">
+          Sign In
+        </Button>
+      </DialogTrigger>
       <DialogContent
         class="w-96 sm:max-w-full"
         onPointerDownOutside={e => e.preventDefault()}
