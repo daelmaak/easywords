@@ -44,6 +44,7 @@ export const VocabularyOverview: Component<Props> = props => {
     createSignal<VocabularyList>();
 
   const loading = () => vocabularies() == null;
+  const anyVocabularies = () => !!vocabularies()?.length;
 
   const VocabularyEditor = lazy(() => import('./VocabularyEditor'));
 
@@ -93,11 +94,13 @@ export const VocabularyOverview: Component<Props> = props => {
   return (
     <div>
       <Show when={!loading()}>
-        <div class="flex justify-between">
-          <h1 class="text-xl font-bold mb-4">Your vocabularies</h1>
-          <Button size="sm" onClick={() => setCreateVocabularyOpen(true)}>
-            <HiOutlinePlus size={16} /> Add vocabulary
-          </Button>
+        <div class="flex gap-8">
+          <h1 class="text-lg font-bold mb-4">Your vocabularies</h1>
+          <Show when={anyVocabularies()}>
+            <Button size="sm" onClick={() => setCreateVocabularyOpen(true)}>
+              <HiOutlinePlus size={16} /> Add vocabulary
+            </Button>
+          </Show>
           <Sheet
             open={createVocabularyOpen()}
             onOpenChange={open => setCreateVocabularyOpen(open)}
@@ -111,25 +114,33 @@ export const VocabularyOverview: Component<Props> = props => {
           </Sheet>
         </div>
 
-        <section class="h-full flex flex-col sm:grid sm:items-start sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
-          <For
-            each={vocabularies()}
-            fallback={
-              <div class="m-auto" data-testid="empty-vocabulary-list">
-                No vocabulary yet
-              </div>
-            }
-          >
-            {list => (
-              <VocabularyCard
-                list={list}
-                onDeleteVocabulary={listId => setConfirmDeletionOf(listId)}
-                onEditVocabulary={list => setVocabularyToEdit(list)}
-                onTestVocabulary={props.onTestVocabulary}
-              />
-            )}
-          </For>
-        </section>
+        <Show
+          when={anyVocabularies()}
+          fallback={
+            <div
+              class="h-full flex flex-col gap-4 justify-center items-center"
+              data-testid="empty-vocabulary-list"
+            >
+              Create your first vocabulary
+              <Button size="sm" onClick={() => setCreateVocabularyOpen(true)}>
+                <HiOutlinePlus size={16} /> Create
+              </Button>
+            </div>
+          }
+        >
+          <section class="h-full flex flex-col sm:grid sm:items-start sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+            <For each={vocabularies()}>
+              {list => (
+                <VocabularyCard
+                  list={list}
+                  onDeleteVocabulary={listId => setConfirmDeletionOf(listId)}
+                  onEditVocabulary={list => setVocabularyToEdit(list)}
+                  onTestVocabulary={props.onTestVocabulary}
+                />
+              )}
+            </For>
+          </section>
+        </Show>
 
         <Dialog
           open={confirmDeletionOf() != null}
