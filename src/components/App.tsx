@@ -1,10 +1,18 @@
 import { useSearchParams } from '@solidjs/router';
-import { Component, For, JSX, createResource } from 'solid-js';
+import { Component, JSX } from 'solid-js';
 import { Button } from '~/components/ui/button';
+import { getSessionResource } from '~/domains/auth/auth-resource';
 import { AccountButton } from '../domains/auth/AccountButton';
 import { supabase } from '../lib/supabase-client';
 import { Lang, langs } from '../model/lang';
 import { LangContext } from './language-context';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
 
 interface Props {
   children?: JSX.Element;
@@ -12,9 +20,9 @@ interface Props {
 
 const App: Component<Props> = props => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [loggedIn, { mutate: setLoggedIn }] = createResource(
-    async () => (await supabase.auth.getSession()).data.session?.user != null
-  );
+  const [session, { refetch: refreshSession }] = getSessionResource();
+
+  const loggedIn = () => session()?.data.session?.user != null;
 
   const currentLang = () => (searchParams.lang as Lang) ?? 'pt';
 
@@ -23,7 +31,7 @@ const App: Component<Props> = props => {
   };
 
   const onSignIn = () => {
-    setLoggedIn(true);
+    refreshSession();
   };
 
   const onSignUp = () => {
@@ -32,7 +40,7 @@ const App: Component<Props> = props => {
 
   const onSignOut = async () => {
     await supabase.auth.signOut();
-    setLoggedIn(false);
+    refreshSession();
   };
 
   return (
@@ -54,13 +62,19 @@ const App: Component<Props> = props => {
           onSignOut={onSignOut}
           onSignUp={onSignUp}
         />
-        <select
-          class="select"
-          onChange={e => changeLang(e.currentTarget.value)}
+        <Select
+          options={langs}
           value={currentLang()}
+          onChange={lang => changeLang(lang)}
+          itemComponent={props => (
+            <SelectItem item={props.item}>{props.item.rawValue}</SelectItem>
+          )}
         >
-          <For each={langs}>{lang => <option value={lang}>{lang}</option>}</For>
-        </select>
+          <SelectTrigger class="h-8">
+            <SelectValue<string>>{s => s.selectedOption()}</SelectValue>
+          </SelectTrigger>
+          <SelectContent />
+        </Select>
       </nav>
       <main class="flex-grow w-full py-8 grid">{props.children}</main>
     </LangContext.Provider>
