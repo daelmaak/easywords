@@ -47,12 +47,12 @@ const App: Component<Props> = props => {
     <LangContext.Provider value={currentLang}>
       <nav class="flex items-center">
         <a href="/vocabulary">
-          <Button class="text-inherit" variant="link">
+          <Button class="text-inherit px-2" variant="link">
             Vocabulary
           </Button>
         </a>
         <a href="/conjugations">
-          <Button class="text-inherit" variant="link">
+          <Button class="text-inherit px-2" variant="link">
             Conjugations
           </Button>
         </a>
@@ -76,7 +76,7 @@ const App: Component<Props> = props => {
           <SelectContent />
         </Select>
       </nav>
-      <main class="flex-grow w-full py-8 grid">{props.children}</main>
+      <main class="flex-grow w-full px-2 py-4 grid">{props.children}</main>
     </LangContext.Provider>
   );
 };
