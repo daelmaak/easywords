@@ -11,7 +11,7 @@ export const VocabulariesPage = () => {
 
   return (
     <VocabularyOverview
-      fetchVocabularies={getVocabulariesResource()}
+      vocabulariesResource={getVocabulariesResource()}
       onTestVocabulary={onTestVocabulary}
     />
   );

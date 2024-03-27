@@ -32,12 +32,12 @@ import { VocabularyCard } from './VocabularyCard';
 import { VocabularyCreator } from './VocabularyCreator';
 
 export type Props = {
-  fetchVocabularies: ResourceReturn<VocabularyList[]>;
+  vocabulariesResource: ResourceReturn<VocabularyList[]>;
   onTestVocabulary: (id: number) => void;
 };
 
 export const VocabularyOverview: Component<Props> = props => {
-  const [vocabularies, vocabulariesAction] = props.fetchVocabularies;
+  const [vocabularies, vocabulariesAction] = props.vocabulariesResource;
   const [createVocabularyOpen, setCreateVocabularyOpen] = createSignal(false);
   const [confirmDeletionOf, setConfirmDeletionOf] = createSignal<number>();
   const [vocabularyToEdit, setVocabularyToEdit] =
