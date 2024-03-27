@@ -7,7 +7,7 @@ interface Props {
   loggedIn: boolean;
   onSignIn: () => void;
   onSignOut: () => void;
-  onSignUp: () => void;
+  onSignUp?: () => void;
 }
 
 export const AccountButton: Component<Props> = props => {

@@ -34,10 +34,6 @@ const App: Component<Props> = props => {
     refreshSession();
   };
 
-  const onSignUp = () => {
-    console.log('signed up');
-  };
-
   const onSignOut = async () => {
     await supabase.auth.signOut();
     refreshSession();
@@ -60,7 +56,6 @@ const App: Component<Props> = props => {
           loggedIn={!!loggedIn()}
           onSignIn={onSignIn}
           onSignOut={onSignOut}
-          onSignUp={onSignUp}
         />
         <Select
           options={langs}
