@@ -3,13 +3,12 @@ import { Component, Show, createSignal } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
-import { supabase } from '~/lib/supabase-client';
+import { signIn, signUp } from './auth-resource';
 import { AuthMode } from './model';
 
 interface Props {
   mode: AuthMode;
   onModeChange: (mode: AuthMode) => void;
-  onSignIn?: () => void;
   onSignUp?: () => void;
 }
 
@@ -22,23 +21,16 @@ export const AuthForm: Component<Props> = props => {
     setAuthError(undefined);
   };
 
-  const signIn = async (email: string, password: string) => {
-    const signInRes = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+  const onSignIn = async (email: string, password: string) => {
+    const signInResult = await signIn(email, password);
 
-    if (signInRes.error) {
-      return setAuthError(signInRes.error);
+    if (signInResult.error) {
+      return setAuthError(signInResult.error);
     }
-    props.onSignIn?.();
   };
 
-  const signUp = async (email: string, password: string) => {
-    const signUpRes = await supabase.auth.signUp({
-      email,
-      password,
-    });
+  const onSignUp = async (email: string, password: string) => {
+    const signUpRes = await signUp(email, password);
 
     if (signUpRes.error) {
       return setAuthError(signUpRes.error);
@@ -57,9 +49,9 @@ export const AuthForm: Component<Props> = props => {
     const password = form.password.value;
 
     if (props.mode === 'signup') {
-      await signUp(email, password);
+      await onSignUp(email, password);
     } else {
-      await signIn(email, password);
+      await onSignIn(email, password);
     }
 
     setPending(false);

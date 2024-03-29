@@ -1,9 +1,8 @@
 import { useSearchParams } from '@solidjs/router';
 import { Component, JSX } from 'solid-js';
 import { Button } from '~/components/ui/button';
-import { getSessionResource } from '~/domains/auth/auth-resource';
+import { isLoggedIn, sessionResource } from '~/domains/auth/auth-resource';
 import { AccountButton } from '../domains/auth/AccountButton';
-import { supabase } from '../lib/supabase-client';
 import { Lang, langs } from '../model/lang';
 import { LangContext } from './language-context';
 import {
@@ -20,23 +19,14 @@ interface Props {
 
 const App: Component<Props> = props => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [session, { refetch: refreshSession }] = getSessionResource();
+  const [session] = sessionResource;
 
-  const loggedIn = () => session()?.data.session?.user != null;
+  const loggedIn = () => isLoggedIn(session());
 
   const currentLang = () => (searchParams.lang as Lang) ?? 'pt';
 
   const changeLang = (value: string) => {
     setSearchParams({ lang: value as Lang });
-  };
-
-  const onSignIn = () => {
-    refreshSession();
-  };
-
-  const onSignOut = async () => {
-    await supabase.auth.signOut();
-    refreshSession();
   };
 
   return (
@@ -52,11 +42,7 @@ const App: Component<Props> = props => {
             Conjugations
           </Button>
         </a>
-        <AccountButton
-          loggedIn={!!loggedIn()}
-          onSignIn={onSignIn}
-          onSignOut={onSignOut}
-        />
+        <AccountButton loggedIn={!!loggedIn()} />
         <Select
           options={langs}
           value={currentLang()}
