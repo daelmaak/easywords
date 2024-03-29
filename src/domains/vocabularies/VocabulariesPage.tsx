@@ -3,6 +3,8 @@ import { Show } from 'solid-js';
 import { getVocabulariesResource } from '~/domains/vocabularies/resources/vocabulary-resources';
 import { isLoggedIn, sessionResource } from '../auth/auth-resource';
 import { VocabularyOverview } from './components/VocabularyOverview';
+import { AuthDialog } from '../auth/AuthDialog';
+import { Button } from '~/components/ui/button';
 
 export const VocabulariesPage = () => {
   const navigate = useNavigate();
@@ -23,7 +25,13 @@ export const VocabulariesPage = () => {
         />
       </Show>
       <Show when={loggedIn() === false}>
-        <div>Not logged in</div>
+        <div class="flex flex-col gap-4 justify-center items-center">
+          You've got to sign in/sign up in order to create vocabularies.
+          <AuthDialog
+            mode="signin"
+            trigger={<Button size="sm">Sign in</Button>}
+          />
+        </div>
       </Show>
     </>
   );
