@@ -22,6 +22,7 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
   );
   const fuse = new Fuse(words(), {
     keys: ['original', 'translation'],
+    threshold: 0.3,
   });
 
   function search(query: string) {
