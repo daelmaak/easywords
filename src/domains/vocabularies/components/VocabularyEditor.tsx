@@ -47,7 +47,7 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
 
   return (
     <>
-      <div class="mb-4 flex gap-4">
+      <div class="flex gap-4 sticky top-0 bg-inherit pt-2 pb-4">
         <Input
           class="w-auto"
           placeholder="Search..."

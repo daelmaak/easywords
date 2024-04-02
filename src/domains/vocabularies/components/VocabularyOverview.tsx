@@ -167,14 +167,14 @@ export const VocabularyOverview: Component<Props> = props => {
           onOpenChange={closeWordEditor}
         >
           <SheetContent
-            class="w-svw sm:w-[30rem]"
+            class="w-svw sm:w-[30rem] py-0 overflow-auto"
             onOpenAutoFocus={e => e.preventDefault()}
             onPointerDownOutside={e => e.preventDefault()}
           >
             <Show when={vocabularyToEdit()}>
               {vocabulary => (
                 <>
-                  <SheetHeader>
+                  <SheetHeader class="mt-6">
                     <SheetTitle>
                       Edit <span class="font-normal">{vocabulary().name}</span>
                     </SheetTitle>
