@@ -7,6 +7,7 @@ import { VocabulariesPage } from './domains/vocabularies/VocabulariesPage';
 import { VocabularyTestPage } from './domains/vocabulary-testing/VocabularyTestPage';
 import './index.css';
 import { initApp } from './init/app-init';
+import { VocabularyPage } from './domains/vocabularies/VocabularyPage';
 
 const root = document.getElementById('root');
 
@@ -23,6 +24,7 @@ render(
     <Router root={App}>
       <Route path="/vocabulary">
         <Route path="/" component={VocabulariesPage} />
+        <Route path="/:id" component={VocabularyPage} />
         <Route path="/:id/test" component={VocabularyTestPage} />
       </Route>
       <Route

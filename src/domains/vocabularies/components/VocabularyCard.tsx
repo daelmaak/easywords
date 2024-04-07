@@ -16,8 +16,9 @@ import { VocabularyList } from '../vocabulary-model';
 
 export type Props = {
   list: VocabularyList;
+  onClickVocabulary?: (id: number) => void;
   onDeleteVocabulary: (id: number) => void;
-  onEditVocabulary: (list: VocabularyList) => void;
+  onEditVocabulary: (id: number) => void;
   onTestVocabulary: (id: number) => void;
 };
 
@@ -30,7 +31,7 @@ export const VocabularyCard: Component<Props> = props => {
           <HiOutlinePencil
             class="cursor-pointer"
             size={16}
-            onClick={() => props.onEditVocabulary(props.list)}
+            onClick={() => props.onEditVocabulary(props.list.id)}
           />
           <HiOutlineTrash
             class="cursor-pointer"
@@ -39,7 +40,10 @@ export const VocabularyCard: Component<Props> = props => {
           />
         </div>
       </CardHeader>
-      <CardContent class="overflow-hidden">
+      <CardContent
+        class="overflow-hidden cursor-pointer"
+        onClick={() => props.onClickVocabulary?.(props.list.id)}
+      >
         <ul>
           <For each={props.list.vocabularyItems.slice(0, 10)}>
             {item => (

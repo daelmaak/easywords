@@ -1,31 +1,19 @@
 import { HiOutlineXMark } from 'solid-icons/hi';
 import { For, Show, createSignal } from 'solid-js';
 import { Badge } from '~/components/ui/badge';
-import {
-  RadioGroup,
-  RadioGroupItem,
-  RadioGroupItemLabel,
-} from '~/components/ui/radio-group';
 import { Textarea } from '~/components/ui/textarea';
 import { WordCreator } from '~/domains/vocabularies/components/WordCreator';
 import { WordTranslation } from '~/model/word-translation';
-
-const l10n: { mode: Record<WordsInputMode, string> } = {
-  mode: {
-    text: 'raw',
-    form: 'interactive',
-  },
-};
 
 export type WordsInputMode = 'text' | 'form';
 export const wordsInputModes: WordsInputMode[] = ['form', 'text'];
 
 export interface WordsInputProps {
+  mode: WordsInputMode;
   onWordsChange?: (words: WordTranslation[]) => void;
 }
 
 export function WordsInput(props: WordsInputProps) {
-  const [mode, setMode] = createSignal<WordsInputMode>('form');
   const [words, setWords] = createSignal<WordTranslation[]>([]);
 
   function onAddWord(original: string, translation: string) {
@@ -54,30 +42,15 @@ export function WordsInput(props: WordsInputProps) {
 
   return (
     <>
-      <RadioGroup
-        class="flex mb-4"
-        value={mode()}
-        onChange={m => setMode(m as WordsInputMode)}
-      >
-        <For each={wordsInputModes}>
-          {mode => (
-            <RadioGroupItem value={mode}>
-              <RadioGroupItemLabel class="text-xs">
-                {l10n.mode[mode]}
-              </RadioGroupItemLabel>
-            </RadioGroupItem>
-          )}
-        </For>
-      </RadioGroup>
-
-      <Show when={mode() === 'form'}>
+      <Show when={props.mode === 'form'}>
+      <div>
         <WordCreator
           ctaLabel="Add"
           ctaVariant="secondary"
           onChange={onAddWord}
         />
 
-        <div class="flex flex-wrap gap-2">
+        <div class="mt-4 flex flex-wrap gap-2">
           <For each={words()}>
             {word => (
               <Badge class="text-sm" variant="secondary">
@@ -90,9 +63,10 @@ export function WordsInput(props: WordsInputProps) {
             )}
           </For>
         </div>
+</div>
       </Show>
 
-      <Show when={mode() === 'text'}>
+      <Show when={props.mode === 'text'}>
         <Textarea
           id="words-input"
           name="words-input"

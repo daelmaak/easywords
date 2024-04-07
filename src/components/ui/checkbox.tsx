@@ -7,7 +7,7 @@ import { TbCheck } from 'solid-icons/tb';
 import { cn } from '~/lib/utils';
 
 const Checkbox: Component<
-  CheckboxPrimitive.CheckboxRootProps & { label: string }
+  CheckboxPrimitive.CheckboxRootProps & { label?: string }
 > = props => {
   const [, local, rest] = splitProps(props, ['class'], ['label']);
   return (

@@ -12,6 +12,10 @@ export const VocabulariesPage = () => {
   const [session] = sessionResource;
   const loggedIn = () => isLoggedIn(session());
 
+  function onGoToVocabulary(id: number) {
+    navigate(`/vocabulary/${id}`);
+  }
+
   function onTestVocabulary(id: number) {
     navigate(`/vocabulary/${id}/test`);
   }
@@ -21,6 +25,7 @@ export const VocabulariesPage = () => {
       <Show when={loggedIn()}>
         <VocabularyOverview
           vocabulariesResource={getVocabulariesResource()}
+          onGoToVocabulary={onGoToVocabulary}
           onTestVocabulary={onTestVocabulary}
         />
       </Show>

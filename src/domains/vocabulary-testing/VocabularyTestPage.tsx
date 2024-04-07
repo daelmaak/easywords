@@ -17,8 +17,8 @@ import { VocabularyTester } from './components/VocabularyTester';
 export const VocabularyTestPage = () => {
   const navigate = useNavigate();
   const params = useParams();
-  const listId = +params.id;
-  const vocabulary = () => getVocabulary(listId);
+  const vocabularyId = +params.id;
+  const vocabulary = () => getVocabulary(vocabularyId);
 
   const [vocabularySettings, setVocabularySettings] =
     createStore<VocabularyUserSettings>({
@@ -50,7 +50,7 @@ export const VocabularyTestPage = () => {
   }
 
   function onEditWord(word: VocabularyItem) {
-    updateVocabularyItems(listId, word);
+    updateVocabularyItems(vocabularyId, word);
   }
 
   function onGoBack() {

@@ -1,12 +1,5 @@
 import { HiOutlinePlus } from 'solid-icons/hi';
-import {
-  Component,
-  For,
-  ResourceReturn,
-  Show,
-  createSignal,
-  lazy,
-} from 'solid-js';
+import { Component, For, ResourceReturn, Show, createSignal } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import {
   Dialog,
@@ -25,14 +18,14 @@ import { WordTranslation } from '~/model/word-translation';
 import {
   createVocabulary,
   deleteVocabulary,
-  updateVocabularyItems,
 } from '../resources/vocabulary-resources';
-import { VocabularyItem, VocabularyList } from '../vocabulary-model';
+import { VocabularyList } from '../vocabulary-model';
 import { VocabularyCard } from './VocabularyCard';
 import { VocabularyCreator } from './VocabularyCreator';
 
 export type Props = {
   vocabulariesResource: ResourceReturn<VocabularyList[]>;
+  onGoToVocabulary: (id: number) => void;
   onTestVocabulary: (id: number) => void;
 };
 
@@ -40,17 +33,9 @@ export const VocabularyOverview: Component<Props> = props => {
   const [vocabularies, vocabulariesAction] = props.vocabulariesResource;
   const [createVocabularyOpen, setCreateVocabularyOpen] = createSignal(false);
   const [confirmDeletionOf, setConfirmDeletionOf] = createSignal<number>();
-  const [vocabularyToEdit, setVocabularyToEdit] =
-    createSignal<VocabularyList>();
 
   const loading = () => vocabularies() == null;
   const anyVocabularies = () => !!vocabularies()?.length;
-
-  const VocabularyEditor = lazy(() => import('./VocabularyEditor'));
-
-  function closeWordEditor() {
-    setVocabularyToEdit(undefined);
-  }
 
   async function doDeleteVocabulary(listId: number) {
     const success = await deleteVocabulary(listId);
@@ -84,11 +69,6 @@ export const VocabularyOverview: Component<Props> = props => {
     }
 
     await doDeleteVocabulary(listId);
-  }
-
-  async function onWordsEdited(listId: number, updatedWords: VocabularyItem[]) {
-    await updateVocabularyItems(listId, ...updatedWords);
-    closeWordEditor();
   }
 
   return (
@@ -133,8 +113,9 @@ export const VocabularyOverview: Component<Props> = props => {
               {list => (
                 <VocabularyCard
                   list={list}
-                  onDeleteVocabulary={listId => setConfirmDeletionOf(listId)}
-                  onEditVocabulary={list => setVocabularyToEdit(list)}
+                  onClickVocabulary={props.onGoToVocabulary}
+                  onDeleteVocabulary={setConfirmDeletionOf}
+                  onEditVocabulary={props.onGoToVocabulary}
                   onTestVocabulary={props.onTestVocabulary}
                 />
               )}
@@ -160,34 +141,6 @@ export const VocabularyOverview: Component<Props> = props => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-
-        <Sheet
-          modal={true}
-          open={vocabularyToEdit() != null}
-          onOpenChange={closeWordEditor}
-        >
-          <SheetContent
-            class="w-svw sm:w-[30rem] py-0 overflow-auto"
-            onOpenAutoFocus={e => e.preventDefault()}
-            onPointerDownOutside={e => e.preventDefault()}
-          >
-            <Show when={vocabularyToEdit()}>
-              {vocabulary => (
-                <>
-                  <SheetHeader class="mt-6">
-                    <SheetTitle>
-                      Edit <span class="font-normal">{vocabulary().name}</span>
-                    </SheetTitle>
-                  </SheetHeader>
-                  <VocabularyEditor
-                    vocabulary={vocabulary()}
-                    onWordsEdited={ws => onWordsEdited(vocabulary().id, ws)}
-                  />
-                </>
-              )}
-            </Show>
-          </SheetContent>
-        </Sheet>
       </Show>
 
       <Show when={loading()}>

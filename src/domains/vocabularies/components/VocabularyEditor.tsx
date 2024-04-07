@@ -6,20 +6,22 @@ import {
   createSignal,
   splitProps,
 } from 'solid-js';
-import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { VocabularyItem, VocabularyList } from '../vocabulary-model';
+import { Checkbox } from '~/components/ui/checkbox';
 
 interface VocabularyEditorProps {
+  selectedWords: VocabularyItem[];
   vocabulary: VocabularyList;
   onWordsEdited: (words: VocabularyItem[]) => void;
+  onWordsSelected: (words: VocabularyItem[]) => void;
 }
 
 export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
-  const [editedWords, setEditedWords] = createSignal<VocabularyItem[]>([]);
   const [words, setWords] = createSignal<VocabularyItem[]>(
     props.vocabulary.vocabularyItems
   );
+
   const fuse = new Fuse(words(), {
     keys: ['original', 'translation'],
     threshold: 0.3,
@@ -37,30 +39,33 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
     word: VocabularyItem,
     change: { original?: string; translation?: string }
   ) {
-    setEditedWords(ws =>
-      ws.filter(w => w.id !== word.id).concat({ ...word, ...change })
-    );
+    props.onWordsEdited([{ ...word, ...change }]);
   }
 
-  function onSubmit() {
-    props.onWordsEdited(editedWords());
+  function onWordToggled(word: VocabularyItem, selected: boolean) {
+    const selectedWords = props.selectedWords;
+    if (selected) {
+      props.onWordsSelected([...selectedWords, word]);
+    } else {
+      props.onWordsSelected(selectedWords.filter(w => w !== word));
+    }
   }
 
   return (
     <>
-      <div class="flex gap-4 sticky top-0 bg-inherit pt-2 pb-4">
-        <Input
-          class="w-auto"
-          placeholder="Search..."
-          onInput={e => search(e.target.value)}
-        />
-        <Button class="ml-auto" onClick={onSubmit}>
-          Save changes
-        </Button>
+      <div class="sticky top-0 bg-inherit pt-2 pb-4">
+        <div class="flex gap-4">
+          <Input
+            class="w-auto"
+            placeholder="Search..."
+            onInput={e => search(e.target.value)}
+          />
+        </div>
       </div>
       <table>
         <thead class="font-semibold">
           <tr>
+            <td></td>
             <td>Original</td>
             <td></td>
             <td>Translation</td>
@@ -70,6 +75,11 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
           <For each={words()}>
             {word => (
               <tr class="h-10">
+                <td>
+                  <Checkbox
+                    onChange={checked => onWordToggled(word, checked)}
+                  />
+                </td>
                 <VocabularyEditorCell
                   word={word.original}
                   onEdit={o => onWordEdited(word, { original: o })}
