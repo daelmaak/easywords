@@ -3,7 +3,7 @@ import { WordTranslation } from '~/model/word-translation';
 import { VocabularyItem } from '../vocabulary-model';
 
 const fetchVocabularyLists = async () => {
-  const result = await supabase.from('vocabulary_lists').select(
+  const result = await supabase.from('vocabularies').select(
     `
     id, 
     name,
@@ -24,7 +24,7 @@ const fetchVocabularyLists = async () => {
 
 const createVocabularyList = async (name: string, words: WordTranslation[]) => {
   const listResult = await supabase
-    .from('vocabulary_lists')
+    .from('vocabularies')
     .insert({
       name,
     })
@@ -49,7 +49,7 @@ const createVocabularyList = async (name: string, words: WordTranslation[]) => {
 };
 
 const deleteVocabularyList = async (id: number) => {
-  const result = await supabase.from('vocabulary_lists').delete().match({ id });
+  const result = await supabase.from('vocabularies').delete().match({ id });
 
   return !result.error;
 };
