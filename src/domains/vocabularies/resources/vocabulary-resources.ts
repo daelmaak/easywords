@@ -51,14 +51,15 @@ export const updateVocabularyItems = async (
   vocabularyId: number,
   ...itemsToUpdate: VocabularyItem[]
 ) => {
-  const result = await api.updateVocabularyItem(itemsToUpdate);
+  const items = itemsToUpdate.map(i => ({ ...i, list_id: vocabularyId }));
+  const result = await api.updateVocabularyItems(items);
   const [_, { mutate }] = getVocabulariesResource();
 
   if (!result) {
     return false;
   }
 
-  const updatedItemsMap = new Map(itemsToUpdate.map(i => [i.id, i]));
+  const updatedItemsMap = new Map(items.map(i => [i.id, i]));
 
   mutate(vs =>
     vs!.map(v => {

@@ -64,7 +64,7 @@ export const vocabularyApi = {
   fetchVocabularyLists,
   createVocabularyList,
   deleteVocabularyList,
-  updateVocabularyItem: updateVocabularyItems,
+  updateVocabularyItems,
 };
 
 export type VocabularyApi = typeof vocabularyApi;
