@@ -42,19 +42,18 @@ export const VocabularyCreator: Component<Props> = props => {
   return (
     <>
       <form
-        class="w-full"
+        class="w-full mb-4 flex flex-col gap-2"
         data-testid="list-creator"
         id="list-creator-form"
         onSubmit={submit}
       >
-        <div class="mb-4 flex flex-col gap-2">
-          <Label for="list-name">List name</Label>
-          <Input id="list-name" name="listName" />
-        </div>
+        <Label for="list-name">List name</Label>
+        <Input id="list-name" name="listName" />
       </form>
       <div class="mb-4 flex flex-col gap-2">
+        <Label>Add words</Label>
         <RadioGroup
-          class="flex mb-4"
+          class="flex mt-2"
           value={wordsInputMode()}
           onChange={m => setWordsInputMode(m as WordsInputMode)}
         >
@@ -68,7 +67,6 @@ export const VocabularyCreator: Component<Props> = props => {
             )}
           </For>
         </RadioGroup>
-        <Label>Words</Label>
         <WordsInput mode={wordsInputMode()} onWordsChange={setWords} />
       </div>
       <Button class="w-full" form="list-creator-form" type="submit">
