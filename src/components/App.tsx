@@ -32,6 +32,7 @@ const App: Component<Props> = props => {
   return (
     <LangContext.Provider value={currentLang}>
       <nav class="flex items-center">
+        <img src="/src/assets/logo.svg" alt="logo" class="size-8 mr-2" />
         <a href="/vocabulary">
           <Button class="text-inherit px-2" variant="link">
             Vocabulary
