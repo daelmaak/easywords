@@ -1,36 +1,54 @@
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../ui/select';
+  Combobox,
+  ComboboxContent,
+  ComboboxControl,
+  ComboboxHiddenSelect,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxItemLabel,
+  ComboboxTrigger,
+} from '../ui/combobox';
 import { COUNTRIES, COUNTRY_CODES, CountryCode } from './countries';
 
 import '/node_modules/flag-icons/css/flag-icons.min.css';
 
 interface Props {
-  onSelect: (countryCode: CountryCode) => void;
+  id?: string;
+  name?: string;
+  onSelect?: (countryCode: CountryCode) => void;
 }
 
 export const CountrySelect = (props: Props) => {
   return (
-    <Select
+    <Combobox
+      id={props.id}
+      name={props.name}
+      closeOnSelection={true}
       options={COUNTRY_CODES}
+      optionLabel={code => COUNTRIES[code]}
+      optionValue={code => code}
       itemComponent={props => (
-        <SelectItem item={props.item}>
-          <span class="flex items-center gap-2">
+        <ComboboxItem item={props.item}>
+          <ComboboxItemLabel class="flex items-center gap-2">
             <span class={`w-5 h-5 fi fi-${props.item.rawValue}`} />
             {COUNTRIES[props.item.rawValue]}
-          </span>
-        </SelectItem>
+          </ComboboxItemLabel>
+        </ComboboxItem>
       )}
       onChange={props.onSelect}
     >
-      <SelectTrigger class="h-8">
-        <SelectValue<string>>{s => s.selectedOption()}</SelectValue>
-      </SelectTrigger>
-      <SelectContent />
-    </Select>
+      <ComboboxControl>
+        {state => (
+          <>
+            <span class={`w-5 h-5 mr-2 fi fi-${state.selectedOptions()[0]}`} />
+            <ComboboxInput />
+            <ComboboxTrigger />
+          </>
+        )}
+      </ComboboxControl>
+      {/* The value and name is projected into it so that it can be used in HTML forms on submit */}
+      <ComboboxHiddenSelect />
+      <ComboboxContent />
+    </Combobox>
   );
 };
