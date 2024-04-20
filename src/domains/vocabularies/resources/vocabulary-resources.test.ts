@@ -10,6 +10,7 @@ test('updates the vocabularies resources on word edit', async () => {
   const { vocabularyApi } = setup();
   const vocabulary: Vocabulary = {
     id: 1,
+    country: 'at',
     name: 'Test Vocabulary',
     vocabularyItems: [
       {
@@ -22,7 +23,7 @@ test('updates the vocabularies resources on word edit', async () => {
   };
 
   vocabularyApi.fetchVocabularyLists.mockResolvedValue([vocabulary]);
-  vocabularyApi.updateVocabularyItem.mockResolvedValue(true);
+  vocabularyApi.updateVocabularyItems.mockResolvedValue(true);
 
   // Use `createRoot` here? Test works without it but I am not sure resources are
   // cleaned up properly.
