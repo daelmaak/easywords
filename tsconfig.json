@@ -13,6 +13,8 @@
     "isolatedModules": true,
     "paths": {
       "~/*": ["./src/*"]
-    }
+    },
+    // In order to prevent tsc from processing the node_modules folder
+    "skipLibCheck": true
   }
 }
