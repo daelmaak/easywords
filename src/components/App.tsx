@@ -32,8 +32,9 @@ const App: Component<Props> = props => {
 
   return (
     <LangContext.Provider value={currentLang}>
-      <nav class="flex items-center p-2 sm:px-4">
-        <img src={logo} alt="logo" class="size-8 mr-2" />
+      <nav class="flex items-center p-2 sm:px-4 border-b">
+        <img src={logo} alt="logo" class="size-8" />
+        <span class="mr-4">Easywords</span>
         <a href="/vocabulary">
           <Button class="text-inherit px-2" variant="link">
             Vocabulary
@@ -59,7 +60,9 @@ const App: Component<Props> = props => {
           <SelectContent />
         </Select>
       </nav>
-      <main class="flex-grow w-full px-2 py-4 grid">{props.children}</main>
+      <main class="flex-grow w-full px-4 sm:px-6 py-6 grid">
+        {props.children}
+      </main>
     </LangContext.Provider>
   );
 };

@@ -75,7 +75,7 @@ export const VocabularyOverview: Component<Props> = props => {
     <div>
       <Show when={!loading()}>
         <div class="flex gap-8">
-          <h1 class="text-lg font-semibold mb-4">Your vocabularies</h1>
+          <h1 class="text-lg font-semibold mb-6 ml-6">Your vocabularies</h1>
           <Show when={anyVocabularies()}>
             <Button size="sm" onClick={() => setCreateVocabularyOpen(true)}>
               <HiOutlinePlus size={16} /> Add vocabulary
