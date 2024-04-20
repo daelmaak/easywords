@@ -7,12 +7,12 @@ import {
   splitProps,
 } from 'solid-js';
 import { Input } from '~/components/ui/input';
-import { VocabularyItem, VocabularyList } from '../vocabulary-model';
+import { VocabularyItem, Vocabulary } from '../vocabulary-model';
 import { Checkbox } from '~/components/ui/checkbox';
 
 interface VocabularyEditorProps {
   selectedWords: VocabularyItem[];
-  vocabulary: VocabularyList;
+  vocabulary: Vocabulary;
   onWordsEdited: (words: VocabularyItem[]) => void;
   onWordsSelected: (words: VocabularyItem[]) => void;
 }

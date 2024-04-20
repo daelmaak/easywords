@@ -1,9 +1,9 @@
 import { ResourceReturn, createResource } from 'solid-js';
-import { VocabularyItem, VocabularyList } from '../vocabulary-model';
+import { VocabularyItem, Vocabulary } from '../vocabulary-model';
 import { VocabularyApi } from './vocabulary-api';
 
 let api: VocabularyApi;
-let vocabulariesResource: ResourceReturn<VocabularyList[]> | undefined;
+let vocabulariesResource: ResourceReturn<Vocabulary[]> | undefined;
 
 export const initVocabularyResources = (vocabularyApi: VocabularyApi) => {
   api = vocabularyApi;
@@ -16,7 +16,7 @@ export const getVocabulariesResource = () => {
   return vocabulariesResource;
 };
 
-export const createVocabulary = async (vocabulary: VocabularyList) => {
+export const createVocabulary = async (vocabulary: Vocabulary) => {
   const success = await api.createVocabularyList(vocabulary);
 
   if (success) {

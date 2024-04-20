@@ -4,11 +4,11 @@ import {
   getVocabulariesResource,
   updateVocabularyItems,
 } from './vocabulary-resources';
-import { VocabularyList } from '../vocabulary-model';
+import { Vocabulary } from '../vocabulary-model';
 
 test('updates the vocabularies resources on word edit', async () => {
   const { vocabularyApi } = setup();
-  const vocabulary: VocabularyList = {
+  const vocabulary: Vocabulary = {
     id: 1,
     name: 'Test Vocabulary',
     vocabularyItems: [
