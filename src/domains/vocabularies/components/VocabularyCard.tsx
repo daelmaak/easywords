@@ -26,7 +26,10 @@ export const VocabularyCard: Component<Props> = props => {
   return (
     <Card>
       <CardHeader class="flex flex-row justify-between items-center gap-4">
-        <CardTitle>{props.list.name}</CardTitle>
+        <CardTitle class="text-md">
+          <span class={`mr-2 fi fi-${props.list.country}`}></span>
+          {props.list.name}
+        </CardTitle>
         <div class="flex gap-4">
           <HiOutlinePencil
             class="cursor-pointer"
