@@ -22,6 +22,7 @@ import {
 import { Vocabulary } from '../vocabulary-model';
 import { VocabularyCard } from './VocabularyCard';
 import { VocabularyCreator } from './VocabularyCreator';
+import { VocabularyToCreate } from '../resources/vocabulary-api';
 
 export type Props = {
   vocabulariesResource: ResourceReturn<Vocabulary[]>;
@@ -49,7 +50,7 @@ export const VocabularyOverview: Component<Props> = props => {
     setConfirmDeletionOf(undefined);
   }
 
-  async function onCreateVocabulary(vocabulary: Vocabulary) {
+  async function onCreateVocabulary(vocabulary: VocabularyToCreate) {
     const success = await createVocabulary(vocabulary);
 
     if (success) {
