@@ -1,10 +1,10 @@
 import { supabase } from '~/lib/supabase-client';
 import { RealOmit, omit } from '~/util/object';
-import { VocabularyItem, VocabularyList } from '../vocabulary-model';
+import { VocabularyItem, Vocabulary } from '../vocabulary-model';
 
 export type VocabularyItemToCreate = RealOmit<VocabularyItem, 'id' | 'list_id'>;
 export type VocabularyToCreate = RealOmit<
-  VocabularyList,
+  Vocabulary,
   'id' | 'vocabularyItems'
 > & {
   vocabularyItems: VocabularyItemToCreate[];

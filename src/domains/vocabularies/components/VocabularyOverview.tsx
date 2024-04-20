@@ -19,12 +19,12 @@ import {
   createVocabulary,
   deleteVocabulary,
 } from '../resources/vocabulary-resources';
-import { VocabularyList } from '../vocabulary-model';
+import { Vocabulary } from '../vocabulary-model';
 import { VocabularyCard } from './VocabularyCard';
 import { VocabularyCreator } from './VocabularyCreator';
 
 export type Props = {
-  vocabulariesResource: ResourceReturn<VocabularyList[]>;
+  vocabulariesResource: ResourceReturn<Vocabulary[]>;
   onGoToVocabulary: (id: number) => void;
   onTestVocabulary: (id: number) => void;
 };
@@ -49,7 +49,7 @@ export const VocabularyOverview: Component<Props> = props => {
     setConfirmDeletionOf(undefined);
   }
 
-  async function onCreateVocabulary(vocabulary: VocabularyList) {
+  async function onCreateVocabulary(vocabulary: Vocabulary) {
     const success = await createVocabulary(vocabulary);
 
     if (success) {

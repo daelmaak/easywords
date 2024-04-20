@@ -7,8 +7,7 @@ export interface VocabularyItem {
   translation: string;
 }
 
-// TODO: rename
-export interface VocabularyList {
+export interface Vocabulary {
   id: number;
   country: CountryCode;
   name: string;

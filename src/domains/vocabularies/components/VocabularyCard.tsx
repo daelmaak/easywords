@@ -12,10 +12,10 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/ui/card';
-import { VocabularyList } from '../vocabulary-model';
+import { Vocabulary } from '../vocabulary-model';
 
 export type Props = {
-  list: VocabularyList;
+  list: Vocabulary;
   onClickVocabulary?: (id: number) => void;
   onDeleteVocabulary: (id: number) => void;
   onEditVocabulary: (id: number) => void;
