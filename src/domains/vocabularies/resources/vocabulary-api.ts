@@ -1,11 +1,20 @@
 import { supabase } from '~/lib/supabase-client';
-import { WordTranslation } from '~/model/word-translation';
-import { VocabularyItem } from '../vocabulary-model';
+import { RealOmit, omit } from '~/util/object';
+import { VocabularyItem, VocabularyList } from '../vocabulary-model';
+
+export type VocabularyItemToCreate = RealOmit<VocabularyItem, 'id' | 'list_id'>;
+export type VocabularyToCreate = RealOmit<
+  VocabularyList,
+  'id' | 'vocabularyItems'
+> & {
+  vocabularyItems: VocabularyItemToCreate[];
+};
 
 const fetchVocabularyLists = async () => {
   const result = await supabase.from('vocabularies').select(
     `
     id, 
+    country,
     name,
     vocabulary_items (
       id,
@@ -17,17 +26,16 @@ const fetchVocabularyLists = async () => {
 
   return (result.data ?? []).map(lists => ({
     id: lists.id,
+    country: lists.country,
     name: lists.name,
     vocabularyItems: lists.vocabulary_items,
   }));
 };
 
-const createVocabularyList = async (name: string, words: WordTranslation[]) => {
+const createVocabularyList = async (vocabulary: VocabularyToCreate) => {
   const listResult = await supabase
     .from('vocabularies')
-    .insert({
-      name,
-    })
+    .insert({ ...omit(vocabulary, 'vocabularyItems') })
     .select();
 
   if (listResult.error) {
@@ -36,7 +44,7 @@ const createVocabularyList = async (name: string, words: WordTranslation[]) => {
 
   const createdList = listResult.data?.[0];
 
-  const attachedWords = words.map(word => ({
+  const attachedWords = vocabulary.vocabularyItems.map(word => ({
     ...word,
     list_id: createdList?.id,
   }));

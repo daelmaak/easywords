@@ -49,8 +49,8 @@ export const VocabularyOverview: Component<Props> = props => {
     setConfirmDeletionOf(undefined);
   }
 
-  async function onCreateVocabulary(name: string, words: WordTranslation[]) {
-    const success = await createVocabulary(name, words);
+  async function onCreateVocabulary(vocabulary: VocabularyList) {
+    const success = await createVocabulary(vocabulary);
 
     if (success) {
       setCreateVocabularyOpen(false);
