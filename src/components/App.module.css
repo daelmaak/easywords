@@ -1,0 +1,5 @@
+.navLink {
+  &:global(.active span) {
+    text-decoration: underline;
+  }
+}

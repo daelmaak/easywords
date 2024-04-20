@@ -1,4 +1,4 @@
-import { useSearchParams } from '@solidjs/router';
+import { A, useSearchParams } from '@solidjs/router';
 import { Component, JSX } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import { isLoggedIn, sessionResource } from '~/domains/auth/auth-resource';
@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from './ui/select';
 import logo from '../assets/logo.svg';
+import styles from './App.module.css';
 
 interface Props {
   children?: JSX.Element;
@@ -34,17 +35,17 @@ const App: Component<Props> = props => {
     <LangContext.Provider value={currentLang}>
       <nav class="flex items-center p-2 sm:px-4 border-b">
         <img src={logo} alt="logo" class="size-8" />
-        <span class="mr-4">Easywords</span>
-        <a href="/vocabulary">
-          <Button class="text-inherit px-2" variant="link">
+        <span class="mr-8">Easywords</span>
+        <A class={styles.navLink} href="/vocabulary">
+          <Button class="font-normal text-inherit px-2" variant="link">
             Vocabulary
           </Button>
-        </a>
-        <a href="/conjugations">
-          <Button class="text-inherit px-2" variant="link">
+        </A>
+        <A class={styles.navLink} href="/conjugations">
+          <Button class="font-normal text-inherit px-2" variant="link">
             Conjugations
           </Button>
-        </a>
+        </A>
         <AccountButton loggedIn={!!loggedIn()} />
         <Select
           options={langs}

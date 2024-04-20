@@ -1,4 +1,4 @@
-import { Route, Router } from '@solidjs/router';
+import { Navigate, Route, Router } from '@solidjs/router';
 import { render } from 'solid-js/web';
 
 import App from './components/App';
@@ -31,7 +31,7 @@ render(
         path={['/conjugations', '/conjugations/:verb']}
         component={ConjugationsView}
       />
-      <Route path="/" component={VocabulariesPage} />
+      <Route path="/" component={() => <Navigate href="/vocabulary" />} />
     </Router>
   ),
   root!
