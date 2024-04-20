@@ -1,5 +1,4 @@
 import { ResourceReturn, createResource } from 'solid-js';
-import { WordTranslation } from '~/model/word-translation';
 import { VocabularyItem, VocabularyList } from '../vocabulary-model';
 import { VocabularyApi } from './vocabulary-api';
 
@@ -17,11 +16,8 @@ export const getVocabulariesResource = () => {
   return vocabulariesResource;
 };
 
-export const createVocabulary = async (
-  name: string,
-  items: WordTranslation[]
-) => {
-  const success = await api.createVocabularyList(name, items);
+export const createVocabulary = async (vocabulary: VocabularyList) => {
+  const success = await api.createVocabularyList(vocabulary);
 
   if (success) {
     const { refetch } = getVocabulariesResource()[1];
