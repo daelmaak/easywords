@@ -1,7 +1,6 @@
 import { useNavigate, useParams } from '@solidjs/router';
 import { Show, createEffect, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { WordTranslation } from '~/model/word-translation';
 import {
   getVocabulary,
   updateVocabularyItems,
@@ -27,8 +26,8 @@ export const VocabularyTestPage = () => {
       repeatInvalid: false,
     });
   const [words, setWords] = createSignal<VocabularyItem[]>();
-  const [invalidWords, setInvalidWords] = createSignal<WordTranslation[]>();
-  const [removedWords, setRemovedWords] = createSignal<WordTranslation[]>();
+  const [invalidWords, setInvalidWords] = createSignal<VocabularyItem[]>();
+  const [removedWords, setRemovedWords] = createSignal<VocabularyItem[]>();
   const [done, setDone] = createSignal(false);
 
   createEffect(() => {
@@ -41,8 +40,8 @@ export const VocabularyTestPage = () => {
   });
 
   async function onDone(
-    leftOverWords?: WordTranslation[],
-    removedWords?: WordTranslation[]
+    leftOverWords?: VocabularyItem[],
+    removedWords?: VocabularyItem[]
   ) {
     setDone(true);
     setInvalidWords(leftOverWords);

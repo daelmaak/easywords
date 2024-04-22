@@ -1,27 +1,14 @@
-import { WordTranslation } from '~/model/word-translation';
+import { VocabularyItem } from '~/domains/vocabularies/vocabulary-model';
 
 export function mergeWords(
-  arr1: WordTranslation[] = [],
-  arr2: WordTranslation[] = []
+  arr1: VocabularyItem[] = [],
+  arr2: VocabularyItem[] = []
 ) {
-  const dedupedOrig = new Set(
-    arr1.map(w => w.original).concat(arr2.map(w => w.original))
-  );
-  const dedupedTrans = new Set(
-    arr1.map(w => w.translation).concat(arr2.map(w => w.translation))
-  );
+  const merged = new Map<number, VocabularyItem>();
 
-  const dedupedOrigArr = Array.from(dedupedOrig);
-  const dedupedTransArr = Array.from(dedupedTrans);
-
-  const result: WordTranslation[] = [];
-
-  for (let i = 0; i < dedupedOrigArr.length; i++) {
-    result.push({
-      original: dedupedOrigArr[i],
-      translation: dedupedTransArr[i],
-    });
+  for (const item of arr1.concat(arr2)) {
+    merged.set(item.id, item);
   }
 
-  return result;
+  return Array.from(merged.values());
 }

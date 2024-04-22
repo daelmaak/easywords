@@ -1,14 +1,15 @@
 import { Show } from 'solid-js';
-import { WordTranslation } from '../../parser/simple-md-parser';
 import { Button } from '~/components/ui/button';
+import { VocabularyItem } from '~/domains/vocabularies/vocabulary-model';
+import { WordTranslation } from '~/model/word-translation';
 
 interface ResultsProps {
-  invalidWords?: WordTranslation[];
+  invalidWords?: VocabularyItem[];
   removedWords?: WordTranslation[];
   words?: WordTranslation[];
   repeat: () => void;
   reset: () => void;
-  tryInvalidWords: (invalidWords: WordTranslation[]) => void;
+  tryInvalidWords: (invalidWords: VocabularyItem[]) => void;
 }
 
 export function Results(props: ResultsProps) {

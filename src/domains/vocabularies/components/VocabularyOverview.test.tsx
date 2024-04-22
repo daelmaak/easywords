@@ -18,6 +18,7 @@ it('should render an empty vocabulary overview if none exist', async () => {
   render(() => (
     <VocabularyOverview
       vocabulariesResource={getVocabulariesResource()}
+      onGoToVocabulary={vi.fn()}
       onTestVocabulary={vi.fn()}
     />
   ));

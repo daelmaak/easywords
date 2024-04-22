@@ -6,7 +6,6 @@ import { Dialog, DialogContent } from '~/components/ui/dialog';
 import { Progress, ProgressValueLabel } from '~/components/ui/progress';
 import { WordCreator } from '~/domains/vocabularies/components/WordCreator';
 import { VocabularyItem } from '~/domains/vocabularies/vocabulary-model';
-import { WordTranslation } from '~/model/word-translation';
 import { mergeWords } from '../../../util/merge-arrays';
 import { nextWord } from '../../../worder/worder';
 import { WriteTester } from './WriteTester';
@@ -19,8 +18,8 @@ interface TesterProps {
   words: VocabularyItem[];
   mode: VocabularyTestMode;
   done: (
-    leftoverWords?: WordTranslation[],
-    removedWords?: WordTranslation[]
+    leftoverWords?: VocabularyItem[],
+    removedWords?: VocabularyItem[]
   ) => void;
   editWord: (word: VocabularyItem) => void;
   repeat: () => void;
@@ -44,8 +43,8 @@ export const VocabularyTester: Component<TesterProps> = (
     editing: false,
   });
 
-  let invalidWords: WordTranslation[] = [];
-  let removedWords: WordTranslation[] = [];
+  let invalidWords: VocabularyItem[] = [];
+  let removedWords: VocabularyItem[] = [];
   let currentWordValid: boolean | undefined = undefined;
 
   const currentWord = () => props.words.find(w => w.id === store.currentWordId);
