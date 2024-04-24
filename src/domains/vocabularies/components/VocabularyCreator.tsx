@@ -36,7 +36,7 @@ export const VocabularyCreator: Component<Props> = props => {
     event.preventDefault();
 
     const form = event.target as HTMLFormElement;
-    const vocabularyName = form.listName.value;
+    const vocabularyName = form.vocabularyName.value;
     const country = form.country.value;
 
     props.onListCreate({
@@ -54,8 +54,8 @@ export const VocabularyCreator: Component<Props> = props => {
         id="list-creator-form"
         onSubmit={submit}
       >
-        <Label for="list-name">List name</Label>
-        <Input id="list-name" name="listName" />
+        <Label for="vocabulary-name">Vocabulary name</Label>
+        <Input id="vocabulary-name" name="vocabularyNname" />
         <Label for="country">Country</Label>
         <CountrySelect id="country" />
       </form>

@@ -10,10 +10,14 @@ import {
 import { WordsInput } from '../vocabulary-testing/components/WordsInput';
 import {
   getVocabulary,
+  updateVocabulary,
   updateVocabularyItems,
 } from './resources/vocabulary-resources';
 import { VocabularyItem } from './vocabulary-model';
 import { HiOutlinePlus, HiOutlineTrash } from 'solid-icons/hi';
+import { CountrySelect } from '~/components/country-select/country-select';
+import { Input } from '~/components/ui/input';
+import { Label } from '~/components/ui/label';
 
 export const VocabularyPage: Component = () => {
   const VocabularyEditor = lazy(() => import('./components/VocabularyEditor'));
@@ -35,8 +39,26 @@ export const VocabularyPage: Component = () => {
     await updateVocabularyItems(vocabularyId, ...updatedWords);
   }
 
+  function onVocabularyDataChange(event: Event) {
+    const form = (event.target as Element).closest('form') as HTMLFormElement;
+    const name = form.vocabularyName.value;
+    const country = form.country.value;
+
+    const vocab = vocabulary();
+
+    if (!vocab || !name || !country) {
+      return;
+    }
+
+    if (vocab.name === name && vocab.country === country) {
+      return;
+    }
+
+    updateVocabulary({ id: vocabulary()?.id, name, country });
+  }
+
   return (
-    <div>
+    <div class="flex gap-4">
       <Sheet open={openedAddWords()} onOpenChange={setOpenedAddWords}>
         <SheetContent class="w-svw sm:w-[30rem] flex flex-col gap-4">
           <SheetHeader>
@@ -46,6 +68,22 @@ export const VocabularyPage: Component = () => {
           <Button onClick={onSubmit}>Save</Button>
         </SheetContent>
       </Sheet>
+
+      <Show when={vocabulary()}>
+        {v => (
+          <form onFocusOut={onVocabularyDataChange}>
+            <Label for="vocabulary-name">List name</Label>
+            <Input
+              id="vocabulary-name"
+              name="vocabularyName"
+              value={v().name}
+            />
+            <div class="mt-4"></div>
+            <Label for="country">Country</Label>
+            <CountrySelect id="country" defaultValue={v().country} />
+          </form>
+        )}
+      </Show>
 
       <div class="mx-auto max-w-[32rem]">
         <div class="mb-4 flex gap-2">

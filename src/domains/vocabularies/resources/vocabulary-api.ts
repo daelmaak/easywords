@@ -62,6 +62,15 @@ const deleteVocabularyList = async (id: number) => {
   return !result.error;
 };
 
+const updateVocabulary = async (vocabulary: Partial<Vocabulary>) => {
+  const result = await supabase
+    .from('vocabularies')
+    .update(omit(vocabulary, 'id', 'vocabularyItems') as Partial<Vocabulary>)
+    .eq('id', vocabulary.id);
+
+  return !result.error;
+};
+
 const updateVocabularyItems = async (items: VocabularyItem[]) => {
   const result = await supabase.from('vocabulary_items').upsert(items);
 
@@ -72,6 +81,7 @@ export const vocabularyApi = {
   fetchVocabularyLists,
   createVocabularyList,
   deleteVocabularyList,
+  updateVocabulary,
   updateVocabularyItems,
 };
 

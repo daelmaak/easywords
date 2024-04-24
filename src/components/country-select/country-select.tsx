@@ -15,6 +15,8 @@ import '/node_modules/flag-icons/css/flag-icons.min.css';
 interface Props {
   id?: string;
   name?: string;
+  placeholder?: string;
+  defaultValue?: CountryCode;
   onSelect?: (countryCode: CountryCode) => void;
 }
 
@@ -35,13 +37,14 @@ export const CountrySelect = (props: Props) => {
           </ComboboxItemLabel>
         </ComboboxItem>
       )}
+      defaultValue={props.defaultValue}
       onChange={props.onSelect}
     >
       <ComboboxControl>
         {state => (
           <>
             <span class={`w-5 h-5 mr-2 fi fi-${state.selectedOptions()[0]}`} />
-            <ComboboxInput />
+            <ComboboxInput placeholder={props.placeholder} />
             <ComboboxTrigger />
           </>
         )}

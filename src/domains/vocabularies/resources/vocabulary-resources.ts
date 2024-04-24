@@ -43,6 +43,23 @@ export const getVocabulary = (id: number) => {
   return vocabularies()?.find(v => v.id === id);
 };
 
+export const updateVocabulary = async (
+  vocabularyPatch: Partial<Vocabulary>
+) => {
+  const success = await api.updateVocabulary(vocabularyPatch);
+
+  if (success) {
+    const { mutate } = getVocabulariesResource()[1];
+    mutate(vs =>
+      vs!.map(v =>
+        v.id === vocabularyPatch.id ? { ...v, ...vocabularyPatch } : v
+      )
+    );
+  }
+
+  return success;
+};
+
 export const updateVocabularyItems = async (
   vocabularyId: number,
   ...itemsToUpdate: VocabularyItem[]
