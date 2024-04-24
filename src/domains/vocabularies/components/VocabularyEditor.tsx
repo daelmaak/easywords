@@ -63,7 +63,7 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
         </div>
       </div>
       <table>
-        <thead class="font-semibold">
+        <thead class="font-semibold text-sm text-center">
           <tr>
             <td></td>
             <td>Original</td>
@@ -85,7 +85,7 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
                   onEdit={o => onWordEdited(word, { original: o })}
                 />
                 <td>
-                  <span class="mx-4 text-center">-</span>
+                  <span class="mx-2 text-center">-</span>
                 </td>
                 <VocabularyEditorCell
                   word={word.translation}
