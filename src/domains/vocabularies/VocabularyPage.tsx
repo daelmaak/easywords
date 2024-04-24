@@ -1,6 +1,11 @@
 import { useParams } from '@solidjs/router';
-import { Component, Show, createSignal, lazy } from 'solid-js';
+import { HiOutlinePlus, HiOutlineTrash } from 'solid-icons/hi';
+import { Component, Show, createEffect, createSignal, lazy } from 'solid-js';
+import { CountrySelect } from '~/components/country-select/country-select';
+import { Search } from '~/components/search/Search';
 import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
+import { Label } from '~/components/ui/label';
 import {
   Sheet,
   SheetContent,
@@ -14,20 +19,22 @@ import {
   updateVocabularyItems,
 } from './resources/vocabulary-resources';
 import { VocabularyItem } from './vocabulary-model';
-import { HiOutlinePlus, HiOutlineTrash } from 'solid-icons/hi';
-import { CountrySelect } from '~/components/country-select/country-select';
-import { Input } from '~/components/ui/input';
-import { Label } from '~/components/ui/label';
 
 export const VocabularyPage: Component = () => {
   const VocabularyEditor = lazy(() => import('./components/VocabularyEditor'));
   const params = useParams();
   const vocabularyId = +params.id;
   const [addedWords, setAddedWords] = createSignal<VocabularyItem[]>([]);
+  const [searchedWords, setSearchedWords] = createSignal<VocabularyItem[]>([]);
   const [selectedWords, setSelectedWords] = createSignal<VocabularyItem[]>([]);
   const [openedAddWords, setOpenedAddWords] = createSignal(false);
 
   const vocabulary = () => getVocabulary(vocabularyId);
+
+  createEffect(() => {
+    setSearchedWords(vocabulary()?.vocabularyItems || []);
+    return vocabulary();
+  });
 
   async function onSubmit() {
     await updateVocabularyItems(vocabularyId, ...addedWords());
@@ -85,10 +92,19 @@ export const VocabularyPage: Component = () => {
         )}
       </Show>
 
-      <div class="mx-auto max-w-[32rem]">
-        <div class="mb-4 flex gap-2">
+      <div class="flex-grow flex flex-col items-center">
+        <div class="sticky top-0 w-full flex justify-center items-center gap-2 bg-background p-4">
+          <Show when={vocabulary()}>
+            {v => (
+              <Search
+                terms={v().vocabularyItems}
+                searchKeys={['original', 'translation']}
+                onSearch={setSearchedWords}
+              />
+            )}
+          </Show>
           <Button size="sm" onClick={() => setOpenedAddWords(true)}>
-            <HiOutlinePlus size={20} /> Add words
+            <HiOutlinePlus size={16} /> Add words
           </Button>
           <Show when={selectedWords().length > 0}>
             <Button size="sm" variant="secondary">
@@ -99,6 +115,7 @@ export const VocabularyPage: Component = () => {
         <Show when={vocabulary()}>
           {v => (
             <VocabularyEditor
+              words={searchedWords()}
               selectedWords={selectedWords()}
               vocabulary={v()}
               onWordsEdited={onWordsEdited}

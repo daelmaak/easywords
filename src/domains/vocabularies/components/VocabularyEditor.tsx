@@ -1,16 +1,10 @@
-import Fuse from 'fuse.js';
-import {
-  Component,
-  ComponentProps,
-  For,
-  createSignal,
-  splitProps,
-} from 'solid-js';
-import { Input } from '~/components/ui/input';
-import { VocabularyItem, Vocabulary } from '../vocabulary-model';
+import { Component, ComponentProps, For, splitProps } from 'solid-js';
 import { Checkbox } from '~/components/ui/checkbox';
+import { Input } from '~/components/ui/input';
+import { Vocabulary, VocabularyItem } from '../vocabulary-model';
 
 interface VocabularyEditorProps {
+  words: VocabularyItem[];
   selectedWords: VocabularyItem[];
   vocabulary: Vocabulary;
   onWordsEdited: (words: VocabularyItem[]) => void;
@@ -18,23 +12,6 @@ interface VocabularyEditorProps {
 }
 
 export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
-  const [words, setWords] = createSignal<VocabularyItem[]>(
-    props.vocabulary.vocabularyItems
-  );
-
-  const fuse = new Fuse(words(), {
-    keys: ['original', 'translation'],
-    threshold: 0.3,
-  });
-
-  function search(query: string) {
-    if (!query) {
-      return setWords(props.vocabulary.vocabularyItems);
-    }
-    const result = fuse.search(query);
-    setWords(result.map(r => r.item));
-  }
-
   function onWordEdited(
     word: VocabularyItem,
     change: { original?: string; translation?: string }
@@ -52,51 +29,38 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
   }
 
   return (
-    <>
-      <div class="sticky top-0 bg-inherit pt-2 pb-4">
-        <div class="flex gap-4">
-          <Input
-            class="w-auto"
-            placeholder="Search..."
-            onInput={e => search(e.target.value)}
-          />
-        </div>
-      </div>
-      <table>
-        <thead class="font-semibold text-sm text-center">
-          <tr>
-            <td></td>
-            <td>Original</td>
-            <td></td>
-            <td>Translation</td>
-          </tr>
-        </thead>
-        <tbody>
-          <For each={words()}>
-            {word => (
-              <tr class="h-10">
-                <td>
-                  <Checkbox
-                    onChange={checked => onWordToggled(word, checked)}
-                  />
-                </td>
-                <VocabularyEditorCell
-                  word={word.original}
-                  onEdit={o => onWordEdited(word, { original: o })}
-                />
-                <td>
-                  <span class="mx-2 text-center">-</span>
-                </td>
-                <VocabularyEditorCell
-                  word={word.translation}
-                  onEdit={t => onWordEdited(word, { translation: t })}
-                />
-              </tr>
-            )}
-          </For>
-        </tbody>
-      </table>
-    </>
+    <table>
+      <thead class="font-semibold text-sm text-center">
+        <tr>
+          <td></td>
+          <td>Original</td>
+          <td></td>
+          <td>Translation</td>
+        </tr>
+      </thead>
+      <tbody>
+        <For each={props.words}>
+          {word => (
+            <tr class="h-10">
+              <td>
+                <Checkbox onChange={checked => onWordToggled(word, checked)} />
+              </td>
+              <VocabularyEditorCell
+                word={word.original}
+                onEdit={o => onWordEdited(word, { original: o })}
+              />
+              <td>
+                <span class="mx-2 text-center">-</span>
+              </td>
+              <VocabularyEditorCell
+                word={word.translation}
+                onEdit={t => onWordEdited(word, { translation: t })}
+              />
+            </tr>
+          )}
+        </For>
+      </tbody>
+    </table>
   );
 };
 
