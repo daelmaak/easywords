@@ -7,6 +7,7 @@ export const initTestApp = () => {
       fetchVocabularyLists: vi.fn(),
       createVocabularyList: vi.fn(),
       deleteVocabularyList: vi.fn(),
+      updateVocabulary: vi.fn(),
       updateVocabularyItems: vi.fn(),
     },
   } satisfies ResourcesInit;
