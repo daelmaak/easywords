@@ -34,8 +34,10 @@ const App: Component<Props> = props => {
   return (
     <LangContext.Provider value={currentLang}>
       <nav class="flex items-center p-2 sm:px-4 border-b">
-        <img src={logo} alt="logo" class="size-8" />
-        <span class="mr-8">Easywords</span>
+        <A href="/" class="flex items-center">
+          <img src={logo} alt="logo" class="size-8" />
+          <span class="mr-8">Easywords</span>
+        </A>
         <A class={styles.navLink} href="/vocabulary">
           <Button class="font-normal text-inherit px-2" variant="link">
             Vocabulary
