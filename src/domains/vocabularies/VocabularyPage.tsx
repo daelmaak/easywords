@@ -1,6 +1,6 @@
 import { useParams } from '@solidjs/router';
 import { HiOutlinePlus, HiOutlineTrash } from 'solid-icons/hi';
-import { Component, Show, createEffect, createSignal, lazy } from 'solid-js';
+import { Component, Show, createSignal, lazy } from 'solid-js';
 import { CountrySelect } from '~/components/country-select/country-select';
 import { Search } from '~/components/search/Search';
 import { Button } from '~/components/ui/button';
@@ -14,6 +14,7 @@ import {
 } from '~/components/ui/sheet';
 import { WordsInput } from '../vocabulary-testing/components/WordsInput';
 import {
+  createVocabularyItems,
   getVocabulary,
   updateVocabulary,
   updateVocabularyItems,
@@ -25,19 +26,14 @@ export const VocabularyPage: Component = () => {
   const params = useParams();
   const vocabularyId = +params.id;
   const [addedWords, setAddedWords] = createSignal<VocabularyItem[]>([]);
-  const [searchedWords, setSearchedWords] = createSignal<VocabularyItem[]>([]);
+  const [searchedWords, setSearchedWords] = createSignal<VocabularyItem[]>();
   const [selectedWords, setSelectedWords] = createSignal<VocabularyItem[]>([]);
   const [openedAddWords, setOpenedAddWords] = createSignal(false);
 
   const vocabulary = () => getVocabulary(vocabularyId);
 
-  createEffect(() => {
-    setSearchedWords(vocabulary()?.vocabularyItems || []);
-    return vocabulary();
-  });
-
-  async function onSubmit() {
-    await updateVocabularyItems(vocabularyId, ...addedWords());
+  async function onAddWords() {
+    await createVocabularyItems(vocabularyId, ...addedWords());
     setAddedWords([]);
     setOpenedAddWords(false);
   }
@@ -72,7 +68,7 @@ export const VocabularyPage: Component = () => {
             <SheetTitle>Add words</SheetTitle>
           </SheetHeader>
           <WordsInput mode="form" onWordsChange={setAddedWords} />
-          <Button onClick={onSubmit}>Save</Button>
+          <Button onClick={onAddWords}>Save</Button>
         </SheetContent>
       </Sheet>
 
@@ -115,7 +111,7 @@ export const VocabularyPage: Component = () => {
         <Show when={vocabulary()}>
           {v => (
             <VocabularyEditor
-              words={searchedWords()}
+              words={searchedWords() ?? v().vocabularyItems}
               selectedWords={selectedWords()}
               vocabulary={v()}
               onWordsEdited={onWordsEdited}

@@ -4,9 +4,10 @@ import { ResourcesInit, initApp } from './app-init';
 export const initTestApp = () => {
   const resources = {
     vocabularyApi: {
-      fetchVocabularyLists: vi.fn(),
       createVocabularyList: vi.fn(),
+      createVocabularyItems: vi.fn(),
       deleteVocabularyList: vi.fn(),
+      fetchVocabularyLists: vi.fn(),
       updateVocabulary: vi.fn(),
       updateVocabularyItems: vi.fn(),
     },

@@ -1,6 +1,7 @@
 import { expect, test } from 'vitest';
 import { initTestApp } from '~/init/test-init';
 import {
+  createVocabularyItems,
   getVocabulariesResource,
   updateVocabularyItems,
 } from './vocabulary-resources';
@@ -35,6 +36,42 @@ test('updates the vocabularies resources on word edit', async () => {
   });
 
   expect(vocabularies()?.[0].vocabularyItems[0].original).toBe('new original');
+});
+
+test('updates the vocabularies resources on words addition', async () => {
+  const { vocabularyApi } = setup();
+  const vocabulary: Vocabulary = {
+    id: 1,
+    country: 'at',
+    name: 'Test Vocabulary',
+    vocabularyItems: [
+      {
+        id: 1,
+        list_id: 1,
+        original: 'original',
+        translation: 'translation',
+      },
+    ],
+  };
+
+  const wordToAdd = {
+    original: 'new original',
+    translation: 'new translation',
+  };
+
+  vocabularyApi.fetchVocabularyLists.mockResolvedValue([vocabulary]);
+  vocabularyApi.createVocabularyItems.mockResolvedValue([
+    { id: 2, list_id: 1, ...wordToAdd },
+  ]);
+
+  const [vocabularies] = getVocabulariesResource();
+
+  await createVocabularyItems(1, wordToAdd);
+
+  expect(vocabularies()?.[0].vocabularyItems.length).toBe(2);
+  expect(vocabularies()?.[0].vocabularyItems[1].original).toBe(
+    wordToAdd.original
+  );
 });
 
 function setup() {

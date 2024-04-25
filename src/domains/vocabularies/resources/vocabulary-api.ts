@@ -56,6 +56,17 @@ const createVocabularyList = async (vocabulary: VocabularyToCreate) => {
   return !itemsResult.error;
 };
 
+const createVocabularyItems = async (items: VocabularyItemToCreate[]) => {
+  const result = await supabase.from('vocabulary_items').insert(items).select(`
+    id,
+    list_id,
+    original,
+    translation
+  `);
+
+  return result.data;
+};
+
 const deleteVocabularyList = async (id: number) => {
   const result = await supabase.from('vocabularies').delete().match({ id });
 
@@ -78,9 +89,10 @@ const updateVocabularyItems = async (items: VocabularyItem[]) => {
 };
 
 export const vocabularyApi = {
-  fetchVocabularyLists,
+  createVocabularyItems,
   createVocabularyList,
   deleteVocabularyList,
+  fetchVocabularyLists,
   updateVocabulary,
   updateVocabularyItems,
 };

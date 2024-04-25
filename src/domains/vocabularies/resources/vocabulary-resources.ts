@@ -1,6 +1,10 @@
 import { ResourceReturn, createResource } from 'solid-js';
 import { VocabularyItem, Vocabulary } from '../vocabulary-model';
-import { VocabularyApi, VocabularyToCreate } from './vocabulary-api';
+import {
+  VocabularyApi,
+  VocabularyItemToCreate,
+  VocabularyToCreate,
+} from './vocabulary-api';
 
 let api: VocabularyApi;
 let vocabulariesResource: ResourceReturn<Vocabulary[]> | undefined;
@@ -60,19 +64,46 @@ export const updateVocabulary = async (
   return success;
 };
 
+export const createVocabularyItems = async (
+  vocabularyId: number,
+  ...items: VocabularyItemToCreate[]
+) => {
+  const itemsToCreate = items.map(i => ({ ...i, list_id: vocabularyId }));
+  const createdItems = await api.createVocabularyItems(itemsToCreate);
+  const [_, { mutate }] = getVocabulariesResource();
+
+  if (createdItems == null) {
+    return false;
+  }
+
+  mutate(vs =>
+    vs!.map(v => {
+      if (v.id !== vocabularyId) {
+        return v;
+      }
+      return {
+        ...v,
+        vocabularyItems: [...v.vocabularyItems, ...createdItems],
+      };
+    })
+  );
+
+  return true;
+};
+
 export const updateVocabularyItems = async (
   vocabularyId: number,
-  ...itemsToUpdate: VocabularyItem[]
+  ...items: VocabularyItem[]
 ) => {
-  const items = itemsToUpdate.map(i => ({ ...i, list_id: vocabularyId }));
-  const result = await api.updateVocabularyItems(items);
+  const itemsToUpdate = items.map(i => ({ ...i, list_id: vocabularyId }));
+  const result = await api.updateVocabularyItems(itemsToUpdate);
   const [_, { mutate }] = getVocabulariesResource();
 
   if (!result) {
     return false;
   }
 
-  const updatedItemsMap = new Map(items.map(i => [i.id, i]));
+  const updatedItemsMap = new Map(itemsToUpdate.map(i => [i.id, i]));
 
   mutate(vs =>
     vs!.map(v => {
