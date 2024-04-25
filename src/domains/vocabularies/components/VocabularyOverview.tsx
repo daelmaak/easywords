@@ -75,8 +75,8 @@ export const VocabularyOverview: Component<Props> = props => {
   return (
     <div>
       <Show when={!loading()}>
-        <div class="flex gap-8">
-          <h1 class="text-lg font-semibold mb-6 ml-6">Your vocabularies</h1>
+        <div class="flex flex-wrap justify-between gap-x-4">
+          <h1 class="text-lg font-semibold">Your vocabularies</h1>
           <Show when={anyVocabularies()}>
             <Button size="sm" onClick={() => setCreateVocabularyOpen(true)}>
               <HiOutlinePlus size={16} /> Add vocabulary
@@ -109,7 +109,7 @@ export const VocabularyOverview: Component<Props> = props => {
             </div>
           }
         >
-          <section class="h-full flex flex-col sm:grid sm:items-start sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+          <section class="mt-6 h-full flex flex-col sm:grid sm:justify-center sm:content-start grid-cols-[repeat(auto-fit,_18rem)] gap-4">
             <For each={vocabularies()}>
               {list => (
                 <VocabularyCard
