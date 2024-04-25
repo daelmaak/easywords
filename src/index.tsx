@@ -2,12 +2,11 @@ import { Navigate, Route, Router } from '@solidjs/router';
 import { render } from 'solid-js/web';
 
 import App from './components/App';
-import { ConjugationsView } from './domains/conjugations/components/ConjugationsView';
 import { VocabulariesPage } from './domains/vocabularies/VocabulariesPage';
 import { VocabularyTestPage } from './domains/vocabulary-testing/VocabularyTestPage';
 import './index.css';
 import { initApp } from './init/app-init';
-import { VocabularyPage } from './domains/vocabularies/VocabularyPage';
+import { lazy } from 'solid-js';
 
 const root = document.getElementById('root');
 
@@ -19,6 +18,14 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 
 initApp();
 
+const VocabularyPage = lazy(
+  () => import('./domains/vocabularies/VocabularyPage')
+);
+
+const ConjugationsPage = lazy(
+  () => import('./domains/conjugations/components/ConjugationsView')
+);
+
 render(
   () => (
     <Router root={App}>
@@ -29,7 +36,7 @@ render(
       </Route>
       <Route
         path={['/conjugations', '/conjugations/:verb']}
-        component={ConjugationsView}
+        component={ConjugationsPage}
       />
       <Route path="/" component={() => <Navigate href="/vocabulary" />} />
     </Router>

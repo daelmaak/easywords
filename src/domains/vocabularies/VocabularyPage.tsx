@@ -20,9 +20,9 @@ import {
   updateVocabularyItems,
 } from './resources/vocabulary-resources';
 import { VocabularyItem } from './vocabulary-model';
+import VocabularyEditor from './components/VocabularyEditor';
 
 export const VocabularyPage: Component = () => {
-  const VocabularyEditor = lazy(() => import('./components/VocabularyEditor'));
   const params = useParams();
   const vocabularyId = +params.id;
   const [addedWords, setAddedWords] = createSignal<VocabularyItem[]>([]);
@@ -123,3 +123,5 @@ export const VocabularyPage: Component = () => {
     </div>
   );
 };
+
+export default VocabularyPage;

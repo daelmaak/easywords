@@ -169,3 +169,5 @@ export const ConjugationsView: Component = () => {
     </div>
   );
 };
+
+export default ConjugationsView;
