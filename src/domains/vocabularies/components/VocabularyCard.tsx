@@ -24,8 +24,8 @@ export type Props = {
 
 export const VocabularyCard: Component<Props> = props => {
   return (
-    <Card>
-      <CardHeader class="flex flex-row justify-between items-center gap-4">
+    <Card class="flex flex-col">
+      <CardHeader class="p-4 flex flex-row justify-between items-center gap-4">
         <CardTitle class="text-md">
           <span class={`mr-2 fi fi-${props.list.country}`}></span>
           {props.list.name}
@@ -44,10 +44,10 @@ export const VocabularyCard: Component<Props> = props => {
         </div>
       </CardHeader>
       <CardContent
-        class="overflow-hidden cursor-pointer"
+        class="px-4 pt-0 pb-2 overflow-hidden cursor-pointer"
         onClick={() => props.onClickVocabulary?.(props.list.id)}
       >
-        <ul>
+        <ul class="text-center">
           <For each={props.list.vocabularyItems.slice(0, 10)}>
             {item => (
               <li>
@@ -60,7 +60,7 @@ export const VocabularyCard: Component<Props> = props => {
           </Show>
         </ul>
       </CardContent>
-      <CardFooter>
+      <CardFooter class="mt-auto p-4 pt-0">
         <Button
           class="ml-auto"
           size="sm"
