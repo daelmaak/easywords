@@ -1,6 +1,6 @@
 import { useParams } from '@solidjs/router';
 import { HiOutlinePlus, HiOutlineTrash } from 'solid-icons/hi';
-import { Component, Show, createSignal, lazy } from 'solid-js';
+import { Component, Show, createSignal } from 'solid-js';
 import { CountrySelect } from '~/components/country-select/country-select';
 import { Search } from '~/components/search/Search';
 import { Button } from '~/components/ui/button';
@@ -13,6 +13,7 @@ import {
   SheetTitle,
 } from '~/components/ui/sheet';
 import { WordsInput } from '../vocabulary-testing/components/WordsInput';
+import VocabularyEditor from './components/VocabularyEditor';
 import {
   createVocabularyItems,
   getVocabulary,
@@ -20,7 +21,6 @@ import {
   updateVocabularyItems,
 } from './resources/vocabulary-resources';
 import { VocabularyItem } from './vocabulary-model';
-import VocabularyEditor from './components/VocabularyEditor';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();

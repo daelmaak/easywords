@@ -41,7 +41,7 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
       <tbody>
         <For each={props.words}>
           {word => (
-            <tr class="h-10">
+            <tr class="h-10" data-testid="editor-word">
               <td>
                 <Checkbox onChange={checked => onWordToggled(word, checked)} />
               </td>
