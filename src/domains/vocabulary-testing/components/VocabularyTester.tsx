@@ -184,6 +184,7 @@ export const VocabularyTester: Component<TesterProps> = (
       >
         <div class="flex items-center justify-end">
           <Button
+            aria-label="Remove word from vocabulary"
             class="translate-y-[1px] opacity-60"
             title="Remove word from vocabulary"
             size="icon"
@@ -193,6 +194,7 @@ export const VocabularyTester: Component<TesterProps> = (
             <HiOutlineTrash size={20} />
           </Button>
           <Button
+            aria-label="Edit word"
             class="translate-y-[1px] opacity-60"
             title="Peek"
             size="icon"
@@ -202,6 +204,7 @@ export const VocabularyTester: Component<TesterProps> = (
             <HiOutlinePencil size={20} />
           </Button>
           <Button
+            aria-label="Reveal translation"
             class="mr-2 translate-y-[1px] opacity-60"
             title="Peek"
             size="icon"
