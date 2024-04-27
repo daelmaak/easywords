@@ -1,7 +1,8 @@
-import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
-import { Component, onMount, Show, useContext } from 'solid-js';
+import { useNavigate, useParams } from '@solidjs/router';
+import { get, set } from 'idb-keyval';
+import { Component, Show, onMount } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { LangContext } from '../../../components/language-context';
+import { ConjugationLang } from '~/model/lang';
 import {
   Conjugation,
   groupConjugationsByMood,
@@ -10,11 +11,11 @@ import {
 import { fetchConjugationsByTense } from '../conjugations-api';
 import { ConjugationsResults } from './ConjugationsResults';
 import {
-  ConjugationsTester,
   ConjugationValidations,
+  ConjugationsTester,
 } from './ConjugationsTester';
-import { TenseFilter } from './tense-filter/TenseFilter';
 import { VerbInput } from './VerbInput';
+import { TenseFilter } from './tense-filter/TenseFilter';
 
 interface ConjugationsViewState {
   conjugations: Conjugation[];
@@ -41,10 +42,11 @@ export const ConjugationsView: Component = () => {
   const navigate = useNavigate();
   let verbInputEl: HTMLInputElement | undefined;
 
-  const lang = useContext(LangContext);
   const [state, setState] = createStore<ConjugationsViewState>(
     getInitialState()
   );
+
+  const language = () => params.lang as ConjugationLang | undefined;
 
   const incorrectConjugations = () =>
     Object.values(state.conjugationsResults)
@@ -71,25 +73,33 @@ export const ConjugationsView: Component = () => {
     );
   };
 
-  onMount(() => {
+  onMount(async () => {
     const verb = params.verb;
+    let lang = language() ?? (await get('conjugationsLang'));
 
-    if (verb) {
-      applyVerb(verb, false);
+    if (verb && lang) {
+      applyVerb(verb, lang, false);
       verbInputEl!.value = verb;
+    } else if (lang) {
+      navigate(`/conjugations/${lang}`);
     }
   });
 
-  const applyVerb = async (verb: string, follow = true) => {
+  const applyVerb = async (
+    verb: string,
+    lang: ConjugationLang,
+    follow = true
+  ) => {
     reset();
+    void set('conjugationsLang', lang);
 
     if (follow) {
-      navigate(`/conjugations/${verb}`);
+      navigate(`/conjugations/${lang}/${verb}`);
     }
 
     setState('verbLoading', true);
 
-    const conjugations = await fetchConjugationsByTense(verb, lang());
+    const conjugations = await fetchConjugationsByTense(verb, lang);
 
     setState({
       conjugations,
@@ -133,17 +143,20 @@ export const ConjugationsView: Component = () => {
   return (
     <div class="flex flex-col items-center">
       <h1 class="mb-4 text-xl">Insert verb to conjugate</h1>
-      <VerbInput
-        onApplyVerb={applyVerb}
-        ref={verbInputEl}
-        verbLoading={state.verbLoading}
-      />
+      <div class="flex gap-2">
+        <VerbInput
+          lang={language()}
+          onApplyVerb={applyVerb}
+          ref={verbInputEl}
+          verbLoading={state.verbLoading}
+        />
+      </div>
       <div class="mt-8"></div>
       <Show when={!state.testingDone}>
         <Show when={!state.practiceIncorrect}>
           <TenseFilter
             conjugationsByMood={conjugationsByMood()}
-            lang={lang()}
+            lang={language() as ConjugationLang}
             selectedMoods={state.selectedMoods}
             selectedTenses={state.selectedTenses}
             onSelectedMoods={m => setState({ selectedMoods: m })}

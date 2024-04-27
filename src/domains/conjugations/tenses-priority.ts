@@ -1,7 +1,7 @@
-import { Lang } from '../../model/lang';
+import { ConjugationLang } from '../../model/lang';
 
 type PreferredTenses = {
-  [lang in Lang]: {
+  [lang in ConjugationLang]: {
     [mood: string]: string[] | undefined;
   };
 };
@@ -21,7 +21,7 @@ const preferredTenses: PreferredTenses = {
 };
 
 export function sortTenses(
-  lang: Lang,
+  lang: ConjugationLang,
   mood: string,
   tenses: string[]
 ): string[] {

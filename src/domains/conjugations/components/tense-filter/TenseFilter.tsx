@@ -1,12 +1,12 @@
 import { Component, For } from 'solid-js';
-import { Lang } from '../../../../model/lang';
+import { ConjugationLang } from '../../../../model/lang';
 import { ConjugationsByMood } from '../../conjugation';
 import { Chips } from '../Chips';
 import { TenseFilterList } from './TenseFilterList';
 
 interface Props {
   conjugationsByMood: ConjugationsByMood;
-  lang: Lang;
+  lang: ConjugationLang;
   selectedMoods: string[];
   selectedTenses: string[];
   onSelectedTenses(tenses: string[]): void;

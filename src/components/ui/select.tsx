@@ -8,6 +8,8 @@ import { cn } from '~/lib/utils';
 
 const Select = SelectPrimitive.Root;
 
+const SelectHiddenSelect = SelectPrimitive.HiddenSelect;
+
 const SelectValue = SelectPrimitive.Value;
 
 const SelectTrigger: Component<SelectPrimitive.SelectTriggerProps> = props => {
@@ -65,4 +67,11 @@ const SelectItem: Component<SelectPrimitive.SelectItemProps> = props => {
   );
 };
 
-export { Select, SelectValue, SelectTrigger, SelectContent, SelectItem };
+export {
+  Select,
+  SelectHiddenSelect,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+};

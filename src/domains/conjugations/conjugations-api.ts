@@ -1,4 +1,4 @@
-import { Lang } from '../../model/lang';
+import { ConjugationLang } from '../../model/lang';
 import { Conjugation } from './conjugation';
 
 // Regarding 2p, it would be nice to map it to more readable forms
@@ -6,7 +6,7 @@ const unusedPersons = ['vós', '2p'];
 
 export async function fetchConjugationsByTense(
   verb: string,
-  lang: Lang
+  lang: ConjugationLang
 ): Promise<Conjugation[]> {
   const res = await fetch(
     `https://daelmaak.pythonanywhere.com/api/conjugations/${verb}?lang=${lang}`

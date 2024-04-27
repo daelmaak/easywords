@@ -64,3 +64,7 @@
     @apply px-4;
   }
 }
+
+[data-placeholder-shown] {
+  opacity: 0.85;
+}

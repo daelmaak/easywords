@@ -35,7 +35,11 @@ render(
         <Route path="/:id/test" component={VocabularyTestPage} />
       </Route>
       <Route
-        path={['/conjugations', '/conjugations/:verb']}
+        path={[
+          '/conjugations',
+          '/conjugations/:lang',
+          '/conjugations/:lang/:verb',
+        ]}
         component={ConjugationsPage}
       />
       <Route path="/" component={() => <Navigate href="/vocabulary" />} />

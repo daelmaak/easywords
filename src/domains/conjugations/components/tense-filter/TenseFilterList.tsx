@@ -1,12 +1,12 @@
 import { Component, createMemo, createSignal, For, Show } from 'solid-js';
-import { Lang } from '../../../../model/lang';
+import { ConjugationLang } from '../../../../model/lang';
 import { capitalizeFirstLetter } from '../../../../util/string';
 import { removeMoodFromTense } from '../../conjugation';
 import { sortTenses } from '../../tenses-priority';
 import { Checkbox } from '~/components/ui/checkbox';
 
 interface Props {
-  lang: Lang;
+  lang: ConjugationLang;
   mood: string;
   selectedTenses: string[];
   tenses: string[];
