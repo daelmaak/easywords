@@ -5,10 +5,11 @@ import { Button } from '~/components/ui/button';
 import { Dialog, DialogContent } from '~/components/ui/dialog';
 import { Progress, ProgressValueLabel } from '~/components/ui/progress';
 import { WordCreator } from '~/domains/vocabularies/components/WordCreator';
-import { VocabularyItem } from '~/domains/vocabularies/vocabulary-model';
+import { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
 import { mergeWords } from '../../../util/merge-arrays';
 import { nextWord } from '../../../worder/worder';
 import { WriteTester } from './WriteTester';
+import { SavedProgress } from '../vocabulary-testing-model';
 
 export type VocabularyTestMode = 'guess' | 'write';
 
@@ -17,6 +18,7 @@ interface TesterProps {
   reverse: boolean;
   words: VocabularyItem[];
   mode: VocabularyTestMode;
+  savedProgress?: SavedProgress;
   done: (
     leftoverWords?: VocabularyItem[],
     removedWords?: VocabularyItem[]
@@ -24,6 +26,7 @@ interface TesterProps {
   editWord: (word: VocabularyItem) => void;
   repeat: () => void;
   reset: () => void;
+  onSaveProgress?: (progress: SavedProgress) => void;
 }
 
 interface State {
@@ -31,6 +34,7 @@ interface State {
   currentWordId: number | undefined;
   peek: boolean;
   editing: boolean;
+  invalidWords: VocabularyItem[];
 }
 
 export const VocabularyTester: Component<TesterProps> = (
@@ -41,9 +45,9 @@ export const VocabularyTester: Component<TesterProps> = (
     currentWordId: undefined,
     peek: false,
     editing: false,
+    invalidWords: [],
   });
 
-  let invalidWords: VocabularyItem[] = [];
   let removedWords: VocabularyItem[] = [];
   let currentWordValid: boolean | undefined = undefined;
 
@@ -58,6 +62,17 @@ export const VocabularyTester: Component<TesterProps> = (
 
   const percentageDone = () =>
     (1 - store.wordsLeft.length / props.words.length) * 100;
+
+  createEffect(() => {
+    if (!props.savedProgress) {
+      return;
+    }
+
+    setStore({
+      wordsLeft: props.savedProgress.leftOverWords,
+      invalidWords: props.savedProgress.invalidWords,
+    });
+  });
 
   createEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -107,14 +122,24 @@ export const VocabularyTester: Component<TesterProps> = (
   }
 
   function finish() {
-    const invalidAndLeftoverWords = mergeWords(invalidWords, store.wordsLeft);
+    const invalidAndLeftoverWords = mergeWords(
+      store.invalidWords,
+      store.wordsLeft
+    );
     props.done(invalidAndLeftoverWords, removedWords);
 
     setStore({
       currentWordId: undefined,
       wordsLeft: [],
+      invalidWords: [],
     });
-    invalidWords = [];
+  }
+
+  function saveProgress() {
+    props.onSaveProgress?.({
+      invalidWords: store.invalidWords,
+      leftOverWords: store.wordsLeft,
+    });
   }
 
   function onEditWord(original: string, translation: string) {
@@ -152,9 +177,10 @@ export const VocabularyTester: Component<TesterProps> = (
       !valid &&
       word &&
       // TODO: @daelmaak not very performant is it? Optimize
-      invalidWords.every(w => w.original !== word.original)
+      store.invalidWords.every(w => w.original !== word.original)
     ) {
-      invalidWords.push(word);
+      // https://docs.solidjs.com/concepts/stores#appending-new-values
+      setStore('invalidWords', store.invalidWords.length, word);
     }
   }
 
@@ -250,8 +276,9 @@ export const VocabularyTester: Component<TesterProps> = (
       </div>
       <Show when={currentWord() && !done()}>
         <div class="mt-12 flex justify-center gap-4">
-          <Button variant="outline" onClick={setNextWord}>
-            Next
+          <Button onClick={setNextWord}>Next</Button>
+          <Button class="btn-link" variant="outline" onClick={saveProgress}>
+            Save Progress
           </Button>
           <Button class="btn-link" variant="outline" onClick={finish}>
             Finish test

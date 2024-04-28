@@ -1,6 +1,7 @@
 import { supabase } from '~/lib/supabase-client';
 import { RealOmit, omit } from '~/util/object';
-import { VocabularyItem, Vocabulary } from '../vocabulary-model';
+import { VocabularyItem, Vocabulary } from '../model/vocabulary-model';
+import { fetchVocabularyProgress } from './vocabulary-progress-api';
 
 export type VocabularyItemToCreate = RealOmit<VocabularyItem, 'id' | 'list_id'>;
 export type VocabularyToCreate = RealOmit<
@@ -24,12 +25,21 @@ const fetchVocabularyLists = async () => {
     )`
   );
 
-  return (result.data ?? []).map(lists => ({
+  const vocabularies = (result.data ?? []).map(lists => ({
     id: lists.id,
     country: lists.country,
+    hasSavedProgress: false,
     name: lists.name,
     vocabularyItems: lists.vocabulary_items,
   }));
+  
+  // TODO: This is only temporary and should be ultimately saved in DB
+  for (const vocabulary of vocabularies) {
+    const progress = await fetchVocabularyProgress(vocabulary.id);
+    vocabulary.hasSavedProgress = Boolean(progress);
+  }
+  
+  return vocabularies;
 };
 
 const createVocabularyList = async (vocabulary: VocabularyToCreate) => {

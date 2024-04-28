@@ -2,7 +2,7 @@ import { Component } from 'solid-js';
 import { Button, ButtonProps } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
-import { VocabularyItem } from '../vocabulary-model';
+import { VocabularyItem } from '../model/vocabulary-model';
 
 interface Props {
   ctaLabel: string;

@@ -12,4 +12,5 @@ export interface Vocabulary {
   country: CountryCode;
   name: string;
   vocabularyItems: VocabularyItem[];
+  hasSavedProgress: boolean;
 }

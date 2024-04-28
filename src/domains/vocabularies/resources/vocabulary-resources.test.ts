@@ -1,11 +1,11 @@
 import { expect, test } from 'vitest';
 import { initTestApp } from '~/init/test-init';
 import {
-  createVocabularyItems,
-  getVocabulariesResource,
-  updateVocabularyItems,
+    createVocabularyItems,
+    getVocabulariesResource,
+    updateVocabularyItems,
 } from './vocabulary-resources';
-import { Vocabulary } from '../vocabulary-model';
+import { Vocabulary } from '../model/vocabulary-model';
 
 test('updates the vocabularies resources on word edit', async () => {
   const { vocabularyApi } = setup();
@@ -13,6 +13,7 @@ test('updates the vocabularies resources on word edit', async () => {
     id: 1,
     country: 'at',
     name: 'Test Vocabulary',
+    hasSavedProgress: false,
     vocabularyItems: [
       {
         id: 1,
@@ -44,6 +45,7 @@ test('updates the vocabularies resources on words addition', async () => {
     id: 1,
     country: 'at',
     name: 'Test Vocabulary',
+    hasSavedProgress: false,
     vocabularyItems: [
       {
         id: 1,

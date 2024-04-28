@@ -12,14 +12,17 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/ui/card';
-import { Vocabulary } from '../vocabulary-model';
+import { Vocabulary } from '../model/vocabulary-model';
 
 export type Props = {
-  list: Vocabulary;
+  vocabulary: Vocabulary;
   onClickVocabulary?: (id: number) => void;
   onDeleteVocabulary: (id: number) => void;
   onEditVocabulary: (id: number) => void;
-  onTestVocabulary: (id: number) => void;
+  onTestVocabulary: (
+    id: number,
+    config?: { useSavedProgress: boolean }
+  ) => void;
 };
 
 export const VocabularyCard: Component<Props> = props => {
@@ -27,44 +30,57 @@ export const VocabularyCard: Component<Props> = props => {
     <Card class="flex flex-col">
       <CardHeader class="p-4 flex flex-row justify-between items-center gap-4">
         <CardTitle class="text-md">
-          <span class={`mr-2 fi fi-${props.list.country}`}></span>
-          {props.list.name}
+          <span class={`mr-2 fi fi-${props.vocabulary.country}`}></span>
+          {props.vocabulary.name}
         </CardTitle>
         <div class="flex gap-4">
           <HiOutlinePencil
             class="cursor-pointer"
             size={16}
-            onClick={() => props.onEditVocabulary(props.list.id)}
+            onClick={() => props.onEditVocabulary(props.vocabulary.id)}
           />
           <HiOutlineTrash
             class="cursor-pointer"
             size={16}
-            onClick={() => props.onDeleteVocabulary(props.list.id)}
+            onClick={() => props.onDeleteVocabulary(props.vocabulary.id)}
           />
         </div>
       </CardHeader>
       <CardContent
         class="px-4 pt-0 pb-2 overflow-hidden cursor-pointer"
-        onClick={() => props.onClickVocabulary?.(props.list.id)}
+        onClick={() => props.onClickVocabulary?.(props.vocabulary.id)}
       >
         <ul class="text-center">
-          <For each={props.list.vocabularyItems.slice(0, 10)}>
+          <For each={props.vocabulary.vocabularyItems.slice(0, 10)}>
             {item => (
               <li>
                 {item.original} - {item.translation}
               </li>
             )}
           </For>
-          <Show when={props.list.vocabularyItems.length > 10}>
+          <Show when={props.vocabulary.vocabularyItems.length > 10}>
             <li class="text-center">...</li>
           </Show>
         </ul>
       </CardContent>
-      <CardFooter class="mt-auto p-4 pt-0">
+      <CardFooter class="mt-auto p-4 pt-0 flex gap-2 justify-end">
+        <Show when={props.vocabulary.hasSavedProgress}>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() =>
+              props.onTestVocabulary(props.vocabulary.id, {
+                useSavedProgress: true,
+              })
+            }
+          >
+            <HiOutlineAcademicCap class="mr-1" />
+            Continue
+          </Button>
+        </Show>
         <Button
-          class="ml-auto"
           size="sm"
-          onClick={() => props.onTestVocabulary(props.list.id)}
+          onClick={() => props.onTestVocabulary(props.vocabulary.id)}
         >
           <HiOutlineAcademicCap class="mr-1" />
           Test

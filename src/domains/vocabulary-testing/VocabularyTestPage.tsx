@@ -1,20 +1,27 @@
-import { useNavigate, useParams } from '@solidjs/router';
+import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
 import { Show, createEffect, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import {
   getVocabulary,
   updateVocabularyItems,
 } from '../vocabularies/resources/vocabulary-resources';
-import { VocabularyItem } from '../vocabularies/vocabulary-model';
+import { VocabularyItem } from '../vocabularies/model/vocabulary-model';
 import { Results } from './components/Results';
 import {
   VocabularySettings,
   VocabularyUserSettings,
 } from './components/VocabularySettings';
 import { VocabularyTester } from './components/VocabularyTester';
+import { SavedProgress } from './vocabulary-testing-model';
+import {
+  deleteVocabularyProgress,
+  fetchVocabularyProgress,
+  saveVocabularyProgress,
+} from '../vocabularies/resources/vocabulary-progress-api';
 
 export const VocabularyTestPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const params = useParams();
   const vocabularyId = +params.id;
   const vocabulary = () => getVocabulary(vocabularyId);
@@ -28,6 +35,7 @@ export const VocabularyTestPage = () => {
   const [words, setWords] = createSignal<VocabularyItem[]>();
   const [invalidWords, setInvalidWords] = createSignal<VocabularyItem[]>();
   const [removedWords, setRemovedWords] = createSignal<VocabularyItem[]>();
+  const [savedProgress, setSavedProgress] = createSignal<SavedProgress>();
   const [done, setDone] = createSignal(false);
 
   createEffect(() => {
@@ -39,6 +47,15 @@ export const VocabularyTestPage = () => {
     return vocab;
   });
 
+  createEffect(async () => {
+    if (!searchParams.useSavedProgress) {
+      return;
+    }
+
+    const progress = await fetchVocabularyProgress(vocabularyId);
+    setSavedProgress(progress);
+  });
+
   async function onDone(
     leftOverWords?: VocabularyItem[],
     removedWords?: VocabularyItem[]
@@ -46,13 +63,14 @@ export const VocabularyTestPage = () => {
     setDone(true);
     setInvalidWords(leftOverWords);
     setRemovedWords(removedWords);
+    deleteVocabularyProgress(vocabularyId);
   }
 
   function onEditWord(word: VocabularyItem) {
     updateVocabularyItems(vocabularyId, word);
   }
 
-  function onGoBack() {
+  function goBack() {
     navigate('/vocabulary');
   }
 
@@ -73,6 +91,11 @@ export const VocabularyTestPage = () => {
     setDone(false);
   }
 
+  function saveProgress(progress: SavedProgress) {
+    saveVocabularyProgress(vocabularyId, progress);
+    goBack();
+  }
+
   return (
     <>
       <Show when={!done()}>
@@ -84,9 +107,11 @@ export const VocabularyTestPage = () => {
                   mode={vocabularySettings.mode}
                   repeatInvalid={vocabularySettings.repeatInvalid}
                   reverse={vocabularySettings.reverseTranslations}
+                  savedProgress={savedProgress()}
                   words={w()}
                   done={onDone}
                   editWord={onEditWord}
+                  onSaveProgress={saveProgress}
                   repeat={onRepeat}
                   reset={onReset}
                 />
@@ -116,7 +141,7 @@ export const VocabularyTestPage = () => {
       <Show when={words()}>
         <button
           class="btn-link fixed bottom-4 right-8 text-sm"
-          onClick={onGoBack}
+          onClick={goBack}
         >
           Go back
         </button>

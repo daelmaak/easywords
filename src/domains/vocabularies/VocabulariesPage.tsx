@@ -16,8 +16,17 @@ export const VocabulariesPage = () => {
     navigate(`/vocabulary/${id}`);
   }
 
-  function onTestVocabulary(id: number) {
-    navigate(`/vocabulary/${id}/test`);
+  function onTestVocabulary(
+    id: number,
+    config?: { useSavedProgress: boolean }
+  ) {
+    let url = `/vocabulary/${id}/test`;
+
+    if (config?.useSavedProgress) {
+      url += '?useSavedProgress=true';
+    }
+
+    navigate(url);
   }
 
   return (

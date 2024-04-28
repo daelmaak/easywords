@@ -14,12 +14,11 @@ import {
   SheetTitle,
 } from '~/components/ui/sheet';
 import { Skeleton } from '~/components/ui/skeleton';
-import { WordTranslation } from '~/model/word-translation';
 import {
   createVocabulary,
   deleteVocabulary,
 } from '../resources/vocabulary-resources';
-import { Vocabulary } from '../vocabulary-model';
+import { Vocabulary } from '../model/vocabulary-model';
 import { VocabularyCard } from './VocabularyCard';
 import { VocabularyCreator } from './VocabularyCreator';
 import { VocabularyToCreate } from '../resources/vocabulary-api';
@@ -27,7 +26,10 @@ import { VocabularyToCreate } from '../resources/vocabulary-api';
 export type Props = {
   vocabulariesResource: ResourceReturn<Vocabulary[]>;
   onGoToVocabulary: (id: number) => void;
-  onTestVocabulary: (id: number) => void;
+  onTestVocabulary: (
+    id: number,
+    config?: { useSavedProgress: boolean }
+  ) => void;
 };
 
 export const VocabularyOverview: Component<Props> = props => {
@@ -111,9 +113,9 @@ export const VocabularyOverview: Component<Props> = props => {
         >
           <section class="mt-6 h-full flex flex-col sm:grid sm:justify-center sm:content-start grid-cols-[repeat(auto-fit,_18rem)] gap-4">
             <For each={vocabularies()}>
-              {list => (
+              {vocabulary => (
                 <VocabularyCard
-                  list={list}
+                  vocabulary={vocabulary}
                   onClickVocabulary={props.onGoToVocabulary}
                   onDeleteVocabulary={setConfirmDeletionOf}
                   onEditVocabulary={props.onGoToVocabulary}

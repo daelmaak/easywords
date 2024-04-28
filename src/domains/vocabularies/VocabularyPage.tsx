@@ -20,7 +20,7 @@ import {
   updateVocabulary,
   updateVocabularyItems,
 } from './resources/vocabulary-resources';
-import { VocabularyItem } from './vocabulary-model';
+import { VocabularyItem } from './model/vocabulary-model';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();

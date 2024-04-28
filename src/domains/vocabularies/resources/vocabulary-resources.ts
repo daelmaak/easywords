@@ -1,9 +1,9 @@
 import { ResourceReturn, createResource } from 'solid-js';
-import { VocabularyItem, Vocabulary } from '../vocabulary-model';
+import { VocabularyItem, Vocabulary } from '../model/vocabulary-model';
 import {
-  VocabularyApi,
-  VocabularyItemToCreate,
-  VocabularyToCreate,
+    VocabularyApi,
+    VocabularyItemToCreate,
+    VocabularyToCreate,
 } from './vocabulary-api';
 
 let api: VocabularyApi;

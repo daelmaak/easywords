@@ -1,7 +1,7 @@
 import { Component, ComponentProps, For, splitProps } from 'solid-js';
 import { Checkbox } from '~/components/ui/checkbox';
 import { Input } from '~/components/ui/input';
-import { Vocabulary, VocabularyItem } from '../vocabulary-model';
+import { Vocabulary, VocabularyItem } from '../model/vocabulary-model';
 
 interface VocabularyEditorProps {
   words: VocabularyItem[];
