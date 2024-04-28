@@ -27,7 +27,10 @@ export const AuthDialog: Component<Props> = props => {
   return (
     <Dialog>
       <DialogTrigger>{props.trigger}</DialogTrigger>
-      <DialogContent class="w-96 sm:max-w-full">
+      <DialogContent
+        class="w-80 sm:w-96 sm:max-w-full"
+        onInteractOutside={e => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle>
             {mode() === 'signin' ? 'Sign in' : 'Sign up'}

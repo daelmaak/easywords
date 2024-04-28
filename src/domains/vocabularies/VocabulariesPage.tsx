@@ -39,7 +39,7 @@ export const VocabulariesPage = () => {
         />
       </Show>
       <Show when={loggedIn() === false}>
-        <div class="flex flex-col gap-4 justify-center items-center">
+        <div class="flex flex-col gap-4 justify-center items-center text-center">
           You've got to sign in/sign up in order to create vocabularies.
           <AuthDialog
             mode="signin"
