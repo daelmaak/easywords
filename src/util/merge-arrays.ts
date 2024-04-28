@@ -1,4 +1,4 @@
-import { VocabularyItem } from '~/domains/vocabularies/vocabulary-model';
+import { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
 
 export function mergeWords(
   arr1: VocabularyItem[] = [],

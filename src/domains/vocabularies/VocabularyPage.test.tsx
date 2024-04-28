@@ -41,6 +41,7 @@ function setup() {
       id: 1,
       name: 'Vocabulary 1',
       country: 'cz',
+      hasSavedProgress: false,
       vocabularyItems: [
         {
           id: 1,

@@ -1,4 +1,4 @@
-import { VocabularyItem } from '~/domains/vocabularies/vocabulary-model';
+import { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
 
 export function nextWord(words: VocabularyItem[]): VocabularyItem | undefined {
   if (!words.length) {

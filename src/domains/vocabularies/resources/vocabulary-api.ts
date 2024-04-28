@@ -6,7 +6,7 @@ import { fetchVocabularyProgress } from './vocabulary-progress-api';
 export type VocabularyItemToCreate = RealOmit<VocabularyItem, 'id' | 'list_id'>;
 export type VocabularyToCreate = RealOmit<
   Vocabulary,
-  'id' | 'vocabularyItems'
+  'id' | 'vocabularyItems' | 'hasSavedProgress'
 > & {
   vocabularyItems: VocabularyItemToCreate[];
 };
@@ -32,13 +32,13 @@ const fetchVocabularyLists = async () => {
     name: lists.name,
     vocabularyItems: lists.vocabulary_items,
   }));
-  
+
   // TODO: This is only temporary and should be ultimately saved in DB
   for (const vocabulary of vocabularies) {
     const progress = await fetchVocabularyProgress(vocabulary.id);
     vocabulary.hasSavedProgress = Boolean(progress);
   }
-  
+
   return vocabularies;
 };
 
