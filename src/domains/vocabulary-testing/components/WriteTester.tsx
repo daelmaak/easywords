@@ -166,6 +166,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
             aria-label="Check word"
             title="Check word"
             disabled={valid()}
+            type={valid() ? 'button' : 'submit'}
           >
             <HiOutlineArrowRight size={24} />
           </Button>
@@ -174,7 +175,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
             variant={valid() ? 'default' : 'secondary'}
             aria-label="Next word"
             title="Next word"
-            type="button"
+            type={valid() ? 'submit' : 'button'}
             onClick={props.onSkip}
           >
             <HiOutlineForward class={cx(!valid() && 'opacity-75')} size={24} />
