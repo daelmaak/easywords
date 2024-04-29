@@ -265,6 +265,7 @@ export const VocabularyTester: Component<TesterProps> = (
               translation={translated()!}
               onDone={setNextWord}
               onPeek={() => setStore('peek', true)}
+              onSkip={setNextWord}
               onValidated={onWordValidated}
             />
           </Show>
@@ -275,8 +276,10 @@ export const VocabularyTester: Component<TesterProps> = (
         )}
       </div>
       <Show when={currentWord() && !done()}>
-        <div class="mt-12 flex justify-center gap-4">
-          <Button onClick={setNextWord}>Next</Button>
+        <div class="mt-6 flex justify-center gap-4 sm:mt-12">
+          <Show when={props.mode === 'guess'}>
+            <Button onClick={setNextWord}>Next</Button>
+          </Show>
           <Button class="btn-link" variant="outline" onClick={saveProgress}>
             Save Progress
           </Button>
@@ -288,7 +291,7 @@ export const VocabularyTester: Component<TesterProps> = (
 
       <Progress
         aria-label="Words done percentage"
-        class="mt-20 mx-auto w-full"
+        class="mt-6 sm:mt-20 mx-auto w-full"
         value={percentageDone()}
         getValueLabel={({ value }) => `${Math.round(value)}% done`}
       >

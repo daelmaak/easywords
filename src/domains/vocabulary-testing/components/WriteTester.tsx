@@ -1,4 +1,10 @@
-import { HiOutlineCheck, HiOutlineXCircle } from 'solid-icons/hi';
+import { cx } from 'class-variance-authority';
+import {
+  HiOutlineArrowRight,
+  HiOutlineCheck,
+  HiOutlineForward,
+  HiOutlineXCircle,
+} from 'solid-icons/hi';
 import {
   Component,
   Show,
@@ -7,6 +13,7 @@ import {
   createSignal,
   onMount,
 } from 'solid-js';
+import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 
 export interface WriteTesterInstance {
@@ -23,6 +30,7 @@ export interface WriteTesterProps {
   onDone?: () => void;
   onPeek?: () => void;
   onReady?: (tester: WriteTesterInstance) => void;
+  onSkip?: () => void;
   onValidated?: (valid: boolean, answer: string) => void;
 }
 
@@ -123,24 +131,52 @@ export const WriteTester: Component<WriteTesterProps> = props => {
   }
 
   return (
-    <form class="relative flex items-center" onSubmit={onSubmit}>
-      <span
-        class="absolute left-2 bottom-[-2rem] text-base"
+    <>
+      <i
+        class="my-[-0.5rem] mx-auto text-base"
         classList={{ invisible: !props.peek }}
       >
         {props.translation}
-      </span>
-      <Input ref={inputRef} class="text-lg w-56" type="text" onBlur={onBlur} />
-      <button class="invisible" />
-      <div class="absolute right-[-1rem] translate-x-full w-8 h-8">
-        <Show when={valid() != null}>
-          {valid() ? (
-            <HiOutlineCheck class="text-primary" size={32} />
-          ) : (
-            <HiOutlineXCircle class="text-red-500" size={32} />
-          )}
-        </Show>
-      </div>
-    </form>
+      </i>
+      <form
+        class="flex flex-wrap justify-center items-center gap-2 sm:flex-nowrap"
+        onSubmit={onSubmit}
+      >
+        <div class="w-8 h-8">
+          <Show when={valid() != null}>
+            {valid() ? (
+              <HiOutlineCheck class="text-primary" size={32} />
+            ) : (
+              <HiOutlineXCircle class="text-red-500" size={32} />
+            )}
+          </Show>
+        </div>
+        <Input
+          ref={inputRef}
+          class="w-56 text-lg"
+          type="text"
+          onBlur={onBlur}
+        />
+        <div aria-hidden class="w-8 h-8 sm:hidden"></div>
+        <Button
+          class="px-2"
+          aria-label="Check word"
+          title="Check word"
+          disabled={valid()}
+        >
+          <HiOutlineArrowRight size={24} />
+        </Button>
+        <Button
+          class="px-2"
+          variant={valid() ? 'default' : 'secondary'}
+          aria-label="Next word"
+          title="Next word"
+          type="button"
+          onClick={props.onSkip}
+        >
+          <HiOutlineForward class={cx(!valid() && 'opacity-75')} size={24} />
+        </Button>
+      </form>
+    </>
   );
 };
