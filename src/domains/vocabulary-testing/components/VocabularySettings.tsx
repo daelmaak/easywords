@@ -55,7 +55,7 @@ export const VocabularySettings: Component<Props> = props => {
           checked={props.settings.mode === 'write'}
           label="Write words"
           onChange={checked =>
-            changeSetting('mode', checked ? 'write' : 'pick')
+            changeSetting('mode', checked ? 'write' : 'guess')
           }
         />
       </div>
