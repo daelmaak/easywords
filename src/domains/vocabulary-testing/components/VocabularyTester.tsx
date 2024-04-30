@@ -19,13 +19,11 @@ interface TesterProps {
   words: VocabularyItem[];
   mode: VocabularyTestMode;
   savedProgress?: SavedProgress;
-  done: (
-    leftoverWords?: VocabularyItem[],
-    removedWords?: VocabularyItem[]
-  ) => void;
+  done: (leftoverWords?: VocabularyItem[]) => void;
   editWord: (word: VocabularyItem) => void;
   repeat: () => void;
   reset: () => void;
+  onRemoveWord: (word: VocabularyItem) => void;
   onSaveProgress?: (progress: SavedProgress) => void;
 }
 
@@ -48,7 +46,6 @@ export const VocabularyTester: Component<TesterProps> = (
     invalidWords: [],
   });
 
-  let removedWords: VocabularyItem[] = [];
   let currentWordValid: boolean | undefined = undefined;
 
   const currentWord = () => props.words.find(w => w.id === store.currentWordId);
@@ -126,7 +123,7 @@ export const VocabularyTester: Component<TesterProps> = (
       store.invalidWords,
       store.wordsLeft
     );
-    props.done(invalidAndLeftoverWords, removedWords);
+    props.done(invalidAndLeftoverWords);
 
     setStore({
       currentWordId: undefined,
@@ -190,7 +187,8 @@ export const VocabularyTester: Component<TesterProps> = (
     if (!word) {
       return;
     }
-    removedWords.push(word);
+
+    props.onRemoveWord(word);
 
     setStore('wordsLeft', wl => wl.filter(w => w.original !== word.original));
     setNextWord();

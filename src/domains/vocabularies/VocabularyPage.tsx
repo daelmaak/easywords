@@ -16,6 +16,7 @@ import { WordsInput } from '../vocabulary-testing/components/WordsInput';
 import VocabularyEditor from './components/VocabularyEditor';
 import {
   createVocabularyItems,
+  deleteVocabularyItems,
   getVocabulary,
   updateVocabulary,
   updateVocabularyItems,
@@ -31,6 +32,19 @@ export const VocabularyPage: Component = () => {
   const [openedAddWords, setOpenedAddWords] = createSignal(false);
 
   const vocabulary = () => getVocabulary(vocabularyId);
+
+  async function deleteSelectedWords() {
+    const words = selectedWords();
+    if (!words.length) {
+      return;
+    }
+
+    await deleteVocabularyItems(
+      vocabularyId,
+      ...selectedWords().map(word => word.id)
+    );
+    setSelectedWords([]);
+  }
 
   async function onAddWords() {
     await createVocabularyItems(vocabularyId, ...addedWords());
@@ -103,7 +117,7 @@ export const VocabularyPage: Component = () => {
             <HiOutlinePlus size={16} /> Add words
           </Button>
           <Show when={selectedWords().length > 0}>
-            <Button size="sm" variant="secondary">
+            <Button size="sm" variant="secondary" onClick={deleteSelectedWords}>
               <HiOutlineTrash size={16} /> Delete selected
             </Button>
           </Show>

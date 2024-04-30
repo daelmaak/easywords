@@ -1,9 +1,9 @@
 import { ResourceReturn, createResource } from 'solid-js';
 import { VocabularyItem, Vocabulary } from '../model/vocabulary-model';
 import {
-    VocabularyApi,
-    VocabularyItemToCreate,
-    VocabularyToCreate,
+  VocabularyApi,
+  VocabularyItemToCreate,
+  VocabularyToCreate,
 } from './vocabulary-api';
 
 let api: VocabularyApi;
@@ -89,6 +89,30 @@ export const createVocabularyItems = async (
   );
 
   return true;
+};
+
+export const deleteVocabularyItems = async (
+  vocabularyId: number,
+  ...ids: number[]
+) => {
+  const success = await api.deleteVocabularyItems(...ids);
+
+  if (success) {
+    const { mutate } = getVocabulariesResource()[1];
+    mutate(vs =>
+      vs!.map(v => {
+        if (v.id !== vocabularyId) {
+          return v;
+        }
+        return {
+          ...v,
+          vocabularyItems: v.vocabularyItems.filter(i => !ids.includes(i.id)),
+        };
+      })
+    );
+  }
+
+  return success;
 };
 
 export const updateVocabularyItems = async (

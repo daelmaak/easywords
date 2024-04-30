@@ -2,6 +2,7 @@ import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
 import { Show, createEffect, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import {
+  deleteVocabularyItems,
   getVocabulary,
   updateVocabularyItems,
 } from '../vocabularies/resources/vocabulary-resources';
@@ -91,6 +92,10 @@ export const VocabularyTestPage = () => {
     setDone(false);
   }
 
+  async function deleteWord(word: VocabularyItem) {
+    await deleteVocabularyItems(vocabularyId, word.id);
+  }
+
   function saveProgress(progress: SavedProgress) {
     saveVocabularyProgress(vocabularyId, progress);
     goBack();
@@ -112,6 +117,7 @@ export const VocabularyTestPage = () => {
                   done={onDone}
                   editWord={onEditWord}
                   onSaveProgress={saveProgress}
+                  onRemoveWord={deleteWord}
                   repeat={onRepeat}
                   reset={onReset}
                 />
