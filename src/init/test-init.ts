@@ -6,6 +6,7 @@ export const initTestApp = () => {
     vocabularyApi: {
       createVocabularyList: vi.fn(),
       createVocabularyItems: vi.fn(),
+      deleteVocabularyItems: vi.fn(),
       deleteVocabularyList: vi.fn(),
       fetchVocabularyLists: vi.fn(),
       updateVocabulary: vi.fn(),
