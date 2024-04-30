@@ -38,7 +38,9 @@ export const WriteTester: Component<WriteTesterProps> = props => {
   let inputRef: HTMLInputElement | undefined;
   const [valid, setValidInternal] = createSignal<boolean | undefined>();
 
-  const tokenizedTranslation = createMemo(() => tokenize(props.translation));
+  const tokenizedTranslation = createMemo(() =>
+    tokenize(props.translation.toLocaleLowerCase())
+  );
 
   onMount(() => {
     if (!inputRef) {
@@ -72,7 +74,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
   }
 
   function validateText(): boolean {
-    const text = inputRef?.value;
+    const text = inputRef?.value.toLowerCase();
 
     if (!text) {
       setValid(false, '');
