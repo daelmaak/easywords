@@ -1,12 +1,17 @@
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
-import { Show, createEffect, createSignal } from 'solid-js';
+import { Show, createEffect, createSignal, onMount } from 'solid-js';
 import { createStore } from 'solid-js/store';
+import { VocabularyItem } from '../vocabularies/model/vocabulary-model';
+import {
+  deleteVocabularyProgress,
+  fetchVocabularyProgress,
+  saveVocabularyProgress,
+} from '../vocabularies/resources/vocabulary-progress-api';
 import {
   deleteVocabularyItems,
   getVocabulary,
   updateVocabularyItems,
 } from '../vocabularies/resources/vocabulary-resources';
-import { VocabularyItem } from '../vocabularies/model/vocabulary-model';
 import { Results } from './components/Results';
 import {
   VocabularySettings,
@@ -14,11 +19,6 @@ import {
 } from './components/VocabularySettings';
 import { VocabularyTester } from './components/VocabularyTester';
 import { SavedProgress } from './vocabulary-testing-model';
-import {
-  deleteVocabularyProgress,
-  fetchVocabularyProgress,
-  saveVocabularyProgress,
-} from '../vocabularies/resources/vocabulary-progress-api';
 
 export const VocabularyTestPage = () => {
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ export const VocabularyTestPage = () => {
     return vocab;
   });
 
-  createEffect(async () => {
+  onMount(async () => {
     if (!searchParams.useSavedProgress) {
       return;
     }
@@ -98,7 +98,6 @@ export const VocabularyTestPage = () => {
 
   function saveProgress(progress: SavedProgress) {
     saveVocabularyProgress(vocabularyId, progress);
-    goBack();
   }
 
   return (
@@ -116,8 +115,9 @@ export const VocabularyTestPage = () => {
                   words={w()}
                   done={onDone}
                   editWord={onEditWord}
-                  onSaveProgress={saveProgress}
+                  onProgress={saveProgress}
                   onRemoveWord={deleteWord}
+                  onStop={goBack}
                   repeat={onRepeat}
                   reset={onReset}
                 />

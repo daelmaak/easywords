@@ -1,5 +1,5 @@
 import { HiOutlineEye, HiOutlinePencil, HiOutlineTrash } from 'solid-icons/hi';
-import { Component, Show, createEffect, onCleanup } from 'solid-js';
+import { Component, Show, onCleanup, onMount } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { Button } from '~/components/ui/button';
 import { Dialog, DialogContent } from '~/components/ui/dialog';
@@ -8,8 +8,8 @@ import { WordCreator } from '~/domains/vocabularies/components/WordCreator';
 import { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
 import { mergeWords } from '../../../util/merge-arrays';
 import { nextWord } from '../../../worder/worder';
-import { WriteTester } from './WriteTester';
 import { SavedProgress } from '../vocabulary-testing-model';
+import { WriteTester } from './WriteTester';
 
 export type VocabularyTestMode = 'guess' | 'write';
 
@@ -23,8 +23,9 @@ interface TesterProps {
   editWord: (word: VocabularyItem) => void;
   repeat: () => void;
   reset: () => void;
+  onProgress?: (progress: SavedProgress) => void;
   onRemoveWord: (word: VocabularyItem) => void;
-  onSaveProgress?: (progress: SavedProgress) => void;
+  onStop?: () => void;
 }
 
 interface State {
@@ -60,7 +61,12 @@ export const VocabularyTester: Component<TesterProps> = (
   const percentageDone = () =>
     (1 - store.wordsLeft.length / props.words.length) * 100;
 
-  createEffect(() => {
+  const progress = (): SavedProgress => ({
+    leftOverWords: store.wordsLeft,
+    invalidWords: store.invalidWords,
+  });
+
+  onMount(() => {
     if (!props.savedProgress) {
       return;
     }
@@ -71,7 +77,7 @@ export const VocabularyTester: Component<TesterProps> = (
     });
   });
 
-  createEffect(() => {
+  onMount(() => {
     const onKey = (e: KeyboardEvent) => {
       if (props.mode !== 'guess') {
         return;
@@ -87,6 +93,20 @@ export const VocabularyTester: Component<TesterProps> = (
     document.addEventListener('keydown', onKey);
     onCleanup(() => document.removeEventListener('keydown', onKey));
   });
+
+  function finish() {
+    const invalidAndLeftoverWords = mergeWords(
+      store.invalidWords,
+      store.wordsLeft
+    );
+    props.done(invalidAndLeftoverWords);
+
+    setStore({
+      currentWordId: undefined,
+      wordsLeft: [],
+      invalidWords: [],
+    });
+  }
 
   function setNextWord() {
     const current = currentWord();
@@ -104,6 +124,7 @@ export const VocabularyTester: Component<TesterProps> = (
         setStore('wordsLeft', wsLeft);
       }
       currentWordValid = undefined;
+      props.onProgress?.(progress());
     }
 
     const next = nextWord(wsLeft);
@@ -115,27 +136,6 @@ export const VocabularyTester: Component<TesterProps> = (
     setStore({
       currentWordId: next.id,
       peek: false,
-    });
-  }
-
-  function finish() {
-    const invalidAndLeftoverWords = mergeWords(
-      store.invalidWords,
-      store.wordsLeft
-    );
-    props.done(invalidAndLeftoverWords);
-
-    setStore({
-      currentWordId: undefined,
-      wordsLeft: [],
-      invalidWords: [],
-    });
-  }
-
-  function saveProgress() {
-    props.onSaveProgress?.({
-      invalidWords: store.invalidWords,
-      leftOverWords: store.wordsLeft,
     });
   }
 
@@ -278,8 +278,8 @@ export const VocabularyTester: Component<TesterProps> = (
           <Show when={props.mode === 'guess'}>
             <Button onClick={setNextWord}>Next</Button>
           </Show>
-          <Button class="btn-link" variant="outline" onClick={saveProgress}>
-            Save Progress
+          <Button class="btn-link" variant="outline" onClick={props.onStop}>
+            Stop test
           </Button>
           <Button class="btn-link" variant="outline" onClick={finish}>
             Finish test
