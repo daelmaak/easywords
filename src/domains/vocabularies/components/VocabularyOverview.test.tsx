@@ -2,8 +2,9 @@ import { cleanup, render, screen } from '@solidjs/testing-library';
 import { afterEach, expect, it, vi } from 'vitest';
 import { initTestApp } from '~/init/test-init';
 import { tick } from '~/lib/testing';
-import { getVocabulariesResource } from '../resources/vocabulary-resources';
+import { getVocabulariesResource } from '../resources/vocabularies-resource';
 import { VocabularyOverview } from './VocabularyOverview';
+import { createRoot } from 'solid-js';
 
 afterEach(() => {
   cleanup();
@@ -31,7 +32,7 @@ it('should render an empty vocabulary overview if none exist', async () => {
 });
 
 function setup() {
-  const { vocabularyApi } = initTestApp();
+  const { vocabularyApi } = createRoot(() => initTestApp());
 
   return {
     getVocabulariesResource,

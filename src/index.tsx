@@ -16,8 +16,6 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
-initApp();
-
 const VocabularyPage = lazy(
   () => import('./domains/vocabularies/VocabularyPage')
 );
@@ -26,8 +24,10 @@ const ConjugationsPage = lazy(
   () => import('./domains/conjugations/components/ConjugationsView')
 );
 
-render(
-  () => (
+render(() => {
+  initApp();
+
+  return (
     <Router root={App}>
       <Route path="/vocabulary">
         <Route path="/" component={VocabulariesPage} />
@@ -44,6 +44,5 @@ render(
       />
       <Route path="/" component={() => <Navigate href="/vocabulary" />} />
     </Router>
-  ),
-  root!
-);
+  );
+}, root!);

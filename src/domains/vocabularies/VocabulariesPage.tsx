@@ -1,10 +1,10 @@
 import { useNavigate } from '@solidjs/router';
 import { Show } from 'solid-js';
-import { getVocabulariesResource } from '~/domains/vocabularies/resources/vocabulary-resources';
+import { Button } from '~/components/ui/button';
+import { AuthDialog } from '../auth/AuthDialog';
 import { isLoggedIn, sessionResource } from '../auth/auth-resource';
 import { VocabularyOverview } from './components/VocabularyOverview';
-import { AuthDialog } from '../auth/AuthDialog';
-import { Button } from '~/components/ui/button';
+import { getVocabulariesResource } from './resources/vocabularies-resource';
 
 export const VocabulariesPage = () => {
   const navigate = useNavigate();

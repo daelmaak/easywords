@@ -17,7 +17,7 @@ import { Skeleton } from '~/components/ui/skeleton';
 import {
   createVocabulary,
   deleteVocabulary,
-} from '../resources/vocabulary-resources';
+} from '../resources/vocabularies-resource';
 import { Vocabulary } from '../model/vocabulary-model';
 import { VocabularyCard } from './VocabularyCard';
 import { VocabularyCreator } from './VocabularyCreator';

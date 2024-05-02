@@ -5,9 +5,10 @@ import { expect, it, vi } from 'vitest';
 import { initTestApp } from '~/init/test-init';
 import { tick } from '~/lib/testing';
 import VocabularyPage from './VocabularyPage';
+import { createRoot } from 'solid-js';
 
 it('should filter words based on search', async () => {
-  const { userInteraction } = setup();
+  const { userInteraction, dispose } = setup();
 
   render(() => (
     <MemoryRouter>
@@ -26,6 +27,8 @@ it('should filter words based on search', async () => {
   await userInteraction.type(searchInput, 'ahoj');
   words = screen.getAllByTestId('editor-word');
   expect(words.length).toBe(1);
+
+  dispose();
 });
 
 function setup() {
@@ -35,32 +38,34 @@ function setup() {
 
   const userInteraction = userEvent.setup();
 
-  const { vocabularyApi } = initTestApp();
-  vocabularyApi.fetchVocabularyLists.mockResolvedValue([
-    {
-      id: 1,
-      name: 'Vocabulary 1',
-      country: 'cz',
-      hasSavedProgress: false,
-      vocabularyItems: [
-        {
-          id: 1,
-          list_id: 1,
-          original: 'ahoj',
-          translation: 'hello',
-        },
-        {
-          id: 2,
-          list_id: 1,
-          original: 'nashle',
-          translation: 'bye',
-        },
-      ],
-    },
-  ]);
+  const { vocabularyApi, dispose } = createRoot(dispose => ({
+    ...initTestApp(),
+    dispose,
+  }));
+  vocabularyApi.fetchVocabulary.mockResolvedValue({
+    id: 1,
+    name: 'Vocabulary 1',
+    country: 'cz',
+    hasSavedProgress: false,
+    vocabularyItems: [
+      {
+        id: 1,
+        list_id: 1,
+        original: 'ahoj',
+        translation: 'hello',
+      },
+      {
+        id: 2,
+        list_id: 1,
+        original: 'nashle',
+        translation: 'bye',
+      },
+    ],
+  });
 
   return {
     userInteraction,
     vocabularyApi,
+    dispose,
   };
 }

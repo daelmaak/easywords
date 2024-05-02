@@ -1,8 +1,9 @@
+import { initVocabulariesResource } from '~/domains/vocabularies/resources/vocabularies-resource';
 import {
   VocabularyApi,
   vocabularyApi,
 } from '~/domains/vocabularies/resources/vocabulary-api';
-import { initVocabularyResources } from '~/domains/vocabularies/resources/vocabulary-resources';
+import { initVocabularyResource } from '~/domains/vocabularies/resources/vocabulary-resource';
 
 export interface ResourcesInit {
   vocabularyApi: VocabularyApi;
@@ -17,5 +18,6 @@ export const initApp = (init?: ResourcesInit) => {
 };
 
 export const initResources = (init: { vocabularyApi: VocabularyApi }) => {
-  initVocabularyResources(init.vocabularyApi);
+  initVocabulariesResource(init.vocabularyApi);
+  initVocabularyResource(init.vocabularyApi);
 };
