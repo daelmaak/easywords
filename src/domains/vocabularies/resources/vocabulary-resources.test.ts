@@ -1,15 +1,17 @@
-import { expect, test } from 'vitest';
+import { createRoot } from 'solid-js';
+import { assert, expect, test } from 'vitest';
 import { initTestApp } from '~/init/test-init';
-import {
-    createVocabularyItems,
-    getVocabulariesResource,
-    updateVocabularyItems,
-} from './vocabulary-resources';
+import { tick } from '~/lib/testing';
 import { Vocabulary } from '../model/vocabulary-model';
+import {
+  createVocabularyItems,
+  getVocabulary,
+  updateVocabularyItems,
+} from './vocabulary-resource';
 
-test('updates the vocabularies resources on word edit', async () => {
-  const { vocabularyApi } = setup();
-  const vocabulary: Vocabulary = {
+test('updates the vocabulary resource on word edit', async () => {
+  const { vocabularyApi, dispose } = setup();
+  const mockVocabulary: Vocabulary = {
     id: 1,
     country: 'at',
     name: 'Test Vocabulary',
@@ -24,24 +26,28 @@ test('updates the vocabularies resources on word edit', async () => {
     ],
   };
 
-  vocabularyApi.fetchVocabularyLists.mockResolvedValue([vocabulary]);
+  vocabularyApi.fetchVocabulary.mockResolvedValue(mockVocabulary);
   vocabularyApi.updateVocabularyItems.mockResolvedValue(true);
 
-  // Use `createRoot` here? Test works without it but I am not sure resources are
-  // cleaned up properly.
-  const [vocabularies] = getVocabulariesResource();
+  const vocabulary = getVocabulary(1);
+  await tick();
 
-  await updateVocabularyItems(1, {
-    ...vocabulary.vocabularyItems[0],
+  const currVocabulary = vocabulary();
+  assert(currVocabulary);
+
+  await updateVocabularyItems({
+    ...currVocabulary.vocabularyItems[0],
     original: 'new original',
   });
 
-  expect(vocabularies()?.[0].vocabularyItems[0].original).toBe('new original');
+  expect(vocabulary()?.vocabularyItems[0].original).toBe('new original');
+
+  dispose();
 });
 
-test('updates the vocabularies resources on words addition', async () => {
-  const { vocabularyApi } = setup();
-  const vocabulary: Vocabulary = {
+test('updates the vocabulary resource on words addition', async () => {
+  const { vocabularyApi, dispose } = setup();
+  const mockVocabulary: Vocabulary = {
     id: 1,
     country: 'at',
     name: 'Test Vocabulary',
@@ -61,21 +67,24 @@ test('updates the vocabularies resources on words addition', async () => {
     translation: 'new translation',
   };
 
-  vocabularyApi.fetchVocabularyLists.mockResolvedValue([vocabulary]);
+  vocabularyApi.fetchVocabulary.mockResolvedValue(mockVocabulary);
   vocabularyApi.createVocabularyItems.mockResolvedValue([
     { id: 2, list_id: 1, ...wordToAdd },
   ]);
 
-  const [vocabularies] = getVocabulariesResource();
+  const vocabulary = getVocabulary(1);
+  await tick();
+
+  assert(vocabulary());
 
   await createVocabularyItems(1, wordToAdd);
 
-  expect(vocabularies()?.[0].vocabularyItems.length).toBe(2);
-  expect(vocabularies()?.[0].vocabularyItems[1].original).toBe(
-    wordToAdd.original
-  );
+  expect(vocabulary()?.vocabularyItems.length).toBe(2);
+  expect(vocabulary()?.vocabularyItems[1].original).toBe(wordToAdd.original);
+
+  dispose();
 });
 
 function setup() {
-  return initTestApp();
+  return createRoot(dispose => ({ ...initTestApp(), dispose }));
 }

@@ -2,6 +2,7 @@ import { supabase } from '~/lib/supabase-client';
 import { RealOmit, omit } from '~/util/object';
 import { VocabularyItem, Vocabulary } from '../model/vocabulary-model';
 import { fetchVocabularyProgress } from './vocabulary-progress-api';
+import { CountryCode } from '~/components/country-select/countries';
 
 export type VocabularyItemToCreate = RealOmit<VocabularyItem, 'id' | 'list_id'>;
 export type VocabularyToCreate = RealOmit<
@@ -9,6 +10,32 @@ export type VocabularyToCreate = RealOmit<
   'id' | 'vocabularyItems' | 'hasSavedProgress'
 > & {
   vocabularyItems: VocabularyItemToCreate[];
+};
+
+const fetchVocabulary = async (id: number) => {
+  const result = await supabase
+    .from('vocabularies')
+    .select(
+      `
+    id, 
+    country,
+    name,
+    vocabulary_items (
+      id,
+      list_id,
+      original,
+      translation
+    )`
+    )
+    .eq('id', id);
+
+  const vocabulary = result.data?.[0];
+
+  if (!vocabulary) {
+    return undefined;
+  }
+
+  return transformVocabulary(vocabulary);
 };
 
 const fetchVocabularyLists = async () => {
@@ -25,13 +52,7 @@ const fetchVocabularyLists = async () => {
     )`
   );
 
-  const vocabularies = (result.data ?? []).map(lists => ({
-    id: lists.id,
-    country: lists.country,
-    hasSavedProgress: false,
-    name: lists.name,
-    vocabularyItems: lists.vocabulary_items,
-  }));
+  const vocabularies = (result.data ?? []).map(transformVocabulary);
 
   // TODO: This is only temporary and should be ultimately saved in DB
   for (const vocabulary of vocabularies) {
@@ -107,9 +128,24 @@ export const vocabularyApi = {
   createVocabularyList,
   deleteVocabularyItems,
   deleteVocabularyList,
+  fetchVocabulary,
   fetchVocabularyLists,
   updateVocabulary,
   updateVocabularyItems,
 };
 
 export type VocabularyApi = typeof vocabularyApi;
+
+// Move to resource
+const transformVocabulary = (vocabulary: {
+  id: number;
+  country: string;
+  name: string;
+  vocabulary_items: VocabularyItem[];
+}): Vocabulary => ({
+  id: vocabulary.id,
+  country: vocabulary.country as CountryCode,
+  hasSavedProgress: false,
+  name: vocabulary.name,
+  vocabularyItems: vocabulary.vocabulary_items,
+});

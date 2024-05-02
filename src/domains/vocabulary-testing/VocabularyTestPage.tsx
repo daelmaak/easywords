@@ -7,11 +7,6 @@ import {
   fetchVocabularyProgress,
   saveVocabularyProgress,
 } from '../vocabularies/resources/vocabulary-progress-api';
-import {
-  deleteVocabularyItems,
-  getVocabulary,
-  updateVocabularyItems,
-} from '../vocabularies/resources/vocabulary-resources';
 import { Results } from './components/Results';
 import {
   VocabularySettings,
@@ -19,13 +14,18 @@ import {
 } from './components/VocabularySettings';
 import { VocabularyTester } from './components/VocabularyTester';
 import { SavedProgress } from './vocabulary-testing-model';
+import {
+  deleteVocabularyItems,
+  getVocabulary,
+  updateVocabularyItems,
+} from '../vocabularies/resources/vocabulary-resource';
 
 export const VocabularyTestPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const params = useParams();
   const vocabularyId = +params.id;
-  const vocabulary = () => getVocabulary(vocabularyId);
+  const vocabulary = getVocabulary(vocabularyId);
 
   const [vocabularySettings, setVocabularySettings] =
     createStore<VocabularyUserSettings>({
@@ -68,7 +68,7 @@ export const VocabularyTestPage = () => {
   }
 
   function onEditWord(word: VocabularyItem) {
-    updateVocabularyItems(vocabularyId, word);
+    updateVocabularyItems(word);
   }
 
   function goBack() {

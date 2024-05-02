@@ -14,14 +14,14 @@ import {
 } from '~/components/ui/sheet';
 import { WordsInput } from '../vocabulary-testing/components/WordsInput';
 import VocabularyEditor from './components/VocabularyEditor';
+import { VocabularyItem } from './model/vocabulary-model';
 import {
   createVocabularyItems,
   deleteVocabularyItems,
   getVocabulary,
   updateVocabulary,
   updateVocabularyItems,
-} from './resources/vocabulary-resources';
-import { VocabularyItem } from './model/vocabulary-model';
+} from './resources/vocabulary-resource';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -31,7 +31,7 @@ export const VocabularyPage: Component = () => {
   const [selectedWords, setSelectedWords] = createSignal<VocabularyItem[]>([]);
   const [openedAddWords, setOpenedAddWords] = createSignal(false);
 
-  const vocabulary = () => getVocabulary(vocabularyId);
+  const vocabulary = getVocabulary(vocabularyId);
 
   async function deleteSelectedWords() {
     const words = selectedWords();
@@ -39,10 +39,7 @@ export const VocabularyPage: Component = () => {
       return;
     }
 
-    await deleteVocabularyItems(
-      vocabularyId,
-      ...selectedWords().map(word => word.id)
-    );
+    await deleteVocabularyItems(...selectedWords().map(word => word.id));
     setSelectedWords([]);
   }
 
@@ -53,7 +50,7 @@ export const VocabularyPage: Component = () => {
   }
 
   async function onWordsEdited(updatedWords: VocabularyItem[]) {
-    await updateVocabularyItems(vocabularyId, ...updatedWords);
+    await updateVocabularyItems(...updatedWords);
   }
 
   function onVocabularyDataChange(event: Event) {
@@ -75,66 +72,75 @@ export const VocabularyPage: Component = () => {
   }
 
   return (
-    <div class="flex flex-col gap-4 sm:flex-row">
-      <Sheet open={openedAddWords()} onOpenChange={setOpenedAddWords}>
-        <SheetContent class="w-svw sm:w-[30rem] flex flex-col gap-4">
-          <SheetHeader>
-            <SheetTitle>Add words</SheetTitle>
-          </SheetHeader>
-          <WordsInput mode="form" onWordsChange={setAddedWords} />
-          <Button onClick={onAddWords}>Save</Button>
-        </SheetContent>
-      </Sheet>
+    <Show
+      when={!vocabulary.loading}
+      fallback={<div class="m-auto">Loading ...</div>}
+    >
+      <div class="flex flex-col gap-4 sm:flex-row">
+        <Sheet open={openedAddWords()} onOpenChange={setOpenedAddWords}>
+          <SheetContent class="w-svw sm:w-[30rem] flex flex-col gap-4">
+            <SheetHeader>
+              <SheetTitle>Add words</SheetTitle>
+            </SheetHeader>
+            <WordsInput mode="form" onWordsChange={setAddedWords} />
+            <Button onClick={onAddWords}>Save</Button>
+          </SheetContent>
+        </Sheet>
 
-      <Show when={vocabulary()}>
-        {v => (
-          <form onFocusOut={onVocabularyDataChange}>
-            <Label for="vocabulary-name">List name</Label>
-            <Input
-              id="vocabulary-name"
-              name="vocabularyName"
-              value={v().name}
-            />
-            <div class="mt-4"></div>
-            <Label for="country">Country</Label>
-            <CountrySelect id="country" defaultValue={v().country} />
-          </form>
-        )}
-      </Show>
+        <Show when={vocabulary()}>
+          {v => (
+            <form onFocusOut={onVocabularyDataChange}>
+              <Label for="vocabulary-name">List name</Label>
+              <Input
+                id="vocabulary-name"
+                name="vocabularyName"
+                value={v().name}
+              />
+              <div class="mt-4"></div>
+              <Label for="country">Country</Label>
+              <CountrySelect id="country" defaultValue={v().country} />
+            </form>
+          )}
+        </Show>
 
-      <div class="flex-grow flex flex-col items-center">
-        <div class="sticky top-0 w-full flex justify-center items-center gap-2 bg-background p-4">
+        <div class="flex-grow flex flex-col items-center">
+          <div class="sticky top-0 w-full flex justify-center items-center gap-2 bg-background p-4">
+            <Show when={vocabulary()}>
+              {v => (
+                <Search
+                  terms={v().vocabularyItems}
+                  searchKeys={['original', 'translation']}
+                  onSearch={setSearchedWords}
+                />
+              )}
+            </Show>
+            <Button size="sm" onClick={() => setOpenedAddWords(true)}>
+              <HiOutlinePlus size={16} /> Add words
+            </Button>
+            <Show when={selectedWords().length > 0}>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={deleteSelectedWords}
+              >
+                <HiOutlineTrash size={16} /> Delete selected
+              </Button>
+            </Show>
+          </div>
           <Show when={vocabulary()}>
             {v => (
-              <Search
-                terms={v().vocabularyItems}
-                searchKeys={['original', 'translation']}
-                onSearch={setSearchedWords}
+              <VocabularyEditor
+                words={searchedWords() ?? v().vocabularyItems}
+                selectedWords={selectedWords()}
+                vocabulary={v()}
+                onWordsEdited={onWordsEdited}
+                onWordsSelected={setSelectedWords}
               />
             )}
           </Show>
-          <Button size="sm" onClick={() => setOpenedAddWords(true)}>
-            <HiOutlinePlus size={16} /> Add words
-          </Button>
-          <Show when={selectedWords().length > 0}>
-            <Button size="sm" variant="secondary" onClick={deleteSelectedWords}>
-              <HiOutlineTrash size={16} /> Delete selected
-            </Button>
-          </Show>
         </div>
-        <Show when={vocabulary()}>
-          {v => (
-            <VocabularyEditor
-              words={searchedWords() ?? v().vocabularyItems}
-              selectedWords={selectedWords()}
-              vocabulary={v()}
-              onWordsEdited={onWordsEdited}
-              onWordsSelected={setSelectedWords}
-            />
-          )}
-        </Show>
       </div>
-    </div>
+    </Show>
   );
 };
 
