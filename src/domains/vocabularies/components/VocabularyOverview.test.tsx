@@ -4,7 +4,6 @@ import { initTestApp } from '~/init/test-init';
 import { tick } from '~/lib/testing';
 import { getVocabulariesResource } from '../resources/vocabularies-resource';
 import { VocabularyOverview } from './VocabularyOverview';
-import { createRoot } from 'solid-js';
 
 afterEach(() => {
   cleanup();
@@ -32,7 +31,7 @@ it('should render an empty vocabulary overview if none exist', async () => {
 });
 
 function setup() {
-  const { vocabularyApi } = createRoot(() => initTestApp());
+  const { vocabularyApi } = initTestApp();
 
   return {
     getVocabulariesResource,

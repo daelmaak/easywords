@@ -1,4 +1,3 @@
-import { createRoot } from 'solid-js';
 import { assert, expect, test } from 'vitest';
 import { initTestApp } from '~/init/test-init';
 import { tick } from '~/lib/testing';
@@ -86,5 +85,5 @@ test('updates the vocabulary resource on words addition', async () => {
 });
 
 function setup() {
-  return createRoot(dispose => ({ ...initTestApp(), dispose }));
+  return initTestApp();
 }

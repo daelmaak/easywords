@@ -1,5 +1,6 @@
 import { vi } from 'vitest';
 import { ResourcesInit, initApp } from './app-init';
+import { createRoot } from 'solid-js';
 
 export const initTestApp = () => {
   const resources = {
@@ -15,7 +16,8 @@ export const initTestApp = () => {
     },
   } satisfies ResourcesInit;
 
-  initApp(resources);
-
-  return resources;
+  return createRoot(dispose => {
+    initApp(resources);
+    return { ...resources, dispose };
+  });
 };
