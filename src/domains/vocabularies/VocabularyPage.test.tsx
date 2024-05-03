@@ -5,7 +5,6 @@ import { expect, it, vi } from 'vitest';
 import { initTestApp } from '~/init/test-init';
 import { tick } from '~/lib/testing';
 import VocabularyPage from './VocabularyPage';
-import { createRoot } from 'solid-js';
 
 it('should filter words based on search', async () => {
   const { userInteraction, dispose } = setup();
@@ -38,10 +37,8 @@ function setup() {
 
   const userInteraction = userEvent.setup();
 
-  const { vocabularyApi, dispose } = createRoot(dispose => ({
-    ...initTestApp(),
-    dispose,
-  }));
+  const { vocabularyApi, dispose } = initTestApp();
+
   vocabularyApi.fetchVocabulary.mockResolvedValue({
     id: 1,
     name: 'Vocabulary 1',
