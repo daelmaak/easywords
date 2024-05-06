@@ -78,7 +78,10 @@ export const VocabularyPage: Component = () => {
     >
       <div class="flex flex-col gap-4 sm:flex-row">
         <Sheet open={openedAddWords()} onOpenChange={setOpenedAddWords}>
-          <SheetContent class="w-svw sm:w-[30rem] flex flex-col gap-4">
+          <SheetContent
+            class="w-svw sm:w-[30rem] flex flex-col gap-4"
+            onPointerDownOutside={e => e.preventDefault()}
+          >
             <SheetHeader>
               <SheetTitle>Add words</SheetTitle>
             </SheetHeader>
