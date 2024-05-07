@@ -94,6 +94,7 @@ export const ConjugationsTester: Component<Props> = props => {
                     <td>
                       <WriteTester
                         translation={c.conjugatedVerb}
+                        mode="inline"
                         peek={conjugationInvalid(c)}
                         onReady={onTesterReady(i())}
                         strict={true}
@@ -109,11 +110,7 @@ export const ConjugationsTester: Component<Props> = props => {
             </tbody>
           </table>
 
-          <Button
-            class="block ml-auto"
-            type="button"
-            onClick={nextOrFinish}
-          >
+          <Button class="block ml-auto" type="button" onClick={nextOrFinish}>
             {isLastConjugation() ? 'Finish' : 'Next'}
           </Button>
         </div>

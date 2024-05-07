@@ -23,6 +23,7 @@ export interface WriteTesterInstance {
 
 export interface WriteTesterProps {
   autoFocus?: boolean;
+  mode: 'full' | 'inline';
   peek?: boolean;
   strict?: boolean;
   translation: string;
@@ -133,10 +134,12 @@ export const WriteTester: Component<WriteTesterProps> = props => {
   }
 
   return (
-    <>
+    <div class="relative">
       <i
-        class="my-[-0.5rem] mx-auto text-base"
-        classList={{ invisible: !props.peek }}
+        class={cx('block mb-2 mx-auto text-base text-center', {
+          invisible: !props.peek,
+          'absolute top-0 translate-y-[-75%]': props.mode === 'inline',
+        })}
       >
         {props.translation}
       </i>
@@ -145,7 +148,11 @@ export const WriteTester: Component<WriteTesterProps> = props => {
         onSubmit={onSubmit}
       >
         <div class="flex items-center gap-2">
-          <div class="w-8 h-8">
+          <div
+            class={cx('w-8 h-8', {
+              'order-1': props.mode === 'inline',
+            })}
+          >
             <Show when={valid() != null}>
               {valid() ? (
                 <HiOutlineCheck class="text-primary" size={32} />
@@ -162,28 +169,33 @@ export const WriteTester: Component<WriteTesterProps> = props => {
           />
           <div aria-hidden class="w-8 h-8 sm:hidden"></div>
         </div>
-        <div class="flex gap-2">
-          <Button
-            class="px-2"
-            aria-label="Check word"
-            title="Check word"
-            disabled={valid()}
-            type={valid() ? 'button' : 'submit'}
-          >
-            <HiOutlineArrowRight size={24} />
-          </Button>
-          <Button
-            class="px-2"
-            variant={valid() ? 'default' : 'secondary'}
-            aria-label="Next word"
-            title="Next word"
-            type={valid() ? 'submit' : 'button'}
-            onClick={props.onSkip}
-          >
-            <HiOutlineForward class={cx(!valid() && 'opacity-75')} size={24} />
-          </Button>
-        </div>
+        <Show when={props.mode === 'full'}>
+          <div class="flex gap-2">
+            <Button
+              class="px-2"
+              aria-label="Check word"
+              title="Check word"
+              disabled={valid()}
+              type={valid() ? 'button' : 'submit'}
+            >
+              <HiOutlineArrowRight size={24} />
+            </Button>
+            <Button
+              class="px-2"
+              variant={valid() ? 'default' : 'secondary'}
+              aria-label="Next word"
+              title="Next word"
+              type={valid() ? 'submit' : 'button'}
+              onClick={props.onSkip}
+            >
+              <HiOutlineForward
+                class={cx(!valid() && 'opacity-75')}
+                size={24}
+              />
+            </Button>
+          </div>
+        </Show>
       </form>
-    </>
+    </div>
   );
 };

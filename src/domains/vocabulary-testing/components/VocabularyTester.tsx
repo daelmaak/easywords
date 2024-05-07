@@ -253,12 +253,14 @@ export const VocabularyTester: Component<TesterProps> = (
           </DialogContent>
         </Dialog>
 
-        <div>{toTranslate()}</div>
+        {/* mb-[-0.5rem] is here to bypass the vertical flex gap */}
+        <div class="mb-[-0.5rem]">{toTranslate()}</div>
 
         {props.mode === 'write' ? (
           <Show when={translated() != null}>
             <WriteTester
               autoFocus
+              mode="full"
               peek={store.peek}
               translation={translated()!}
               onDone={setNextWord}
