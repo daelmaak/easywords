@@ -38,6 +38,7 @@ export interface WriteTesterProps {
 export const WriteTester: Component<WriteTesterProps> = props => {
   let inputRef: HTMLInputElement | undefined;
   const [valid, setValidInternal] = createSignal<boolean | undefined>();
+  const [freshlyInvalid, setFreshlyInvalid] = createSignal(false);
 
   const tokenizedTranslation = createMemo(() =>
     tokenize(props.translation.toLocaleLowerCase())
@@ -70,6 +71,9 @@ export const WriteTester: Component<WriteTesterProps> = props => {
   });
 
   function setValid(valid: boolean, text: string) {
+    if (!valid) {
+      setFreshlyInvalid(true);
+    }
     setValidInternal(valid);
     props.onValidated?.(valid, text);
   }
@@ -102,6 +106,10 @@ export const WriteTester: Component<WriteTesterProps> = props => {
     if (!valid() && validateText()) {
       props.onDone?.();
     }
+  }
+
+  function onInput() {
+    setFreshlyInvalid(false);
   }
 
   function onSubmit(e: Event) {
@@ -166,6 +174,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
             class="w-56 text-lg"
             type="text"
             onBlur={onBlur}
+            onInput={onInput}
           />
           <div aria-hidden class="w-8 h-8 sm:hidden"></div>
         </div>
@@ -175,7 +184,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
               class="px-2"
               aria-label="Check word"
               title="Check word"
-              disabled={valid()}
+              disabled={valid() || freshlyInvalid()}
               type={valid() ? 'button' : 'submit'}
             >
               <HiOutlineArrowRight size={24} />
