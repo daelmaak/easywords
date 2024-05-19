@@ -55,7 +55,7 @@ export const VocabularyCreator: Component<Props> = props => {
         onSubmit={submit}
       >
         <Label for="vocabulary-name">Vocabulary name</Label>
-        <Input id="vocabulary-name" name="vocabularyNname" />
+        <Input id="vocabulary-name" name="vocabularyName" />
         <Label for="country">Country</Label>
         <CountrySelect id="country" />
       </form>
