@@ -16,6 +16,7 @@ interface Props {
   id?: string;
   name?: string;
   placeholder?: string;
+  required?: boolean;
   defaultValue?: CountryCode;
   onSelect?: (countryCode: CountryCode) => void;
 }
@@ -44,7 +45,10 @@ export const CountrySelect = (props: Props) => {
         {state => (
           <>
             <span class={`w-5 h-5 mr-2 fi fi-${state.selectedOptions()[0]}`} />
-            <ComboboxInput placeholder={props.placeholder} />
+            <ComboboxInput
+              placeholder={props.placeholder}
+              required={props.required}
+            />
             <ComboboxTrigger />
           </>
         )}

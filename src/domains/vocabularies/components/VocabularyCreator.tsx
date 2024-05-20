@@ -15,6 +15,7 @@ import {
 } from '~/domains/vocabulary-testing/components/WordsInput';
 import { WordTranslation } from '~/model/word-translation';
 import { VocabularyToCreate } from '../resources/vocabulary-api';
+import { CountryCode } from '../../../components/country-select/countries';
 
 interface Props {
   onListCreate: (vocabulary: VocabularyToCreate) => void;
@@ -32,16 +33,14 @@ export const VocabularyCreator: Component<Props> = props => {
   const [wordsInputMode, setWordsInputMode] =
     createSignal<WordsInputMode>('form');
 
-  const submit = (event: Event) => {
+  const submit = (event: SubmitEvent) => {
     event.preventDefault();
 
-    const form = event.target as HTMLFormElement;
-    const vocabularyName = form.vocabularyName.value;
-    const country = form.country.value;
+    const formData = new FormData(event.target as HTMLFormElement);
 
     props.onListCreate({
-      name: vocabularyName,
-      country,
+      name: formData.get('vocabularyName') as string,
+      country: formData.get('country') as CountryCode,
       vocabularyItems: words(),
     });
   };
@@ -55,9 +54,9 @@ export const VocabularyCreator: Component<Props> = props => {
         onSubmit={submit}
       >
         <Label for="vocabulary-name">Vocabulary name</Label>
-        <Input id="vocabulary-name" name="vocabularyName" />
+        <Input id="vocabulary-name" name="vocabularyName" required />
         <Label for="country">Country</Label>
-        <CountrySelect id="country" />
+        <CountrySelect id="country" name="country" required />
       </form>
       <div class="mb-4 flex flex-col gap-2">
         <Label>Add words</Label>
@@ -78,7 +77,12 @@ export const VocabularyCreator: Component<Props> = props => {
         </RadioGroup>
         <WordsInput mode={wordsInputMode()} onWordsChange={setWords} />
       </div>
-      <Button class="w-full" form="list-creator-form" type="submit">
+      <Button
+        class="w-full"
+        form="list-creator-form"
+        type="submit"
+        data-testid="creator-form-submit"
+      >
         Create
       </Button>
     </>
