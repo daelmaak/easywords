@@ -77,12 +77,7 @@ export const VocabularyCreator: Component<Props> = props => {
         </RadioGroup>
         <WordsInput mode={wordsInputMode()} onWordsChange={setWords} />
       </div>
-      <Button
-        class="w-full"
-        form="list-creator-form"
-        type="submit"
-        data-testid="creator-form-submit"
-      >
+      <Button class="w-full" form="list-creator-form" type="submit">
         Create
       </Button>
     </>

@@ -24,8 +24,6 @@ interface Props {
 export const CountrySelect = (props: Props) => {
   return (
     <Combobox
-      id={props.id}
-      name={props.name}
       closeOnSelection={true}
       options={COUNTRY_CODES}
       optionLabel={code => COUNTRIES[code]}
@@ -47,14 +45,17 @@ export const CountrySelect = (props: Props) => {
             <span class={`w-5 h-5 mr-2 fi fi-${state.selectedOptions()[0]}`} />
             <ComboboxInput
               placeholder={props.placeholder}
+              // For some reason, required on the HiddenSelect doesn't have an effect,
+              // despite the conditions listed in the following link seem to be met.
+              // https://stackoverflow.com/questions/6048710/can-i-apply-the-required-attribute-to-select-fields-in-html
+              // Maybe because it's aria-hidden?
               required={props.required}
             />
             <ComboboxTrigger />
           </>
         )}
       </ComboboxControl>
-      {/* The value and name is projected into it so that it can be used in HTML forms on submit */}
-      <ComboboxHiddenSelect />
+      <ComboboxHiddenSelect id={props.id} name={props.name} />
       <ComboboxContent />
     </Combobox>
   );

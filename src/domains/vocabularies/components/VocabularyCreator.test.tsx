@@ -1,8 +1,8 @@
 import { cleanup, render, screen } from '@solidjs/testing-library';
-import { afterEach, assert, expect, it, vi } from 'vitest';
-import { VocabularyCreator } from './VocabularyCreator';
-import { VocabularyToCreate } from '../resources/vocabulary-api';
 import userEvent from '@testing-library/user-event';
+import { afterEach, expect, it, vi } from 'vitest';
+import { VocabularyToCreate } from '../resources/vocabulary-api';
+import { VocabularyCreator } from './VocabularyCreator';
 
 afterEach(() => {
   cleanup();
@@ -12,20 +12,15 @@ afterEach(() => {
 it('should send complete form information on submit', async () => {
   const { onListCreateSpy, userInteraction } = setup();
 
-  const markup = render(() => (
-    <VocabularyCreator onListCreate={onListCreateSpy} />
-  ));
+  render(() => <VocabularyCreator onListCreate={onListCreateSpy} />);
 
-  const vocabularyName = markup.container.querySelector('#vocabulary-name');
-  const country = markup.container.querySelector('[name=country]');
+  const vocabularyNameInput = screen.getByLabelText('Vocabulary name');
+  const countrySelect = screen.getByLabelText('Country');
 
-  assert(vocabularyName);
-  assert(country);
+  await userInteraction.type(vocabularyNameInput, 'My vocabulary');
+  await userInteraction.selectOptions(countrySelect, ['cz']);
 
-  await userInteraction.type(vocabularyName, 'My vocabulary');
-  await userInteraction.selectOptions(country, ['cz']);
-
-  const submitBtn = screen.getByTestId('creator-form-submit');
+  const submitBtn = screen.getByText('Create');
   await userInteraction.click(submitBtn);
 
   expect(onListCreateSpy).toHaveBeenCalledWith({
