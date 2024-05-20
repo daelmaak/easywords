@@ -107,7 +107,7 @@ export const VocabularyPage: Component = () => {
         </Show>
 
         <div class="flex-grow flex flex-col items-center">
-          <div class="sticky top-0 w-full flex justify-center items-center gap-2 bg-background p-4">
+          <div class="sticky top-0 w-full flex flex-wrap justify-center items-center gap-2 bg-background p-4">
             <Show when={vocabulary()}>
               {v => (
                 <Search
