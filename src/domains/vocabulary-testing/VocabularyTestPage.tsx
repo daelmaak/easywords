@@ -10,7 +10,7 @@ import {
 import { Results } from './components/Results';
 import {
   VocabularySettings,
-  VocabularyUserSettings,
+  VocabularyTesterSettings,
 } from './components/VocabularySettings';
 import { VocabularyTester } from './components/VocabularyTester';
 import { SavedProgress } from './vocabulary-testing-model';
@@ -28,7 +28,7 @@ export const VocabularyTestPage = () => {
   const vocabulary = getVocabulary(vocabularyId);
 
   const [vocabularySettings, setVocabularySettings] =
-    createStore<VocabularyUserSettings>({
+    createStore<VocabularyTesterSettings>({
       mode: 'write',
       reverseTranslations: false,
       repeatInvalid: false,
@@ -108,18 +108,16 @@ export const VocabularyTestPage = () => {
             <>
               <div class="m-auto">
                 <VocabularyTester
-                  mode={vocabularySettings.mode}
-                  repeatInvalid={vocabularySettings.repeatInvalid}
-                  reverse={vocabularySettings.reverseTranslations}
+                  testSettings={vocabularySettings}
                   savedProgress={savedProgress()}
                   words={w()}
-                  done={onDone}
-                  editWord={onEditWord}
+                  onDone={onDone}
+                  onEditWord={onEditWord}
                   onProgress={saveProgress}
                   onRemoveWord={deleteWord}
                   onStop={goBack}
-                  repeat={onRepeat}
-                  reset={onReset}
+                  onRepeat={onRepeat}
+                  onReset={onReset}
                 />
               </div>
               <div class="mt-auto">

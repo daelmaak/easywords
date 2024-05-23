@@ -3,15 +3,15 @@ import { Component, Show, createEffect, createSignal } from 'solid-js';
 import { Switch } from '~/components/ui/switch';
 import { VocabularyTestMode } from './VocabularyTester';
 
-export interface VocabularyUserSettings {
+export interface VocabularyTesterSettings {
   mode: VocabularyTestMode;
   reverseTranslations: boolean;
   repeatInvalid: boolean;
 }
 
 interface Props {
-  settings: VocabularyUserSettings;
-  onChange: (settings: VocabularyUserSettings) => void;
+  settings: VocabularyTesterSettings;
+  onChange: (settings: VocabularyTesterSettings) => void;
 }
 
 export const VocabularySettings: Component<Props> = props => {
@@ -24,7 +24,7 @@ export const VocabularySettings: Component<Props> = props => {
     setLoaded(true);
   });
 
-  function changeSetting(key: keyof VocabularyUserSettings, value: any) {
+  function changeSetting(key: keyof VocabularyTesterSettings, value: any) {
     const updatedSettings = { ...props.settings, [key]: value };
 
     props.onChange(updatedSettings);
@@ -32,7 +32,7 @@ export const VocabularySettings: Component<Props> = props => {
   }
 
   async function retrieveSetting() {
-    const storedSettings = await get<Partial<VocabularyUserSettings>>(
+    const storedSettings = await get<Partial<VocabularyTesterSettings>>(
       `config.vocabulary`
     );
     return Object.assign({}, props.settings, storedSettings);

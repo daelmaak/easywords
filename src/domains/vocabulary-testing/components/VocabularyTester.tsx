@@ -10,19 +10,18 @@ import { mergeWords } from '../../../util/merge-arrays';
 import { nextWord } from '../../../worder/worder';
 import { SavedProgress } from '../vocabulary-testing-model';
 import { WriteTester } from './WriteTester';
+import { VocabularyTesterSettings } from './VocabularySettings';
 
 export type VocabularyTestMode = 'guess' | 'write';
 
 interface TesterProps {
-  repeatInvalid: boolean;
-  reverse: boolean;
+  testSettings: VocabularyTesterSettings;
   words: VocabularyItem[];
-  mode: VocabularyTestMode;
   savedProgress?: SavedProgress;
-  done: (leftoverWords?: VocabularyItem[]) => void;
-  editWord: (word: VocabularyItem) => void;
-  repeat: () => void;
-  reset: () => void;
+  onDone: (leftoverWords?: VocabularyItem[]) => void;
+  onEditWord: (word: VocabularyItem) => void;
+  onRepeat: () => void;
+  onReset: () => void;
   onProgress?: (progress: SavedProgress) => void;
   onRemoveWord: (word: VocabularyItem) => void;
   onStop?: () => void;
@@ -54,9 +53,13 @@ export const VocabularyTester: Component<TesterProps> = (
   const done = () => store.wordsLeft.length === 0;
 
   const toTranslate = () =>
-    props.reverse ? currentWord()?.translation : currentWord()?.original;
+    props.testSettings.reverseTranslations
+      ? currentWord()?.translation
+      : currentWord()?.original;
   const translated = () =>
-    props.reverse ? currentWord()?.original : currentWord()?.translation;
+    props.testSettings.reverseTranslations
+      ? currentWord()?.original
+      : currentWord()?.translation;
 
   const percentageDone = () =>
     (1 - store.wordsLeft.length / props.words.length) * 100;
@@ -79,7 +82,7 @@ export const VocabularyTester: Component<TesterProps> = (
 
   onMount(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (props.mode !== 'guess') {
+      if (props.testSettings.mode !== 'guess') {
         return;
       }
       if (e.key === 'r') {
@@ -99,7 +102,7 @@ export const VocabularyTester: Component<TesterProps> = (
       store.invalidWords,
       store.wordsLeft
     );
-    props.done(invalidAndLeftoverWords);
+    props.onDone(invalidAndLeftoverWords);
 
     setStore({
       currentWordId: undefined,
@@ -120,7 +123,7 @@ export const VocabularyTester: Component<TesterProps> = (
     if (current) {
       wsLeft = wsLeft.filter(w => w.original !== current.original);
 
-      if (currentWordValid || !props.repeatInvalid) {
+      if (currentWordValid || !props.testSettings.repeatInvalid) {
         setStore('wordsLeft', wsLeft);
       }
       currentWordValid = undefined;
@@ -154,7 +157,7 @@ export const VocabularyTester: Component<TesterProps> = (
       translation,
     } satisfies VocabularyItem;
 
-    props.editWord(updatedWord);
+    props.onEditWord(updatedWord);
   }
 
   function onWordValidated(valid: boolean) {
@@ -256,7 +259,7 @@ export const VocabularyTester: Component<TesterProps> = (
         {/* mb-[-0.5rem] is here to bypass the vertical flex gap */}
         <div class="mb-[-0.5rem]">{toTranslate()}</div>
 
-        {props.mode === 'write' ? (
+        {props.testSettings.mode === 'write' ? (
           <Show when={translated() != null}>
             <WriteTester
               autoFocus
@@ -277,7 +280,7 @@ export const VocabularyTester: Component<TesterProps> = (
       </div>
       <Show when={currentWord() && !done()}>
         <div class="mt-6 flex justify-center gap-4 sm:mt-12">
-          <Show when={props.mode === 'guess'}>
+          <Show when={props.testSettings.mode === 'guess'}>
             <Button onClick={setNextWord}>Next</Button>
           </Show>
           <Button class="btn-link" variant="outline" onClick={props.onStop}>
