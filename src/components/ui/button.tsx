@@ -55,6 +55,7 @@ const Button: Component<ButtonProps> = props => {
         props.class,
         'relative'
       )}
+      disabled={local.loading}
       {...rest}
     >
       {local.loading && (
