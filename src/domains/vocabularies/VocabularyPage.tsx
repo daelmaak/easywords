@@ -30,6 +30,7 @@ export const VocabularyPage: Component = () => {
   const [searchedWords, setSearchedWords] = createSignal<VocabularyItem[]>();
   const [selectedWords, setSelectedWords] = createSignal<VocabularyItem[]>([]);
   const [openedAddWords, setOpenedAddWords] = createSignal(false);
+  const [creatingWords, setCreatingWords] = createSignal(false);
 
   const vocabulary = getVocabulary(vocabularyId);
 
@@ -44,9 +45,11 @@ export const VocabularyPage: Component = () => {
   }
 
   async function onAddWords() {
+    setCreatingWords(true);
     await createVocabularyItems(vocabularyId, ...addedWords());
     setAddedWords([]);
     setOpenedAddWords(false);
+    setCreatingWords(false);
   }
 
   async function onWordsEdited(updatedWords: VocabularyItem[]) {
@@ -86,7 +89,9 @@ export const VocabularyPage: Component = () => {
               <SheetTitle>Add words</SheetTitle>
             </SheetHeader>
             <WordsInput mode="form" onWordsChange={setAddedWords} />
-            <Button onClick={onAddWords}>Save</Button>
+            <Button loading={creatingWords()} onClick={onAddWords}>
+              Save
+            </Button>
           </SheetContent>
         </Sheet>
 
