@@ -115,8 +115,13 @@ export const VocabularyTester: Component<TesterProps> = (
     const current = currentWord();
     let wsLeft = store.wordsLeft;
 
-    // only one last word, looking up next doesn't make sense
-    if (wsLeft.length === 1 && currentWordValid === false) {
+    // If last word and user in repeat invalid mode, just force her to
+    // give the right answer.
+    if (
+      wsLeft.length === 1 &&
+      currentWordValid === false &&
+      props.testSettings.repeatInvalid
+    ) {
       return;
     }
 
