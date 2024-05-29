@@ -16,7 +16,7 @@ import { Vocabulary } from '../model/vocabulary-model';
 
 export type Props = {
   vocabulary: Vocabulary;
-  onClickVocabulary?: (id: number) => void;
+  onClick?: (id: number) => void;
   onDeleteVocabulary: (id: number) => void;
   onEditVocabulary: (id: number) => void;
   onTestVocabulary: (
@@ -27,13 +27,16 @@ export type Props = {
 
 export const VocabularyCard: Component<Props> = props => {
   return (
-    <Card class="flex flex-col">
+    <Card
+      class="flex flex-col cursor-pointer"
+      onClick={() => props.onClick?.(props.vocabulary.id)}
+    >
       <CardHeader class="p-4 flex flex-row justify-between items-center gap-4">
         <CardTitle class="text-md">
           <span class={`mr-2 fi fi-${props.vocabulary.country}`}></span>
           {props.vocabulary.name}
         </CardTitle>
-        <div class="flex gap-4">
+        <div class="flex gap-4" onClick={e => e.stopPropagation()}>
           <HiOutlinePencil
             class="cursor-pointer"
             size={16}
@@ -46,10 +49,7 @@ export const VocabularyCard: Component<Props> = props => {
           />
         </div>
       </CardHeader>
-      <CardContent
-        class="px-4 pt-0 pb-2 overflow-hidden cursor-pointer"
-        onClick={() => props.onClickVocabulary?.(props.vocabulary.id)}
-      >
+      <CardContent class="px-4 pt-0 pb-2 overflow-hidden">
         <ul class="text-center">
           <For each={props.vocabulary.vocabularyItems.slice(0, 10)}>
             {item => (
@@ -63,7 +63,10 @@ export const VocabularyCard: Component<Props> = props => {
           </Show>
         </ul>
       </CardContent>
-      <CardFooter class="mt-auto p-4 pt-0 flex gap-2 justify-end">
+      <CardFooter
+        class="mt-auto p-4 pt-0 flex gap-2 justify-end"
+        onClick={e => e.stopPropagation()}
+      >
         <Show when={props.vocabulary.hasSavedProgress}>
           <Button
             size="sm"

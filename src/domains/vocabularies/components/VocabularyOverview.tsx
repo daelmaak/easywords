@@ -116,7 +116,7 @@ export const VocabularyOverview: Component<Props> = props => {
               {vocabulary => (
                 <VocabularyCard
                   vocabulary={vocabulary}
-                  onClickVocabulary={props.onGoToVocabulary}
+                  onClick={props.onGoToVocabulary}
                   onDeleteVocabulary={setConfirmDeletionOf}
                   onEditVocabulary={props.onGoToVocabulary}
                   onTestVocabulary={props.onTestVocabulary}
