@@ -5,6 +5,7 @@ import { AuthDialog } from '../auth/AuthDialog';
 import { isLoggedIn, sessionResource } from '../auth/auth-resource';
 import { VocabularyOverview } from './components/VocabularyOverview';
 import { getVocabulariesResource } from './resources/vocabularies-resource';
+import { navigateToVocabularyTest } from './util/navigation';
 
 export const VocabulariesPage = () => {
   const navigate = useNavigate();
@@ -20,13 +21,7 @@ export const VocabulariesPage = () => {
     id: number,
     config?: { useSavedProgress: boolean }
   ) {
-    let url = `/vocabulary/${id}/test`;
-
-    if (config?.useSavedProgress) {
-      url += '?useSavedProgress=true';
-    }
-
-    navigate(url);
+    navigateToVocabularyTest(id, navigate, config);
   }
 
   return (

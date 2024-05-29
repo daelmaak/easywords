@@ -1,5 +1,9 @@
-import { useParams } from '@solidjs/router';
-import { HiOutlinePlus, HiOutlineTrash } from 'solid-icons/hi';
+import { useNavigate, useParams } from '@solidjs/router';
+import {
+  HiOutlineAcademicCap,
+  HiOutlinePlus,
+  HiOutlineTrash,
+} from 'solid-icons/hi';
 import { Component, Show, createSignal } from 'solid-js';
 import { CountrySelect } from '~/components/country-select/country-select';
 import { Search } from '~/components/search/Search';
@@ -22,9 +26,11 @@ import {
   updateVocabulary,
   updateVocabularyItems,
 } from './resources/vocabulary-resource';
+import { navigateToVocabularyTest } from './util/navigation';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
+  const navigate = useNavigate();
   const vocabularyId = +params.id;
   const [addedWords, setAddedWords] = createSignal<VocabularyItem[]>([]);
   const [searchedWords, setSearchedWords] = createSignal<VocabularyItem[]>();
@@ -54,6 +60,10 @@ export const VocabularyPage: Component = () => {
 
   async function onWordsEdited(updatedWords: VocabularyItem[]) {
     await updateVocabularyItems(...updatedWords);
+  }
+
+  function onTestVocabulary(id: number) {
+    navigateToVocabularyTest(id, navigate);
   }
 
   function onVocabularyDataChange(event: Event) {
@@ -125,10 +135,18 @@ export const VocabularyPage: Component = () => {
             <Button size="sm" onClick={() => setOpenedAddWords(true)}>
               <HiOutlinePlus size={16} /> Add words
             </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => onTestVocabulary(vocabularyId)}
+            >
+              <HiOutlineAcademicCap />
+              Test
+            </Button>
             <Show when={selectedWords().length > 0}>
               <Button
                 size="sm"
-                variant="secondary"
+                variant="destructive"
                 onClick={deleteSelectedWords}
               >
                 <HiOutlineTrash size={16} /> Delete selected
