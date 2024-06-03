@@ -9,6 +9,6 @@
   ],
   "start_url": "https://easy-words.vercel.app/vocabulary",
   "lang": "en",
-  "display": "minimal-ui",
+  "display": "standalone",
   "theme_color": "#16A34A"
 }
