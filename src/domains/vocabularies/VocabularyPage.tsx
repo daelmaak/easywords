@@ -123,34 +123,37 @@ export const VocabularyPage: Component = () => {
 
         <div class="flex-grow flex flex-col items-center">
           <div class="sticky top-0 w-full flex flex-wrap justify-center items-center gap-2 bg-background p-4">
+            <div class="flex gap-2">
+              <Button size="sm" onClick={() => setOpenedAddWords(true)}>
+                <HiOutlinePlus size={16} /> Add words
+              </Button>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => onTestVocabulary(vocabularyId)}
+              >
+                <HiOutlineAcademicCap />
+                Test
+              </Button>
+              <Show when={selectedWords().length > 0}>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={deleteSelectedWords}
+                >
+                  <HiOutlineTrash size={16} /> Delete selected
+                </Button>
+              </Show>
+            </div>
             <Show when={vocabulary()}>
               {v => (
                 <Search
+                  placeholder="Search words..."
                   terms={v().vocabularyItems}
                   searchKeys={['original', 'translation']}
                   onSearch={setSearchedWords}
                 />
               )}
-            </Show>
-            <Button size="sm" onClick={() => setOpenedAddWords(true)}>
-              <HiOutlinePlus size={16} /> Add words
-            </Button>
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={() => onTestVocabulary(vocabularyId)}
-            >
-              <HiOutlineAcademicCap />
-              Test
-            </Button>
-            <Show when={selectedWords().length > 0}>
-              <Button
-                size="sm"
-                variant="destructive"
-                onClick={deleteSelectedWords}
-              >
-                <HiOutlineTrash size={16} /> Delete selected
-              </Button>
             </Show>
           </div>
           <Show when={vocabulary()}>

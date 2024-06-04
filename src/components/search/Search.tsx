@@ -5,6 +5,7 @@ import { Input } from '../ui/input';
 interface Props<T> {
   terms: T[];
   searchKeys: (keyof T)[];
+  placeholder?: string;
   onSearch: (result: T[]) => void;
 }
 
@@ -37,7 +38,7 @@ export const Search = <T,>(props: Props<T>) => {
     <Input
       class="w-auto"
       data-testid="search-input"
-      placeholder="Search..."
+      placeholder={props.placeholder ?? 'Search...'}
       onInput={e => search(e.target.value)}
     />
   );
