@@ -38,6 +38,46 @@ it('should complete the test when last word invalid when in non-repeat mode', as
   expect(onDone).toHaveBeenCalled();
 });
 
+it("should still be able to validate with enter even though previous word's validation was unsuccessful", async () => {
+  const { defaultTestSettings, onDone, userAction } = setup();
+  render(() => (
+    <VocabularyTester
+      words={[
+        {
+          id: 1,
+          list_id: 1,
+          original: 'hello',
+          translation: 'ahoj',
+        },
+        {
+          id: 2,
+          list_id: 1,
+          original: 'hi',
+          translation: 'ahoj',
+        },
+      ]}
+      testSettings={{ ...defaultTestSettings, repeatInvalid: false }}
+      onDone={onDone}
+      onEditWord={vi.fn()}
+      onRemoveWord={vi.fn()}
+      onRepeat={vi.fn()}
+      onReset={vi.fn()}
+    />
+  ));
+
+  const input = screen.getByTestId('write-tester-input');
+  const nextWordBtn = screen.getByTitle('Next word');
+  // validate
+  await userAction.type(input, '{Enter}');
+  await userAction.click(nextWordBtn);
+
+  // validate next
+  await userAction.type(input, '{Enter}');
+  const invalidIcon = screen.getByLabelText('Word guess is invalid');
+
+  expect(invalidIcon).not.toBeNull();
+});
+
 function setup() {
   const onDone = vi.fn();
   const defaultTestSettings = {

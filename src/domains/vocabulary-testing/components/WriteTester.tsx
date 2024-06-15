@@ -61,6 +61,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
       }
     }
     setValidInternal(undefined);
+    setFreshlyInvalid(false);
     return props.translation;
   });
 
@@ -163,9 +164,17 @@ export const WriteTester: Component<WriteTesterProps> = props => {
           >
             <Show when={valid() != null}>
               {valid() ? (
-                <HiOutlineCheck class="text-primary" size={32} />
+                <HiOutlineCheck
+                  aria-label="Word guess is valid"
+                  class="text-primary"
+                  size={32}
+                />
               ) : (
-                <HiOutlineXCircle class="text-red-500" size={32} />
+                <HiOutlineXCircle
+                  aria-label="Word guess is invalid"
+                  class="text-red-500"
+                  size={32}
+                />
               )}
             </Show>
           </div>
@@ -173,6 +182,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
             ref={inputRef}
             class="w-56 text-lg"
             type="text"
+            data-testid="write-tester-input"
             onBlur={onBlur}
             onInput={onInput}
           />
