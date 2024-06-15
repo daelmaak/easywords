@@ -299,7 +299,7 @@ export const VocabularyTester: Component<TesterProps> = (
 
       <Progress
         aria-label="Words done percentage"
-        class="mt-6 sm:mt-20 mx-auto w-full"
+        class="my-6 mx-auto w-full sm:mt-20"
         value={percentageDone()}
         getValueLabel={({ value }) => `${Math.round(value)}% done`}
       >

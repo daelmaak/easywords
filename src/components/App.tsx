@@ -85,7 +85,7 @@ const App: Component<Props> = props => {
           </DropdownMenu>
         </div>
       </nav>
-      <main class="flex-grow w-full px-4 sm:px-6 py-6 grid">
+      <main class="flex-grow w-full px-4 py-6 grid sm:px-6">
         {props.children}
       </main>
     </>

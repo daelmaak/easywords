@@ -106,7 +106,7 @@ export const VocabularyTestPage = () => {
         <Show when={words()}>
           {w => (
             <>
-              <div class="m-auto">
+              <div class="m-auto mb-4">
                 <VocabularyTester
                   testSettings={vocabularySettings}
                   savedProgress={savedProgress()}
