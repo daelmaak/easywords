@@ -29,38 +29,18 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
   }
 
   return (
-    <table>
-      <thead class="font-semibold text-sm text-center">
-        <tr>
-          <td></td>
-          <td>Original</td>
-          <td></td>
-          <td>Translation</td>
-        </tr>
-      </thead>
-      <tbody>
-        <For each={props.words}>
-          {word => (
-            <tr class="h-10" data-testid="editor-word">
-              <td>
-                <Checkbox onChange={checked => onWordToggled(word, checked)} />
-              </td>
-              <VocabularyEditorCell
-                word={word.original}
-                onEdit={o => onWordEdited(word, { original: o })}
-              />
-              <td>
-                <span class="mx-2 text-center">-</span>
-              </td>
-              <VocabularyEditorCell
-                word={word.translation}
-                onEdit={t => onWordEdited(word, { translation: t })}
-              />
-            </tr>
-          )}
-        </For>
-      </tbody>
-    </table>
+    <div class="w-full grid justify-center content-start grid-cols-[repeat(auto-fit,_20rem)] gap-2">
+      <For each={props.words}>
+        {word => (
+          <div class="flex items-center gap-2" data-testid="editor-word">
+            <Checkbox onChange={checked => onWordToggled(word, checked)} />
+            <span>{word.original}</span>
+            <span class="mx-2 text-center">-</span>
+            <span>{word.translation}</span>
+          </div>
+        )}
+      </For>
+    </div>
   );
 };
 
