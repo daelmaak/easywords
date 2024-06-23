@@ -1,7 +1,8 @@
-import { Component, ComponentProps, For, splitProps } from 'solid-js';
+import { Component, For, Show, createSignal } from 'solid-js';
 import { Checkbox } from '~/components/ui/checkbox';
-import { Input } from '~/components/ui/input';
 import { Vocabulary, VocabularyItem } from '../model/vocabulary-model';
+import { Dialog, DialogContent, DialogHeader } from '~/components/ui/dialog';
+import { WordEditor } from './WordEditor';
 
 interface VocabularyEditorProps {
   words: VocabularyItem[];
@@ -12,11 +13,12 @@ interface VocabularyEditorProps {
 }
 
 export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
-  function onWordEdited(
-    word: VocabularyItem,
-    change: { original?: string; translation?: string }
-  ) {
-    props.onWordsEdited([{ ...word, ...change }]);
+  const [wordDetailToOpen, setWordDetailToOpen] =
+    createSignal<VocabularyItem>();
+
+  function onWordEdited(word: VocabularyItem) {
+    props.onWordsEdited([word]);
+    setWordDetailToOpen(undefined);
   }
 
   function onWordToggled(word: VocabularyItem, selected: boolean) {
@@ -29,39 +31,42 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
   }
 
   return (
-    <div class="w-full grid justify-center content-start grid-cols-[repeat(auto-fit,_20rem)] gap-2">
-      <For each={props.words}>
+    <>
+      <Show when={wordDetailToOpen()}>
         {word => (
-          <div class="flex items-center gap-2" data-testid="editor-word">
-            <Checkbox onChange={checked => onWordToggled(word, checked)} />
-            <span>{word.original}</span>
-            <span class="mx-2 text-center">-</span>
-            <span>{word.translation}</span>
-          </div>
+          <Dialog
+            open={true}
+            onOpenChange={() => setWordDetailToOpen(undefined)}
+          >
+            <DialogContent>
+              <DialogHeader>
+                <h2 class="text-lg font-bold">Edit word</h2>
+              </DialogHeader>
+              <WordEditor word={word()} onChange={onWordEdited} />
+            </DialogContent>
+          </Dialog>
         )}
-      </For>
-    </div>
-  );
-};
-
-interface VocabularyEditorCellProps extends ComponentProps<'td'> {
-  word: string;
-  onEdit: (word: string) => void;
-}
-
-const VocabularyEditorCell: Component<VocabularyEditorCellProps> = props => {
-  const [{ word, onEdit }, rest] = splitProps(props, ['word', 'onEdit']);
-
-  function onBlur(updatedWord: string) {
-    if (word === updatedWord) return;
-
-    onEdit(updatedWord);
-  }
-
-  return (
-    <td {...rest}>
-      <Input class="h-8" value={word} onBlur={e => onBlur(e.target.value)} />
-    </td>
+      </Show>
+      <div class="w-full grid justify-center content-start grid-cols-[repeat(auto-fit,_20rem)] gap-2">
+        <For each={props.words}>
+          {word => (
+            <div
+              class="flex items-center gap-2 cursor-pointer"
+              data-testid="editor-word"
+              onClick={() => setWordDetailToOpen(word)}
+            >
+              <Checkbox
+                onChange={checked => onWordToggled(word, checked)}
+                onClick={e => e.stopPropagation()}
+              />
+              <span>{word.original}</span>
+              <span class="mx-2 text-center">-</span>
+              <span>{word.translation}</span>
+            </div>
+          )}
+        </For>
+      </div>
+    </>
   );
 };
 
