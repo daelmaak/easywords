@@ -10,7 +10,7 @@ export const initTestApp = () => {
       deleteVocabularyItems: vi.fn(),
       deleteVocabularyList: vi.fn(),
       fetchVocabulary: vi.fn(),
-      fetchVocabularyLists: vi.fn(),
+      fetchVocabularies: vi.fn(),
       updateVocabulary: vi.fn(),
       updateVocabularyItems: vi.fn(),
     },

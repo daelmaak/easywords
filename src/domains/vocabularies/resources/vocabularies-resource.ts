@@ -1,10 +1,6 @@
 import { ResourceReturn, createResource } from 'solid-js';
 import { Vocabulary } from '../model/vocabulary-model';
-import {
-  VocabularyApi,
-  VocabularyItemToCreate,
-  VocabularyToCreate,
-} from './vocabulary-api';
+import { VocabularyApi, VocabularyToCreate } from './vocabulary-api';
 
 let api: VocabularyApi;
 let vocabulariesResource: ResourceReturn<Vocabulary[]> | undefined;
@@ -15,7 +11,7 @@ export const initVocabulariesResource = (vocabularyApi: VocabularyApi) => {
 
 export const getVocabulariesResource = () => {
   if (!vocabulariesResource) {
-    vocabulariesResource = createResource(api.fetchVocabularyLists);
+    vocabulariesResource = createResource(api.fetchVocabularies);
   }
   return vocabulariesResource;
 };

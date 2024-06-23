@@ -38,7 +38,7 @@ const fetchVocabulary = async (id: number) => {
   return transformVocabulary(vocabulary);
 };
 
-const fetchVocabularyLists = async () => {
+const fetchVocabularies = async () => {
   const result = await supabase.from('vocabularies').select(
     `
     id, 
@@ -129,7 +129,7 @@ export const vocabularyApi = {
   deleteVocabularyItems,
   deleteVocabularyList,
   fetchVocabulary,
-  fetchVocabularyLists,
+  fetchVocabularies,
   updateVocabulary,
   updateVocabularyItems,
 };

@@ -13,7 +13,7 @@ afterEach(() => {
 it('should render an empty vocabulary overview if none exist', async () => {
   const { getVocabulariesResource, vocabularyApi } = setup();
 
-  vocabularyApi.fetchVocabularyLists.mockResolvedValue([]);
+  vocabularyApi.fetchVocabularies.mockResolvedValue([]);
 
   render(() => (
     <VocabularyOverview
