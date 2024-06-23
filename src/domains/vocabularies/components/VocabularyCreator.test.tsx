@@ -27,7 +27,7 @@ it('should send complete form information on submit', async () => {
     country: 'cz',
     name: 'My vocabulary',
     vocabularyItems: [],
-  } as VocabularyToCreate);
+  } satisfies VocabularyToCreate);
 });
 
 function setup() {

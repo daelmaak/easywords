@@ -50,12 +50,14 @@ function setup() {
         list_id: 1,
         original: 'ahoj',
         translation: 'hello',
+        notes: undefined,
       },
       {
         id: 2,
         list_id: 1,
         original: 'nashle',
         translation: 'bye',
+        notes: undefined,
       },
     ],
   });

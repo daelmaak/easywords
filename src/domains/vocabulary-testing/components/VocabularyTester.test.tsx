@@ -18,6 +18,7 @@ it('should complete the test when last word invalid when in non-repeat mode', as
           list_id: 1,
           original: 'hello',
           translation: 'ahoj',
+          notes: undefined,
         },
       ]}
       testSettings={{ ...defaultTestSettings, repeatInvalid: false }}
@@ -48,12 +49,14 @@ it("should still be able to validate with enter even though previous word's vali
           list_id: 1,
           original: 'hello',
           translation: 'ahoj',
+          notes: undefined,
         },
         {
           id: 2,
           list_id: 1,
           original: 'hi',
           translation: 'ahoj',
+          notes: undefined,
         },
       ]}
       testSettings={{ ...defaultTestSettings, repeatInvalid: false }}

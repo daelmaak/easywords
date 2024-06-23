@@ -5,6 +5,7 @@ export interface VocabularyItem {
   list_id: number;
   original: string;
   translation: string;
+  notes: string | undefined;
 }
 
 export interface Vocabulary {

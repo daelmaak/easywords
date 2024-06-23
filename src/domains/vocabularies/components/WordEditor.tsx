@@ -3,6 +3,7 @@ import { VocabularyItem } from '../model/vocabulary-model';
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
 import { processFormSubmit } from '~/util/form';
+import { Textarea } from '~/components/ui/textarea';
 
 interface Props {
   word: VocabularyItem;
@@ -12,7 +13,9 @@ interface Props {
 export const WordEditor: Component<Props> = props => {
   function handleSubmit(e: SubmitEvent) {
     const formData =
-      processFormSubmit<Pick<VocabularyItem, 'original' | 'translation'>>(e);
+      processFormSubmit<
+        Pick<VocabularyItem, 'original' | 'translation' | 'notes'>
+      >(e);
 
     if (formData.original == null || formData.translation == null) {
       return;
@@ -20,8 +23,7 @@ export const WordEditor: Component<Props> = props => {
 
     const updatedWord = {
       ...props.word,
-      original: formData.original,
-      translation: formData.translation,
+      ...formData,
     };
     props.onChange(updatedWord);
   }
@@ -29,9 +31,23 @@ export const WordEditor: Component<Props> = props => {
   return (
     <form class="flex flex-col gap-4" onSubmit={handleSubmit}>
       <div class="flex gap-2">
-        <Input name="original" value={props.word.original} />
-        <Input name="translation" value={props.word.translation} />
+        <Input
+          name="original"
+          placeholder="Original"
+          value={props.word.original}
+        />
+        <Input
+          name="translation"
+          placeholder="Translation"
+          value={props.word.translation}
+        />
       </div>
+      <Textarea
+        name="notes"
+        placeholder="Notes"
+        rows="5"
+        value={props.word.notes}
+      />
       <Button type="submit">Save</Button>
     </form>
   );

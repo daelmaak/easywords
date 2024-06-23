@@ -12,21 +12,25 @@ export type VocabularyToCreate = RealOmit<
   vocabularyItems: VocabularyItemToCreate[];
 };
 
+const VOCABULARY_ITEM_FETCH_FIELDS = `
+  id,
+  list_id,
+  original,
+  translation,
+  notes
+`;
+
+const VOCABULARY_FETCH_FIELDS = `
+  id, 
+  country,
+  name,
+  vocabulary_items (${VOCABULARY_ITEM_FETCH_FIELDS})
+`;
+
 const fetchVocabulary = async (id: number) => {
   const result = await supabase
     .from('vocabularies')
-    .select(
-      `
-    id, 
-    country,
-    name,
-    vocabulary_items (
-      id,
-      list_id,
-      original,
-      translation
-    )`
-    )
+    .select(VOCABULARY_FETCH_FIELDS)
     .eq('id', id);
 
   const vocabulary = result.data?.[0];
@@ -39,18 +43,9 @@ const fetchVocabulary = async (id: number) => {
 };
 
 const fetchVocabularies = async () => {
-  const result = await supabase.from('vocabularies').select(
-    `
-    id, 
-    country,
-    name,
-    vocabulary_items (
-      id,
-      list_id,
-      original,
-      translation
-    )`
-  );
+  const result = await supabase
+    .from('vocabularies')
+    .select(VOCABULARY_FETCH_FIELDS);
 
   const vocabularies = (result.data ?? []).map(transformVocabulary);
 
@@ -88,12 +83,10 @@ const createVocabularyList = async (vocabulary: VocabularyToCreate) => {
 };
 
 const createVocabularyItems = async (items: VocabularyItemToCreate[]) => {
-  const result = await supabase.from('vocabulary_items').insert(items).select(`
-    id,
-    list_id,
-    original,
-    translation
-  `);
+  const result = await supabase
+    .from('vocabulary_items')
+    .insert(items)
+    .select(VOCABULARY_ITEM_FETCH_FIELDS);
 
   return result.data;
 };

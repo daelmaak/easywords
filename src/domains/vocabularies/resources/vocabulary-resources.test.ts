@@ -21,6 +21,7 @@ test('updates the vocabulary resource on word edit', async () => {
         list_id: 1,
         original: 'original',
         translation: 'translation',
+        notes: undefined,
       },
     ],
   };
@@ -57,6 +58,7 @@ test('updates the vocabulary resource on words addition', async () => {
         list_id: 1,
         original: 'original',
         translation: 'translation',
+        notes: undefined,
       },
     ],
   };
@@ -64,6 +66,7 @@ test('updates the vocabulary resource on words addition', async () => {
   const wordToAdd = {
     original: 'new original',
     translation: 'new translation',
+    notes: undefined,
   };
 
   vocabularyApi.fetchVocabulary.mockResolvedValue(mockVocabulary);
