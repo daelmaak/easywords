@@ -3,6 +3,8 @@ import { Checkbox } from '~/components/ui/checkbox';
 import { Vocabulary, VocabularyItem } from '../model/vocabulary-model';
 import { Dialog, DialogContent, DialogHeader } from '~/components/ui/dialog';
 import { WordEditor } from './WordEditor';
+import { Popover, PopoverContent } from '~/components/ui/popover';
+import { HiOutlinePencil } from 'solid-icons/hi';
 
 interface VocabularyEditorProps {
   words: VocabularyItem[];
@@ -50,19 +52,22 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
       <div class="w-full grid justify-center content-start grid-cols-[repeat(auto-fit,_20rem)] gap-2">
         <For each={props.words}>
           {word => (
-            <div
-              class="flex items-center gap-2 cursor-pointer"
-              data-testid="editor-word"
-              onClick={() => setWordDetailToOpen(word)}
-            >
-              <Checkbox
-                onChange={checked => onWordToggled(word, checked)}
-                onClick={e => e.stopPropagation()}
-              />
-              <span>{word.original}</span>
-              <span class="mx-2 text-center">-</span>
-              <span>{word.translation}</span>
-            </div>
+            <>
+              <Popover>
+                <PopoverContent>{word.notes}</PopoverContent>
+              </Popover>
+              <div class="flex items-center gap-2" data-testid="editor-word">
+                <Checkbox onChange={checked => onWordToggled(word, checked)} />
+                <span>{word.original}</span>
+                <span class="mx-2 text-center">-</span>
+                <span>{word.translation}</span>
+                <HiOutlinePencil
+                  class="mt-1 opacity-50 cursor-pointer hover:opacity-80"
+                  title="Edit word"
+                  onClick={() => setWordDetailToOpen(word)}
+                />
+              </div>
+            </>
           )}
         </For>
       </div>

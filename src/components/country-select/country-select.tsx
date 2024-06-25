@@ -37,6 +37,7 @@ export const CountrySelect = (props: Props) => {
         </ComboboxItem>
       )}
       defaultValue={props.defaultValue}
+      triggerMode="focus"
       onChange={props.onSelect}
     >
       <ComboboxControl>
