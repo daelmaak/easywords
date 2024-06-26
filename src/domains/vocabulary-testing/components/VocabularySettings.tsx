@@ -24,7 +24,10 @@ export const VocabularySettings: Component<Props> = props => {
     setLoaded(true);
   });
 
-  function changeSetting(key: keyof VocabularyTesterSettings, value: any) {
+  function changeSetting(
+    key: keyof VocabularyTesterSettings,
+    value: boolean | string
+  ) {
     const updatedSettings = { ...props.settings, [key]: value };
 
     props.onChange(updatedSettings);

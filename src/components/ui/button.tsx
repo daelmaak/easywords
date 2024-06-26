@@ -43,7 +43,7 @@ export interface ButtonProps
 }
 
 const Button: Component<ButtonProps> = props => {
-  const [_, local, rest] = splitProps(
+  const [, local, rest] = splitProps(
     props,
     ['variant', 'size', 'class'],
     ['children', 'loading']

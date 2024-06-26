@@ -135,7 +135,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
   }
 
   function tokenize(text: string) {
-    return text.split(/[\s,\/]+/);
+    return text.split(/[\s,/]+/);
   }
 
   function deaccent(word: string) {

@@ -75,7 +75,7 @@ export const ConjugationsView: Component = () => {
 
   onMount(async () => {
     const verb = params.verb;
-    let lang = language() ?? (await get('conjugationsLang'));
+    const lang = language() ?? (await get('conjugationsLang'));
 
     if (verb && lang) {
       applyVerb(verb, lang, false);

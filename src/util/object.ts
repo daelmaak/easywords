@@ -1,8 +1,9 @@
 export type RealOmit<
   T,
-  K extends keyof T | (string & {}) | (number & {}) | (symbol | {})
+  K extends keyof T | (string & {}) | (number & {}) | (symbol | object)
 > = { [P in Exclude<keyof T, K>]: T[P] };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function omit<T extends Record<string, any>, K extends keyof T>(
   obj: T,
   ...keys: K[]
