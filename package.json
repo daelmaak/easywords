@@ -6,6 +6,7 @@
   "scripts": {
     "start": "vite",
     "dev": "vite",
+    "compile": "tsc",
     "build": "tsc && vite build",
     "lint": "eslint src",
     "serve": "vite preview",
