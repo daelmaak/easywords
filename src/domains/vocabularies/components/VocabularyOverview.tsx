@@ -88,7 +88,10 @@ export const VocabularyOverview: Component<Props> = props => {
             open={createVocabularyOpen()}
             onOpenChange={open => setCreateVocabularyOpen(open)}
           >
-            <SheetContent class="w-svw sm:w-[30rem]">
+            <SheetContent
+              class="w-svw sm:w-[30rem]"
+              onPointerDownOutside={e => e.preventDefault()}
+            >
               <SheetHeader>
                 <SheetTitle>Create new vocabulary</SheetTitle>
               </SheetHeader>
