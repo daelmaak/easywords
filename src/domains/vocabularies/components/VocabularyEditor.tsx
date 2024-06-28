@@ -53,7 +53,7 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
           </Dialog>
         )}
       </Show>
-      <div class="w-full relative grid justify-center content-start grid-cols-[repeat(auto-fit,_22rem)] gap-2">
+      <div class="w-full relative grid justify-center content-start gap-2 sm:grid-cols-[repeat(auto-fit,_22rem)]">
         <For each={props.words}>
           {word => (
             <>
