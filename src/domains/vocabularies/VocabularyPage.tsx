@@ -122,7 +122,7 @@ export const VocabularyPage: Component = () => {
         </Show>
 
         <div class="flex-grow flex flex-col items-center">
-          <div class="sticky top-0 w-full flex flex-wrap justify-center items-center gap-2 bg-background p-4">
+          <div class="sticky z-10 top-0 w-full flex flex-wrap justify-center items-center gap-2 bg-background p-4">
             <div class="flex gap-2">
               <Button size="sm" onClick={() => setOpenedAddWords(true)}>
                 <HiOutlinePlus size={16} /> Add words
