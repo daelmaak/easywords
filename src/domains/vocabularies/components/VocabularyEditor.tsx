@@ -3,8 +3,12 @@ import { Checkbox } from '~/components/ui/checkbox';
 import { Vocabulary, VocabularyItem } from '../model/vocabulary-model';
 import { Dialog, DialogContent, DialogHeader } from '~/components/ui/dialog';
 import { WordEditor } from './WordEditor';
-import { Popover, PopoverContent } from '~/components/ui/popover';
-import { HiOutlinePencil } from 'solid-icons/hi';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '~/components/ui/popover';
+import { HiOutlinePencil, HiSolidInformationCircle } from 'solid-icons/hi';
 
 interface VocabularyEditorProps {
   words: VocabularyItem[];
@@ -49,13 +53,10 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
           </Dialog>
         )}
       </Show>
-      <div class="w-full grid justify-center content-start grid-cols-[repeat(auto-fit,_20rem)] gap-2">
+      <div class="w-full relative grid justify-center content-start grid-cols-[repeat(auto-fit,_22rem)] gap-2">
         <For each={props.words}>
           {word => (
             <>
-              <Popover>
-                <PopoverContent>{word.notes}</PopoverContent>
-              </Popover>
               <div class="flex items-center gap-2" data-testid="editor-word">
                 <Checkbox onChange={checked => onWordToggled(word, checked)} />
                 <span>{word.original}</span>
@@ -66,6 +67,18 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
                   title="Edit word"
                   onClick={() => setWordDetailToOpen(word)}
                 />
+                <Show when={word.notes}>
+                  <Popover>
+                    <PopoverTrigger>
+                      <HiSolidInformationCircle
+                        class="mt-1 text-blue-600 hover:text-blue-900"
+                        size={20}
+                        title="Show notes"
+                      />
+                    </PopoverTrigger>
+                    <PopoverContent>{word.notes}</PopoverContent>
+                  </Popover>
+                </Show>
               </div>
             </>
           )}
