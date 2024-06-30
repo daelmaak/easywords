@@ -3,6 +3,7 @@ import { VocabularyTester } from './VocabularyTester';
 import { cleanup, render, screen } from '@solidjs/testing-library';
 import { VocabularyTesterSettings } from './VocabularySettings';
 import userEvent from '@testing-library/user-event';
+import { createSignal } from 'solid-js';
 
 const TEST_WORDS = [
   {
@@ -104,6 +105,45 @@ it('should trim words during validaton', async () => {
   const validIcon = screen.getByLabelText('Word guess is valid');
 
   expect(validIcon).not.toBeNull();
+});
+
+it('should keep its validation state after changing the word', async () => {
+  const [words, setWords] = createSignal(TEST_WORDS.slice(0, 1));
+
+  const { defaultTestSettings, onDone, userAction } = setup();
+  render(() => (
+    <VocabularyTester
+      words={words()}
+      testSettings={{ ...defaultTestSettings, repeatInvalid: false }}
+      onDone={onDone}
+      onEditWord={vi.fn()}
+      onRemoveWord={vi.fn()}
+      onRepeat={vi.fn()}
+      onReset={vi.fn()}
+    />
+  ));
+
+  const input = screen.getByTestId('write-tester-input');
+  const checkWordBtn = screen.getByTitle('Check word');
+
+  await userAction.type(input, TEST_WORDS[0].translation);
+  await userAction.click(checkWordBtn);
+
+  setWords([
+    {
+      ...TEST_WORDS[1],
+      translation: 'ahojik',
+    },
+    ...TEST_WORDS,
+  ]);
+
+  const validIcon = screen.getByLabelText('Word guess is valid');
+  expect(validIcon).not.toBeNull();
+
+  const nextWordBtn = screen.getByTitle('Next word');
+  await userAction.click(nextWordBtn);
+
+  expect(onDone).toHaveBeenCalled();
 });
 
 function setup() {

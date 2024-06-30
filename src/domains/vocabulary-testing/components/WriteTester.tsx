@@ -15,18 +15,22 @@ import {
 } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
+import { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
 
 export interface WriteTesterInstance {
   input: HTMLInputElement;
   validate: () => boolean;
 }
 
+// The id is optional since not all words have to have an id, like conjugations
+type TestedWord = Pick<VocabularyItem, 'translation'> & { id?: number };
+
 export interface WriteTesterProps {
   autoFocus?: boolean;
   mode: 'full' | 'inline';
   peek?: boolean;
   strict?: boolean;
-  translation: string;
+  word: TestedWord;
   validateOnBlur?: boolean;
   onDone?: () => void;
   onPeek?: () => void;
@@ -41,7 +45,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
   const [freshlyInvalid, setFreshlyInvalid] = createSignal(false);
 
   const tokenizedTranslation = createMemo(() =>
-    tokenize(props.translation.toLocaleLowerCase())
+    tokenize(props.word.translation.toLocaleLowerCase())
   );
 
   onMount(() => {
@@ -51,8 +55,13 @@ export const WriteTester: Component<WriteTesterProps> = props => {
     props.onReady?.({ input: inputRef, validate: validateText });
   });
 
-  // NOTE: executes always when props.translation changes
-  createEffect(() => {
+  createEffect((previousWord: TestedWord | undefined) => {
+    // A word can be updated from the outside but that should cause no changes
+    // here.
+    if (previousWord?.id != null && previousWord.id === props.word.id) {
+      return props.word;
+    }
+
     if (inputRef) {
       inputRef.value = '';
 
@@ -62,7 +71,8 @@ export const WriteTester: Component<WriteTesterProps> = props => {
     }
     setValidInternal(undefined);
     setFreshlyInvalid(false);
-    return props.translation;
+
+    return props.word;
   });
 
   createEffect(() => {
@@ -150,7 +160,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
           'absolute top-0 translate-y-[-75%]': props.mode === 'inline',
         })}
       >
-        {props.translation}
+        {props.word.translation}
       </i>
       <form
         class="flex flex-col justify-center items-center gap-2 sm:flex-row"

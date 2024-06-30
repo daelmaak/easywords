@@ -56,10 +56,19 @@ export const VocabularyTester: Component<TesterProps> = (
     props.testSettings.reverseTranslations
       ? currentWord()?.translation
       : currentWord()?.original;
-  const translated = () =>
-    props.testSettings.reverseTranslations
-      ? currentWord()?.original
-      : currentWord()?.translation;
+
+  const translatedWord = () => {
+    const currWord = currentWord();
+    if (currWord == null) {
+      return undefined;
+    }
+    return {
+      id: currWord.id,
+      translation: props.testSettings.reverseTranslations
+        ? currWord.original
+        : currWord.translation,
+    };
+  };
 
   const percentageDone = () =>
     (1 - store.wordsLeft.length / props.words.length) * 100;
@@ -126,7 +135,7 @@ export const VocabularyTester: Component<TesterProps> = (
     }
 
     if (current) {
-      wsLeft = wsLeft.filter(w => w.original !== current.original);
+      wsLeft = wsLeft.filter(w => w.id !== current.id);
 
       if (currentWordValid || !props.testSettings.repeatInvalid) {
         setStore('wordsLeft', wsLeft);
@@ -263,26 +272,28 @@ export const VocabularyTester: Component<TesterProps> = (
 
         {/* mb-[-0.5rem] is here to bypass the vertical flex gap */}
         <div class="mb-[-0.5rem]">{toTranslate()}</div>
-
-        {props.testSettings.mode === 'write' ? (
-          <Show when={translated() != null}>
-            <WriteTester
-              autoFocus
-              mode="full"
-              peek={store.peek}
-              translation={translated()!}
-              onDone={setNextWord}
-              onPeek={() => setStore('peek', true)}
-              onSkip={setNextWord}
-              onValidated={onWordValidated}
-            />
-          </Show>
-        ) : (
-          <span class="text-left" classList={{ invisible: !store.peek }}>
-            {translated()}
-          </span>
-        )}
+        <Show when={translatedWord()}>
+          {word =>
+            props.testSettings.mode === 'write' ? (
+              <WriteTester
+                autoFocus
+                mode="full"
+                peek={store.peek}
+                word={word()}
+                onDone={setNextWord}
+                onPeek={() => setStore('peek', true)}
+                onSkip={setNextWord}
+                onValidated={onWordValidated}
+              />
+            ) : (
+              <span class="text-left" classList={{ invisible: !store.peek }}>
+                {word().translation}
+              </span>
+            )
+          }
+        </Show>
       </div>
+
       <Show when={currentWord() && !done()}>
         <div class="mt-6 flex justify-center gap-4 sm:mt-12">
           <Show when={props.testSettings.mode === 'guess'}>

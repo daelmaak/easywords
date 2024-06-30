@@ -93,7 +93,7 @@ export const ConjugationsTester: Component<Props> = props => {
                     </th>
                     <td>
                       <WriteTester
-                        translation={c.conjugatedVerb}
+                        word={{ translation: c.conjugatedVerb }}
                         mode="inline"
                         peek={conjugationInvalid(c)}
                         onReady={onTesterReady(i())}
