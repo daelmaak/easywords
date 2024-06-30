@@ -4,6 +4,23 @@ import { cleanup, render, screen } from '@solidjs/testing-library';
 import { VocabularyTesterSettings } from './VocabularySettings';
 import userEvent from '@testing-library/user-event';
 
+const TEST_WORDS = [
+  {
+    id: 1,
+    list_id: 1,
+    original: 'hello',
+    translation: 'ahoj',
+    notes: undefined,
+  },
+  {
+    id: 2,
+    list_id: 1,
+    original: 'hi',
+    translation: 'ahoj',
+    notes: undefined,
+  },
+];
+
 afterEach(() => {
   cleanup();
 });
@@ -12,15 +29,7 @@ it('should complete the test when last word invalid when in non-repeat mode', as
   const { defaultTestSettings, onDone, userAction } = setup();
   render(() => (
     <VocabularyTester
-      words={[
-        {
-          id: 1,
-          list_id: 1,
-          original: 'hello',
-          translation: 'ahoj',
-          notes: undefined,
-        },
-      ]}
+      words={TEST_WORDS.slice(0, 1)}
       testSettings={{ ...defaultTestSettings, repeatInvalid: false }}
       onDone={onDone}
       onEditWord={vi.fn()}
@@ -43,22 +52,7 @@ it("should still be able to validate with enter even though previous word's vali
   const { defaultTestSettings, onDone, userAction } = setup();
   render(() => (
     <VocabularyTester
-      words={[
-        {
-          id: 1,
-          list_id: 1,
-          original: 'hello',
-          translation: 'ahoj',
-          notes: undefined,
-        },
-        {
-          id: 2,
-          list_id: 1,
-          original: 'hi',
-          translation: 'ahoj',
-          notes: undefined,
-        },
-      ]}
+      words={TEST_WORDS.slice(0, 2)}
       testSettings={{ ...defaultTestSettings, repeatInvalid: false }}
       onDone={onDone}
       onEditWord={vi.fn()}
@@ -79,6 +73,37 @@ it("should still be able to validate with enter even though previous word's vali
   const invalidIcon = screen.getByLabelText('Word guess is invalid');
 
   expect(invalidIcon).not.toBeNull();
+});
+
+// Because especially mobile devices like to enter text with spaces at the end
+it('should trim words during validaton', async () => {
+  const { defaultTestSettings, onDone, userAction } = setup();
+  render(() => (
+    <VocabularyTester
+      words={[
+        {
+          ...TEST_WORDS[0],
+          translation: 'ahoj ',
+        },
+      ]}
+      testSettings={{ ...defaultTestSettings, repeatInvalid: false }}
+      onDone={onDone}
+      onEditWord={vi.fn()}
+      onRemoveWord={vi.fn()}
+      onRepeat={vi.fn()}
+      onReset={vi.fn()}
+    />
+  ));
+
+  const input = screen.getByTestId('write-tester-input');
+  await userAction.type(input, ' ahoj');
+
+  const checkWordBtn = screen.getByTitle('Check word');
+  await userAction.click(checkWordBtn);
+
+  const validIcon = screen.getByLabelText('Word guess is valid');
+
+  expect(validIcon).not.toBeNull();
 });
 
 function setup() {
