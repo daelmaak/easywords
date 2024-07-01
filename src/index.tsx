@@ -1,12 +1,13 @@
 import { Navigate, Route, Router } from '@solidjs/router';
 import { render } from 'solid-js/web';
 
+import { lazy } from 'solid-js';
 import App from './components/App';
+import { DashboardPage } from './domains/dashboard/DashboardPage';
 import { VocabulariesPage } from './domains/vocabularies/VocabulariesPage';
 import { VocabularyTestPage } from './domains/vocabulary-testing/VocabularyTestPage';
 import './index.css';
 import { initApp } from './init/app-init';
-import { lazy } from 'solid-js';
 
 const root = document.getElementById('root');
 
@@ -29,6 +30,7 @@ render(() => {
 
   return (
     <Router root={App}>
+      <Route path="/dashboard" component={DashboardPage} />
       <Route path="/vocabulary">
         <Route path="/" component={VocabulariesPage} />
         <Route path="/:id" component={VocabularyPage} />
@@ -42,7 +44,7 @@ render(() => {
         ]}
         component={ConjugationsPage}
       />
-      <Route path="/" component={() => <Navigate href="/vocabulary" />} />
+      <Route path="/" component={() => <Navigate href="/dashboard" />} />
     </Router>
   );
 }, root!);
