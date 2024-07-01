@@ -17,7 +17,7 @@ import { Vocabulary } from '../model/vocabulary-model';
 export type Props = {
   vocabulary: Vocabulary;
   onClick?: (id: number) => void;
-  onDeleteVocabulary: (id: number) => void;
+  onDeleteVocabulary?: (id: number) => void;
   onEditVocabulary: (id: number) => void;
   onTestVocabulary: (
     id: number,
@@ -42,11 +42,13 @@ export const VocabularyCard: Component<Props> = props => {
             size={16}
             onClick={() => props.onEditVocabulary(props.vocabulary.id)}
           />
-          <HiOutlineTrash
-            class="cursor-pointer"
-            size={16}
-            onClick={() => props.onDeleteVocabulary(props.vocabulary.id)}
-          />
+          <Show when={props.onDeleteVocabulary}>
+            <HiOutlineTrash
+              class="cursor-pointer"
+              size={16}
+              onClick={() => props.onDeleteVocabulary?.(props.vocabulary.id)}
+            />
+          </Show>
         </div>
       </CardHeader>
       <CardContent class="px-4 pt-0 pb-2 overflow-hidden">
