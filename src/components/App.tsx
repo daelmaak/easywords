@@ -35,6 +35,11 @@ const App: Component<Props> = props => {
             <img src={logo} alt="logo" class="size-8" />
             <span class="mr-8">Easywords</span>
           </A>
+          <A class={styles.navLink} href="/dashboard">
+            <Button class="font-normal text-inherit px-2" variant="link">
+              Dashboard
+            </Button>
+          </A>
           <A class={styles.navLink} href="/vocabulary">
             <Button class="font-normal text-inherit px-2" variant="link">
               Vocabulary

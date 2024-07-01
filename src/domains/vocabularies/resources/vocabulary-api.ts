@@ -58,6 +58,16 @@ const fetchVocabularies = async () => {
   return vocabularies;
 };
 
+const fetchRecentVocabularies = async (count: number) => {
+  const result = await supabase
+    .from('vocabularies')
+    .select(VOCABULARY_FETCH_FIELDS)
+    .order('interacted_at', { ascending: false })
+    .range(0, count - 1);
+
+  return (result.data ?? []).map(transformVocabulary);
+};
+
 const createVocabularyList = async (vocabulary: VocabularyToCreate) => {
   const listResult = await supabase
     .from('vocabularies')
@@ -123,6 +133,7 @@ export const vocabularyApi = {
   deleteVocabularyList,
   fetchVocabulary,
   fetchVocabularies,
+  fetchRecentVocabularies,
   updateVocabulary,
   updateVocabularyItems,
 };
