@@ -3,6 +3,8 @@ import { Component, For, createResource } from 'solid-js';
 import { VocabularyCard } from '../vocabularies/components/VocabularyCard';
 import { vocabularyApi } from '../vocabularies/resources/vocabulary-api';
 import { navigateToVocabularyTest } from '../vocabularies/util/navigation';
+import { Button } from '~/components/ui/button';
+import { HiOutlinePlus } from 'solid-icons/hi';
 
 export const DashboardPage: Component = () => {
   const navigate = useNavigate();
@@ -15,6 +17,10 @@ export const DashboardPage: Component = () => {
     navigate(`/vocabulary/${id}`);
   }
 
+  function onCreateVocabulary() {
+    navigate('/vocabulary?openVocabCreator=true');
+  }
+
   function onTestVocabulary(
     id: number,
     config?: { useSavedProgress: boolean }
@@ -25,12 +31,12 @@ export const DashboardPage: Component = () => {
   return (
     <>
       <h1 class="sr-only">Dashboard</h1>
-      <div class="sm:grid sm:grid-cols-2 sm:gap-8">
-        <section>
+      <div class="sm:grid sm:grid-cols-[2fr,1fr] sm:gap-20 sm:content-start">
+        <section class="p-6">
           <h2 class="mb-4 text-lg font-semibold">How to</h2>
           <div style="padding-bottom:56.25%; position:relative; display:block; width: 100%">
             <iframe
-              src="https://app.vidcast.io/share/embed/776a0ea3-a1e7-494e-bf5e-6e2a73b34c73"
+              src="https://app.vidcast.io/share/embed/3cdc5b30-3347-4fd1-8cce-bb124d69ddc3"
               width="100%"
               height="100%"
               title="a11y - Navigating vs interacting webpages with NVDA"
@@ -40,10 +46,28 @@ export const DashboardPage: Component = () => {
             ></iframe>
           </div>
         </section>
-        <section>
+        <section class="bg-gray-100 rounded-b-xl p-6">
           <h2 class="mb-4 text-lg font-semibold">Recent vocabularies</h2>
           <div class="flex flex-col gap-4">
-            <For each={recentVocabularies()}>
+            <For
+              each={recentVocabularies()}
+              fallback={
+                <div class="w-full min-h-40 grid">
+                  <div class="m-auto text-center">
+                    <p class="mb-4">
+                      Easywords is all about Vocabularies, so why don't you
+                      start off by creating one?
+                    </p>
+                    <Button
+                      onClick={onCreateVocabulary}
+                      aria-label="Create first vocabulary"
+                    >
+                      <HiOutlinePlus size={16} /> Create first
+                    </Button>
+                  </div>
+                </div>
+              }
+            >
               {vocabulary => (
                 <VocabularyCard
                   vocabulary={vocabulary}
