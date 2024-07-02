@@ -70,7 +70,7 @@ export const theme = {
       sm: 'calc(var(--radius) - 4px)',
     },
     fontFamily: {
-      sans: ['Inter', ...fontFamily.sans],
+      sans: ['Nunito', ...fontFamily.sans],
     },
     keyframes: {
       'accordion-down': {
@@ -99,4 +99,3 @@ export const theme = {
   },
 };
 export const plugins = [require('tailwindcss-animate')];
-
