@@ -89,7 +89,7 @@ export const VocabularyPage: Component = () => {
       when={!vocabulary.loading}
       fallback={<div class="m-auto">Loading ...</div>}
     >
-      <div class="flex flex-col gap-4 sm:flex-row">
+      <div class="page-container flex flex-col gap-4 sm:flex-row">
         <Sheet open={openedAddWords()} onOpenChange={setOpenedAddWords}>
           <SheetContent
             class="w-svw sm:w-[30rem] flex flex-col gap-4"

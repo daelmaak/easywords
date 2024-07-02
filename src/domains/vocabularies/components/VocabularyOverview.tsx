@@ -77,7 +77,7 @@ export const VocabularyOverview: Component<Props> = props => {
   return (
     <div>
       <Show when={!loading()}>
-        <div class="flex flex-wrap justify-between gap-x-4">
+        <div class="page-container flex flex-wrap justify-between gap-x-4">
           <h1 class="text-lg font-semibold">Your vocabularies</h1>
           <Show when={anyVocabularies()}>
             <Button size="sm" onClick={() => setCreateVocabularyOpen(true)}>
