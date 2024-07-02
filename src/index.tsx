@@ -3,6 +3,7 @@ import { render } from 'solid-js/web';
 
 import { lazy } from 'solid-js';
 import App from './components/App';
+import { AuthRouteGuard } from './domains/auth/AuthRouteGuard';
 import { DashboardPage } from './domains/dashboard/DashboardPage';
 import { VocabulariesPage } from './domains/vocabularies/VocabulariesPage';
 import { VocabularyTestPage } from './domains/vocabulary-testing/VocabularyTestPage';
@@ -29,22 +30,29 @@ render(() => {
   initApp();
 
   return (
-    <Router root={App}>
-      <Route path="/dashboard" component={DashboardPage} />
-      <Route path="/vocabulary">
-        <Route path="/" component={VocabulariesPage} />
-        <Route path="/:id" component={VocabularyPage} />
-        <Route path="/:id/test" component={VocabularyTestPage} />
+    <Router root={AuthRouteGuard}>
+      <Route path="/" component={App}>
+        <Route path="/dashboard" component={DashboardPage} />
+        <Route path="/vocabulary">
+          <Route path="/" component={VocabulariesPage} />
+          <Route path="/:id" component={VocabularyPage} />
+          <Route path="/:id/test" component={VocabularyTestPage} />
+        </Route>
+        <Route
+          path={[
+            '/conjugations',
+            '/conjugations/:lang',
+            '/conjugations/:lang/:verb',
+          ]}
+          component={ConjugationsPage}
+        />
+        <Route path="/" component={() => <Navigate href="/dashboard" />} />
       </Route>
       <Route
-        path={[
-          '/conjugations',
-          '/conjugations/:lang',
-          '/conjugations/:lang/:verb',
-        ]}
-        component={ConjugationsPage}
+        path="/login"
+        component={lazy(() => import('./domains/auth/LoginPage'))}
       />
-      <Route path="/" component={() => <Navigate href="/dashboard" />} />
+      <Route path="*" component={() => <Navigate href="/" />} />{' '}
     </Router>
   );
 }, root!);

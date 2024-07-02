@@ -1,12 +1,8 @@
 import { A } from '@solidjs/router';
 import { HiOutlineBars3 } from 'solid-icons/hi';
-import { Component, JSX, Show } from 'solid-js';
+import { Component, JSX } from 'solid-js';
 import { Button } from '~/components/ui/button';
-import {
-  isLoggedIn,
-  sessionResource,
-  signOut,
-} from '~/domains/auth/auth-resource';
+import { signOut } from '~/domains/auth/auth-resource';
 import logo from '../assets/logo.svg';
 import { AccountButton } from '../domains/auth/AccountButton';
 import styles from './App.module.css';
@@ -23,15 +19,11 @@ interface Props {
 }
 
 const App: Component<Props> = props => {
-  const [session] = sessionResource;
-
-  const loggedIn = () => isLoggedIn(session());
-
   return (
     <>
       <nav>
         <div class="hidden sm:flex items-center px-4 py-2 border-b">
-          <A href="/" class="flex items-center">
+          <A href="/dashboard" class="flex items-center">
             <img src={logo} alt="logo" class="size-8" />
             <span class="mr-8">Easywords</span>
           </A>
@@ -51,7 +43,7 @@ const App: Component<Props> = props => {
             </Button>
           </A>
           <div class="ml-auto">
-            <AccountButton loggedIn={!!loggedIn()} onSignOut={signOut} />
+            <AccountButton loggedIn={true} onSignOut={signOut} />
           </div>
         </div>
         <div class="sm:hidden flex items-center gap-4 p-2">
@@ -59,7 +51,7 @@ const App: Component<Props> = props => {
             <img src={logo} alt="logo" class="size-8" />
           </A>
           <div class="ml-auto">
-            <AccountButton loggedIn={!!loggedIn()} />
+            <AccountButton loggedIn={true} />
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger>
@@ -74,18 +66,16 @@ const App: Component<Props> = props => {
               <DropdownMenuItem class="text-base">
                 <A href="/conjugations">Conjugations</A>
               </DropdownMenuItem>
-              <Show when={loggedIn()}>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem class="text-base">
-                  <Button
-                    class="sm:hidden p-0 text-base font-normal bg-inherit"
-                    variant="ghost"
-                    onClick={signOut}
-                  >
-                    Sign out
-                  </Button>
-                </DropdownMenuItem>
-              </Show>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem class="text-base">
+                <Button
+                  class="sm:hidden p-0 text-base font-normal bg-inherit"
+                  variant="ghost"
+                  onClick={signOut}
+                >
+                  Sign out
+                </Button>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
