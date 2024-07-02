@@ -1,10 +1,11 @@
-import { useNavigate } from '@solidjs/router';
+import { useNavigate, useSearchParams } from '@solidjs/router';
 import { VocabularyOverview } from './components/VocabularyOverview';
 import { getVocabulariesResource } from './resources/vocabularies-resource';
 import { navigateToVocabularyTest } from './util/navigation';
 
 export const VocabulariesPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   function onGoToVocabulary(id: number) {
     navigate(`/vocabulary/${id}`);
@@ -19,6 +20,7 @@ export const VocabulariesPage = () => {
 
   return (
     <VocabularyOverview
+      vocabularyCreatorOpenAtInit={searchParams.openVocabCreator != null}
       vocabulariesResource={getVocabulariesResource()}
       onGoToVocabulary={onGoToVocabulary}
       onTestVocabulary={onTestVocabulary}

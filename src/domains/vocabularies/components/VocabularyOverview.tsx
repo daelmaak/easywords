@@ -24,6 +24,7 @@ import { VocabularyCreator } from './VocabularyCreator';
 import { VocabularyToCreate } from '../resources/vocabulary-api';
 
 export type Props = {
+  vocabularyCreatorOpenAtInit?: boolean;
   vocabulariesResource: ResourceReturn<Vocabulary[]>;
   onGoToVocabulary: (id: number) => void;
   onTestVocabulary: (
@@ -34,7 +35,9 @@ export type Props = {
 
 export const VocabularyOverview: Component<Props> = props => {
   const [vocabularies, vocabulariesAction] = props.vocabulariesResource;
-  const [createVocabularyOpen, setCreateVocabularyOpen] = createSignal(false);
+  const [createVocabularyOpen, setCreateVocabularyOpen] = createSignal(
+    props.vocabularyCreatorOpenAtInit ?? false
+  );
   const [confirmDeletionOf, setConfirmDeletionOf] = createSignal<number>();
 
   const loading = () => vocabularies() == null;
@@ -104,11 +107,11 @@ export const VocabularyOverview: Component<Props> = props => {
           when={anyVocabularies()}
           fallback={
             <div
-              class="h-full flex flex-col gap-4 justify-center items-center"
+              class="h-60 flex flex-col gap-4 justify-center items-center"
               data-testid="empty-vocabulary-list"
             >
-              Create your first vocabulary
-              <Button size="sm" onClick={() => setCreateVocabularyOpen(true)}>
+              <h2 class="text-xl">Create your first vocabulary!</h2>
+              <Button onClick={() => setCreateVocabularyOpen(true)}>
                 <HiOutlinePlus size={16} /> Create
               </Button>
             </div>
