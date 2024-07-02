@@ -50,7 +50,11 @@ render(() => {
       </Route>
       <Route
         path="/login"
-        component={lazy(() => import('./domains/auth/LoginPage'))}
+        component={lazy(() => import('./domains/auth/AuthPage'))}
+      />
+      <Route
+        path="/signup"
+        component={lazy(() => import('./domains/auth/AuthPage'))}
       />
       <Route path="*" component={() => <Navigate href="/" />} />{' '}
     </Router>
