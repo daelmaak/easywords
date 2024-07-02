@@ -1,4 +1,4 @@
-import { useNavigate } from '@solidjs/router';
+import { useLocation, useNavigate } from '@solidjs/router';
 import { Component, createEffect, JSX, Show } from 'solid-js';
 import { sessionResource, isLoggedIn } from './auth-resource';
 
@@ -8,15 +8,20 @@ interface IndexProps {
 
 export const AuthRouteGuard: Component<IndexProps> = props => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [session] = sessionResource;
   const loggedIn = () => isLoggedIn(session());
 
   createEffect(() => {
     if (loggedIn() == null) return;
 
-    if (loggedIn()) {
+    const isAuthRoute =
+      location.pathname.endsWith('login') ||
+      location.pathname.endsWith('signup');
+
+    if (loggedIn() && isAuthRoute) {
       navigate('/');
-    } else {
+    } else if (!loggedIn() && !isAuthRoute) {
       navigate('/login');
     }
   });
