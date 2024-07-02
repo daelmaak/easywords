@@ -101,7 +101,7 @@ export const VocabularyTestPage = () => {
   }
 
   return (
-    <>
+    <div class="grid page-container">
       <Show when={!done()}>
         <Show when={words()}>
           {w => (
@@ -150,6 +150,6 @@ export const VocabularyTestPage = () => {
           Go back
         </button>
       </Show>
-    </>
+    </div>
   );
 };

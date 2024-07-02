@@ -59,6 +59,12 @@
   }
 }
 
+@layer components {
+  .page-container {
+    @apply px-4 py-6 sm:px-6;
+  }
+}
+
 @media (max-width: 640px) {
   .container {
     @apply px-4;

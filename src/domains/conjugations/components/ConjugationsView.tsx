@@ -141,7 +141,7 @@ export const ConjugationsView: Component = () => {
   };
 
   return (
-    <div class="flex flex-col items-center">
+    <div class="page-container flex flex-col items-center">
       <h1 class="mb-4 text-xl">Insert verb to conjugate</h1>
       <div class="flex gap-2">
         <VerbInput
