@@ -71,7 +71,7 @@ export const VocabularyTestPage = () => {
     updateVocabularyItems(word);
   }
 
-  function goBack() {
+  function goToVocabularies() {
     navigate('/vocabulary');
   }
 
@@ -115,7 +115,7 @@ export const VocabularyTestPage = () => {
                   onEditWord={onEditWord}
                   onProgress={saveProgress}
                   onRemoveWord={deleteWord}
-                  onStop={goBack}
+                  onStop={goToVocabularies}
                   onRepeat={onRepeat}
                   onReset={onReset}
                 />
@@ -137,7 +137,7 @@ export const VocabularyTestPage = () => {
           removedWords={removedWords()}
           words={words()}
           repeat={onRepeat}
-          reset={onReset}
+          goToVocabularies={goToVocabularies}
           tryInvalidWords={onTryInvalidWords}
         />
       </Show>
@@ -145,7 +145,7 @@ export const VocabularyTestPage = () => {
       <Show when={words()}>
         <button
           class="btn-link fixed bottom-4 right-8 text-sm"
-          onClick={goBack}
+          onClick={goToVocabularies}
         >
           Go back
         </button>

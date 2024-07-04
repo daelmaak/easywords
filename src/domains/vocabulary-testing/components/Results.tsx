@@ -1,3 +1,4 @@
+import { HiOutlineCheck } from 'solid-icons/hi';
 import { Show } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
@@ -8,22 +9,12 @@ interface ResultsProps {
   removedWords?: WordTranslation[];
   words?: WordTranslation[];
   repeat: () => void;
-  reset: () => void;
+  goToVocabularies: () => void;
   tryInvalidWords: (invalidWords: VocabularyItem[]) => void;
 }
 
 export function Results(props: ResultsProps) {
   let invalidWordsRef: HTMLTextAreaElement | undefined;
-
-  function copyInvalidWords() {
-    if (!invalidWordsRef) {
-      return;
-    }
-
-    invalidWordsRef.select();
-    navigator.clipboard.writeText(invalidWordsRef.value);
-    // TODO: @daelmaak show feedback about the copy
-  }
 
   function copyNotRemovedWords() {
     if (!props.removedWords || !props.words) {
@@ -45,14 +36,20 @@ export function Results(props: ResultsProps) {
   }
 
   return (
-    <>
+    <div>
       <p class="text-center text-2xl">
-        <i class="mr-4 text-green-600 font-semibold">✓</i>Done!
+        <span>
+          <HiOutlineCheck /> Done!
+        </span>
       </p>
       <div class="mx-auto mt-8 text-center">
         <Button onClick={props.repeat}>Again</Button>
-        <Button class="ml-4" variant="secondary" onClick={props.reset}>
-          Pick different words
+        <Button
+          class="ml-4"
+          variant="secondary"
+          onClick={props.goToVocabularies}
+        >
+          Back to Vocabularies
         </Button>
       </div>
       <Show when={props.invalidWords} keyed>
@@ -76,13 +73,6 @@ export function Results(props: ResultsProps) {
                   onClick={() => props.tryInvalidWords(invalidWords)}
                 >
                   Practice them
-                </button>
-                <button
-                  class="btn-link ml-4"
-                  type="button"
-                  onClick={copyInvalidWords}
-                >
-                  Copy
                 </button>
               </div>
             </section>
@@ -115,6 +105,6 @@ export function Results(props: ResultsProps) {
           )
         }
       </Show>
-    </>
+    </div>
   );
 }
