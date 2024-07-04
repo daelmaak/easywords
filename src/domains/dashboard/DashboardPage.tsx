@@ -36,7 +36,7 @@ export const DashboardPage: Component = () => {
           <h2 class="mb-4 text-lg font-semibold">How to</h2>
           <div style="padding-bottom:56.25%; position:relative; display:block; width: 100%">
             <iframe
-              src="https://app.vidcast.io/share/embed/3cdc5b30-3347-4fd1-8cce-bb124d69ddc3"
+              src="https://app.vidcast.io/share/embed/d851cd74-8275-4b09-8e62-ff0646e66b53"
               width="100%"
               height="100%"
               title="a11y - Navigating vs interacting webpages with NVDA"
