@@ -33,7 +33,6 @@ export interface WriteTesterProps {
   word: TestedWord;
   validateOnBlur?: boolean;
   onDone?: () => void;
-  onPeek?: () => void;
   onReady?: (tester: WriteTesterInstance) => void;
   onSkip?: () => void;
   onValidated?: (valid: boolean, answer: string) => void;
@@ -47,6 +46,9 @@ export const WriteTester: Component<WriteTesterProps> = props => {
   const tokenizedTranslation = createMemo(() =>
     tokenize(props.word.translation.toLocaleLowerCase())
   );
+
+  const isPrimaryBtnSubmitter = () => !valid() && !freshlyInvalid();
+  const isSkipBtnSubmitter = () => valid() || freshlyInvalid();
 
   onMount(() => {
     if (!inputRef) {
@@ -123,7 +125,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
     setFreshlyInvalid(false);
   }
 
-  function onSubmit(e: Event) {
+  function onSubmit(e: SubmitEvent) {
     e.preventDefault();
 
     // Was already validated successfully before. So we can move on to the next word.
@@ -133,14 +135,12 @@ export const WriteTester: Component<WriteTesterProps> = props => {
 
     validateText();
 
+    const canGoOn = e.submitter?.title === 'Next word';
+
     // NOTE: This handles the case where use resigned on giving an answer. So for his convenience, we let him submit which first
     // shows him the right answer and then it moves to next word on second submit.
-    if (inputRef?.value === '') {
-      if (props.peek) {
-        props.onDone?.();
-      } else {
-        props.onPeek?.();
-      }
+    if (canGoOn) {
+      props.onDone?.();
     }
   }
 
@@ -159,6 +159,9 @@ export const WriteTester: Component<WriteTesterProps> = props => {
           invisible: !props.peek,
           'absolute top-0 translate-y-[-75%]': props.mode === 'inline',
         })}
+        role="alert"
+        aria-label={'The correct answer is: ' + props.word.translation}
+        aria-live="polite"
       >
         {props.word.translation}
       </i>
@@ -204,8 +207,8 @@ export const WriteTester: Component<WriteTesterProps> = props => {
               class="px-2"
               aria-label="Check word"
               title="Check word"
-              disabled={valid() || freshlyInvalid()}
-              type={valid() ? 'button' : 'submit'}
+              disabled={isSkipBtnSubmitter()}
+              type={isPrimaryBtnSubmitter() ? 'submit' : 'button'}
             >
               <HiOutlineArrowRight size={24} />
             </Button>
@@ -214,7 +217,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
               variant={valid() ? 'default' : 'secondary'}
               aria-label="Next word"
               title="Next word"
-              type={valid() ? 'submit' : 'button'}
+              type={isSkipBtnSubmitter() ? 'submit' : 'button'}
               onClick={props.onSkip}
             >
               <HiOutlineForward

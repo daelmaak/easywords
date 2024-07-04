@@ -40,6 +40,9 @@ it('should complete the test when last word invalid when in non-repeat mode', as
     />
   ));
 
+  const input = screen.getByTestId('write-tester-input');
+  await userAction.type(input, 'invalid');
+
   const checkWordBtn = screen.getByTitle('Check word');
   await userAction.click(checkWordBtn);
 
@@ -47,6 +50,27 @@ it('should complete the test when last word invalid when in non-repeat mode', as
   await userAction.click(nextWordBtn);
 
   expect(onDone).toHaveBeenCalled();
+});
+
+it("shouldn't pass with empty input", async () => {
+  const { defaultTestSettings, userAction } = setup();
+  render(() => (
+    <VocabularyTester
+      words={TEST_WORDS.slice(0, 1)}
+      testSettings={{ ...defaultTestSettings, repeatInvalid: false }}
+      onDone={vi.fn()}
+      onEditWord={vi.fn()}
+      onRemoveWord={vi.fn()}
+      onRepeat={vi.fn()}
+      onReset={vi.fn()}
+    />
+  ));
+
+  const checkWordBtn = screen.getByTitle('Check word');
+  await userAction.click(checkWordBtn);
+
+  const invalidIcon = screen.getByLabelText('Word guess is invalid');
+  expect(invalidIcon).not.toBeNull();
 });
 
 it("should still be able to validate with enter even though previous word's validation was unsuccessful", async () => {
@@ -109,8 +133,8 @@ it('should trim words during validaton', async () => {
 
 it('should keep its validation state after changing the word', async () => {
   const [words, setWords] = createSignal(TEST_WORDS.slice(0, 1));
-
   const { defaultTestSettings, onDone, userAction } = setup();
+
   render(() => (
     <VocabularyTester
       words={words()}
@@ -144,6 +168,35 @@ it('should keep its validation state after changing the word', async () => {
   await userAction.click(nextWordBtn);
 
   expect(onDone).toHaveBeenCalled();
+});
+
+it('should peek after invalid guess', async () => {
+  const { defaultTestSettings, userAction } = setup();
+
+  render(() => (
+    <VocabularyTester
+      words={TEST_WORDS.slice(0, 1)}
+      testSettings={defaultTestSettings}
+      onDone={vi.fn()}
+      onEditWord={vi.fn()}
+      onRemoveWord={vi.fn()}
+      onRepeat={vi.fn()}
+      onReset={vi.fn()}
+    />
+  ));
+
+  const input = screen.getByTestId('write-tester-input');
+  const checkWordBtn = screen.getByTitle('Check word');
+
+  await userAction.type(input, 'invalid guess');
+  await userAction.click(checkWordBtn);
+
+  const invalidIcon = screen.getByLabelText('Word guess is invalid');
+  expect(invalidIcon).toBeInTheDocument();
+
+  const peekedResult = screen.getByRole('alert');
+  expect(peekedResult.innerHTML).toContain(TEST_WORDS[0].translation);
+  expect(peekedResult.className).not.toContain('invisible');
 });
 
 function setup() {

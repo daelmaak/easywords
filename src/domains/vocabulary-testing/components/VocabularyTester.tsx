@@ -175,11 +175,7 @@ export const VocabularyTester: Component<TesterProps> = (
   }
 
   function onWordValidated(valid: boolean) {
-    if (valid) {
-      // Just make sure the user sees the correct translations, because maybe she
-      // guessed only one of the words that are in the translation.
-      setStore('peek', true);
-    }
+    setStore('peek', true);
 
     if (currentWordValid == null || store.wordsLeft.length === 1) {
       currentWordValid = valid;
@@ -281,7 +277,6 @@ export const VocabularyTester: Component<TesterProps> = (
                 peek={store.peek}
                 word={word()}
                 onDone={setNextWord}
-                onPeek={() => setStore('peek', true)}
                 onSkip={setNextWord}
                 onValidated={onWordValidated}
               />
