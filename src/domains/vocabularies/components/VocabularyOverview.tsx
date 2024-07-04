@@ -60,7 +60,6 @@ export const VocabularyOverview: Component<Props> = props => {
 
     if (success) {
       setCreateVocabularyOpen(false);
-      vocabulariesAction.refetch();
     }
 
     return success;
