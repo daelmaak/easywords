@@ -62,7 +62,7 @@ const fetchRecentVocabularies = async (count: number) => {
   const result = await supabase
     .from('vocabularies')
     .select(VOCABULARY_FETCH_FIELDS)
-    .order('interacted_at', { ascending: false })
+    .order('updated_at', { ascending: false })
     .range(0, count - 1);
 
   return (result.data ?? []).map(transformVocabulary);
@@ -98,6 +98,11 @@ const createVocabularyItems = async (items: VocabularyItemToCreate[]) => {
     .insert(items)
     .select(VOCABULARY_ITEM_FETCH_FIELDS);
 
+  if (result.data) {
+    const vocabularyId = result.data[0].list_id;
+    void updateVocabularyUpdatedAt(vocabularyId);
+  }
+
   return result.data;
 };
 
@@ -110,7 +115,10 @@ const deleteVocabularyList = async (id: number) => {
 const updateVocabulary = async (vocabulary: Partial<Vocabulary>) => {
   const result = await supabase
     .from('vocabularies')
-    .update(omit(vocabulary, 'id', 'vocabularyItems') as Partial<Vocabulary>)
+    .update({
+      ...(omit(vocabulary, 'id', 'vocabularyItems') as Partial<Vocabulary>),
+      updated_at: new Date(),
+    })
     .eq('id', vocabulary.id);
 
   return !result.error;
@@ -118,6 +126,10 @@ const updateVocabulary = async (vocabulary: Partial<Vocabulary>) => {
 
 const updateVocabularyItems = async (items: VocabularyItem[]) => {
   const result = await supabase.from('vocabulary_items').upsert(items);
+  const vocabularyId = items[0].list_id;
+
+  void updateVocabularyUpdatedAt(vocabularyId);
+
   return !result.error;
 };
 
@@ -139,6 +151,13 @@ export const vocabularyApi = {
 };
 
 export type VocabularyApi = typeof vocabularyApi;
+
+const updateVocabularyUpdatedAt = async (id: number) => {
+  await supabase
+    .from('vocabularies')
+    .update({ updated_at: new Date() })
+    .eq('id', id);
+};
 
 // Move to resource
 const transformVocabulary = (vocabulary: {

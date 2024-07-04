@@ -31,7 +31,7 @@ export const DashboardPage: Component = () => {
   return (
     <>
       <h1 class="sr-only">Dashboard</h1>
-      <div class="sm:grid sm:grid-cols-[2fr,1fr] sm:gap-20 sm:content-start">
+      <div class="sm:grid sm:grid-cols-[3fr,2fr] sm:8 sm:content-start 2xl:gap-20">
         <section class="p-6">
           <h2 class="mb-4 text-lg font-semibold">How to</h2>
           <div style="padding-bottom:56.25%; position:relative; display:block; width: 100%">
