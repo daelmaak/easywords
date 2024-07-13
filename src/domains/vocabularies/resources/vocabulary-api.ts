@@ -1,77 +1,77 @@
 import { supabase } from '~/lib/supabase-client';
 import { RealOmit, omit } from '~/util/object';
-import { VocabularyItem, Vocabulary } from '../model/vocabulary-model';
-import { fetchVocabularyProgress } from './vocabulary-progress-api';
-import { CountryCode } from '~/components/country-select/countries';
+import { QueryData } from '@supabase/supabase-js';
 
-export type VocabularyItemToCreate = RealOmit<VocabularyItem, 'id' | 'list_id'>;
-export type VocabularyToCreate = RealOmit<
-  Vocabulary,
-  'id' | 'vocabularyItems' | 'hasSavedProgress'
+export type VocabularyItemToCreateDB = RealOmit<
+  VocabularyItemDB,
+  'id' | 'created_at'
+>;
+
+export type VocabularyToCreateDB = RealOmit<
+  VocabularyDB,
+  'id' | 'vocabulary_items'
 > & {
-  vocabularyItems: VocabularyItemToCreate[];
+  vocabulary_items: VocabularyItemToCreateDB[];
 };
 
 const VOCABULARY_ITEM_FETCH_FIELDS = `
   id,
+  created_at,
   list_id,
   original,
   translation,
   notes
 `;
 
-const VOCABULARY_FETCH_FIELDS = `
-  id, 
-  country,
-  name,
-  vocabulary_items (${VOCABULARY_ITEM_FETCH_FIELDS})
-`;
+const vocabulariesFetchQuery = () =>
+  supabase.from('vocabularies').select(`
+    id, 
+    country,
+    name,
+    vocabulary_items (${VOCABULARY_ITEM_FETCH_FIELDS})
+  `);
+
+export type VocabularyDB = QueryData<
+  ReturnType<typeof vocabulariesFetchQuery>
+>[number];
+
+export interface VocabularyItemDB {
+  id: number;
+  created_at: string;
+  list_id: number;
+  original: string;
+  translation: string;
+  notes: string | undefined;
+}
 
 const fetchVocabulary = async (id: number) => {
-  const result = await supabase
-    .from('vocabularies')
-    .select(VOCABULARY_FETCH_FIELDS)
-    .eq('id', id);
-
-  const vocabulary = result.data?.[0];
-
-  if (!vocabulary) {
-    return undefined;
-  }
-
-  return transformVocabulary(vocabulary);
+  const result = await vocabulariesFetchQuery().eq('id', id);
+  return result.data?.[0];
 };
 
 const fetchVocabularies = async () => {
-  const result = await supabase
-    .from('vocabularies')
-    .select(VOCABULARY_FETCH_FIELDS);
+  const result = await vocabulariesFetchQuery();
+  const vocabularies = result.data;
 
-  const vocabularies = (result.data ?? []).map(transformVocabulary);
-
-  // TODO: This is only temporary and should be ultimately saved in DB
-  for (const vocabulary of vocabularies) {
-    const progress = await fetchVocabularyProgress(vocabulary.id);
-    vocabulary.hasSavedProgress = Boolean(progress);
+  if (vocabularies == null) {
+    return;
   }
 
   return vocabularies;
 };
 
 const fetchRecentVocabularies = async (count: number) => {
-  const result = await supabase
-    .from('vocabularies')
-    .select(VOCABULARY_FETCH_FIELDS)
+  const result = await vocabulariesFetchQuery()
     .order('updated_at', { ascending: false })
     .range(0, count - 1);
 
-  return (result.data ?? []).map(transformVocabulary);
+  return result.data;
 };
 
-const createVocabularyList = async (vocabulary: VocabularyToCreate) => {
+const createVocabulary = async (vocabulary: VocabularyToCreateDB) => {
   const listResult = await supabase
     .from('vocabularies')
-    .insert({ ...omit(vocabulary, 'vocabularyItems') })
+    .insert({ ...omit(vocabulary, 'vocabulary_items') })
     .select();
 
   if (listResult.error) {
@@ -80,7 +80,7 @@ const createVocabularyList = async (vocabulary: VocabularyToCreate) => {
 
   const createdList = listResult.data?.[0];
 
-  const attachedWords = vocabulary.vocabularyItems.map(word => ({
+  const attachedWords = vocabulary.vocabulary_items.map(word => ({
     ...word,
     list_id: createdList?.id,
   }));
@@ -92,7 +92,7 @@ const createVocabularyList = async (vocabulary: VocabularyToCreate) => {
   return !itemsResult.error;
 };
 
-const createVocabularyItems = async (items: VocabularyItemToCreate[]) => {
+const createVocabularyItems = async (items: VocabularyItemToCreateDB[]) => {
   const result = await supabase
     .from('vocabulary_items')
     .insert(items)
@@ -106,17 +106,16 @@ const createVocabularyItems = async (items: VocabularyItemToCreate[]) => {
   return result.data;
 };
 
-const deleteVocabularyList = async (id: number) => {
+const deleteVocabulary = async (id: number) => {
   const result = await supabase.from('vocabularies').delete().match({ id });
-
   return !result.error;
 };
 
-const updateVocabulary = async (vocabulary: Partial<Vocabulary>) => {
+const updateVocabulary = async (vocabulary: Partial<VocabularyDB>) => {
   const result = await supabase
     .from('vocabularies')
     .update({
-      ...(omit(vocabulary, 'id', 'vocabularyItems') as Partial<Vocabulary>),
+      ...omit(vocabulary, 'id'),
       updated_at: new Date(),
     })
     .eq('id', vocabulary.id);
@@ -124,7 +123,9 @@ const updateVocabulary = async (vocabulary: Partial<Vocabulary>) => {
   return !result.error;
 };
 
-const updateVocabularyItems = async (items: VocabularyItem[]) => {
+const updateVocabularyItems = async (
+  items: RealOmit<VocabularyItemDB, 'created_at'>[]
+) => {
   const result = await supabase.from('vocabulary_items').upsert(items);
   const vocabularyId = items[0].list_id;
 
@@ -140,9 +141,9 @@ const deleteVocabularyItems = async (...ids: number[]) => {
 
 export const vocabularyApi = {
   createVocabularyItems,
-  createVocabularyList,
+  createVocabulary,
   deleteVocabularyItems,
-  deleteVocabularyList,
+  deleteVocabulary,
   fetchVocabulary,
   fetchVocabularies,
   fetchRecentVocabularies,
@@ -158,17 +159,3 @@ const updateVocabularyUpdatedAt = async (id: number) => {
     .update({ updated_at: new Date() })
     .eq('id', id);
 };
-
-// Move to resource
-const transformVocabulary = (vocabulary: {
-  id: number;
-  country: string;
-  name: string;
-  vocabulary_items: VocabularyItem[];
-}): Vocabulary => ({
-  id: vocabulary.id,
-  country: vocabulary.country as CountryCode,
-  hasSavedProgress: false,
-  name: vocabulary.name,
-  vocabularyItems: vocabulary.vocabulary_items,
-});

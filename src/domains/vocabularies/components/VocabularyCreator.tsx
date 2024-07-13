@@ -13,9 +13,9 @@ import {
   WordsInputMode,
   wordsInputModes,
 } from '~/domains/vocabulary-testing/components/WordsInput';
-import { VocabularyToCreate } from '../resources/vocabulary-api';
 import { CountryCode } from '../../../components/country-select/countries';
 import { VocabularyItem } from '../model/vocabulary-model';
+import { VocabularyToCreate } from '../resources/vocabularies-resource';
 
 interface Props {
   onListCreate: (vocabulary: VocabularyToCreate) => void;

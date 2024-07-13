@@ -43,10 +43,10 @@ function setup() {
     id: 1,
     name: 'Vocabulary 1',
     country: 'cz',
-    hasSavedProgress: false,
-    vocabularyItems: [
+    vocabulary_items: [
       {
         id: 1,
+        created_at: '2021-01-01',
         list_id: 1,
         original: 'ahoj',
         translation: 'hello',
@@ -54,6 +54,7 @@ function setup() {
       },
       {
         id: 2,
+        created_at: '2021-01-01',
         list_id: 1,
         original: 'nashle',
         translation: 'bye',

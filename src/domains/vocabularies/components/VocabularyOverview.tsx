@@ -17,11 +17,11 @@ import { Skeleton } from '~/components/ui/skeleton';
 import {
   createVocabulary,
   deleteVocabulary,
+  VocabularyToCreate,
 } from '../resources/vocabularies-resource';
 import { Vocabulary } from '../model/vocabulary-model';
 import { VocabularyCard } from './VocabularyCard';
 import { VocabularyCreator } from './VocabularyCreator';
-import { VocabularyToCreate } from '../resources/vocabulary-api';
 
 export type Props = {
   vocabularyCreatorOpenAtInit?: boolean;

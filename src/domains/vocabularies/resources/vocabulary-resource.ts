@@ -1,6 +1,17 @@
 import { ResourceReturn, Setter, createResource, createSignal } from 'solid-js';
 import { Vocabulary, VocabularyItem } from '../model/vocabulary-model';
-import { VocabularyApi, VocabularyItemToCreate } from './vocabulary-api';
+import { VocabularyApi, VocabularyItemToCreateDB } from './vocabulary-api';
+import {
+  transformToVocabulary,
+  transformToVocabularyItem,
+  transformToVocabularyItemDB,
+} from './vocabulary-transform';
+import { RealOmit } from '../../../util/object';
+
+export type VocabularyItemToCreate = RealOmit<
+  VocabularyItem,
+  'id' | 'createdAt'
+>;
 
 let api: VocabularyApi;
 let vocabularyResource: ResourceReturn<Vocabulary | undefined>;
@@ -11,7 +22,9 @@ export const initVocabularyResource = (vocabularyApi: VocabularyApi) => {
 
   const [vocabularyId, _setVocabularyId] = createSignal<number>();
   setVocabularyId = _setVocabularyId;
-  vocabularyResource = createResource(vocabularyId, api.fetchVocabulary);
+  vocabularyResource = createResource(vocabularyId, id =>
+    api.fetchVocabulary(id).then(v => v && transformToVocabulary(v))
+  );
 };
 
 export const getVocabulary = (id: number) => {
@@ -36,13 +49,17 @@ export const createVocabularyItems = async (
   vocabularyId: number,
   ...items: VocabularyItemToCreate[]
 ) => {
-  const itemsToCreate = items.map(i => ({ ...i, list_id: vocabularyId }));
-  const createdItems = await api.createVocabularyItems(itemsToCreate);
-  const { mutate } = vocabularyResource[1];
+  const itemsToCreate = items.map(i =>
+    transformToVocabularyItemCreateDB({ ...i, vocabularyId })
+  );
+  const createdItemsDB = await api.createVocabularyItems(itemsToCreate);
 
-  if (createdItems == null) {
+  if (createdItemsDB == null) {
     return false;
   }
+
+  const createdItems = createdItemsDB.map(transformToVocabularyItem);
+  const { mutate } = vocabularyResource[1];
 
   mutate(v => ({
     ...v!,
@@ -67,7 +84,8 @@ export const deleteVocabularyItems = async (...ids: number[]) => {
 };
 
 export const updateVocabularyItems = async (...items: VocabularyItem[]) => {
-  const result = await api.updateVocabularyItems(items);
+  const itemsDB = items.map(transformToVocabularyItemDB);
+  const result = await api.updateVocabularyItems(itemsDB);
 
   if (!result) {
     return false;
@@ -85,3 +103,12 @@ export const updateVocabularyItems = async (...items: VocabularyItem[]) => {
 
   return true;
 };
+
+const transformToVocabularyItemCreateDB = (
+  item: VocabularyItemToCreate
+): VocabularyItemToCreateDB => ({
+  list_id: item.vocabularyId,
+  original: item.original,
+  translation: item.translation,
+  notes: item.notes,
+});

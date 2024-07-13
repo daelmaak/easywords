@@ -2,7 +2,8 @@ import { CountryCode } from '~/components/country-select/countries';
 
 export interface VocabularyItem {
   id: number;
-  list_id: number;
+  createdAt: Date;
+  vocabularyId: number;
   original: string;
   translation: string;
   notes: string | undefined;

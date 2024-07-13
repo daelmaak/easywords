@@ -1,8 +1,8 @@
 import { cleanup, render, screen } from '@solidjs/testing-library';
 import userEvent from '@testing-library/user-event';
 import { afterEach, expect, it, vi } from 'vitest';
-import { VocabularyToCreate } from '../resources/vocabulary-api';
 import { VocabularyCreator } from './VocabularyCreator';
+import { VocabularyToCreate } from '../resources/vocabularies-resource';
 
 afterEach(() => {
   cleanup();

@@ -1,23 +1,24 @@
 import { assert, expect, test } from 'vitest';
 import { initTestApp } from '~/init/test-init';
 import { tick } from '~/lib/testing';
-import { Vocabulary } from '../model/vocabulary-model';
 import {
   createVocabularyItems,
   getVocabulary,
   updateVocabularyItems,
+  VocabularyItemToCreate,
 } from './vocabulary-resource';
+import { VocabularyDB } from './vocabulary-api';
 
 test('updates the vocabulary resource on word edit', async () => {
   const { vocabularyApi, dispose } = setup();
-  const mockVocabulary: Vocabulary = {
+  const mockVocabulary: VocabularyDB = {
     id: 1,
     country: 'at',
     name: 'Test Vocabulary',
-    hasSavedProgress: false,
-    vocabularyItems: [
+    vocabulary_items: [
       {
         id: 1,
+        created_at: '2021-01-01',
         list_id: 1,
         original: 'original',
         translation: 'translation',
@@ -47,14 +48,14 @@ test('updates the vocabulary resource on word edit', async () => {
 
 test('updates the vocabulary resource on words addition', async () => {
   const { vocabularyApi, dispose } = setup();
-  const mockVocabulary: Vocabulary = {
+  const mockVocabulary: VocabularyDB = {
     id: 1,
     country: 'at',
     name: 'Test Vocabulary',
-    hasSavedProgress: false,
-    vocabularyItems: [
+    vocabulary_items: [
       {
         id: 1,
+        created_at: '2021-01-01',
         list_id: 1,
         original: 'original',
         translation: 'translation',
@@ -63,7 +64,8 @@ test('updates the vocabulary resource on words addition', async () => {
     ],
   };
 
-  const wordToAdd = {
+  const wordToAdd: VocabularyItemToCreate = {
+    vocabularyId: 1,
     original: 'new original',
     translation: 'new translation',
     notes: undefined,
@@ -71,7 +73,7 @@ test('updates the vocabulary resource on words addition', async () => {
 
   vocabularyApi.fetchVocabulary.mockResolvedValue(mockVocabulary);
   vocabularyApi.createVocabularyItems.mockResolvedValue([
-    { id: 2, list_id: 1, ...wordToAdd },
+    { id: 2, created_at: '2021-01-01', list_id: 1, ...wordToAdd },
   ]);
 
   const vocabulary = getVocabulary(1);

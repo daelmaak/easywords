@@ -5,10 +5,10 @@ import { createRoot } from 'solid-js';
 export const initTestApp = () => {
   const resources = {
     vocabularyApi: {
-      createVocabularyList: vi.fn(),
+      createVocabulary: vi.fn(),
       createVocabularyItems: vi.fn(),
       deleteVocabularyItems: vi.fn(),
-      deleteVocabularyList: vi.fn(),
+      deleteVocabulary: vi.fn(),
       fetchVocabulary: vi.fn(),
       fetchVocabularies: vi.fn(),
       fetchRecentVocabularies: vi.fn(),

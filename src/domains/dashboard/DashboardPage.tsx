@@ -1,17 +1,15 @@
 import { useNavigate } from '@solidjs/router';
 import { Component, For, createResource } from 'solid-js';
 import { VocabularyCard } from '../vocabularies/components/VocabularyCard';
-import { vocabularyApi } from '../vocabularies/resources/vocabulary-api';
 import { navigateToVocabularyTest } from '../vocabularies/util/navigation';
 import { Button } from '~/components/ui/button';
 import { HiOutlinePlus } from 'solid-icons/hi';
+import { fetchRecentVocabularies } from '../vocabularies/resources/vocabularies-resource';
 
 export const DashboardPage: Component = () => {
   const navigate = useNavigate();
 
-  const [recentVocabularies] = createResource(() =>
-    vocabularyApi.fetchRecentVocabularies(3)
-  );
+  const [recentVocabularies] = createResource(() => fetchRecentVocabularies(3));
 
   function onGoToVocabulary(id: number) {
     navigate(`/vocabulary/${id}`);
