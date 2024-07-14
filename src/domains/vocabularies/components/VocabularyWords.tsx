@@ -2,7 +2,7 @@ import { Component, For, Show, createSignal } from 'solid-js';
 import { Vocabulary, VocabularyItem } from '../model/vocabulary-model';
 import { Dialog, DialogContent, DialogHeader } from '~/components/ui/dialog';
 import { WordEditor } from './WordEditor';
-import { VocabularyEditorWord } from './VocabularyEditorWord';
+import { VocabularyWord } from './VocabularyWord';
 
 export interface SortState {
   by?: 'created_at' | undefined;
@@ -18,7 +18,7 @@ interface VocabularyEditorProps {
   onWordsSelected: (words: VocabularyItem[]) => void;
 }
 
-export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
+export const VocabularyWords: Component<VocabularyEditorProps> = props => {
   const [wordDetailToOpen, setWordDetailToOpen] =
     createSignal<VocabularyItem>();
 
@@ -45,7 +45,7 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
     setWordDetailToOpen(undefined);
   }
 
-  function onWordToggled(word: VocabularyItem, selected: boolean) {
+  function onWordSelected(word: VocabularyItem, selected: boolean) {
     const selectedWords = props.selectedWords;
     if (selected) {
       props.onWordsSelected([...selectedWords, word]);
@@ -75,9 +75,9 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
         <div class="w-full relative grid justify-center content-start gap-2 sm:grid-cols-[repeat(auto-fit,_22rem)]">
           <For each={props.words}>
             {word => (
-              <VocabularyEditorWord
+              <VocabularyWord
                 word={word}
-                onWordToggled={onWordToggled}
+                onWordSelected={onWordSelected}
                 onWordDetailToOpen={setWordDetailToOpen}
               />
             )}
@@ -96,9 +96,9 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
                     </h3>
                     <For each={words}>
                       {word => (
-                        <VocabularyEditorWord
+                        <VocabularyWord
                           word={word}
-                          onWordToggled={onWordToggled}
+                          onWordSelected={onWordSelected}
                           onWordDetailToOpen={setWordDetailToOpen}
                         />
                       )}
@@ -114,4 +114,4 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
   );
 };
 
-export default VocabularyEditor;
+export default VocabularyWords;

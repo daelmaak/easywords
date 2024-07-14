@@ -18,7 +18,7 @@ import {
   SheetTitle,
 } from '~/components/ui/sheet';
 import { WordsInput } from '../vocabulary-testing/components/WordsInput';
-import VocabularyEditor, { SortState } from './components/VocabularyEditor';
+import VocabularyWords, { SortState } from './components/VocabularyWords';
 import { VocabularyItem } from './model/vocabulary-model';
 import {
   createVocabularyItems,
@@ -211,7 +211,7 @@ export const VocabularyPage: Component = () => {
           </div>
           <Show when={vocabulary()}>
             {v => (
-              <VocabularyEditor
+              <VocabularyWords
                 words={searchedWords() ?? v().vocabularyItems}
                 selectedWords={selectedWords()}
                 sort={sortState()}
