@@ -136,11 +136,16 @@ export const VocabularyPage: Component = () => {
             )}
           </Show>
 
-          <div class="mt-8 flex flex-col gap-4">
-            <Button size="sm" onClick={() => setOpenedAddWords(true)}>
+          <div class="mt-8 flex flex-wrap gap-4">
+            <Button
+              class="grow"
+              size="sm"
+              onClick={() => setOpenedAddWords(true)}
+            >
               <HiOutlinePlus size={16} /> Add words
             </Button>
             <Button
+              class="grow"
               size="sm"
               variant="secondary"
               onClick={() => onTestVocabulary(vocabularyId)}
