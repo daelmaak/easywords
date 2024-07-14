@@ -80,7 +80,7 @@ const App: Component<Props> = props => {
           </DropdownMenu>
         </div>
       </nav>
-      <main class="flex-grow w-full grid">{props.children}</main>
+      <div class="flex-grow w-full grid">{props.children}</div>
     </>
   );
 };

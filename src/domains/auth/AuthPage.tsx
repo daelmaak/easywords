@@ -49,7 +49,7 @@ export const AuthPage = () => {
           </h1>
         </Show>
 
-        <div class="bg-white rounded-xl p-4 sm:min-w-96 sm:p-6">
+        <main class="bg-white rounded-xl p-4 sm:min-w-96 sm:p-6">
           <Show when={state() === 'signin'}>
             <h2 class="text-lg font-semibold text-center">
               Log into your account
@@ -69,7 +69,22 @@ export const AuthPage = () => {
               onSignUp={onSignedUp}
             />
           </Show>
-        </div>
+        </main>
+
+        <aside class="mt-16">
+          <h2 class="mb-4 text-center text-lg font-semibold">How to</h2>
+          <div style="padding-bottom:56.25%; position:relative; display:block; width: 100%">
+            <iframe
+              src="https://app.vidcast.io/share/embed/d851cd74-8275-4b09-8e62-ff0646e66b53"
+              width="100%"
+              height="100%"
+              title="Watch how to use Easywords"
+              loading="lazy"
+              allowfullscreen
+              style="position:absolute; top:0; left: 0;border: solid; border-radius:12px;"
+            ></iframe>
+          </div>
+        </aside>
       </div>
     </div>
   );

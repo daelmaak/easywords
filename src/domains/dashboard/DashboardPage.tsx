@@ -37,7 +37,7 @@ export const DashboardPage: Component = () => {
               src="https://app.vidcast.io/share/embed/d851cd74-8275-4b09-8e62-ff0646e66b53"
               width="100%"
               height="100%"
-              title="a11y - Navigating vs interacting webpages with NVDA"
+              title="Watch how to use Easywords"
               loading="lazy"
               allowfullscreen
               style="position:absolute; top:0; left: 0;border: solid; border-radius:12px;"
