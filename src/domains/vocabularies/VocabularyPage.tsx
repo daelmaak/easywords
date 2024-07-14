@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from '@solidjs/router';
 import {
   HiOutlineAcademicCap,
+  HiOutlineArrowsUpDown,
   HiOutlinePlus,
   HiOutlineTrash,
 } from 'solid-icons/hi';
@@ -17,7 +18,7 @@ import {
   SheetTitle,
 } from '~/components/ui/sheet';
 import { WordsInput } from '../vocabulary-testing/components/WordsInput';
-import VocabularyEditor from './components/VocabularyEditor';
+import VocabularyEditor, { SortState } from './components/VocabularyEditor';
 import { VocabularyItem } from './model/vocabulary-model';
 import {
   createVocabularyItems,
@@ -27,6 +28,12 @@ import {
   updateVocabularyItems,
 } from './resources/vocabulary-resource';
 import { navigateToVocabularyTest } from './util/navigation';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../../components/ui/dropdown-menu';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -37,6 +44,9 @@ export const VocabularyPage: Component = () => {
   const [selectedWords, setSelectedWords] = createSignal<VocabularyItem[]>([]);
   const [openedAddWords, setOpenedAddWords] = createSignal(false);
   const [creatingWords, setCreatingWords] = createSignal(false);
+  const [sortState, setSortState] = createSignal<SortState>({
+    asc: false,
+  });
 
   const vocabulary = getVocabulary(vocabularyId);
 
@@ -84,6 +94,10 @@ export const VocabularyPage: Component = () => {
     updateVocabulary({ id: vocabulary()?.id, name, country });
   }
 
+  function sort(sortProps: Partial<SortState>) {
+    setSortState(s => ({ ...s, ...sortProps }));
+  }
+
   return (
     <Show
       when={!vocabulary.loading}
@@ -105,36 +119,41 @@ export const VocabularyPage: Component = () => {
           </SheetContent>
         </Sheet>
 
-        <Show when={vocabulary()}>
-          {v => (
-            <form onFocusOut={onVocabularyDataChange}>
-              <Label for="vocabulary-name">List name</Label>
-              <Input
-                id="vocabulary-name"
-                name="vocabularyName"
-                value={v().name}
-              />
-              <div class="mt-4"></div>
-              <Label for="country">Country</Label>
-              <CountrySelect id="country" defaultValue={v().country} />
-            </form>
-          )}
-        </Show>
+        <div>
+          <Show when={vocabulary()}>
+            {v => (
+              <form onFocusOut={onVocabularyDataChange}>
+                <Label for="vocabulary-name">List name</Label>
+                <Input
+                  id="vocabulary-name"
+                  name="vocabularyName"
+                  value={v().name}
+                />
+                <div class="mt-4"></div>
+                <Label for="country">Country</Label>
+                <CountrySelect id="country" defaultValue={v().country} />
+              </form>
+            )}
+          </Show>
+
+          <div class="mt-8 flex flex-col gap-4">
+            <Button size="sm" onClick={() => setOpenedAddWords(true)}>
+              <HiOutlinePlus size={16} /> Add words
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => onTestVocabulary(vocabularyId)}
+            >
+              <HiOutlineAcademicCap />
+              Test
+            </Button>
+          </div>
+        </div>
 
         <div class="flex-grow flex flex-col items-center">
           <div class="sticky z-10 top-0 w-full flex flex-wrap justify-center items-center gap-2 bg-background p-4">
             <div class="flex gap-2">
-              <Button size="sm" onClick={() => setOpenedAddWords(true)}>
-                <HiOutlinePlus size={16} /> Add words
-              </Button>
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => onTestVocabulary(vocabularyId)}
-              >
-                <HiOutlineAcademicCap />
-                Test
-              </Button>
               <Show when={selectedWords().length > 0}>
                 <Button
                   size="sm"
@@ -145,26 +164,52 @@ export const VocabularyPage: Component = () => {
                 </Button>
               </Show>
             </div>
-            <Show when={vocabulary()}>
-              {v => (
-                <Search
-                  placeholder="Search words..."
-                  terms={v().vocabularyItems}
-                  searchKeys={['original', 'translation']}
-                  onSearch={setSearchedWords}
-                />
-              )}
-            </Show>
+            <div class="flex gap-2">
+              <Show when={vocabulary()}>
+                {v => (
+                  <Search
+                    placeholder="Search words..."
+                    terms={v().vocabularyItems}
+                    searchKeys={['original', 'translation']}
+                    onSearch={setSearchedWords}
+                  />
+                )}
+              </Show>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Button variant="ghost">
+                    <HiOutlineArrowsUpDown class="size-4" /> Sort
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent class="p-4">
+                  <DropdownMenuItem
+                    class="text-base"
+                    onClick={() => sort({ by: 'created_at', asc: true })}
+                  >
+                    Oldest to newest
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    class="text-base"
+                    onClick={() => sort({ by: 'created_at', asc: false })}
+                  >
+                    Newest to oldest
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    class="text-base"
+                    onClick={() => sort({ by: undefined })}
+                  >
+                    None
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
           <Show when={vocabulary()}>
             {v => (
               <VocabularyEditor
                 words={searchedWords() ?? v().vocabularyItems}
                 selectedWords={selectedWords()}
-                sort={{
-                  by: 'created_at',
-                  asc: false,
-                }}
+                sort={sortState()}
                 vocabulary={v()}
                 onWordsEdited={onWordsEdited}
                 onWordsSelected={setSelectedWords}

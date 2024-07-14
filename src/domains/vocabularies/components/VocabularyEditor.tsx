@@ -4,13 +4,15 @@ import { Dialog, DialogContent, DialogHeader } from '~/components/ui/dialog';
 import { WordEditor } from './WordEditor';
 import { VocabularyEditorWord } from './VocabularyEditorWord';
 
+export interface SortState {
+  by?: 'created_at' | undefined;
+  asc: boolean;
+}
+
 interface VocabularyEditorProps {
   words: VocabularyItem[];
   selectedWords: VocabularyItem[];
-  sort?: {
-    asc: boolean;
-    by: 'created_at';
-  };
+  sort?: SortState;
   vocabulary: Vocabulary;
   onWordsEdited: (words: VocabularyItem[]) => void;
   onWordsSelected: (words: VocabularyItem[]) => void;
