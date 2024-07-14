@@ -161,6 +161,10 @@ export const VocabularyPage: Component = () => {
               <VocabularyEditor
                 words={searchedWords() ?? v().vocabularyItems}
                 selectedWords={selectedWords()}
+                sort={{
+                  by: 'created_at',
+                  asc: false,
+                }}
                 vocabulary={v()}
                 onWordsEdited={onWordsEdited}
                 onWordsSelected={setSelectedWords}
