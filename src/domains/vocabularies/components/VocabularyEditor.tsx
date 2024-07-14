@@ -1,18 +1,16 @@
 import { Component, For, Show, createSignal } from 'solid-js';
-import { Checkbox } from '~/components/ui/checkbox';
 import { Vocabulary, VocabularyItem } from '../model/vocabulary-model';
 import { Dialog, DialogContent, DialogHeader } from '~/components/ui/dialog';
 import { WordEditor } from './WordEditor';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '~/components/ui/popover';
-import { HiOutlinePencil, HiSolidInformationCircle } from 'solid-icons/hi';
+import { VocabularyEditorWord } from './VocabularyEditorWord';
 
 interface VocabularyEditorProps {
   words: VocabularyItem[];
   selectedWords: VocabularyItem[];
+  sort?: {
+    asc: boolean;
+    by: 'created_at';
+  };
   vocabulary: Vocabulary;
   onWordsEdited: (words: VocabularyItem[]) => void;
   onWordsSelected: (words: VocabularyItem[]) => void;
@@ -21,6 +19,24 @@ interface VocabularyEditorProps {
 export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
   const [wordDetailToOpen, setWordDetailToOpen] =
     createSignal<VocabularyItem>();
+
+  const groupedWordsByCreatedAt = () =>
+    props.words.reduce((acc, word) => {
+      const createdAt = `${word.createdAt.getFullYear()}.${
+        word.createdAt.getMonth() + 1
+      }.${word.createdAt.getDate()}`;
+      if (!acc[createdAt]) {
+        acc[createdAt] = [];
+      }
+      acc[createdAt].push(word);
+      return acc;
+    }, {} as Record<string, VocabularyItem[]>);
+
+  const sortedWordsByCreatedAt = (asc: boolean) => {
+    return Object.entries(groupedWordsByCreatedAt()).sort(([a], [b]) =>
+      asc ? a.localeCompare(b) : b.localeCompare(a)
+    );
+  };
 
   function onWordEdited(word: VocabularyItem) {
     props.onWordsEdited([word]);
@@ -53,37 +69,45 @@ export const VocabularyEditor: Component<VocabularyEditorProps> = props => {
           </Dialog>
         )}
       </Show>
-      <div class="w-full relative grid justify-center content-start gap-2 sm:grid-cols-[repeat(auto-fit,_22rem)]">
-        <For each={props.words}>
-          {word => (
-            <>
-              <div class="flex items-center gap-2" data-testid="editor-word">
-                <Checkbox onChange={checked => onWordToggled(word, checked)} />
-                <span>{word.original}</span>
-                <span class="mx-2 text-center">-</span>
-                <span>{word.translation}</span>
-                <HiOutlinePencil
-                  class="mt-1 opacity-50 cursor-pointer hover:opacity-80"
-                  title="Edit word"
-                  onClick={() => setWordDetailToOpen(word)}
-                />
-                <Show when={word.notes}>
-                  <Popover>
-                    <PopoverTrigger>
-                      <HiSolidInformationCircle
-                        class="mt-1 text-blue-600 hover:text-blue-900"
-                        size={20}
-                        title="Show notes"
-                      />
-                    </PopoverTrigger>
-                    <PopoverContent>{word.notes}</PopoverContent>
-                  </Popover>
-                </Show>
-              </div>
-            </>
-          )}
-        </For>
-      </div>
+      <Show when={props.sort?.by == null}>
+        <div class="w-full relative grid justify-center content-start gap-2 sm:grid-cols-[repeat(auto-fit,_22rem)]">
+          <For each={props.words}>
+            {word => (
+              <VocabularyEditorWord
+                word={word}
+                onWordToggled={onWordToggled}
+                onWordDetailToOpen={setWordDetailToOpen}
+              />
+            )}
+          </For>
+        </div>
+      </Show>
+      <Show when={props.sort}>
+        {sort => (
+          <Show when={sort().by === 'created_at'}>
+            <div>
+              <For each={sortedWordsByCreatedAt(sort().asc)}>
+                {([, words]) => (
+                  <section>
+                    <h3 class="mt-4 mb-2 w-full">
+                      {words[0].createdAt.toDateString()}
+                    </h3>
+                    <For each={words}>
+                      {word => (
+                        <VocabularyEditorWord
+                          word={word}
+                          onWordToggled={onWordToggled}
+                          onWordDetailToOpen={setWordDetailToOpen}
+                        />
+                      )}
+                    </For>
+                  </section>
+                )}
+              </For>
+            </div>
+          </Show>
+        )}
+      </Show>
     </>
   );
 };
