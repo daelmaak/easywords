@@ -215,7 +215,6 @@ export const VocabularyPage: Component = () => {
                 words={searchedWords() ?? v().vocabularyItems}
                 selectedWords={selectedWords()}
                 sort={sortState()}
-                vocabulary={v()}
                 onWordsEdited={onWordsEdited}
                 onWordsSelected={setSelectedWords}
               />
