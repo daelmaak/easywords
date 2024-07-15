@@ -1,6 +1,7 @@
 import { initVocabulariesResource } from '~/domains/vocabularies/resources/vocabularies-resource';
+import type {
+  VocabularyApi} from '~/domains/vocabularies/resources/vocabulary-api';
 import {
-  VocabularyApi,
   vocabularyApi,
 } from '~/domains/vocabularies/resources/vocabulary-api';
 import { initVocabularyResource } from '~/domains/vocabularies/resources/vocabulary-resource';

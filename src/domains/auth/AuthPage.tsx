@@ -1,5 +1,5 @@
 import { Show, createSignal } from 'solid-js';
-import { AuthMode } from './model';
+import type { AuthMode } from './model';
 import { useLocation } from '@solidjs/router';
 import { AuthForm } from './AuthForm';
 import logo from '../../assets/logo.svg';

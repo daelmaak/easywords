@@ -1,5 +1,5 @@
-import { ConjugationLang } from '../../model/lang';
-import { Conjugation } from './conjugation';
+import type { ConjugationLang } from '../../model/lang';
+import type { Conjugation } from './conjugation';
 
 // Regarding 2p, it would be nice to map it to more readable forms
 const unusedPersons = ['vós', '2p'];

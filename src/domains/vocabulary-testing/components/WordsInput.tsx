@@ -3,7 +3,7 @@ import { For, Show, createSignal } from 'solid-js';
 import { Badge } from '~/components/ui/badge';
 import { Textarea } from '~/components/ui/textarea';
 import { WordCreator } from '~/domains/vocabularies/components/WordCreator';
-import { WordTranslation } from '~/model/word-translation';
+import type { WordTranslation } from '~/model/word-translation';
 
 export type WordsInputMode = 'text' | 'form';
 export const wordsInputModes: WordsInputMode[] = ['form', 'text'];

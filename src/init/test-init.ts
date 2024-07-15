@@ -1,5 +1,6 @@
 import { vi } from 'vitest';
-import { ResourcesInit, initApp } from './app-init';
+import type { ResourcesInit} from './app-init';
+import { initApp } from './app-init';
 import { createRoot } from 'solid-js';
 
 export const initTestApp = () => {

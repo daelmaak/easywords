@@ -1,4 +1,5 @@
-import { Component, For, createSignal } from 'solid-js';
+import type { Component} from 'solid-js';
+import { For, createSignal } from 'solid-js';
 import { CountrySelect } from '~/components/country-select/country-select';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
@@ -8,14 +9,15 @@ import {
   RadioGroupItem,
   RadioGroupItemLabel,
 } from '~/components/ui/radio-group';
+import type {
+  WordsInputMode} from '~/domains/vocabulary-testing/components/WordsInput';
 import {
   WordsInput,
-  WordsInputMode,
   wordsInputModes,
 } from '~/domains/vocabulary-testing/components/WordsInput';
-import { CountryCode } from '../../../components/country-select/countries';
-import { VocabularyItem } from '../model/vocabulary-model';
-import { VocabularyToCreate } from '../resources/vocabularies-resource';
+import type { CountryCode } from '../../../components/country-select/countries';
+import type { VocabularyItem } from '../model/vocabulary-model';
+import type { VocabularyToCreate } from '../resources/vocabularies-resource';
 
 interface Props {
   onListCreate: (vocabulary: VocabularyToCreate) => void;

@@ -1,7 +1,8 @@
 import { get, set } from 'idb-keyval';
-import { Component, Show, createEffect, createSignal } from 'solid-js';
+import type { Component} from 'solid-js';
+import { Show, createEffect, createSignal } from 'solid-js';
 import { Switch } from '~/components/ui/switch';
-import { VocabularyTestMode } from './VocabularyTester';
+import type { VocabularyTestMode } from './VocabularyTester';
 
 export interface VocabularyTesterSettings {
   mode: VocabularyTestMode;

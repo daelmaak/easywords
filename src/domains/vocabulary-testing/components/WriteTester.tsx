@@ -5,8 +5,9 @@ import {
   HiOutlineForward,
   HiOutlineXCircle,
 } from 'solid-icons/hi';
+import type {
+  Component} from 'solid-js';
 import {
-  Component,
   Show,
   createEffect,
   createMemo,
@@ -15,7 +16,7 @@ import {
 } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
-import { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
+import type { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
 
 export interface WriteTesterInstance {
   input: HTMLInputElement;

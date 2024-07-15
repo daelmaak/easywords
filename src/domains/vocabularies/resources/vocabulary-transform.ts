@@ -1,5 +1,5 @@
-import { Vocabulary, VocabularyItem } from '../model/vocabulary-model';
-import { VocabularyDB, VocabularyItemDB } from './vocabulary-api';
+import type { Vocabulary, VocabularyItem } from '../model/vocabulary-model';
+import type { VocabularyDB, VocabularyItemDB } from './vocabulary-api';
 
 export const transformToVocabulary = (vocabulary: VocabularyDB): Vocabulary => {
   return {

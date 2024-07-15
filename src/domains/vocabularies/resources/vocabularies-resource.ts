@@ -1,6 +1,7 @@
-import { ResourceReturn, createResource } from 'solid-js';
-import { Vocabulary } from '../model/vocabulary-model';
-import {
+import type { ResourceReturn} from 'solid-js';
+import { createResource } from 'solid-js';
+import type { Vocabulary } from '../model/vocabulary-model';
+import type {
   VocabularyApi,
   VocabularyDB,
   VocabularyToCreateDB,
@@ -10,7 +11,7 @@ import {
   transformToVocabularyItemDB,
 } from './vocabulary-transform';
 import { fetchVocabularyProgress } from './vocabulary-progress-api';
-import { RealOmit } from '../../../util/object';
+import type { RealOmit } from '../../../util/object';
 
 export type VocabularyToCreate = RealOmit<
   Vocabulary,

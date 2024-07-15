@@ -1,4 +1,5 @@
-import { Component, Show, createSignal } from 'solid-js';
+import type { Component} from 'solid-js';
+import { Show, createSignal } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import {
@@ -9,7 +10,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '~/components/ui/select';
-import { CONJUGATION_LANGS, ConjugationLang } from '~/model/lang';
+import type { ConjugationLang } from '~/model/lang';
+import { CONJUGATION_LANGS } from '~/model/lang';
 
 interface Props {
   lang?: ConjugationLang;

@@ -1,5 +1,5 @@
 import { get, set } from "idb-keyval";
-import { SavedProgress } from "~/domains/vocabulary-testing/vocabulary-testing-model";
+import type { SavedProgress } from "~/domains/vocabulary-testing/vocabulary-testing-model";
 
 export const deleteVocabularyProgress = async (vocabularyId: number) => {
   await set(`vocabulary.${vocabularyId}.progress`, undefined);

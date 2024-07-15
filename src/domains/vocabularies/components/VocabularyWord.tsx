@@ -1,12 +1,13 @@
 import { HiOutlinePencil, HiSolidInformationCircle } from 'solid-icons/hi';
-import { Component, Show } from 'solid-js';
+import type { Component} from 'solid-js';
+import { Show } from 'solid-js';
 import {
   PopoverTrigger,
   PopoverContent,
   Popover,
 } from '../../../components/ui/popover';
 import { Checkbox } from '../../../components/ui/checkbox';
-import { VocabularyItem } from '../model/vocabulary-model';
+import type { VocabularyItem } from '../model/vocabulary-model';
 
 interface Props {
   word: VocabularyItem;

@@ -1,19 +1,20 @@
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
 import { Show, createEffect, createSignal, onMount } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { VocabularyItem } from '../vocabularies/model/vocabulary-model';
+import type { VocabularyItem } from '../vocabularies/model/vocabulary-model';
 import {
   deleteVocabularyProgress,
   fetchVocabularyProgress,
   saveVocabularyProgress,
 } from '../vocabularies/resources/vocabulary-progress-api';
 import { Results } from './components/Results';
+import type {
+  VocabularyTesterSettings} from './components/VocabularySettings';
 import {
-  VocabularySettings,
-  VocabularyTesterSettings,
+  VocabularySettings
 } from './components/VocabularySettings';
 import { VocabularyTester } from './components/VocabularyTester';
-import { SavedProgress } from './vocabulary-testing-model';
+import type { SavedProgress } from './vocabulary-testing-model';
 import {
   deleteVocabularyItems,
   getVocabulary,

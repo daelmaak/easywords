@@ -1,7 +1,8 @@
-import { Show, splitProps, ValidComponent } from 'solid-js';
+import type { ValidComponent } from 'solid-js';
+import { Show, splitProps } from 'solid-js';
 
 import * as CheckboxPrimitive from '@kobalte/core/checkbox';
-import { PolymorphicProps } from '@kobalte/core/polymorphic';
+import type { PolymorphicProps } from '@kobalte/core/polymorphic';
 
 import { cn } from '~/lib/utils';
 import { HiOutlineMinus } from 'solid-icons/hi';

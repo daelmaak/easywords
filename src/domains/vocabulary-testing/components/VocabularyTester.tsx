@@ -1,15 +1,16 @@
 import { HiOutlineEye, HiOutlinePencil, HiOutlineTrash } from 'solid-icons/hi';
-import { Component, Show, onCleanup, onMount } from 'solid-js';
+import type { Component} from 'solid-js';
+import { Show, onCleanup, onMount } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { Button } from '~/components/ui/button';
 import { Dialog, DialogContent } from '~/components/ui/dialog';
 import { Progress, ProgressValueLabel } from '~/components/ui/progress';
 import { WordCreator } from '~/domains/vocabularies/components/WordCreator';
-import { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
+import type { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
 import { nextWord } from '../../../worder/worder';
-import { SavedProgress } from '../vocabulary-testing-model';
+import type { SavedProgress } from '../vocabulary-testing-model';
 import { WriteTester } from './WriteTester';
-import { VocabularyTesterSettings } from './VocabularySettings';
+import type { VocabularyTesterSettings } from './VocabularySettings';
 import { unionBy } from 'lodash-es';
 
 export type VocabularyTestMode = 'guess' | 'write';

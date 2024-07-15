@@ -2,7 +2,7 @@ import { cleanup, render } from '@solidjs/testing-library';
 import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { createSignal } from 'solid-js';
 import { afterEach, expect, it, vi } from 'vitest';
-import { VocabularyItem } from '../model/vocabulary-model';
+import type { VocabularyItem } from '../model/vocabulary-model';
 import VocabularyWords from './VocabularyWords';
 
 afterEach(() => {

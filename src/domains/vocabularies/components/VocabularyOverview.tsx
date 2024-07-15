@@ -1,5 +1,6 @@
 import { HiOutlinePlus } from 'solid-icons/hi';
-import { Component, For, ResourceReturn, Show, createSignal } from 'solid-js';
+import type { Component, ResourceReturn} from 'solid-js';
+import { For, Show, createSignal } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import {
   Dialog,
@@ -14,12 +15,13 @@ import {
   SheetTitle,
 } from '~/components/ui/sheet';
 import { Skeleton } from '~/components/ui/skeleton';
+import type {
+  VocabularyToCreate} from '../resources/vocabularies-resource';
 import {
   createVocabulary,
-  deleteVocabulary,
-  VocabularyToCreate,
+  deleteVocabulary
 } from '../resources/vocabularies-resource';
-import { Vocabulary } from '../model/vocabulary-model';
+import type { Vocabulary } from '../model/vocabulary-model';
 import { VocabularyCard } from './VocabularyCard';
 import { VocabularyCreator } from './VocabularyCreator';
 

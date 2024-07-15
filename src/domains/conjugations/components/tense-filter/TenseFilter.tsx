@@ -1,6 +1,7 @@
-import { Component, For } from 'solid-js';
-import { ConjugationLang } from '../../../../model/lang';
-import { ConjugationsByMood } from '../../conjugation';
+import type { Component} from 'solid-js';
+import { For } from 'solid-js';
+import type { ConjugationLang } from '../../../../model/lang';
+import type { ConjugationsByMood } from '../../conjugation';
 import { Chips } from '../Chips';
 import { TenseFilterList } from './TenseFilterList';
 

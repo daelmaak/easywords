@@ -1,6 +1,6 @@
 import { A } from '@solidjs/router';
 import { HiOutlineBars3 } from 'solid-icons/hi';
-import { Component, JSX } from 'solid-js';
+import type { Component, JSX } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import { signOut } from '~/domains/auth/auth-resource';
 import logo from '../assets/logo.svg';

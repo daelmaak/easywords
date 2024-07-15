@@ -1,5 +1,6 @@
-import { Component, For, Show, createSignal } from 'solid-js';
-import { VocabularyItem } from '../model/vocabulary-model';
+import type { Component} from 'solid-js';
+import { For, Show, createSignal } from 'solid-js';
+import type { VocabularyItem } from '../model/vocabulary-model';
 import { Dialog, DialogContent, DialogHeader } from '~/components/ui/dialog';
 import { WordEditor } from './WordEditor';
 import { VocabularyWord } from './VocabularyWord';

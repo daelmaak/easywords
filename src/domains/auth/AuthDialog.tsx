@@ -1,4 +1,5 @@
-import { Component, JSX, Show, createSignal } from 'solid-js';
+import type { Component, JSX} from 'solid-js';
+import { Show, createSignal } from 'solid-js';
 import {
   Dialog,
   DialogContent,
@@ -7,7 +8,7 @@ import {
   DialogTrigger,
 } from '~/components/ui/dialog';
 import { AuthForm } from './AuthForm';
-import { AuthMode } from './model';
+import type { AuthMode } from './model';
 
 interface Props {
   mode: AuthMode;

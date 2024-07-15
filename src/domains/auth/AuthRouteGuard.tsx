@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from '@solidjs/router';
-import { Component, createEffect, JSX, Show } from 'solid-js';
+import type { Component, JSX} from 'solid-js';
+import { createEffect, Show } from 'solid-js';
 import { sessionResource, isLoggedIn } from './auth-resource';
 
 interface IndexProps {

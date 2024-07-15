@@ -5,7 +5,8 @@ import {
   HiOutlinePlus,
   HiOutlineTrash,
 } from 'solid-icons/hi';
-import { Component, Show, createSignal } from 'solid-js';
+import type { Component} from 'solid-js';
+import { Show, createSignal } from 'solid-js';
 import { CountrySelect } from '~/components/country-select/country-select';
 import { Search } from '~/components/search/Search';
 import { Button } from '~/components/ui/button';
@@ -18,8 +19,9 @@ import {
   SheetTitle,
 } from '~/components/ui/sheet';
 import { WordsInput } from '../vocabulary-testing/components/WordsInput';
-import VocabularyWords, { SortState } from './components/VocabularyWords';
-import { VocabularyItem } from './model/vocabulary-model';
+import type { SortState } from './components/VocabularyWords';
+import VocabularyWords from './components/VocabularyWords';
+import type { VocabularyItem } from './model/vocabulary-model';
 import {
   createVocabularyItems,
   deleteVocabularyItems,

@@ -1,10 +1,11 @@
-import { AuthError } from '@supabase/supabase-js';
-import { Component, Show, createSignal } from 'solid-js';
+import type { AuthError } from '@supabase/supabase-js';
+import type { Component} from 'solid-js';
+import { Show, createSignal } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { signIn, signUp } from './auth-resource';
-import { AuthMode } from './model';
+import type { AuthMode } from './model';
 
 interface Props {
   mode: AuthMode;

@@ -1,10 +1,10 @@
 import { afterEach, expect, it, vi } from 'vitest';
 import { VocabularyTester } from './VocabularyTester';
 import { cleanup, render, screen } from '@solidjs/testing-library';
-import { VocabularyTesterSettings } from './VocabularySettings';
+import type { VocabularyTesterSettings } from './VocabularySettings';
 import userEvent from '@testing-library/user-event';
 import { createSignal } from 'solid-js';
-import { VocabularyItem } from '../../vocabularies/model/vocabulary-model';
+import type { VocabularyItem } from '../../vocabularies/model/vocabulary-model';
 
 const TEST_WORDS: VocabularyItem[] = [
   {

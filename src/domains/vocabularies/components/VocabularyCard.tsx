@@ -3,7 +3,8 @@ import {
   HiOutlinePencil,
   HiOutlineTrash,
 } from 'solid-icons/hi';
-import { Component, For, Show } from 'solid-js';
+import type { Component} from 'solid-js';
+import { For, Show } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import {
   Card,
@@ -12,7 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/ui/card';
-import { Vocabulary } from '../model/vocabulary-model';
+import type { Vocabulary } from '../model/vocabulary-model';
 
 export type Props = {
   vocabulary: Vocabulary;

@@ -1,4 +1,4 @@
-import { ConjugationLang } from '../../model/lang';
+import type { ConjugationLang } from '../../model/lang';
 
 type PreferredTenses = {
   [lang in ConjugationLang]: {

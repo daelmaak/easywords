@@ -1,4 +1,4 @@
-import { CountryCode } from '~/components/country-select/countries';
+import type { CountryCode } from '~/components/country-select/countries';
 
 export interface VocabularyItem {
   id: number;

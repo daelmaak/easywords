@@ -1,6 +1,7 @@
 import { supabase } from '~/lib/supabase-client';
-import { RealOmit, omit } from '~/util/object';
-import { QueryData } from '@supabase/supabase-js';
+import type { RealOmit} from '~/util/object';
+import { omit } from '~/util/object';
+import type { QueryData } from '@supabase/supabase-js';
 
 export type VocabularyItemToCreateDB = RealOmit<
   VocabularyItemDB,

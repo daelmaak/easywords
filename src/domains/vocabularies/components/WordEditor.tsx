@@ -1,5 +1,5 @@
-import { Component } from 'solid-js';
-import { VocabularyItem } from '../model/vocabulary-model';
+import type { Component } from 'solid-js';
+import type { VocabularyItem } from '../model/vocabulary-model';
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
 import { processFormSubmit } from '~/util/form';

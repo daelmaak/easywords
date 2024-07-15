@@ -1,5 +1,6 @@
 import { useNavigate } from '@solidjs/router';
-import { Component, For, createResource } from 'solid-js';
+import type { Component} from 'solid-js';
+import { For, createResource } from 'solid-js';
 import { VocabularyCard } from '../vocabularies/components/VocabularyCard';
 import { navigateToVocabularyTest } from '../vocabularies/util/navigation';
 import { Button } from '~/components/ui/button';

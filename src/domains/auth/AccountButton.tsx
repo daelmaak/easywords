@@ -1,5 +1,6 @@
 import { HiOutlineUser } from 'solid-icons/hi';
-import { Component, Show } from 'solid-js';
+import type { Component} from 'solid-js';
+import { Show } from 'solid-js';
 import { AuthDialog } from './AuthDialog';
 import { Button } from '~/components/ui/button';
 import {

@@ -1,17 +1,20 @@
 import { useNavigate, useParams } from '@solidjs/router';
 import { get, set } from 'idb-keyval';
-import { Component, Show, onMount } from 'solid-js';
+import type { Component} from 'solid-js';
+import { Show, onMount } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { ConjugationLang } from '~/model/lang';
+import type { ConjugationLang } from '~/model/lang';
+import type {
+  Conjugation} from '../conjugation';
 import {
-  Conjugation,
   groupConjugationsByMood,
   groupConjugationsByTense,
 } from '../conjugation';
 import { fetchConjugationsByTense } from '../conjugations-api';
 import { ConjugationsResults } from './ConjugationsResults';
+import type {
+  ConjugationValidations} from './ConjugationsTester';
 import {
-  ConjugationValidations,
   ConjugationsTester,
 } from './ConjugationsTester';
 import { VerbInput } from './VerbInput';

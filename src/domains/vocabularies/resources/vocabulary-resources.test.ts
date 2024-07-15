@@ -1,13 +1,14 @@
 import { assert, expect, test } from 'vitest';
 import { initTestApp } from '~/init/test-init';
 import { tick } from '~/lib/testing';
+import type {
+  VocabularyItemToCreate} from './vocabulary-resource';
 import {
   createVocabularyItems,
   getVocabulary,
-  updateVocabularyItems,
-  VocabularyItemToCreate,
+  updateVocabularyItems
 } from './vocabulary-resource';
-import { VocabularyDB } from './vocabulary-api';
+import type { VocabularyDB } from './vocabulary-api';
 
 test('updates the vocabulary resource on word edit', async () => {
   const { vocabularyApi, dispose } = setup();

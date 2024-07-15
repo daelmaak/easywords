@@ -1,8 +1,10 @@
-import { Component, createSignal, For, Show } from 'solid-js';
+import type { Component} from 'solid-js';
+import { createSignal, For, Show } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { Conjugation, ConjugationByTense } from '../conjugation';
+import type { Conjugation, ConjugationByTense } from '../conjugation';
+import type {
+  WriteTesterInstance} from '~/domains/vocabulary-testing/components/WriteTester';
 import {
-  WriteTesterInstance,
   WriteTester,
 } from '~/domains/vocabulary-testing/components/WriteTester';
 import { Button } from '~/components/ui/button';

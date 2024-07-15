@@ -1,12 +1,13 @@
-import { ResourceReturn, Setter, createResource, createSignal } from 'solid-js';
-import { Vocabulary, VocabularyItem } from '../model/vocabulary-model';
-import { VocabularyApi, VocabularyItemToCreateDB } from './vocabulary-api';
+import type { ResourceReturn, Setter} from 'solid-js';
+import { createResource, createSignal } from 'solid-js';
+import type { Vocabulary, VocabularyItem } from '../model/vocabulary-model';
+import type { VocabularyApi, VocabularyItemToCreateDB } from './vocabulary-api';
 import {
   transformToVocabulary,
   transformToVocabularyItem,
   transformToVocabularyItemDB,
 } from './vocabulary-transform';
-import { RealOmit } from '../../../util/object';
+import type { RealOmit } from '../../../util/object';
 
 export type VocabularyItemToCreate = RealOmit<
   VocabularyItem,

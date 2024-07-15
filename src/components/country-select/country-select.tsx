@@ -8,7 +8,8 @@ import {
   ComboboxItemLabel,
   ComboboxTrigger,
 } from '../ui/combobox';
-import { COUNTRIES, COUNTRY_CODES, CountryCode } from './countries';
+import type { CountryCode } from './countries';
+import { COUNTRIES, COUNTRY_CODES } from './countries';
 
 import '/node_modules/flag-icons/css/flag-icons.min.css';
 

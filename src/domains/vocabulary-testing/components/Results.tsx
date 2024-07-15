@@ -1,8 +1,8 @@
 import { HiOutlineCheck } from 'solid-icons/hi';
 import { Show } from 'solid-js';
 import { Button } from '~/components/ui/button';
-import { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
-import { WordTranslation } from '~/model/word-translation';
+import type { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
+import type { WordTranslation } from '~/model/word-translation';
 
 interface ResultsProps {
   invalidWords?: VocabularyItem[];

@@ -1,4 +1,4 @@
-import { Navigator } from '@solidjs/router';
+import type { Navigator } from '@solidjs/router';
 
 export function navigateToVocabularyTest(
   id: number,
