@@ -26,11 +26,9 @@ export const VocabularyWord: Component<Props> = props => {
       window.getSelection()?.removeAllRanges();
     }
 
-    if (props.selected) {
-      return props.onWordSelected(props.word, false);
-    }
-
-    props.onWordSelected(props.word, true, { shiftSelection: e.shiftKey });
+    props.onWordSelected(props.word, !props.selected, {
+      shiftSelection: e.shiftKey,
+    });
   }
 
   return (

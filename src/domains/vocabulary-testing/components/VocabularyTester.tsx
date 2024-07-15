@@ -6,11 +6,11 @@ import { Dialog, DialogContent } from '~/components/ui/dialog';
 import { Progress, ProgressValueLabel } from '~/components/ui/progress';
 import { WordCreator } from '~/domains/vocabularies/components/WordCreator';
 import { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
-import { mergeWords } from '../../../util/merge-arrays';
 import { nextWord } from '../../../worder/worder';
 import { SavedProgress } from '../vocabulary-testing-model';
 import { WriteTester } from './WriteTester';
 import { VocabularyTesterSettings } from './VocabularySettings';
+import { unionBy } from 'lodash-es';
 
 export type VocabularyTestMode = 'guess' | 'write';
 
@@ -107,9 +107,10 @@ export const VocabularyTester: Component<TesterProps> = (
   });
 
   function finish() {
-    const invalidAndLeftoverWords = mergeWords(
+    const invalidAndLeftoverWords = unionBy(
       store.invalidWords,
-      store.wordsLeft
+      store.wordsLeft,
+      'id'
     );
     props.onDone(invalidAndLeftoverWords);
 
