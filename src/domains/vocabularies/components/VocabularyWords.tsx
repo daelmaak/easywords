@@ -1,4 +1,4 @@
-import type { Component} from 'solid-js';
+import type { Component } from 'solid-js';
 import { For, Show, createSignal } from 'solid-js';
 import type { VocabularyItem } from '../model/vocabulary-model';
 import { Dialog, DialogContent, DialogHeader } from '~/components/ui/dialog';
@@ -42,6 +42,11 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
     );
   };
 
+  const sortedWords = () =>
+    props.sort?.by === 'created_at'
+      ? sortedWordsByCreatedAt(props.sort.asc).flatMap(([, ws]) => ws)
+      : props.words;
+
   const wordSelected = (word: VocabularyItem) =>
     !!props.selectedWords.find(sw => word.id === sw.id);
 
@@ -55,13 +60,13 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
     selected: boolean,
     meta?: { shiftSelection: boolean }
   ) {
-    const wordIndex = props.words.findIndex(w => w.id === word.id);
+    const wordIndex = sortedWords().findIndex(w => w.id === word.id);
     let selectedWords: VocabularyItem[] = [word];
 
     if (meta?.shiftSelection) {
       const startIndex = Math.min(lastSelectedWordIndex(), wordIndex);
       const endIndex = Math.max(lastSelectedWordIndex(), wordIndex);
-      selectedWords = props.words.slice(startIndex, endIndex + 1);
+      selectedWords = sortedWords().slice(startIndex, endIndex + 1);
     }
 
     if (selected) {

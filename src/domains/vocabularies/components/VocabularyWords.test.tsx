@@ -84,10 +84,49 @@ function setup() {
   };
 }
 
-function generateWords(amount: number): VocabularyItem[] {
+it('should shift select all items in between when sorted by date added', async () => {
+  const { onWordEdited, user } = setup();
+
+  const [selectedWords, setSelectedWords] = createSignal<VocabularyItem[]>([]);
+  // I have to "randomize" the dates a little so that the words stack up differently
+  // than in the default sorting.
+  const words = generateWords(5, {
+    createdAtFn: i => new Date(2021, 1, i % 2 > 0 ? 1 : 2),
+  });
+
+  const { getAllByRole } = render(() => (
+    <VocabularyWords
+      words={words}
+      selectedWords={selectedWords()}
+      sort={{ by: 'created_at', asc: false }}
+      onWordsEdited={onWordEdited}
+      onWordsSelected={setSelectedWords}
+    />
+  ));
+
+  const checkboxes: HTMLInputElement[] = getAllByRole('checkbox');
+  // This shit should be fixed in Kobalte since clicking the input should work just fine.
+  // Yet it doesn't check the visual checkbox so I have to click the sibling div instead.
+  const checkboxControls = getAllByRole('checkbox').map(
+    e => e.nextElementSibling!
+  );
+  await user.click(checkboxControls[0]);
+
+  await shiftClick(checkboxControls[3], user);
+
+  expect(selectedWords()).toHaveLength(4);
+
+  const checkedCheckboxes = checkboxes.filter(e => e.checked);
+  expect(checkedCheckboxes).toHaveLength(4);
+});
+
+function generateWords(
+  amount: number,
+  config?: { createdAtFn: (i: number) => Date }
+): VocabularyItem[] {
   return Array.from({ length: amount }, (_, i) => ({
     id: i,
-    createdAt: new Date(),
+    createdAt: config?.createdAtFn?.(i) ?? new Date(),
     vocabularyId: 1,
     original: 'hello_' + i,
     translation: 'ahoj' + i,
