@@ -1,5 +1,5 @@
 import { HiOutlineEye, HiOutlinePencil, HiOutlineTrash } from 'solid-icons/hi';
-import type { Component} from 'solid-js';
+import type { Component } from 'solid-js';
 import { Show, onCleanup, onMount } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { Button } from '~/components/ui/button';
@@ -309,7 +309,11 @@ export const VocabularyTester: Component<TesterProps> = (
         aria-label="Words done percentage"
         class="my-6 mx-auto w-full sm:mt-20"
         value={percentageDone()}
-        getValueLabel={({ value }) => `${Math.round(value)}% done`}
+        getValueLabel={() =>
+          `${props.words.length - store.wordsLeft.length} out of ${
+            props.words.length
+          } done`
+        }
       >
         <div class="text-center">
           <ProgressValueLabel />
