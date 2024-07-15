@@ -1,11 +1,11 @@
-import { useNavigate, useParams } from '@solidjs/router';
+import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
 import {
   HiOutlineAcademicCap,
   HiOutlineArrowsUpDown,
   HiOutlinePlus,
   HiOutlineTrash,
 } from 'solid-icons/hi';
-import type { Component} from 'solid-js';
+import type { Component } from 'solid-js';
 import { Show, createSignal } from 'solid-js';
 import { CountrySelect } from '~/components/country-select/country-select';
 import { Search } from '~/components/search/Search';
@@ -41,6 +41,7 @@ import { cx } from 'class-variance-authority';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const vocabularyId = +params.id;
   const [addedWords, setAddedWords] = createSignal<VocabularyItem[]>([]);
@@ -49,7 +50,8 @@ export const VocabularyPage: Component = () => {
   const [openedAddWords, setOpenedAddWords] = createSignal(false);
   const [creatingWords, setCreatingWords] = createSignal(false);
   const [sortState, setSortState] = createSignal<SortState>({
-    asc: false,
+    asc: searchParams['sortasc'] === 'true',
+    by: searchParams['sortby'] as SortState['by'] | undefined,
   });
 
   const vocabulary = getVocabulary(vocabularyId);
@@ -108,6 +110,7 @@ export const VocabularyPage: Component = () => {
 
   function sort(sortProps: Partial<SortState>) {
     setSortState(s => ({ ...s, ...sortProps }));
+    setSearchParams({ sortby: sortProps.by, sortasc: sortProps.asc });
   }
 
   return (
