@@ -1,26 +1,27 @@
 import { Component, For, Show, createSignal } from 'solid-js';
-import { Vocabulary, VocabularyItem } from '../model/vocabulary-model';
+import { VocabularyItem } from '../model/vocabulary-model';
 import { Dialog, DialogContent, DialogHeader } from '~/components/ui/dialog';
 import { WordEditor } from './WordEditor';
 import { VocabularyWord } from './VocabularyWord';
+import { mergeWords } from '../../../util/merge-arrays';
 
 export interface SortState {
   by?: 'created_at' | undefined;
   asc: boolean;
 }
 
-interface VocabularyEditorProps {
+interface VocabularyWordsProps {
   words: VocabularyItem[];
   selectedWords: VocabularyItem[];
   sort?: SortState;
-  vocabulary: Vocabulary;
   onWordsEdited: (words: VocabularyItem[]) => void;
   onWordsSelected: (words: VocabularyItem[]) => void;
 }
 
-export const VocabularyWords: Component<VocabularyEditorProps> = props => {
+export const VocabularyWords: Component<VocabularyWordsProps> = props => {
   const [wordDetailToOpen, setWordDetailToOpen] =
     createSignal<VocabularyItem>();
+  const [lastSelectedWordIndex, setLastSelectedWordIndex] = createSignal(-1);
 
   const groupedWordsByCreatedAt = () =>
     props.words.reduce((acc, word) => {
@@ -40,18 +41,35 @@ export const VocabularyWords: Component<VocabularyEditorProps> = props => {
     );
   };
 
+  const wordSelected = (word: VocabularyItem) =>
+    !!props.selectedWords.find(sw => word.id === sw.id);
+
   function onWordEdited(word: VocabularyItem) {
     props.onWordsEdited([word]);
     setWordDetailToOpen(undefined);
   }
 
-  function onWordSelected(word: VocabularyItem, selected: boolean) {
-    const selectedWords = props.selectedWords;
-    if (selected) {
-      props.onWordsSelected([...selectedWords, word]);
-    } else {
-      props.onWordsSelected(selectedWords.filter(w => w !== word));
+  function onWordSelected(
+    word: VocabularyItem,
+    selected: boolean,
+    meta?: { shiftSelection: boolean }
+  ) {
+    const wordIndex = props.words.findIndex(w => w.id === word.id);
+    let selectedWords: VocabularyItem[] = [word];
+
+    if (meta?.shiftSelection) {
+      const startIndex = Math.min(lastSelectedWordIndex(), wordIndex);
+      const endIndex = Math.max(lastSelectedWordIndex(), wordIndex);
+      selectedWords = props.words.slice(startIndex, endIndex + 1);
     }
+
+    if (selected) {
+      props.onWordsSelected(mergeWords(props.selectedWords, selectedWords));
+    } else {
+      props.onWordsSelected(props.selectedWords.filter(w => w !== word));
+    }
+
+    setLastSelectedWordIndex(wordIndex);
   }
 
   return (
@@ -76,6 +94,7 @@ export const VocabularyWords: Component<VocabularyEditorProps> = props => {
           <For each={props.words}>
             {word => (
               <VocabularyWord
+                selected={wordSelected(word)}
                 word={word}
                 onWordSelected={onWordSelected}
                 onWordDetailToOpen={setWordDetailToOpen}
@@ -97,6 +116,7 @@ export const VocabularyWords: Component<VocabularyEditorProps> = props => {
                     <For each={words}>
                       {word => (
                         <VocabularyWord
+                          selected={wordSelected(word)}
                           word={word}
                           onWordSelected={onWordSelected}
                           onWordDetailToOpen={setWordDetailToOpen}

@@ -10,15 +10,35 @@ import { VocabularyItem } from '../model/vocabulary-model';
 
 interface Props {
   word: VocabularyItem;
-  onWordSelected: (word: VocabularyItem, selected: boolean) => void;
+  selected?: boolean;
+  onWordSelected: (
+    word: VocabularyItem,
+    selected: boolean,
+    meta?: { shiftSelection: boolean }
+  ) => void;
   onWordDetailToOpen: (word: VocabularyItem) => void;
 }
 
 export const VocabularyWord: Component<Props> = props => {
+  function onClick(e: MouseEvent) {
+    if (e.shiftKey) {
+      // Remove the text selection which is caused by the shift click
+      window.getSelection()?.removeAllRanges();
+    }
+
+    if (props.selected) {
+      return props.onWordSelected(props.word, false);
+    }
+
+    props.onWordSelected(props.word, true, { shiftSelection: e.shiftKey });
+  }
+
   return (
     <div class="flex items-center gap-2" data-testid="editor-word">
       <Checkbox
-        onChange={checked => props.onWordSelected(props.word, checked)}
+        checked={props.selected}
+        id={`word-selector-${props.word.id}`}
+        onClick={(e: MouseEvent) => onClick(e)}
       />
       <span>{props.word.original}</span>
       <span class="mx-2 text-center">-</span>
