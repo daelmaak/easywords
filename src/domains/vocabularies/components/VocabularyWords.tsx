@@ -3,7 +3,7 @@ import { VocabularyItem } from '../model/vocabulary-model';
 import { Dialog, DialogContent, DialogHeader } from '~/components/ui/dialog';
 import { WordEditor } from './WordEditor';
 import { VocabularyWord } from './VocabularyWord';
-import { mergeWords } from '../../../util/merge-arrays';
+import { differenceBy, unionBy } from 'lodash-es';
 
 export interface SortState {
   by?: 'created_at' | undefined;
@@ -64,9 +64,11 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
     }
 
     if (selected) {
-      props.onWordsSelected(mergeWords(props.selectedWords, selectedWords));
+      props.onWordsSelected(unionBy(props.selectedWords, selectedWords, 'id'));
     } else {
-      props.onWordsSelected(props.selectedWords.filter(w => w !== word));
+      props.onWordsSelected(
+        differenceBy(props.selectedWords, selectedWords, 'id')
+      );
     }
 
     setLastSelectedWordIndex(wordIndex);

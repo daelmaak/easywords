@@ -1,5 +1,5 @@
 import { cleanup, render } from '@solidjs/testing-library';
-import userEvent from '@testing-library/user-event';
+import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { createSignal } from 'solid-js';
 import { afterEach, expect, it, vi } from 'vitest';
 import { VocabularyItem } from '../model/vocabulary-model';
@@ -27,20 +27,48 @@ it('should shift select all items in between', async () => {
 
   const checkboxes: HTMLInputElement[] = getAllByRole('checkbox');
   // This shit should be fixed in Kobalte since clicking the input should work just fine.
-  // Yet it doesn't check the visual checkbox.
+  // Yet it doesn't check the visual checkbox so I have to click the sibling div instead.
   const checkboxControls = getAllByRole('checkbox').map(
     e => e.nextElementSibling!
   );
   await user.click(checkboxControls[0]);
 
-  await user.keyboard('{Shift>}');
-  await user.click(checkboxControls[3]);
-  await user.keyboard('{/Shift}');
+  await shiftClick(checkboxControls[3], user);
 
   expect(selectedWords()).toHaveLength(4);
 
   const checkedCheckboxes = checkboxes.filter(e => e.checked);
   expect(checkedCheckboxes).toHaveLength(4);
+});
+
+it('should shift deselect all items in between', async () => {
+  const { onWordEdited, user } = setup();
+
+  const [selectedWords, setSelectedWords] = createSignal<VocabularyItem[]>([]);
+  const words = generateWords(5);
+
+  const { getAllByRole } = render(() => (
+    <VocabularyWords
+      words={words}
+      selectedWords={selectedWords()}
+      onWordsEdited={onWordEdited}
+      onWordsSelected={setSelectedWords}
+    />
+  ));
+
+  const checkboxes: HTMLInputElement[] = getAllByRole('checkbox');
+  const checkboxControls = getAllByRole('checkbox').map(
+    e => e.nextElementSibling!
+  );
+  await user.click(checkboxControls[0]);
+  await shiftClick(checkboxControls[3], user);
+
+  await shiftClick(checkboxControls[1], user);
+
+  expect(selectedWords()).toHaveLength(1);
+
+  const checkedCheckboxes = checkboxes.filter(e => e.checked);
+  expect(checkedCheckboxes).toHaveLength(1);
 });
 
 function setup() {
@@ -65,4 +93,10 @@ function generateWords(amount: number): VocabularyItem[] {
     translation: 'ahoj' + i,
     notes: 'note' + i,
   }));
+}
+
+async function shiftClick(el: Element, userEvent: UserEvent) {
+  await userEvent.keyboard('{Shift>}');
+  await userEvent.click(el);
+  await userEvent.keyboard('{/Shift}');
 }
