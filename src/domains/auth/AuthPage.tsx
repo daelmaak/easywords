@@ -17,7 +17,7 @@ export const AuthPage = () => {
   };
 
   return (
-    <div class="h-full w-full bg-gray-200 grid grid-rows-[4rem_auto_6rem]">
+    <div class="h-full w-full bg-gray-200 grid grid-rows-[4rem_auto_6rem] gap-8">
       <div class="m-auto flex items-center gap-1">
         <img src={logo} alt="logo" class="size-8 mb-1" />
         <span class="text-2xl font-semibold">Easywords</span>
@@ -71,7 +71,7 @@ export const AuthPage = () => {
           </Show>
         </main>
 
-        <aside class="mt-16">
+        <aside class="mt-8 sm:mt-16">
           <h2 class="mb-4 text-center text-lg font-semibold">How to</h2>
           <div style="padding-bottom:56.25%; position:relative; display:block; width: 100%">
             <iframe
