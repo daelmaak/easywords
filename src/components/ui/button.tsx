@@ -67,7 +67,7 @@ const Button: Component<ButtonProps> = props => {
         </span>
       )}
       <span
-        class="inline-flex items-end gap-1"
+        class="inline-flex items-end gap-1 whitespace-nowrap"
         classList={{
           invisible: local.loading,
         }}
