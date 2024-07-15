@@ -35,6 +35,7 @@ import {
   DropdownMenuTrigger,
 } from '../../components/ui/dropdown-menu';
 import { Checkbox } from '../../components/ui/checkbox';
+import { cx } from 'class-variance-authority';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -166,33 +167,12 @@ export const VocabularyPage: Component = () => {
         </div>
 
         <div class="flex-grow flex flex-col items-center">
-          <div class="sticky z-10 top-0 w-full flex flex-wrap justify-center items-center gap-2 bg-background p-4">
-            <div class="flex gap-2">
-              <Show when={selectedWords().length > 0}>
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={deleteSelectedWords}
-                >
-                  <HiOutlineTrash size={16} /> Delete selected
-                </Button>
-              </Show>
-            </div>
-            <div class="flex gap-2">
-              <Show when={vocabulary()}>
-                {v => (
-                  <Search
-                    placeholder="Search words..."
-                    terms={v().vocabularyItems}
-                    searchKeys={['original', 'translation']}
-                    onSearch={setSearchedWords}
-                  />
-                )}
-              </Show>
+          <div class="sticky z-10 top-0 w-full flex flex-wrap justify-center items-center gap-2 bg-background p-4 sm:gap-8">
+            <div class="flex items-center gap-4">
               <DropdownMenu>
                 <DropdownMenuTrigger>
-                  <Button variant="ghost">
-                    <HiOutlineArrowsUpDown class="size-4" /> Sort
+                  <Button class="text-base font-normal" variant="ghost">
+                    <HiOutlineArrowsUpDown class="size-5 mr-1" /> Sort
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent class="p-4">
@@ -232,7 +212,28 @@ export const VocabularyPage: Component = () => {
                 />
               </Show>
             </div>
+            <div class="flex flex-wrap justify-center items-center gap-4 sm:gap-8">
+              <Show when={vocabulary()}>
+                {v => (
+                  <Search
+                    placeholder="Search words..."
+                    terms={v().vocabularyItems}
+                    searchKeys={['original', 'translation']}
+                    onSearch={setSearchedWords}
+                  />
+                )}
+              </Show>
+              <Button
+                class={cx({ invisible: selectedWords().length === 0 })}
+                size="sm"
+                variant="destructive"
+                onClick={deleteSelectedWords}
+              >
+                <HiOutlineTrash size={16} /> Delete selected
+              </Button>
+            </div>
           </div>
+
           <Show when={vocabulary()}>
             {v => (
               <VocabularyWords
