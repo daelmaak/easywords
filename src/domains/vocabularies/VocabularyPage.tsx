@@ -34,6 +34,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../../components/ui/dropdown-menu';
+import { Checkbox } from '../../components/ui/checkbox';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -66,6 +67,14 @@ export const VocabularyPage: Component = () => {
     setAddedWords([]);
     setOpenedAddWords(false);
     setCreatingWords(false);
+  }
+
+  function onSelectAll(selected: boolean) {
+    if (selected) {
+      setSelectedWords(vocabulary()?.vocabularyItems ?? []);
+    } else {
+      setSelectedWords([]);
+    }
   }
 
   async function onWordsEdited(updatedWords: VocabularyItem[]) {
@@ -207,6 +216,21 @@ export const VocabularyPage: Component = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+              <Show when={selectedWords()}>
+                <Checkbox
+                  checked={
+                    selectedWords().length ===
+                    (vocabulary()?.vocabularyItems.length ?? 0)
+                  }
+                  indeterminate={
+                    selectedWords().length > 0 &&
+                    selectedWords().length <
+                      (vocabulary()?.vocabularyItems.length ?? 0)
+                  }
+                  label="Select"
+                  onChange={() => onSelectAll(selectedWords().length === 0)}
+                />
+              </Show>
             </div>
           </div>
           <Show when={vocabulary()}>
