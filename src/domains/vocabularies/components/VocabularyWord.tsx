@@ -1,5 +1,5 @@
 import { HiOutlinePencil, HiSolidInformationCircle } from 'solid-icons/hi';
-import type { Component} from 'solid-js';
+import type { Component } from 'solid-js';
 import { Show } from 'solid-js';
 import {
   PopoverTrigger,
@@ -22,11 +22,6 @@ interface Props {
 
 export const VocabularyWord: Component<Props> = props => {
   function onClick(e: MouseEvent) {
-    if (e.shiftKey) {
-      // Remove the text selection which is caused by the shift click
-      window.getSelection()?.removeAllRanges();
-    }
-
     props.onWordSelected(props.word, !props.selected, {
       shiftSelection: e.shiftKey,
     });
@@ -38,6 +33,8 @@ export const VocabularyWord: Component<Props> = props => {
         checked={props.selected}
         id={`word-selector-${props.word.id}`}
         onClick={(e: MouseEvent) => onClick(e)}
+        // Prevents text selection when shift clicking
+        onMouseDown={(e: MouseEvent) => e.preventDefault()}
       />
       <span>{props.word.original}</span>
       <span class="mx-2 text-center">-</span>
