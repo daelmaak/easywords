@@ -8,11 +8,8 @@ import {
   saveVocabularyProgress,
 } from '../vocabularies/resources/vocabulary-progress-api';
 import { Results } from './components/Results';
-import type {
-  VocabularyTesterSettings} from './components/VocabularySettings';
-import {
-  VocabularySettings
-} from './components/VocabularySettings';
+import type { VocabularyTesterSettings } from './components/VocabularySettings';
+import { VocabularySettings } from './components/VocabularySettings';
 import { VocabularyTester } from './components/VocabularyTester';
 import type { SavedProgress } from './vocabulary-testing-model';
 import {
@@ -44,7 +41,13 @@ export const VocabularyTestPage = () => {
     const vocab = vocabulary();
 
     if (vocab) {
-      setWords(vocab.vocabularyItems);
+      if (searchParams.wordIds) {
+        const wordIds = searchParams.wordIds.split(',').map(Number);
+        const words = vocab.vocabularyItems.filter(w => wordIds.includes(w.id));
+        setWords(words);
+      } else {
+        setWords(vocab.vocabularyItems);
+      }
     }
   });
 

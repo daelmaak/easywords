@@ -86,8 +86,14 @@ export const VocabularyPage: Component = () => {
     await updateVocabularyItems(...updatedWords);
   }
 
-  function onTestVocabulary(id: number) {
-    navigateToVocabularyTest(id, navigate);
+  function testVocabulary() {
+    navigateToVocabularyTest(vocabularyId, navigate);
+  }
+
+  function testSelected() {
+    navigateToVocabularyTest(vocabularyId, navigate, {
+      wordIds: selectedWords().map(w => w.id),
+    });
   }
 
   function onVocabularyDataChange(event: Event) {
@@ -163,7 +169,7 @@ export const VocabularyPage: Component = () => {
               class="grow"
               size="sm"
               variant="secondary"
-              onClick={() => onTestVocabulary(vocabularyId)}
+              onClick={testVocabulary}
             >
               <HiOutlineAcademicCap />
               Test
@@ -235,6 +241,14 @@ export const VocabularyPage: Component = () => {
                 onClick={deleteSelectedWords}
               >
                 <HiOutlineTrash size={16} /> Delete selected
+              </Button>
+              <Button
+                class={cx({ invisible: selectedWords().length === 0 })}
+                size="sm"
+                variant="secondary"
+                onClick={testSelected}
+              >
+                <HiOutlineAcademicCap /> Test selected
               </Button>
             </div>
           </div>
