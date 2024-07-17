@@ -16,7 +16,7 @@ interface ResultsProps {
 export function Results(props: ResultsProps) {
   let invalidWordsRef: HTMLTextAreaElement | undefined;
 
-  function copyNotRemovedWords() {
+  async function copyNotRemovedWords() {
     if (!props.removedWords || !props.words) {
       return;
     }
@@ -24,7 +24,7 @@ export function Results(props: ResultsProps) {
     const notRemovedWords = props.words.filter(w =>
       props.removedWords!.every(r => r.original !== w.original)
     );
-    navigator.clipboard.writeText(formatWords(notRemovedWords));
+    await navigator.clipboard.writeText(formatWords(notRemovedWords));
     // TODO: @daelmaak show feedback about the copy
   }
 

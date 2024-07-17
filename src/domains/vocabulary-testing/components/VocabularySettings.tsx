@@ -1,5 +1,5 @@
 import { get, set } from 'idb-keyval';
-import type { Component} from 'solid-js';
+import type { Component } from 'solid-js';
 import { Show, createEffect, createSignal } from 'solid-js';
 import { Switch } from '~/components/ui/switch';
 import type { VocabularyTestMode } from './VocabularyTester';
@@ -25,14 +25,14 @@ export const VocabularySettings: Component<Props> = props => {
     setLoaded(true);
   });
 
-  function changeSetting(
+  async function changeSetting(
     key: keyof VocabularyTesterSettings,
     value: boolean | string
   ) {
     const updatedSettings = { ...props.settings, [key]: value };
 
     props.onChange(updatedSettings);
-    set(`config.vocabulary`, updatedSettings);
+    await set(`config.vocabulary`, updatedSettings);
   }
 
   async function retrieveSetting() {

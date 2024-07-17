@@ -111,7 +111,7 @@ export const VocabularyPage: Component = () => {
       return;
     }
 
-    updateVocabulary({ id: vocabulary()?.id, name, country });
+    void updateVocabulary({ id: vocabulary()?.id, name, country });
   }
 
   function sort(sortProps: Partial<SortState>) {

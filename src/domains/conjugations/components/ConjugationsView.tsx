@@ -1,22 +1,18 @@
 import { useNavigate, useParams } from '@solidjs/router';
 import { get, set } from 'idb-keyval';
-import type { Component} from 'solid-js';
+import type { Component } from 'solid-js';
 import { Show, onMount } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import type { ConjugationLang } from '~/model/lang';
-import type {
-  Conjugation} from '../conjugation';
+import type { Conjugation } from '../conjugation';
 import {
   groupConjugationsByMood,
   groupConjugationsByTense,
 } from '../conjugation';
 import { fetchConjugationsByTense } from '../conjugations-api';
 import { ConjugationsResults } from './ConjugationsResults';
-import type {
-  ConjugationValidations} from './ConjugationsTester';
-import {
-  ConjugationsTester,
-} from './ConjugationsTester';
+import type { ConjugationValidations } from './ConjugationsTester';
+import { ConjugationsTester } from './ConjugationsTester';
 import { VerbInput } from './VerbInput';
 import { TenseFilter } from './tense-filter/TenseFilter';
 
@@ -81,8 +77,8 @@ export const ConjugationsView: Component = () => {
     const lang = language() ?? (await get('conjugationsLang'));
 
     if (verb && lang) {
-      applyVerb(verb, lang, false);
       verbInputEl!.value = verb;
+      await applyVerb(verb, lang, false);
     } else if (lang) {
       navigate(`/conjugations/${lang}`);
     }

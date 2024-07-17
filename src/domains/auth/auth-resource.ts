@@ -16,7 +16,7 @@ export const isLoggedIn = (session: Session | undefined | null) => {
 
 export const signIn = async (email: string, password: string) => {
   const result = await supabase.auth.signInWithPassword({ email, password });
-  sessionResource[1].refetch();
+  await sessionResource[1].refetch();
 
   return result;
 };
@@ -28,5 +28,5 @@ export const signUp = async (email: string, password: string) => {
 
 export const signOut = async () => {
   await supabase.auth.signOut();
-  sessionResource[1].refetch();
+  await sessionResource[1].refetch();
 };

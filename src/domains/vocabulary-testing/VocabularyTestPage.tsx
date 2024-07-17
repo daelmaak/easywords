@@ -63,18 +63,18 @@ export const VocabularyTestPage = () => {
     setSavedProgress(progress);
   });
 
-  async function onDone(
+  function onDone(
     leftOverWords?: VocabularyItem[],
     removedWords?: VocabularyItem[]
   ) {
     setDone(true);
     setInvalidWords(leftOverWords);
     setRemovedWords(removedWords);
-    deleteVocabularyProgress(vocabularyId);
+    void deleteVocabularyProgress(vocabularyId);
   }
 
   function onEditWord(word: VocabularyItem) {
-    updateVocabularyItems(word);
+    void updateVocabularyItems(word);
   }
 
   function goToVocabularies() {
@@ -103,7 +103,7 @@ export const VocabularyTestPage = () => {
   }
 
   function saveProgress(progress: SavedProgress) {
-    saveVocabularyProgress(vocabularyId, progress);
+    void saveVocabularyProgress(vocabularyId, progress);
   }
 
   return (

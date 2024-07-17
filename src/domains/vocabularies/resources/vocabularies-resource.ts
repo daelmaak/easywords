@@ -1,4 +1,4 @@
-import type { ResourceReturn} from 'solid-js';
+import type { ResourceReturn } from 'solid-js';
 import { createResource } from 'solid-js';
 import type { Vocabulary } from '../model/vocabulary-model';
 import type {
@@ -41,7 +41,7 @@ export const createVocabulary = async (vocabulary: VocabularyToCreate) => {
 
   if (success) {
     const { refetch } = getVocabulariesResource()[1];
-    refetch();
+    await refetch();
   }
 
   return success;
