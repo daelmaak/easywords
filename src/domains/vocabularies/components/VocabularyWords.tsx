@@ -26,19 +26,21 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
 
   const groupedWordsByCreatedAt = () =>
     props.words.reduce((acc, word) => {
-      const createdAt = `${word.createdAt.getFullYear()}.${
-        word.createdAt.getMonth() + 1
-      }.${word.createdAt.getDate()}`;
-      if (!acc[createdAt]) {
-        acc[createdAt] = [];
+      const createdAt = new Date(
+        word.createdAt.getFullYear(),
+        word.createdAt.getMonth(),
+        word.createdAt.getDate()
+      ).getTime();
+      if (!acc.has(createdAt)) {
+        acc.set(createdAt, []);
       }
-      acc[createdAt].push(word);
+      acc.get(createdAt)!.push(word);
       return acc;
-    }, {} as Record<string, VocabularyItem[]>);
+    }, new Map<number, VocabularyItem[]>());
 
   const sortedWordsByCreatedAt = (asc: boolean) => {
-    return Object.entries(groupedWordsByCreatedAt()).sort(([a], [b]) =>
-      asc ? a.localeCompare(b) : b.localeCompare(a)
+    return Array.from(groupedWordsByCreatedAt().entries()).sort(([a], [b]) =>
+      asc ? a - b : b - a
     );
   };
 
