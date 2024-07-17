@@ -1,4 +1,4 @@
-import type { ResourceReturn, Setter} from 'solid-js';
+import type { ResourceReturn, Setter } from 'solid-js';
 import { createResource, createSignal } from 'solid-js';
 import type { Vocabulary, VocabularyItem } from '../model/vocabulary-model';
 import type { VocabularyApi, VocabularyItemToCreateDB } from './vocabulary-api';
@@ -34,16 +34,25 @@ export const getVocabulary = (id: number) => {
 };
 
 export const updateVocabulary = async (
-  vocabularyPatch: Partial<Vocabulary>
+  vocabularyPatch: Partial<Vocabulary>,
+  config: { mutate: boolean } = { mutate: true }
 ) => {
   const success = await api.updateVocabulary(vocabularyPatch);
 
-  if (success) {
+  if (config?.mutate && success) {
     const { mutate } = vocabularyResource[1];
     mutate(v => ({ ...v!, ...vocabularyPatch }));
   }
 
   return success;
+};
+
+export const updateVocabularyAsInteractedWith = async (
+  vocabularyId: number
+) => {
+  // Mutating this resource doesn't make sense, since this is relevant only to
+  // dashboard and its resource is elsewhere.
+  return await updateVocabulary({ id: vocabularyId }, { mutate: false });
 };
 
 export const createVocabularyItems = async (

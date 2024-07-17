@@ -15,6 +15,7 @@ import type { SavedProgress } from './vocabulary-testing-model';
 import {
   deleteVocabularyItems,
   getVocabulary,
+  updateVocabularyAsInteractedWith,
   updateVocabularyItems,
 } from '../vocabularies/resources/vocabulary-resource';
 
@@ -48,6 +49,8 @@ export const VocabularyTestPage = () => {
       } else {
         setWords(vocab.vocabularyItems);
       }
+
+      void updateVocabularyAsInteractedWith(vocab.id);
     }
   });
 
