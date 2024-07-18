@@ -235,7 +235,7 @@ export const VocabularyTester: Component<TesterProps> = (
           <Button
             aria-label="Edit word"
             class="translate-y-[1px] opacity-60"
-            title="Peek"
+            title="Edit word"
             size="icon"
             variant="ghost"
             onClick={() => setStore('editing', !store.editing)}

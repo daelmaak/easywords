@@ -110,31 +110,33 @@ export const VocabularyTestPage = () => {
     <Show when={!vocabulary.loading}>
       <div class="grid page-container">
         <Show when={!done()}>
-          <Show when={words()} keyed>
-            {w => (
-              <>
-                <div class="m-auto mb-4">
-                  <VocabularyTester
-                    testSettings={vocabularySettings}
-                    savedProgress={savedProgress()}
-                    words={w}
-                    onDone={onDone}
-                    onEditWord={onEditWord}
-                    onProgress={saveProgress}
-                    onRemoveWord={deleteWord}
-                    onStop={goToVocabularies}
-                    onRepeat={onRepeat}
-                    onReset={onReset}
-                  />
-                </div>
-                <div class="mt-auto">
-                  <VocabularySettings
-                    settings={vocabularySettings}
-                    onChange={setVocabularySettings}
-                  />
-                </div>
-              </>
-            )}
+          <Show when={vocabularyId} keyed>
+            <Show when={words()}>
+              {w => (
+                <>
+                  <div class="m-auto mb-4">
+                    <VocabularyTester
+                      testSettings={vocabularySettings}
+                      savedProgress={savedProgress()}
+                      words={w()}
+                      onDone={onDone}
+                      onEditWord={onEditWord}
+                      onProgress={saveProgress}
+                      onRemoveWord={deleteWord}
+                      onStop={goToVocabularies}
+                      onRepeat={onRepeat}
+                      onReset={onReset}
+                    />
+                  </div>
+                  <div class="mt-auto">
+                    <VocabularySettings
+                      settings={vocabularySettings}
+                      onChange={setVocabularySettings}
+                    />
+                  </div>
+                </>
+              )}
+            </Show>
           </Show>
         </Show>
 
