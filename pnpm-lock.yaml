@@ -12,8 +12,8 @@ importers:
         specifier: ^0.13.3
         version: 0.13.3(solid-js@1.8.16)
       '@solidjs/router':
-        specifier: ^0.10.10
-        version: 0.10.10(solid-js@1.8.16)
+        specifier: ^0.14.1
+        version: 0.14.1(solid-js@1.8.16)
       '@supabase/supabase-js':
         specifier: ^2.39.8
         version: 2.39.8
@@ -53,7 +53,7 @@ importers:
         version: 9.5.0
       '@solidjs/testing-library':
         specifier: ^0.8.6
-        version: 0.8.6(@solidjs/router@0.10.10(solid-js@1.8.16))(solid-js@1.8.16)
+        version: 0.8.6(@solidjs/router@0.14.1(solid-js@1.8.16))(solid-js@1.8.16)
       '@testing-library/jest-dom':
         specifier: ^6.4.6
         version: 6.4.6(vitest@1.6.0(@types/node@20.11.30)(jsdom@24.0.0))
@@ -619,8 +619,8 @@ packages:
     peerDependencies:
       solid-js: ^1.6.12
 
-  '@solidjs/router@0.10.10':
-    resolution: {integrity: sha512-nGl7gMgsojuaupI5MAK2cFtkndmWWSAPhill/8La3IjujY3vMBamcQFymBsA2ejzxEYJjkOlEQHYgp2jNFkwuQ==}
+  '@solidjs/router@0.14.1':
+    resolution: {integrity: sha512-GumQ4jbt5xDngLypAndC4EjapY/3DP0G8Az4YWEVQHdCtjHwB8IOm32eEBxE9lKpOffbtXV0r/0X0mofHJ1m5w==}
     peerDependencies:
       solid-js: ^1.8.6
 
@@ -2809,13 +2809,13 @@ snapshots:
     dependencies:
       solid-js: 1.8.16
 
-  '@solidjs/router@0.10.10(solid-js@1.8.16)':
+  '@solidjs/router@0.14.1(solid-js@1.8.16)':
     dependencies:
       solid-js: 1.8.16
 
-  '@solidjs/testing-library@0.8.6(@solidjs/router@0.10.10(solid-js@1.8.16))(solid-js@1.8.16)':
+  '@solidjs/testing-library@0.8.6(@solidjs/router@0.14.1(solid-js@1.8.16))(solid-js@1.8.16)':
     dependencies:
-      '@solidjs/router': 0.10.10(solid-js@1.8.16)
+      '@solidjs/router': 0.14.1(solid-js@1.8.16)
       '@testing-library/dom': 9.3.4
       solid-js: 1.8.16
 
