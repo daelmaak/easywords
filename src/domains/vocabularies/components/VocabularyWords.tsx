@@ -143,5 +143,3 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
     </>
   );
 };
-
-export default VocabularyWords;

@@ -1,4 +1,5 @@
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
+import { cx } from 'class-variance-authority';
 import {
   HiOutlineAcademicCap,
   HiOutlineArrowsUpDown,
@@ -7,6 +8,7 @@ import {
 } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
 import { Show, createSignal } from 'solid-js';
+import { BackLink } from '~/components/BackLink';
 import { CountrySelect } from '~/components/country-select/country-select';
 import { Search } from '~/components/search/Search';
 import { Button } from '~/components/ui/button';
@@ -18,9 +20,16 @@ import {
   SheetHeader,
   SheetTitle,
 } from '~/components/ui/sheet';
+import { Checkbox } from '../../components/ui/checkbox';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../../components/ui/dropdown-menu';
 import { WordsInput } from '../vocabulary-testing/components/WordsInput';
 import type { SortState } from './components/VocabularyWords';
-import VocabularyWords from './components/VocabularyWords';
+import { VocabularyWords } from './components/VocabularyWords';
 import type { VocabularyItem } from './model/vocabulary-model';
 import {
   createVocabularyItems,
@@ -30,14 +39,6 @@ import {
   updateVocabularyItems,
 } from './resources/vocabulary-resource';
 import { navigateToVocabularyTest } from './util/navigation';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '../../components/ui/dropdown-menu';
-import { Checkbox } from '../../components/ui/checkbox';
-import { cx } from 'class-variance-authority';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -141,6 +142,7 @@ export const VocabularyPage: Component = () => {
         </Sheet>
 
         <div>
+          <BackLink class="mb-4">Back to vocabularies</BackLink>
           <Show when={vocabulary()}>
             {v => (
               <form onFocusOut={onVocabularyDataChange}>

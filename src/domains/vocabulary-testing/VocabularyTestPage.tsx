@@ -18,6 +18,7 @@ import {
   updateVocabularyAsInteractedWith,
   updateVocabularyItems,
 } from '../vocabularies/resources/vocabulary-resource';
+import { BackLink } from '~/components/BackLink';
 
 export const VocabularyTestPage = () => {
   const navigate = useNavigate();
@@ -109,6 +110,7 @@ export const VocabularyTestPage = () => {
   return (
     <Show when={!vocabulary.loading}>
       <div class="grid page-container">
+        <BackLink class="self-start">Back to vocabulary</BackLink>
         <Show when={!done()}>
           <Show when={vocabularyId} keyed>
             <Show when={words()}>
@@ -149,15 +151,6 @@ export const VocabularyTestPage = () => {
             goToVocabularies={goToVocabularies}
             tryInvalidWords={onTryInvalidWords}
           />
-        </Show>
-
-        <Show when={words()}>
-          <button
-            class="btn-link fixed bottom-4 right-8 text-sm"
-            onClick={goToVocabularies}
-          >
-            Go back
-          </button>
         </Show>
       </div>
     </Show>

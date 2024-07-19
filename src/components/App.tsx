@@ -42,7 +42,7 @@ const App: Component<Props> = props => {
           </A>
           <A class={styles.navLink} href="/vocabulary">
             <Button class="font-normal text-inherit px-2" variant="link">
-              Vocabulary
+              Vocabularies
             </Button>
           </A>
           <A class={styles.navLink} href="/conjugations">
