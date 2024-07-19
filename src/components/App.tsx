@@ -5,6 +5,7 @@ import { Button } from '~/components/ui/button';
 import { signOut } from '~/domains/auth/auth-resource';
 import logo from '../assets/logo.svg';
 import { AccountButton } from '../domains/auth/AccountButton';
+import { initApp, resetApp } from '../init/app-init';
 import styles from './App.module.css';
 import {
   DropdownMenu,
@@ -19,6 +20,13 @@ interface Props {
 }
 
 const App: Component<Props> = props => {
+  initApp();
+
+  async function onSignOut() {
+    await signOut();
+    resetApp();
+  }
+
   return (
     <>
       <nav>
@@ -43,7 +51,7 @@ const App: Component<Props> = props => {
             </Button>
           </A>
           <div class="ml-auto">
-            <AccountButton loggedIn={true} onSignOut={signOut} />
+            <AccountButton loggedIn={true} onSignOut={onSignOut} />
           </div>
         </div>
         <div class="sm:hidden flex items-center gap-4 p-2">
@@ -71,7 +79,7 @@ const App: Component<Props> = props => {
                 <Button
                   class="sm:hidden p-0 text-base font-normal bg-inherit"
                   variant="ghost"
-                  onClick={signOut}
+                  onClick={onSignOut}
                 >
                   Sign out
                 </Button>

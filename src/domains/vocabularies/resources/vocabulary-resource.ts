@@ -1,4 +1,4 @@
-import type { ResourceReturn, Setter } from 'solid-js';
+import type { ResourceReturn, Signal } from 'solid-js';
 import { createResource, createSignal } from 'solid-js';
 import type { Vocabulary, VocabularyItem } from '../model/vocabulary-model';
 import type { VocabularyApi, VocabularyItemToCreateDB } from './vocabulary-api';
@@ -16,22 +16,25 @@ export type VocabularyItemToCreate = RealOmit<
 
 let api: VocabularyApi;
 let vocabularyResource: ResourceReturn<Vocabulary | undefined>;
-let setVocabularyId: Setter<number | undefined>;
+let vocabularyIdSignal: Signal<number | undefined>;
 
 export const initVocabularyResource = (vocabularyApi: VocabularyApi) => {
   api = vocabularyApi;
-
-  const [vocabularyId, _setVocabularyId] = createSignal<number>();
-  setVocabularyId = _setVocabularyId;
-  vocabularyResource = createResource(vocabularyId, id =>
-    api.fetchVocabulary(id).then(v => v && transformToVocabulary(v))
-  );
+  vocabularyIdSignal = createSignal<number>();
+  vocabularyResource = createResource(vocabularyIdSignal[0], fetchVocabulary);
 };
 
-export const getVocabulary = (id: number) => {
-  setVocabularyId(id);
+export const getVocabularyResource = (id: number) => {
+  vocabularyIdSignal[1](id);
   return vocabularyResource[0];
 };
+
+export const resetVocabularyResource = () => {
+  vocabularyIdSignal[1]();
+};
+
+export const fetchVocabulary = async (id: number) =>
+  api.fetchVocabulary(id).then(v => v && transformToVocabulary(v));
 
 export const updateVocabulary = async (
   vocabularyPatch: Partial<Vocabulary>,

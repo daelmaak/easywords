@@ -1,5 +1,5 @@
-import type { ResourceReturn } from 'solid-js';
-import { createResource } from 'solid-js';
+import type { ResourceReturn, Signal } from 'solid-js';
+import { createResource, createSignal } from 'solid-js';
 import type { Vocabulary } from '../model/vocabulary-model';
 import type {
   VocabularyApi,
@@ -19,20 +19,30 @@ export type VocabularyToCreate = RealOmit<
 >;
 
 let api: VocabularyApi;
-let vocabulariesResource: ResourceReturn<Vocabulary[]> | undefined;
+let vocabulariesSignal: Signal<boolean>;
+let vocabulariesResource: ResourceReturn<Vocabulary[] | undefined>;
 
 export const initVocabulariesResource = (vocabularyApi: VocabularyApi) => {
   api = vocabularyApi;
+  vocabulariesSignal = createSignal(false);
+  vocabulariesResource = createResource(
+    vocabulariesSignal[0],
+    fetchVocabularies
+  );
 };
 
 export const getVocabulariesResource = () => {
-  if (!vocabulariesResource) {
-    vocabulariesResource = createResource(async () => {
-      const vocabulariesDB = await api.fetchVocabularies();
-      return transformToVocabularies(vocabulariesDB ?? []);
-    });
-  }
+  vocabulariesSignal[1](true);
   return vocabulariesResource;
+};
+
+export const resetVocabulariesResource = () => {
+  vocabulariesSignal[1](false);
+};
+
+export const fetchVocabularies = async () => {
+  const vocabulariesDB = await api.fetchVocabularies();
+  return transformToVocabularies(vocabulariesDB ?? []);
 };
 
 export const createVocabulary = async (vocabulary: VocabularyToCreate) => {
@@ -40,10 +50,9 @@ export const createVocabulary = async (vocabulary: VocabularyToCreate) => {
   const success = await api.createVocabulary(vocabularyDB);
 
   if (success) {
-    const { refetch } = getVocabulariesResource()[1];
+    const { refetch } = vocabulariesResource[1];
     await refetch();
   }
-
   return success;
 };
 
@@ -51,7 +60,7 @@ export const deleteVocabulary = async (id: number) => {
   const success = await api.deleteVocabulary(id);
 
   if (success) {
-    const { mutate } = getVocabulariesResource()[1];
+    const { mutate } = vocabulariesResource[1];
     mutate(l => l!.filter(list => list.id !== id));
   }
 

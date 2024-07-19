@@ -8,7 +8,6 @@ import { DashboardPage } from './domains/dashboard/DashboardPage';
 import { VocabulariesPage } from './domains/vocabularies/VocabulariesPage';
 import { VocabularyTestPage } from './domains/vocabulary-testing/VocabularyTestPage';
 import './index.css';
-import { initApp } from './init/app-init';
 
 const root = document.getElementById('root');
 
@@ -27,8 +26,6 @@ const ConjugationsPage = lazy(
 );
 
 render(() => {
-  initApp();
-
   return (
     <Router root={AuthRouteGuard}>
       <Route path="/" component={App}>

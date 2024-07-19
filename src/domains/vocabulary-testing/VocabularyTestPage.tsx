@@ -14,7 +14,7 @@ import { VocabularyTester } from './components/VocabularyTester';
 import type { SavedProgress } from './vocabulary-testing-model';
 import {
   deleteVocabularyItems,
-  getVocabulary,
+  getVocabularyResource,
   updateVocabularyAsInteractedWith,
   updateVocabularyItems,
 } from '../vocabularies/resources/vocabulary-resource';
@@ -24,7 +24,7 @@ export const VocabularyTestPage = () => {
   const [searchParams] = useSearchParams();
   const params = useParams();
   const vocabularyId = +params.id;
-  const vocabulary = getVocabulary(vocabularyId);
+  const vocabulary = getVocabularyResource(vocabularyId);
 
   const [vocabularySettings, setVocabularySettings] =
     createStore<VocabularyTesterSettings>({

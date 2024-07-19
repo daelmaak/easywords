@@ -1,12 +1,11 @@
 import { assert, expect, test } from 'vitest';
 import { initTestApp } from '~/init/test-init';
 import { tick } from '~/lib/testing';
-import type {
-  VocabularyItemToCreate} from './vocabulary-resource';
+import type { VocabularyItemToCreate } from './vocabulary-resource';
 import {
   createVocabularyItems,
-  getVocabulary,
-  updateVocabularyItems
+  getVocabularyResource,
+  updateVocabularyItems,
 } from './vocabulary-resource';
 import type { VocabularyDB } from './vocabulary-api';
 
@@ -31,7 +30,7 @@ test('updates the vocabulary resource on word edit', async () => {
   vocabularyApi.fetchVocabulary.mockResolvedValue(mockVocabulary);
   vocabularyApi.updateVocabularyItems.mockResolvedValue(true);
 
-  const vocabulary = getVocabulary(1);
+  const vocabulary = getVocabularyResource(1);
   await tick();
 
   const currVocabulary = vocabulary();
@@ -77,7 +76,7 @@ test('updates the vocabulary resource on words addition', async () => {
     { id: 2, created_at: '2021-01-01', list_id: 1, ...wordToAdd },
   ]);
 
-  const vocabulary = getVocabulary(1);
+  const vocabulary = getVocabularyResource(1);
   await tick();
 
   assert(vocabulary());

@@ -25,7 +25,7 @@ import type { VocabularyItem } from './model/vocabulary-model';
 import {
   createVocabularyItems,
   deleteVocabularyItems,
-  getVocabulary,
+  getVocabularyResource,
   updateVocabulary,
   updateVocabularyItems,
 } from './resources/vocabulary-resource';
@@ -54,7 +54,7 @@ export const VocabularyPage: Component = () => {
     by: searchParams['sortby'] as SortState['by'] | undefined,
   });
 
-  const vocabulary = getVocabulary(vocabularyId);
+  const vocabulary = getVocabularyResource(vocabularyId);
 
   async function deleteSelectedWords() {
     const words = selectedWords();

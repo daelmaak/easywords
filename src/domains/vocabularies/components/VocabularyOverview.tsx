@@ -1,5 +1,5 @@
 import { HiOutlinePlus } from 'solid-icons/hi';
-import type { Component, ResourceReturn} from 'solid-js';
+import type { Component, ResourceReturn } from 'solid-js';
 import { For, Show, createSignal } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import {
@@ -15,11 +15,10 @@ import {
   SheetTitle,
 } from '~/components/ui/sheet';
 import { Skeleton } from '~/components/ui/skeleton';
-import type {
-  VocabularyToCreate} from '../resources/vocabularies-resource';
+import type { VocabularyToCreate } from '../resources/vocabularies-resource';
 import {
   createVocabulary,
-  deleteVocabulary
+  deleteVocabulary,
 } from '../resources/vocabularies-resource';
 import type { Vocabulary } from '../model/vocabulary-model';
 import { VocabularyCard } from './VocabularyCard';
@@ -27,7 +26,7 @@ import { VocabularyCreator } from './VocabularyCreator';
 
 export type Props = {
   vocabularyCreatorOpenAtInit?: boolean;
-  vocabulariesResource: ResourceReturn<Vocabulary[]>;
+  vocabulariesResource: ResourceReturn<Vocabulary[] | undefined>;
   onGoToVocabulary: (id: number) => void;
   onTestVocabulary: (
     id: number,
