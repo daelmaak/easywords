@@ -13,6 +13,7 @@ export interface Vocabulary {
   id: number;
   country: CountryCode;
   name: string;
+  updatedAt: Date;
   vocabularyItems: VocabularyItem[];
   hasSavedProgress: boolean;
 }

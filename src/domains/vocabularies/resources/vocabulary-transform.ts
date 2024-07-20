@@ -7,6 +7,7 @@ export const transformToVocabulary = (vocabulary: VocabularyDB): Vocabulary => {
     country: vocabulary.country,
     hasSavedProgress: false,
     name: vocabulary.name,
+    updatedAt: new Date(vocabulary.updated_at),
     vocabularyItems: vocabulary.vocabulary_items.map(transformToVocabularyItem),
   };
 };
@@ -17,6 +18,7 @@ export const transformToVocabularyDB = (
   id: vocabulary.id,
   country: vocabulary.country,
   name: vocabulary.name,
+  updated_at: vocabulary.updatedAt.toISOString(),
   vocabulary_items: vocabulary.vocabularyItems.map(transformToVocabularyItemDB),
 });
 

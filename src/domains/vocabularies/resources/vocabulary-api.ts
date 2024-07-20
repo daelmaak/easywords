@@ -1,5 +1,5 @@
 import { supabase } from '~/lib/supabase-client';
-import type { RealOmit} from '~/util/object';
+import type { RealOmit } from '~/util/object';
 import { omit } from '~/util/object';
 import type { QueryData } from '@supabase/supabase-js';
 
@@ -10,7 +10,7 @@ export type VocabularyItemToCreateDB = RealOmit<
 
 export type VocabularyToCreateDB = RealOmit<
   VocabularyDB,
-  'id' | 'vocabulary_items'
+  'id' | 'updated_at' | 'vocabulary_items'
 > & {
   vocabulary_items: VocabularyItemToCreateDB[];
 };
@@ -29,6 +29,7 @@ const vocabulariesFetchQuery = () =>
     id, 
     country,
     name,
+    updated_at,
     vocabulary_items (${VOCABULARY_ITEM_FETCH_FIELDS})
   `);
 

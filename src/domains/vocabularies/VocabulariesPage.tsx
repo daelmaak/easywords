@@ -37,6 +37,10 @@ export const VocabulariesPage = () => {
 
   const loading = () => vocabularies() == null;
   const anyVocabularies = () => !!vocabularies()?.length;
+  const vocabulariesByRecency = () =>
+    vocabularies()
+      ?.slice()
+      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
 
   async function doDeleteVocabulary(listId: number) {
     const success = await deleteVocabulary(listId);
@@ -123,7 +127,7 @@ export const VocabulariesPage = () => {
           }
         >
           <div class="mt-6 h-full flex flex-col sm:grid sm:justify-center sm:content-start grid-cols-[repeat(auto-fit,_18rem)] gap-4">
-            <For each={vocabularies()}>
+            <For each={vocabulariesByRecency()}>
               {vocabulary => (
                 <VocabularyCard
                   vocabulary={vocabulary}

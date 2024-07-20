@@ -43,6 +43,7 @@ function setup() {
     id: 1,
     name: 'Vocabulary 1',
     country: 'cz',
+    updated_at: '2021-02-01',
     vocabulary_items: [
       {
         id: 1,

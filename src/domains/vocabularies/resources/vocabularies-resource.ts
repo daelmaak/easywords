@@ -15,7 +15,7 @@ import type { RealOmit } from '../../../util/object';
 
 export type VocabularyToCreate = RealOmit<
   Vocabulary,
-  'id' | 'hasSavedProgress'
+  'id' | 'hasSavedProgress' | 'updatedAt'
 >;
 
 let api: VocabularyApi;

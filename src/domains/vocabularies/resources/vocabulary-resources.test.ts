@@ -15,6 +15,7 @@ test('updates the vocabulary resource on word edit', async () => {
     id: 1,
     country: 'at',
     name: 'Test Vocabulary',
+    updated_at: '2021-02-01',
     vocabulary_items: [
       {
         id: 1,
@@ -52,6 +53,7 @@ test('updates the vocabulary resource on words addition', async () => {
     id: 1,
     country: 'at',
     name: 'Test Vocabulary',
+    updated_at: '2021-02-01',
     vocabulary_items: [
       {
         id: 1,
