@@ -3,7 +3,7 @@ import {
   HiOutlinePencil,
   HiOutlineTrash,
 } from 'solid-icons/hi';
-import type { Component} from 'solid-js';
+import type { Component } from 'solid-js';
 import { For, Show } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import {
@@ -73,7 +73,7 @@ export const VocabularyCard: Component<Props> = props => {
         <Show when={props.vocabulary.hasSavedProgress}>
           <Button
             size="sm"
-            variant="outline"
+            variant="secondary"
             onClick={() =>
               props.onTestVocabulary(props.vocabulary.id, {
                 useSavedProgress: true,
@@ -81,11 +81,12 @@ export const VocabularyCard: Component<Props> = props => {
             }
           >
             <HiOutlineAcademicCap class="mr-1" />
-            Continue
+            Continue Test
           </Button>
         </Show>
         <Button
           size="sm"
+          variant="secondary"
           onClick={() => props.onTestVocabulary(props.vocabulary.id)}
         >
           <HiOutlineAcademicCap class="mr-1" />
