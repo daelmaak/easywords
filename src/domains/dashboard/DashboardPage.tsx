@@ -1,5 +1,5 @@
-import { useNavigate } from '@solidjs/router';
-import type { Component} from 'solid-js';
+import { A, useNavigate } from '@solidjs/router';
+import type { Component } from 'solid-js';
 import { For, createResource } from 'solid-js';
 import { VocabularyCard } from '../vocabularies/components/VocabularyCard';
 import { navigateToVocabularyTest } from '../vocabularies/util/navigation';
@@ -46,7 +46,12 @@ export const DashboardPage: Component = () => {
           </div>
         </section>
         <section class="bg-gray-100 rounded-b-xl p-6">
-          <h2 class="mb-4 text-lg font-semibold">Recent vocabularies</h2>
+          <div class="mb-4 flex justify-between items-center">
+            <h2 class="text-lg font-semibold">Recent vocabularies</h2>
+            <A href="/vocabulary" class="text-primary">
+              See all
+            </A>
+          </div>
           <div class="flex flex-col gap-4">
             <For
               each={recentVocabularies()}
