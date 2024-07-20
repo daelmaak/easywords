@@ -87,7 +87,7 @@ export const VocabulariesPage = () => {
   }
 
   return (
-    <main>
+    <main class="bg-gray-100">
       <Show when={!loading()}>
         <div class="page-container flex flex-wrap justify-between gap-x-4">
           <h1 class="text-lg font-semibold">Your vocabularies</h1>
@@ -126,7 +126,7 @@ export const VocabulariesPage = () => {
             </div>
           }
         >
-          <div class="mt-6 h-full flex flex-col sm:grid sm:justify-center sm:content-start grid-cols-[repeat(auto-fit,_18rem)] gap-4">
+          <div class="mt-6 pb-12 flex flex-col sm:grid sm:justify-center sm:content-start grid-cols-[repeat(auto-fit,_18rem)] gap-4">
             <For each={vocabulariesByRecency()}>
               {vocabulary => (
                 <VocabularyCard
