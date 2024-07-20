@@ -78,7 +78,7 @@ export const VocabularyOverview: Component<Props> = props => {
   }
 
   return (
-    <div>
+    <main>
       <Show when={!loading()}>
         <div class="page-container flex flex-wrap justify-between gap-x-4">
           <h1 class="text-lg font-semibold">Your vocabularies</h1>
@@ -117,7 +117,7 @@ export const VocabularyOverview: Component<Props> = props => {
             </div>
           }
         >
-          <section class="mt-6 h-full flex flex-col sm:grid sm:justify-center sm:content-start grid-cols-[repeat(auto-fit,_18rem)] gap-4">
+          <div class="mt-6 h-full flex flex-col sm:grid sm:justify-center sm:content-start grid-cols-[repeat(auto-fit,_18rem)] gap-4">
             <For each={vocabularies()}>
               {vocabulary => (
                 <VocabularyCard
@@ -129,7 +129,7 @@ export const VocabularyOverview: Component<Props> = props => {
                 />
               )}
             </For>
-          </section>
+          </div>
         </Show>
 
         <Dialog
@@ -158,6 +158,6 @@ export const VocabularyOverview: Component<Props> = props => {
           <Skeleton class="mx-auto mt-4 h-12 w-20" />
         </div>
       </Show>
-    </div>
+    </main>
   );
 };
