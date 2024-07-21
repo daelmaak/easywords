@@ -110,15 +110,22 @@ export const VocabularyTestPage = () => {
   }
 
   return (
-    <Show when={!vocabulary.loading}>
-      <div class="grid page-container">
-        <BackLink class="self-start">Back to vocabulary</BackLink>
+    <div class="page-container h-full">
+      <Show when={!vocabulary.loading}>
+        <BackLink>Back to vocabulary</BackLink>
         <Show when={!done()}>
           <Show when={vocabularyId} keyed>
             <Show when={words()}>
               {w => (
-                <>
-                  <div class="m-auto mb-4">
+                <div class="mt-8 grid sm:grid-cols-[1fr_2fr_1fr]">
+                  <aside class="p-4 order-1 sm:order-none">
+                    <h2 class="mb-4">Test Settings</h2>
+                    <VocabularySettings
+                      settings={vocabularySettings}
+                      onChange={setVocabularySettings}
+                    />
+                  </aside>
+                  <main class="m-auto mb-4">
                     <VocabularyTester
                       testSettings={vocabularySettings}
                       savedProgress={savedProgress()}
@@ -131,14 +138,8 @@ export const VocabularyTestPage = () => {
                       onRepeat={onRepeat}
                       onReset={onReset}
                     />
-                  </div>
-                  <div class="mt-auto">
-                    <VocabularySettings
-                      settings={vocabularySettings}
-                      onChange={setVocabularySettings}
-                    />
-                  </div>
-                </>
+                  </main>
+                </div>
               )}
             </Show>
           </Show>
@@ -156,7 +157,7 @@ export const VocabularyTestPage = () => {
             />
           )}
         </Show>
-      </div>
-    </Show>
+      </Show>
+    </div>
   );
 };

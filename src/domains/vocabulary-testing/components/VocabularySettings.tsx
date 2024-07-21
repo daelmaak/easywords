@@ -44,7 +44,7 @@ export const VocabularySettings: Component<Props> = props => {
 
   return (
     <Show when={loaded()}>
-      <div class="flex flex-wrap justify-center gap-4">
+      <div class="flex flex-col gap-4">
         <Switch
           checked={props.settings.reverseTranslations}
           label="Reverse"
