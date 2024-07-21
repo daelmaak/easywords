@@ -93,11 +93,14 @@ const ResultWord: Component<ResultWordProps> = props => {
       <span>{props.word.original}</span>
       <span class="mx-2 text-center">-</span>
       <span>{props.word.translation}</span>
-      <HiOutlinePencil
-        class="mt-1 opacity-50 cursor-pointer hover:opacity-80"
+      <Button
+        class="mt-1 p-0 size-8 opacity-50 hover:opacity-80"
         title="Edit word"
+        variant="ghost"
         onClick={props.onEditWord}
-      />
+      >
+        <HiOutlinePencil />
+      </Button>
     </div>
   );
 };

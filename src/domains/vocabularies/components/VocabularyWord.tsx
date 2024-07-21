@@ -8,6 +8,7 @@ import {
 } from '../../../components/ui/popover';
 import { Checkbox } from '../../../components/ui/checkbox';
 import type { VocabularyItem } from '../model/vocabulary-model';
+import { Button } from '~/components/ui/button';
 
 interface Props {
   word: VocabularyItem;
@@ -28,7 +29,7 @@ export const VocabularyWord: Component<Props> = props => {
   }
 
   return (
-    <div class="flex items-center gap-2" data-testid="editor-word">
+    <div class="flex items-center gap-1" data-testid="editor-word">
       <Checkbox
         checked={props.selected}
         id={`word-selector-${props.word.id}`}
@@ -39,19 +40,24 @@ export const VocabularyWord: Component<Props> = props => {
       <span>{props.word.original}</span>
       <span class="mx-2 text-center">-</span>
       <span>{props.word.translation}</span>
-      <HiOutlinePencil
-        class="mt-1 opacity-50 cursor-pointer hover:opacity-80"
+      <Button
+        class="mt-1 p-0 size-8 opacity-50 hover:opacity-80"
         title="Edit word"
+        variant="ghost"
         onClick={() => props.onWordDetailToOpen(props.word)}
-      />
+      >
+        <HiOutlinePencil />
+      </Button>
+
       <Show when={props.word.notes}>
         <Popover>
           <PopoverTrigger>
-            <HiSolidInformationCircle
-              class="mt-1 text-blue-600 hover:text-blue-900"
-              size={20}
-              title="Show notes"
-            />
+            <Button
+              class="mt-1 p-0 size-8 text-blue-600 hover:text-blue-900"
+              variant="ghost"
+            >
+              <HiSolidInformationCircle size={20} title="Show notes" />
+            </Button>
           </PopoverTrigger>
           <PopoverContent>{props.word.notes}</PopoverContent>
         </Popover>

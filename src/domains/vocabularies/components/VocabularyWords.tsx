@@ -89,7 +89,7 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
         onWordEdited={onWordEdited}
       />
       <Show when={props.sort?.by == null}>
-        <div class="w-full relative grid justify-center content-start gap-2 sm:grid-cols-[repeat(auto-fit,_22rem)]">
+        <div class="w-full relative grid justify-center content-start sm:grid-cols-[repeat(auto-fit,_22rem)]">
           <For each={props.words}>
             {word => (
               <VocabularyWord
