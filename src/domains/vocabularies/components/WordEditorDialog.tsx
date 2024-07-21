@@ -5,13 +5,14 @@ import type { VocabularyItem } from '../model/vocabulary-model';
 
 interface WordEditorDialogProps {
   word?: VocabularyItem;
+  open: boolean;
   onClose: () => void;
   onWordEdited: (word: VocabularyItem) => void;
 }
 
 export const WordEditorDialog: Component<WordEditorDialogProps> = props => {
   return (
-    <Dialog open={props.word != null} onOpenChange={props.onClose}>
+    <Dialog open={props.open} onOpenChange={props.onClose}>
       <DialogContent>
         <DialogHeader>
           <h2 class="text-lg font-bold">Edit word</h2>

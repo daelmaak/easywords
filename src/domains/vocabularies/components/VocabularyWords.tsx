@@ -84,6 +84,7 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
     <>
       <WordEditorDialog
         word={wordToEdit()}
+        open={wordToEdit() != null}
         onClose={() => setWordToEdit(undefined)}
         onWordEdited={onWordEdited}
       />

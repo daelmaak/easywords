@@ -27,6 +27,7 @@ export function Results(props: ResultsProps) {
     <div class="mx-auto flex flex-col">
       <WordEditorDialog
         word={wordToEdit()}
+        open={wordToEdit() != null}
         onClose={() => setWordToEdit(undefined)}
         onWordEdited={onWordEdited}
       />

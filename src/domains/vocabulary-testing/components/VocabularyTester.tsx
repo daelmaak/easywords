@@ -3,15 +3,14 @@ import type { Component } from 'solid-js';
 import { Show, onCleanup, onMount } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { Button } from '~/components/ui/button';
-import { Dialog, DialogContent } from '~/components/ui/dialog';
 import { Progress, ProgressValueLabel } from '~/components/ui/progress';
-import { WordCreator } from '~/domains/vocabularies/components/WordCreator';
 import type { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
 import { nextWord } from '../../../worder/worder';
 import type { SavedProgress } from '../vocabulary-testing-model';
 import { WriteTester } from './WriteTester';
 import type { VocabularyTesterSettings } from './VocabularySettings';
 import { unionBy } from 'lodash-es';
+import { WordEditorDialog } from '~/domains/vocabularies/components/WordEditorDialog';
 
 export type VocabularyTestMode = 'guess' | 'write';
 
@@ -162,21 +161,8 @@ export const VocabularyTester: Component<TesterProps> = (
     });
   }
 
-  function onEditWord(original: string, translation: string) {
+  function onWordEdited(updatedWord: VocabularyItem) {
     setStore('editing', false);
-
-    const word = currentWord();
-
-    if (!word) {
-      return;
-    }
-
-    const updatedWord = {
-      ...word,
-      original,
-      translation,
-    } satisfies VocabularyItem;
-
     props.onEditWord(updatedWord);
   }
 
@@ -232,6 +218,7 @@ export const VocabularyTester: Component<TesterProps> = (
             title="Remove word from vocabulary"
             size="icon"
             variant="ghost"
+            type="button"
             onClick={removeWord}
           >
             <HiOutlineTrash size={20} />
@@ -242,6 +229,7 @@ export const VocabularyTester: Component<TesterProps> = (
             title="Edit word"
             size="icon"
             variant="ghost"
+            type="button"
             onClick={() => setStore('editing', !store.editing)}
           >
             <HiOutlinePencil size={20} />
@@ -252,25 +240,19 @@ export const VocabularyTester: Component<TesterProps> = (
             title="Peek"
             size="icon"
             variant="ghost"
+            type="button"
             onClick={togglePeek}
           >
             <HiOutlineEye size={20} />
           </Button>
         </div>
 
-        <Dialog
+        <WordEditorDialog
+          word={currentWord()}
           open={store.editing}
-          onOpenChange={open => setStore('editing', open)}
-        >
-          <DialogContent class="w-svw sm:w-[30rem]">
-            <h2 class="text-lg font-bold mb-4">Edit word</h2>
-            <WordCreator
-              ctaLabel="Update"
-              value={currentWord()}
-              onChange={onEditWord}
-            />
-          </DialogContent>
-        </Dialog>
+          onClose={() => setStore('editing', false)}
+          onWordEdited={onWordEdited}
+        />
 
         {/* mb-[-0.5rem] is here to bypass the vertical flex gap */}
         <div class="mb-[-0.5rem]">{toTranslate()}</div>

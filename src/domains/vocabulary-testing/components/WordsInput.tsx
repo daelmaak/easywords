@@ -16,8 +16,8 @@ export interface WordsInputProps {
 export function WordsInput(props: WordsInputProps) {
   const [words, setWords] = createSignal<WordTranslation[]>([]);
 
-  function onAddWord(original: string, translation: string) {
-    setWords(w => w.concat({ original, translation }));
+  function onAddWord(word: WordTranslation) {
+    setWords(w => w.concat(word));
     props.onWordsChange?.(words());
   }
 
@@ -43,27 +43,27 @@ export function WordsInput(props: WordsInputProps) {
   return (
     <>
       <Show when={props.mode === 'form'}>
-      <div>
-        <WordCreator
-          ctaLabel="Add"
-          ctaVariant="secondary"
-          onChange={onAddWord}
-        />
+        <div>
+          <WordCreator
+            ctaLabel="Add"
+            ctaVariant="secondary"
+            onChange={onAddWord}
+          />
 
-        <div class="mt-4 flex flex-wrap gap-2">
-          <For each={words()}>
-            {word => (
-              <Badge class="text-sm" variant="secondary">
-                {word.original} - {word.translation}
-                <HiOutlineXMark
-                  class="ml-1 cursor-pointer"
-                  onClick={() => removeWord(word)}
-                />
-              </Badge>
-            )}
-          </For>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <For each={words()}>
+              {word => (
+                <Badge class="text-sm" variant="secondary">
+                  {word.original} - {word.translation}
+                  <HiOutlineXMark
+                    class="ml-1 cursor-pointer"
+                    onClick={() => removeWord(word)}
+                  />
+                </Badge>
+              )}
+            </For>
+          </div>
         </div>
-</div>
       </Show>
 
       <Show when={props.mode === 'text'}>
