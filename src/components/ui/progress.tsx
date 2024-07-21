@@ -7,17 +7,25 @@ import * as ProgressPrimitive from '@kobalte/core/progress';
 import { Label } from '~/components/ui/label';
 
 type ProgressRootProps<T extends ValidComponent = 'div'> =
-  ProgressPrimitive.ProgressRootProps<T> & { children?: JSX.Element };
+  ProgressPrimitive.ProgressRootProps<T> & { children?: JSX.Element } & {
+    barColor?: string;
+  };
 
 const Progress = <T extends ValidComponent = 'div'>(
   props: PolymorphicProps<T, ProgressRootProps<T>>
 ) => {
-  const [local, others] = splitProps(props as ProgressRootProps, ['children']);
+  const [local, others] = splitProps(props as ProgressRootProps, [
+    'children',
+    'barColor',
+  ]);
   return (
     <ProgressPrimitive.Root {...others}>
       {local.children}
       <ProgressPrimitive.Track class="relative h-4 w-full overflow-hidden rounded-full bg-secondary">
-        <ProgressPrimitive.Fill class="h-full w-[var(--kb-progress-fill-width)] flex-1 bg-primary transition-all" />
+        <ProgressPrimitive.Fill
+          class="h-full w-[var(--kb-progress-fill-width)] flex-1 bg-primary transition-all"
+          style={{ background: local.barColor }}
+        />
       </ProgressPrimitive.Track>
     </ProgressPrimitive.Root>
   );

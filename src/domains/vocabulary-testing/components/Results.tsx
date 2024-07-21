@@ -4,6 +4,7 @@ import { Button } from '~/components/ui/button';
 import { WordEditorDialog } from '~/domains/vocabularies/components/WordEditorDialog';
 import type { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
 import { ResultWord } from './ResultWord';
+import { Progress, ProgressValueLabel } from '~/components/ui/progress';
 
 interface ResultsProps {
   invalidWords?: VocabularyItem[];
@@ -32,6 +33,22 @@ export function Results(props: ResultsProps) {
       />
 
       <h1 class="text-center text-2xl">Test finished!</h1>
+
+      <Progress
+        class="mt-12 mx-auto w-full sm:w-96"
+        barColor="#094501"
+        value={props.words.length - (props.invalidWords?.length ?? 0)}
+        maxValue={props.words.length}
+        getValueLabel={({ value, max }) =>
+          `${value} out of ${max} (${Math.floor(
+            (value / max) * 100
+          )}%) guessed correctly`
+        }
+      >
+        <div class="mb-2 text-center">
+          <ProgressValueLabel />
+        </div>
+      </Progress>
 
       <Show when={props.invalidWords}>
         {invalidWords => (
