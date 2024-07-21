@@ -113,7 +113,11 @@ export const VocabularyTester: Component<TesterProps> = (
       store.wordsLeft,
       'id'
     );
-    props.onDone(invalidAndLeftoverWords);
+    // There is no point in passing empty array
+    const invalidWords =
+      invalidAndLeftoverWords.length > 0 ? invalidAndLeftoverWords : undefined;
+
+    props.onDone(invalidWords);
 
     setStore({
       currentWordId: undefined,

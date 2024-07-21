@@ -1,10 +1,9 @@
 import type { Component } from 'solid-js';
 import { For, Show, createSignal } from 'solid-js';
 import type { VocabularyItem } from '../model/vocabulary-model';
-import { Dialog, DialogContent, DialogHeader } from '~/components/ui/dialog';
-import { WordEditor } from './WordEditor';
 import { VocabularyWord } from './VocabularyWord';
 import { differenceBy, unionBy } from 'lodash-es';
+import { WordEditorDialog } from './WordEditorDialog';
 
 export interface SortState {
   by?: 'created_at' | undefined;
@@ -20,8 +19,7 @@ interface VocabularyWordsProps {
 }
 
 export const VocabularyWords: Component<VocabularyWordsProps> = props => {
-  const [wordDetailToOpen, setWordDetailToOpen] =
-    createSignal<VocabularyItem>();
+  const [wordToEdit, setWordToEdit] = createSignal<VocabularyItem>();
   const [lastSelectedWordIndex, setLastSelectedWordIndex] = createSignal(-1);
 
   const groupedWordsByCreatedAt = () =>
@@ -54,7 +52,7 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
 
   function onWordEdited(word: VocabularyItem) {
     props.onWordsEdited([word]);
-    setWordDetailToOpen(undefined);
+    setWordToEdit(undefined);
   }
 
   function onWordSelected(
@@ -84,21 +82,11 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
 
   return (
     <>
-      <Show when={wordDetailToOpen()}>
-        {word => (
-          <Dialog
-            open={true}
-            onOpenChange={() => setWordDetailToOpen(undefined)}
-          >
-            <DialogContent>
-              <DialogHeader>
-                <h2 class="text-lg font-bold">Edit word</h2>
-              </DialogHeader>
-              <WordEditor word={word()} onChange={onWordEdited} />
-            </DialogContent>
-          </Dialog>
-        )}
-      </Show>
+      <WordEditorDialog
+        word={wordToEdit()}
+        onClose={() => setWordToEdit(undefined)}
+        onWordEdited={onWordEdited}
+      />
       <Show when={props.sort?.by == null}>
         <div class="w-full relative grid justify-center content-start gap-2 sm:grid-cols-[repeat(auto-fit,_22rem)]">
           <For each={props.words}>
@@ -107,7 +95,7 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
                 selected={wordSelected(word)}
                 word={word}
                 onWordSelected={onWordSelected}
-                onWordDetailToOpen={setWordDetailToOpen}
+                onWordDetailToOpen={setWordToEdit}
               />
             )}
           </For>
@@ -129,7 +117,7 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
                           selected={wordSelected(word)}
                           word={word}
                           onWordSelected={onWordSelected}
-                          onWordDetailToOpen={setWordDetailToOpen}
+                          onWordDetailToOpen={setWordToEdit}
                         />
                       )}
                     </For>

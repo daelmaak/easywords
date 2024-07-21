@@ -35,7 +35,6 @@ export const VocabularyTestPage = () => {
     });
   const [words, setWords] = createSignal<VocabularyItem[]>();
   const [invalidWords, setInvalidWords] = createSignal<VocabularyItem[]>();
-  const [removedWords, setRemovedWords] = createSignal<VocabularyItem[]>();
   const [savedProgress, setSavedProgress] = createSignal<SavedProgress>();
   const [done, setDone] = createSignal(false);
 
@@ -64,13 +63,9 @@ export const VocabularyTestPage = () => {
     setSavedProgress(progress);
   });
 
-  function onDone(
-    leftOverWords?: VocabularyItem[],
-    removedWords?: VocabularyItem[]
-  ) {
+  function onDone(leftOverWords?: VocabularyItem[]) {
     setDone(true);
     setInvalidWords(leftOverWords);
-    setRemovedWords(removedWords);
     void deleteVocabularyProgress(vocabularyId);
   }
 
@@ -97,6 +92,13 @@ export const VocabularyTestPage = () => {
     setInvalidWords();
     setWords(invalidWords);
     setDone(false);
+  }
+
+  async function onWordsEdited(updatedWord: VocabularyItem) {
+    await updateVocabularyItems(updatedWord);
+    setInvalidWords(ws =>
+      ws?.map(w => (w.id === updatedWord.id ? updatedWord : w))
+    );
   }
 
   async function deleteWord(word: VocabularyItem) {
@@ -142,15 +144,17 @@ export const VocabularyTestPage = () => {
           </Show>
         </Show>
 
-        <Show when={done()}>
-          <Results
-            invalidWords={invalidWords()}
-            removedWords={removedWords()}
-            words={words()}
-            repeat={onRepeat}
-            goToVocabularies={goToVocabularies}
-            tryInvalidWords={onTryInvalidWords}
-          />
+        <Show when={done() && words()}>
+          {words => (
+            <Results
+              words={words()}
+              invalidWords={invalidWords()}
+              editWord={onWordsEdited}
+              repeat={onRepeat}
+              goToVocabularies={goToVocabularies}
+              tryInvalidWords={onTryInvalidWords}
+            />
+          )}
         </Show>
       </div>
     </Show>
