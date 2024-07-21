@@ -147,14 +147,16 @@ export const VocabularyTestPage = () => {
 
         <Show when={done() && words()}>
           {words => (
-            <Results
-              words={words()}
-              invalidWords={invalidWords()}
-              editWord={onWordsEdited}
-              repeat={onRepeat}
-              goToVocabularies={goToVocabularies}
-              tryInvalidWords={onTryInvalidWords}
-            />
+            <div class="mt-8">
+              <Results
+                words={words()}
+                invalidWords={invalidWords()}
+                editWord={onWordsEdited}
+                repeat={onRepeat}
+                goToVocabularies={goToVocabularies}
+                tryInvalidWords={onTryInvalidWords}
+              />
+            </div>
           )}
         </Show>
       </Show>
