@@ -145,8 +145,8 @@ export const VocabularyPage: Component = () => {
           <BackLink class="mb-4">Back to vocabularies</BackLink>
           <Show when={vocabulary()}>
             {v => (
-              <form onFocusOut={onVocabularyDataChange}>
-                <Label for="vocabulary-name">List name</Label>
+              <form onFocusOut={onVocabularyDataChange} autocomplete="off">
+                <Label for="vocabulary-name">Vocabulary name</Label>
                 <Input
                   id="vocabulary-name"
                   name="vocabularyName"
