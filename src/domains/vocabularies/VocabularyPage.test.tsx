@@ -33,7 +33,6 @@ it('should filter words based on search', async () => {
 function setup() {
   cleanup();
   vi.restoreAllMocks();
-  window.scrollTo = vi.fn() as unknown as Window['scrollTo'];
 
   const userInteraction = userEvent.setup();
 

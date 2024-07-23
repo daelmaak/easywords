@@ -5,8 +5,7 @@ import {
   HiOutlineForward,
   HiOutlineXCircle,
 } from 'solid-icons/hi';
-import type {
-  Component} from 'solid-js';
+import type { Component } from 'solid-js';
 import {
   Show,
   createEffect,
