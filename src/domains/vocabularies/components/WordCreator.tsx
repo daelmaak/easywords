@@ -3,9 +3,10 @@ import type { ButtonProps } from '~/components/ui/button';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
-import type { VocabularyItem } from '../model/vocabulary-model';
-import { processFormSubmit } from '~/util/form';
+import { Textarea } from '~/components/ui/textarea';
 import type { WordTranslation } from '~/model/word-translation';
+import { processFormSubmit } from '~/util/form';
+import type { VocabularyItem } from '../model/vocabulary-model';
 
 interface Props {
   ctaLabel: string;
@@ -32,11 +33,13 @@ export const WordCreator: Component<Props> = props => {
     props.onChange({
       original: formData.original.trim(),
       translation: formData.translation.trim(),
+      notes: formData.notes?.trim(),
     });
   }
 
   return (
-    <form class="flex gap-2" onSubmit={onAddWord}>
+    <form class="flex flex-wrap gap-2" onSubmit={onAddWord}>
+      <div class="w-full flex gap-2">
       <div class="flex flex-col gap-2">
         <Label class="text-xs" for="word-original">
             Original*
@@ -58,6 +61,17 @@ export const WordCreator: Component<Props> = props => {
             class="text-base"
           name="translation"
             required
+            value={props.value?.translation}
+          />
+        </div>
+      </div>
+      <div class="w-full flex flex-col gap-2">
+        <Label class="text-xs" for="word-translation">
+          Notes
+        </Label>
+        <Textarea
+          id="word-notes"
+          name="notes"
           value={props.value?.translation}
         />
       </div>
