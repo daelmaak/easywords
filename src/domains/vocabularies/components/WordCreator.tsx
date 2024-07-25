@@ -43,6 +43,7 @@ export const WordCreator: Component<Props> = props => {
         </Label>
         <Input
           id="word-original"
+            class="text-base"
           name="original"
           value={props.value?.original}
         />
@@ -53,6 +54,7 @@ export const WordCreator: Component<Props> = props => {
         </Label>
         <Input
           id="word-translation"
+            class="text-base"
           name="translation"
           value={props.value?.translation}
         />
