@@ -39,6 +39,12 @@ export const VocabularyTestPage = () => {
   const [done, setDone] = createSignal(false);
 
   createEffect(() => {
+    // Vocabulary loading means the current one is either non existent or stale
+    // so now words should be set at this moment.
+    if (vocabulary.loading) {
+      return;
+    }
+
     const vocab = vocabulary();
 
     if (vocab) {
