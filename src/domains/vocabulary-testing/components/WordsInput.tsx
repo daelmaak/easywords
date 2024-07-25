@@ -45,7 +45,7 @@ export function WordsInput(props: WordsInputProps) {
       <Show when={props.mode === 'form'}>
         <div>
           <WordCreator
-            ctaLabel="Add"
+            ctaLabel="Add word"
             ctaVariant="secondary"
             onChange={onAddWord}
           />
