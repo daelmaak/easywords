@@ -39,23 +39,25 @@ export const WordCreator: Component<Props> = props => {
     <form class="flex gap-2" onSubmit={onAddWord}>
       <div class="flex flex-col gap-2">
         <Label class="text-xs" for="word-original">
-          Original
+            Original*
         </Label>
         <Input
           id="word-original"
             class="text-base"
           name="original"
+            required
           value={props.value?.original}
         />
       </div>
       <div class="flex flex-col gap-2">
         <Label class="text-xs" for="word-translation">
-          Translation
+            Translation*
         </Label>
         <Input
           id="word-translation"
             class="text-base"
           name="translation"
+            required
           value={props.value?.translation}
         />
       </div>
