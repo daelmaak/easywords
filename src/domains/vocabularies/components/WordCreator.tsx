@@ -1,3 +1,4 @@
+import { HiOutlinePlus } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
 import type { ButtonProps } from '~/components/ui/button';
 import { Button } from '~/components/ui/button';
@@ -40,26 +41,26 @@ export const WordCreator: Component<Props> = props => {
   return (
     <form class="flex flex-wrap gap-2" onSubmit={onAddWord}>
       <div class="w-full flex gap-2">
-      <div class="flex flex-col gap-2">
-        <Label class="text-xs" for="word-original">
+        <div class="flex flex-col gap-2">
+          <Label class="text-xs" for="word-original">
             Original*
-        </Label>
-        <Input
-          id="word-original"
+          </Label>
+          <Input
+            id="word-original"
             class="text-base"
-          name="original"
+            name="original"
             required
-          value={props.value?.original}
-        />
-      </div>
-      <div class="flex flex-col gap-2">
-        <Label class="text-xs" for="word-translation">
+            value={props.value?.original}
+          />
+        </div>
+        <div class="flex flex-col gap-2">
+          <Label class="text-xs" for="word-translation">
             Translation*
-        </Label>
-        <Input
-          id="word-translation"
+          </Label>
+          <Input
+            id="word-translation"
             class="text-base"
-          name="translation"
+            name="translation"
             required
             value={props.value?.translation}
           />
@@ -76,10 +77,11 @@ export const WordCreator: Component<Props> = props => {
         />
       </div>
       <Button
-        class="ml-auto self-end"
+        class="mx-auto w-full"
         variant={props.ctaVariant ?? 'default'}
         type="submit"
       >
+        <HiOutlinePlus />
         {props.ctaLabel}
       </Button>
     </form>
