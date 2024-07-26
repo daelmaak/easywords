@@ -263,6 +263,7 @@ export const VocabularyTester: Component<TesterProps> = (
                 autoFocus
                 mode="full"
                 peek={store.peek}
+                strict={props.testSettings.strictMatch}
                 word={word()}
                 onDone={setNextWord}
                 onSkip={setNextWord}

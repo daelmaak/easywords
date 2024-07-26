@@ -32,6 +32,7 @@ export const VocabularyTestPage = () => {
       mode: 'write',
       reverseTranslations: false,
       repeatInvalid: false,
+      strictMatch: false,
     });
   const [words, setWords] = createSignal<VocabularyItem[]>();
   const [invalidWords, setInvalidWords] = createSignal<VocabularyItem[]>();
@@ -65,6 +66,7 @@ export const VocabularyTestPage = () => {
       return;
     }
 
+    // move to the effect above, to handle stale vocabulary
     const progress = await fetchVocabularyProgress(vocabularyId);
     setSavedProgress(progress);
   });

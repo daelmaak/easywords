@@ -134,6 +134,34 @@ it('should trim words during validaton', async () => {
   expect(validIcon).not.toBeNull();
 });
 
+it(`shouldn't pass with incorrect diacritics in strict mode`, async () => {
+  const { defaultTestSettings, userAction } = setup();
+  render(() => (
+    <VocabularyTester
+      words={[
+        {
+          ...TEST_WORDS[0],
+          translation: 'dạo này',
+        },
+      ]}
+      testSettings={{ ...defaultTestSettings, strictMatch: true }}
+      onDone={vi.fn()}
+      onEditWord={vi.fn()}
+      onRemoveWord={vi.fn()}
+      onRepeat={vi.fn()}
+      onReset={vi.fn()}
+    />
+  ));
+
+  const input = screen.getByTestId('write-tester-input');
+  await userAction.type(input, 'dao nay');
+  // validate
+  await userAction.type(input, '{Enter}');
+
+  const validIcon = screen.queryByLabelText('Word guess is valid');
+  expect(validIcon).not.toBeInTheDocument();
+});
+
 it('should keep its validation state after changing the word', async () => {
   const [words, setWords] = createSignal(TEST_WORDS.slice(0, 1));
   const { defaultTestSettings, onDone, userAction } = setup();
@@ -208,6 +236,7 @@ function setup() {
     mode: 'write',
     reverseTranslations: false,
     repeatInvalid: false,
+    strictMatch: false,
   } satisfies VocabularyTesterSettings;
 
   const userAction = userEvent.setup();

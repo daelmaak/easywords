@@ -8,6 +8,7 @@ export interface VocabularyTesterSettings {
   mode: VocabularyTestMode;
   reverseTranslations: boolean;
   repeatInvalid: boolean;
+  strictMatch: boolean;
 }
 
 interface Props {
@@ -50,11 +51,16 @@ export const VocabularySettings: Component<Props> = props => {
           label="Reverse"
           onChange={checked => changeSetting('reverseTranslations', checked)}
         />
-        <Switch
-          checked={props.settings.repeatInvalid}
-          label="Repeat incorrect words"
-          onChange={checked => changeSetting('repeatInvalid', checked)}
-        />
+        <div>
+          <Switch
+            checked={props.settings.repeatInvalid}
+            label="Repeat incorrect words"
+            onChange={checked => changeSetting('repeatInvalid', checked)}
+          />
+          <p class="mt-1 text-sm">
+            Words are repeated until you guess them correctly.
+          </p>
+        </div>
         <Switch
           checked={props.settings.mode === 'write'}
           label="Write words"
@@ -62,6 +68,14 @@ export const VocabularySettings: Component<Props> = props => {
             changeSetting('mode', checked ? 'write' : 'guess')
           }
         />
+        <div>
+          <Switch
+            checked={props.settings.strictMatch}
+            label="Strict comparison"
+            onChange={checked => changeSetting('strictMatch', checked)}
+          />
+          <p class="mt-1 text-sm">Diacritics is disregarded when off.</p>
+        </div>
       </div>
     </Show>
   );
