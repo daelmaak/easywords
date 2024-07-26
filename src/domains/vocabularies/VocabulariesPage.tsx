@@ -126,7 +126,7 @@ export const VocabulariesPage = () => {
             </div>
           }
         >
-          <div class="mt-6 pb-12 flex flex-col sm:grid sm:justify-center sm:content-start grid-cols-[repeat(auto-fit,_18rem)] gap-4">
+          <div class="mt-6 px-2 pb-12 flex flex-col sm:grid sm:justify-center sm:content-start grid-cols-[repeat(auto-fit,_18rem)] gap-4">
             <For each={vocabulariesByRecency()}>
               {vocabulary => (
                 <VocabularyCard
