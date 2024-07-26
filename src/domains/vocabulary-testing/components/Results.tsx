@@ -88,7 +88,7 @@ export function Results(props: ResultsProps) {
           )}
         </Show>
         <Button type="button" variant="secondary" onClick={props.repeat}>
-          Test again
+          Test all again
         </Button>
         <A class="text-primary text-sm" href="..">
           Back to Vocabulary

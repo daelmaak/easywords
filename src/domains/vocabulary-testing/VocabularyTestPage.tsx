@@ -40,25 +40,13 @@ export const VocabularyTestPage = () => {
   const [done, setDone] = createSignal(false);
 
   createEffect(() => {
-    // Vocabulary loading means the current one is either non existent or stale
-    // so now words should be set at this moment.
-    if (vocabulary.loading) {
-      return;
-    }
-
     const vocab = vocabulary();
 
     if (vocab) {
-      if (searchParams.wordIds) {
-        const wordIds = searchParams.wordIds.split(',').map(Number);
-        const words = vocab.vocabularyItems.filter(w => wordIds.includes(w.id));
-        setWords(words);
-      } else {
-        setWords(vocab.vocabularyItems);
-      }
-
       void updateVocabularyAsInteractedWith(vocab.id);
     }
+
+    setInitialWords();
   });
 
   onMount(async () => {
@@ -70,6 +58,28 @@ export const VocabularyTestPage = () => {
     const progress = await fetchVocabularyProgress(vocabularyId);
     setSavedProgress(progress);
   });
+
+  function setInitialWords() {
+    // Vocabulary loading means the current one is either non existent or stale
+    // so now words should be set at this moment.
+    if (vocabulary.loading) {
+      return;
+    }
+
+    const vocab = vocabulary();
+
+    if (vocab == null) {
+      return;
+    }
+
+    if (searchParams.wordIds) {
+      const wordIds = searchParams.wordIds.split(',').map(Number);
+      const words = vocab.vocabularyItems.filter(w => wordIds.includes(w.id));
+      setWords(words);
+    } else {
+      setWords(vocab.vocabularyItems);
+    }
+  }
 
   function onDone(leftOverWords?: VocabularyItem[]) {
     setDone(true);
@@ -86,6 +96,7 @@ export const VocabularyTestPage = () => {
   }
 
   function onRepeat() {
+    setInitialWords();
     setInvalidWords();
     setDone(false);
   }
