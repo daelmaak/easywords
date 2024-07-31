@@ -87,7 +87,7 @@ export const VocabulariesPage = () => {
   }
 
   return (
-    <main class="bg-gray-100">
+    <main class="min-h-full bg-gray-100">
       <Show when={!loading()}>
         <div class="page-container flex flex-wrap justify-between gap-x-4">
           <h1 class="text-lg font-semibold">Your vocabularies</h1>
