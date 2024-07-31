@@ -36,6 +36,9 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
       return acc;
     }, new Map<number, VocabularyItem[]>());
 
+  const sortedWordsAlphabetically = () =>
+    props.words.slice().sort((a, b) => a.original.localeCompare(b.original));
+
   const sortedWordsByCreatedAt = (asc: boolean) => {
     return Array.from(groupedWordsByCreatedAt().entries()).sort(([a], [b]) =>
       asc ? a - b : b - a
@@ -90,7 +93,7 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
       />
       <Show when={props.sort?.by == null}>
         <div class="w-full relative grid justify-center content-start sm:grid-cols-[repeat(auto-fit,_22rem)]">
-          <For each={props.words}>
+          <For each={sortedWordsAlphabetically()}>
             {word => (
               <VocabularyWord
                 selected={wordSelected(word)}

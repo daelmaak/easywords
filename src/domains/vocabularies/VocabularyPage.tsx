@@ -228,7 +228,7 @@ export const VocabularyPage: Component = () => {
                     class="text-base"
                     onClick={() => sort({ by: undefined })}
                   >
-                    None
+                    Alphabetically
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
