@@ -6,17 +6,15 @@ import type {
   VocabularyDB,
   VocabularyToCreateDB,
 } from './vocabulary-api';
-import {
-  transformToVocabulary,
-  transformToVocabularyItemDB,
-} from './vocabulary-transform';
+import { transformToVocabulary } from './vocabulary-transform';
 import { fetchVocabularyProgress } from './vocabulary-progress-api';
 import type { RealOmit } from '../../../util/object';
+import type { VocabularyItemToCreate } from './vocabulary-resource';
 
 export type VocabularyToCreate = RealOmit<
   Vocabulary,
-  'id' | 'hasSavedProgress' | 'updatedAt'
->;
+  'id' | 'hasSavedProgress' | 'updatedAt' | 'vocabularyItems'
+> & { vocabularyItems: VocabularyItemToCreate[] };
 
 let api: VocabularyApi;
 let vocabulariesSignal: Signal<boolean>;
@@ -89,5 +87,9 @@ const transformToVocabularyCreateDB = (
 ): VocabularyToCreateDB => ({
   country: vocabulary.country,
   name: vocabulary.name,
-  vocabulary_items: vocabulary.vocabularyItems.map(transformToVocabularyItemDB),
+  vocabulary_items: vocabulary.vocabularyItems.map(vi => ({
+    original: vi.original,
+    translation: vi.translation,
+    notes: vi.notes,
+  })),
 });

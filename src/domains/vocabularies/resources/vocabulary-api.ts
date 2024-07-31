@@ -5,7 +5,7 @@ import type { QueryData } from '@supabase/supabase-js';
 
 export type VocabularyItemToCreateDB = RealOmit<
   VocabularyItemDB,
-  'id' | 'created_at'
+  'id' | 'created_at' | 'list_id'
 >;
 
 export type VocabularyToCreateDB = RealOmit<

@@ -1,7 +1,11 @@
 import type { ResourceReturn, Signal } from 'solid-js';
 import { createResource, createSignal } from 'solid-js';
 import type { Vocabulary, VocabularyItem } from '../model/vocabulary-model';
-import type { VocabularyApi, VocabularyItemToCreateDB } from './vocabulary-api';
+import type {
+  VocabularyApi,
+  VocabularyItemDB,
+  VocabularyItemToCreateDB,
+} from './vocabulary-api';
 import {
   transformToVocabulary,
   transformToVocabularyItem,
@@ -119,7 +123,7 @@ export const updateVocabularyItems = async (...items: VocabularyItem[]) => {
 
 const transformToVocabularyItemCreateDB = (
   item: VocabularyItemToCreate
-): VocabularyItemToCreateDB => ({
+): VocabularyItemToCreateDB & Pick<VocabularyItemDB, 'list_id'> => ({
   list_id: item.vocabularyId,
   original: item.original,
   translation: item.translation,
