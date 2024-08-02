@@ -39,7 +39,6 @@ import {
   updateVocabularyItems,
 } from './resources/vocabulary-resource';
 import { navigateToVocabularyTest } from './util/navigation';
-import { Popover, PopoverContent } from '~/components/ui/popover';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -56,11 +55,9 @@ export const VocabularyPage: Component = () => {
     by: searchParams['sortby'] as SortState['by'] | undefined,
   });
 
-  const [emptyWordsTooltipOpen, setEmptyWordsTooltipOpen] = createSignal(false);
-
   const vocabulary = getVocabularyResource(vocabularyId);
 
-  let createWordsRef: HTMLButtonElement | undefined;
+  let wordsInputFormRef!: HTMLFormElement;
 
   async function deleteSelectedWords() {
     const words = selectedWords();
@@ -73,10 +70,21 @@ export const VocabularyPage: Component = () => {
   }
 
   async function onCreateWords() {
+    // When no words were added yet, I attempt wordsInputForm submission because maybe
+    // the user just didn't press "Add word" button.
+    // If there already are some words added, I just check whether the wordsInputForm
+    // is submittable, ie. whether it has filled out fields and is valid, and if it is
+    // I submit it which adds a word.
+    if (addedWords().length === 0 || wordsInputFormRef.reportValidity()) {
+      wordsInputFormRef.requestSubmit();
+    }
+
+    // If still no words added, even after the form submission, just return. The native
+    // form validation will display the error messages.
     if (addedWords().length === 0) {
-      setEmptyWordsTooltipOpen(true);
       return;
     }
+
     setCreatingWords(true);
     await createVocabularyItems(vocabularyId, ...addedWords());
     setAddedWords([]);
@@ -143,24 +151,15 @@ export const VocabularyPage: Component = () => {
             <SheetHeader>
               <SheetTitle>Add words</SheetTitle>
             </SheetHeader>
-            <WordsInput mode="form" onWordsChange={setAddedWords} />
+            <WordsInput
+              mode="form"
+              ref={wordsInputFormRef}
+              onWordsChange={setAddedWords}
+            />
             <hr />
-            <Button
-              ref={createWordsRef}
-              loading={creatingWords()}
-              onClick={onCreateWords}
-            >
+            <Button loading={creatingWords()} onClick={onCreateWords}>
               Save
             </Button>
-            <Popover
-              anchorRef={() => createWordsRef}
-              open={emptyWordsTooltipOpen()}
-              onOpenChange={() => setEmptyWordsTooltipOpen(false)}
-            >
-              <PopoverContent>
-                You have to first add some words above
-              </PopoverContent>
-            </Popover>
           </SheetContent>
         </Sheet>
 

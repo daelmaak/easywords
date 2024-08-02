@@ -1,14 +1,18 @@
-import { HiOutlineXMark } from 'solid-icons/hi';
+import { HiOutlinePlus, HiOutlineXMark } from 'solid-icons/hi';
 import { For, Show, createSignal } from 'solid-js';
 import { Badge } from '~/components/ui/badge';
-import { Textarea } from '~/components/ui/textarea';
-import { WordCreator } from '~/domains/vocabularies/components/WordCreator';
+import { Button } from '~/components/ui/button';
+import { WordsCreatorForm } from '~/domains/vocabularies/components/WordsCreatorForm';
+import { WordsCreatorRaw } from '~/domains/vocabularies/components/WordsCreatorRaw';
 import type { WordTranslation } from '~/model/word-translation';
 
 export type WordsInputMode = 'text' | 'form';
 export const wordsInputModes: WordsInputMode[] = ['form', 'text'];
 
+const formId = 'words-input-form';
+
 export interface WordsInputProps {
+  ref?: HTMLFormElement;
   mode: WordsInputMode;
   onWordsChange?: (words: WordTranslation[]) => void;
 }
@@ -21,18 +25,9 @@ export function WordsInput(props: WordsInputProps) {
     props.onWordsChange?.(words());
   }
 
-  function onAddWordsFromTextArea(e: Event) {
-    const textarea = e.target as HTMLTextAreaElement;
-    const words = textarea.value
-      .split('\n')
-      .filter(l => l)
-      .map(line => {
-        const [original, translation] = line.split(' - ').map(w => w.trim());
-        return { original, translation };
-      });
-
-    setWords(words);
-    props.onWordsChange?.(words);
+  function onReplaceWords(newWords: WordTranslation[]) {
+    setWords(newWords);
+    props.onWordsChange?.(newWords);
   }
 
   function removeWord(word: WordTranslation) {
@@ -41,48 +36,42 @@ export function WordsInput(props: WordsInputProps) {
   }
 
   return (
-    <>
+    <div>
       <Show when={props.mode === 'form'}>
-        <div>
-          <WordCreator
-            ctaLabel="Add word"
-            ctaVariant="defaultOutline"
-            onChange={onAddWord}
-          />
-
-          <div class="mt-4 flex flex-wrap gap-2">
-            <For each={words()}>
-              {word => (
-                <Badge class="text-sm" variant="secondary">
-                  {word.original} - {word.translation}
-                  <HiOutlineXMark
-                    class="ml-1 cursor-pointer"
-                    onClick={() => removeWord(word)}
-                  />
-                </Badge>
-              )}
-            </For>
-          </div>
-        </div>
+        <WordsCreatorForm id={formId} ref={props.ref} onChange={onAddWord} />
       </Show>
 
       <Show when={props.mode === 'text'}>
-        <Textarea
-          id="words-input"
-          name="words-input"
-          onBlur={onAddWordsFromTextArea}
-        ></Textarea>
-        <div class="mt-2 text-xs text-center text-zinc-400">
-          words have to be in format:
-          <figure>
-            <pre class="mt-2">
-              original - translation
-              <br />
-              original2 - translation2
-            </pre>
-          </figure>
-        </div>
+        <WordsCreatorRaw
+          id={formId}
+          ref={props.ref}
+          onChange={onReplaceWords}
+        />
       </Show>
-    </>
+
+      <Button
+        class="mt-4 mx-auto w-full"
+        form={formId}
+        variant="defaultOutline"
+        type="submit"
+      >
+        <HiOutlinePlus />
+        {props.mode === 'text' ? 'Use words' : 'Add word'}
+      </Button>
+
+      <div class="mt-4 flex flex-wrap gap-2">
+        <For each={words()}>
+          {word => (
+            <Badge class="text-sm" variant="secondary">
+              {word.original} - {word.translation}
+              <HiOutlineXMark
+                class="ml-1 cursor-pointer"
+                onClick={() => removeWord(word)}
+              />
+            </Badge>
+          )}
+        </For>
+      </div>
+    </div>
   );
 }

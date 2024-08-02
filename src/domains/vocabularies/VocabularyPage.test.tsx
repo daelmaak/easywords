@@ -30,6 +30,109 @@ it('should filter words based on search', async () => {
   dispose();
 });
 
+it('words creator should submit word form if the form is not empty even without clicking "Add word"', async () => {
+  const { userInteraction, vocabularyApi, dispose } = setup();
+
+  const createWordsSpy = vi.spyOn(vocabularyApi, 'createVocabularyItems');
+
+  render(() => (
+    <MemoryRouter>
+      <Route path="/:id" component={VocabularyPage} />
+      <Route path="/" component={() => <Navigate href="/1" />} />
+    </MemoryRouter>
+  ));
+  await tick();
+
+  const addWordsBtn = screen.getByText('Add words');
+  await userEvent.click(addWordsBtn);
+
+  const originalInput = screen.getByLabelText('Original*');
+  const translationInput = screen.getByLabelText('Translation*');
+
+  await userInteraction.type(originalInput, 'ahoj');
+  await userInteraction.type(translationInput, 'hello');
+
+  expect(createWordsSpy).not.toHaveBeenCalled();
+
+  const saveBtn = screen.getByText('Save');
+  await userEvent.click(saveBtn);
+
+  expect(createWordsSpy).toHaveBeenNthCalledWith(1, [
+    {
+      original: 'ahoj',
+      translation: 'hello',
+      list_id: 1,
+      notes: '',
+    },
+  ]);
+
+  dispose();
+});
+
+it('words creator should not attempt words creation if no words filled in', async () => {
+  const { vocabularyApi, dispose } = setup();
+
+  const createWordsSpy = vi.spyOn(vocabularyApi, 'createVocabularyItems');
+
+  render(() => (
+    <MemoryRouter>
+      <Route path="/:id" component={VocabularyPage} />
+      <Route path="/" component={() => <Navigate href="/1" />} />
+    </MemoryRouter>
+  ));
+  await tick();
+
+  const addWordsBtn = screen.getByText('Add words');
+  await userEvent.click(addWordsBtn);
+
+  const saveBtn = screen.getByText('Save');
+  await userEvent.click(saveBtn);
+
+  expect(createWordsSpy).not.toHaveBeenCalled();
+
+  dispose();
+});
+
+it('words creator should still attempt words creation if user actively pressed "Add word" button', async () => {
+  const { userInteraction, vocabularyApi, dispose } = setup();
+
+  const createWordsSpy = vi.spyOn(vocabularyApi, 'createVocabularyItems');
+
+  render(() => (
+    <MemoryRouter>
+      <Route path="/:id" component={VocabularyPage} />
+      <Route path="/" component={() => <Navigate href="/1" />} />
+    </MemoryRouter>
+  ));
+  await tick();
+
+  const addWordsBtn = screen.getByText('Add words');
+  await userEvent.click(addWordsBtn);
+
+  const originalInput = screen.getByLabelText('Original*');
+  const translationInput = screen.getByLabelText('Translation*');
+
+  await userInteraction.type(originalInput, 'ahoj');
+  await userInteraction.type(translationInput, 'hello');
+
+  const addWordBtn = screen.getByText('Add word');
+  await userEvent.click(addWordBtn);
+  expect(createWordsSpy).not.toHaveBeenCalled();
+
+  const saveBtn = screen.getByText('Save');
+  await userEvent.click(saveBtn);
+  expect(createWordsSpy).toHaveBeenNthCalledWith(1, [
+    {
+      original: 'ahoj',
+      translation: 'hello',
+      list_id: 1,
+      notes: '',
+    },
+  ]);
+
+  dispose();
+});
+
 function setup() {
   cleanup();
   vi.restoreAllMocks();

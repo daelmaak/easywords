@@ -1,7 +1,4 @@
-import { HiOutlinePlus } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
-import type { ButtonProps } from '~/components/ui/button';
-import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { Textarea } from '~/components/ui/textarea';
@@ -10,13 +7,12 @@ import { processFormSubmit } from '~/util/form';
 import type { VocabularyItem } from '../model/vocabulary-model';
 
 interface Props {
-  ctaLabel: string;
-  ctaVariant?: ButtonProps['variant'];
-  value?: VocabularyItem;
+  id: string;
+  ref?: HTMLFormElement;
   onChange: (word: WordTranslation) => void;
 }
 
-export const WordCreator: Component<Props> = props => {
+export const WordsCreatorForm: Component<Props> = props => {
   function onAddWord(e: SubmitEvent) {
     const formData =
       processFormSubmit<
@@ -39,7 +35,12 @@ export const WordCreator: Component<Props> = props => {
   }
 
   return (
-    <form class="flex flex-wrap gap-2" onSubmit={onAddWord}>
+    <form
+      class="flex flex-wrap gap-2"
+      id={props.id}
+      ref={props.ref}
+      onSubmit={onAddWord}
+    >
       <div class="w-full flex gap-2">
         <div class="flex flex-col gap-2">
           <Label class="text-xs" for="word-original">
@@ -50,7 +51,6 @@ export const WordCreator: Component<Props> = props => {
             class="text-base"
             name="original"
             required
-            value={props.value?.original}
           />
         </div>
         <div class="flex flex-col gap-2">
@@ -62,7 +62,6 @@ export const WordCreator: Component<Props> = props => {
             class="text-base"
             name="translation"
             required
-            value={props.value?.translation}
           />
         </div>
       </div>
@@ -70,20 +69,8 @@ export const WordCreator: Component<Props> = props => {
         <Label class="text-xs" for="word-translation">
           Notes
         </Label>
-        <Textarea
-          id="word-notes"
-          name="notes"
-          value={props.value?.translation}
-        />
+        <Textarea id="word-notes" name="notes" />
       </div>
-      <Button
-        class="mx-auto w-full"
-        variant={props.ctaVariant ?? 'default'}
-        type="submit"
-      >
-        <HiOutlinePlus />
-        {props.ctaLabel}
-      </Button>
     </form>
   );
 };
