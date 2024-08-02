@@ -46,7 +46,7 @@ export function WordsInput(props: WordsInputProps) {
         <div>
           <WordCreator
             ctaLabel="Add word"
-            ctaVariant="secondary"
+            ctaVariant="defaultOutline"
             onChange={onAddWord}
           />
 
