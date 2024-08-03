@@ -155,7 +155,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
   return (
     <div class="relative">
       <i
-        class={cx('block mb-2 mx-auto text-base text-center', {
+        class={cx('block mb-2 mx-auto text-lg text-center', {
           invisible: !props.peek,
           'absolute top-0 translate-y-[-75%]': props.mode === 'inline',
         })}
