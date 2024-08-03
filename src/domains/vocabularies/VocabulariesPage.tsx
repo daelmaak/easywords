@@ -120,7 +120,10 @@ export const VocabulariesPage = () => {
               data-testid="empty-vocabulary-list"
             >
               <h2 class="text-xl">Create your first vocabulary!</h2>
-              <Button onClick={() => setCreateVocabularyOpen(true)}>
+              <Button
+                onClick={() => setCreateVocabularyOpen(true)}
+                type="button"
+              >
                 <HiOutlinePlus size={16} /> Create
               </Button>
             </div>
