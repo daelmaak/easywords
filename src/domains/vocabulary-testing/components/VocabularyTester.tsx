@@ -1,4 +1,9 @@
-import { HiOutlineEye, HiOutlinePencil, HiOutlineTrash } from 'solid-icons/hi';
+import {
+  HiOutlineEye,
+  HiOutlinePencil,
+  HiOutlineTrash,
+  HiSolidInformationCircle,
+} from 'solid-icons/hi';
 import type { Component } from 'solid-js';
 import { Show, onCleanup, onMount } from 'solid-js';
 import { createStore } from 'solid-js/store';
@@ -11,6 +16,11 @@ import { WriteTester } from './WriteTester';
 import type { VocabularyTesterSettings } from './VocabularySettings';
 import { unionBy } from 'lodash-es';
 import { WordEditorDialog } from '~/domains/vocabularies/components/WordEditorDialog';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '~/components/ui/popover';
 
 export type VocabularyTestMode = 'guess' | 'write';
 
@@ -255,7 +265,24 @@ export const VocabularyTester: Component<TesterProps> = (
         />
 
         {/* mb-[-0.5rem] is here to bypass the vertical flex gap */}
-        <div class="mb-[-0.5rem]">{toTranslate()}</div>
+        <div class="mb-[-0.5rem] flex items-center">
+          {toTranslate()}
+          <Show when={currentWord()?.notes}>
+            {notes => (
+              <Popover>
+                <PopoverTrigger class="size-8 flex justify-center items-center">
+                  <HiSolidInformationCircle
+                    aria-label="Show notes"
+                    class="text-blue-600 hover:text-blue-900"
+                    title="Show notes"
+                    size={20}
+                  />
+                </PopoverTrigger>
+                <PopoverContent>{notes()}</PopoverContent>
+              </Popover>
+            )}
+          </Show>
+        </div>
         <Show when={translatedWord()}>
           {word =>
             props.testSettings.mode === 'write' ? (
