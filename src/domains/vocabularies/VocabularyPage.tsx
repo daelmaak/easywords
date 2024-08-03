@@ -75,7 +75,7 @@ export const VocabularyPage: Component = () => {
     // If there already are some words added, I just check whether the wordsInputForm
     // is submittable, ie. whether it has filled out fields and is valid, and if it is
     // I submit it which adds a word.
-    if (addedWords().length === 0 || wordsInputFormRef.reportValidity()) {
+    if (addedWords().length === 0 || wordsInputFormRef.checkValidity()) {
       wordsInputFormRef.requestSubmit();
     }
 
