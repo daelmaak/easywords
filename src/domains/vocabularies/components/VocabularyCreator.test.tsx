@@ -9,7 +9,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-it('should send complete form information on submit', async () => {
+it('should permit vocabulary creation even when no words filled out', async () => {
   const { onListCreateSpy, userInteraction } = setup();
 
   render(() => <VocabularyCreator onListCreate={onListCreateSpy} />);

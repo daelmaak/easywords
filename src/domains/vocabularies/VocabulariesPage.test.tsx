@@ -6,6 +6,7 @@ import { VocabulariesPage } from './VocabulariesPage';
 import { MemoryRouter, Route } from '@solidjs/router';
 import userEvent from '@testing-library/user-event';
 import type { VocabularyToCreateDB } from './resources/vocabulary-api';
+import { addWordViaForm } from './util/test-util';
 
 afterEach(() => {
   cleanup();
@@ -51,13 +52,7 @@ it('should create vocabulary on form submit', async () => {
   const countryCombobox = screen.getByLabelText('Country');
   await userAction.selectOptions(countryCombobox, 'de');
 
-  const originalInput = screen.getByLabelText('Original*');
-  const translationInput = screen.getByLabelText('Translation*');
-  await userAction.type(originalInput, 'ahoj');
-  await userAction.type(translationInput, 'hello');
-
-  const addWordBtn = screen.getByText('Add word');
-  await userEvent.click(addWordBtn);
+  await addWordViaForm(screen, userAction, { submit: true });
 
   const createVocabularyBtn = screen.getAllByText('Create')[1];
   await userEvent.click(createVocabularyBtn);

@@ -5,6 +5,7 @@ import { expect, it, vi } from 'vitest';
 import { initTestApp } from '~/init/test-init';
 import { tick } from '~/lib/testing';
 import VocabularyPage from './VocabularyPage';
+import { addWordViaForm } from './util/test-util';
 
 it('should filter words based on search', async () => {
   const { userInteraction, dispose } = setup();
@@ -45,12 +46,7 @@ it('words creator should submit word form if the form is not empty even without 
 
   const addWordsBtn = screen.getByText('Add words');
   await userEvent.click(addWordsBtn);
-
-  const originalInput = screen.getByLabelText('Original*');
-  const translationInput = screen.getByLabelText('Translation*');
-
-  await userInteraction.type(originalInput, 'ahoj');
-  await userInteraction.type(translationInput, 'hello');
+  await addWordViaForm(screen, userInteraction);
 
   expect(createWordsSpy).not.toHaveBeenCalled();
 
@@ -109,14 +105,7 @@ it('words creator should still attempt words creation if user actively pressed "
   const addWordsBtn = screen.getByText('Add words');
   await userEvent.click(addWordsBtn);
 
-  const originalInput = screen.getByLabelText('Original*');
-  const translationInput = screen.getByLabelText('Translation*');
-
-  await userInteraction.type(originalInput, 'ahoj');
-  await userInteraction.type(translationInput, 'hello');
-
-  const addWordBtn = screen.getByText('Add word');
-  await userEvent.click(addWordBtn);
+  await addWordViaForm(screen, userInteraction, { submit: true });
   expect(createWordsSpy).not.toHaveBeenCalled();
 
   const saveBtn = screen.getByText('Save');
