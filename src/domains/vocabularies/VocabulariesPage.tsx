@@ -3,12 +3,6 @@ import { HiOutlinePlus } from 'solid-icons/hi';
 import { createSignal, For, Show } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-} from '~/components/ui/dialog';
-import {
   Sheet,
   SheetContent,
   SheetHeader,
@@ -24,6 +18,7 @@ import {
   getVocabulariesResource,
 } from './resources/vocabularies-resource';
 import { navigateToVocabularyTest } from './util/navigation';
+import { ConfirmationDialog } from '~/components/ConfirmationDialog';
 
 export const VocabulariesPage = () => {
   const navigate = useNavigate();
@@ -144,24 +139,13 @@ export const VocabulariesPage = () => {
           </div>
         </Show>
 
-        <Dialog
+        <ConfirmationDialog
           open={confirmDeletionOf() != null}
-          onOpenChange={onCloseDeletionDialog}
-        >
-          <DialogContent class="w-80">
-            <DialogHeader>
-              <h2 class="text-lg font-bold">You sure?</h2>
-            </DialogHeader>
-            <DialogFooter>
-              <Button variant="secondary" onClick={onCloseDeletionDialog}>
-                Cancel
-              </Button>
-              <Button variant="destructive" onClick={onDeleteVocabulary}>
-                Delete
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+          confirmText="Delete"
+          onClose={onCloseDeletionDialog}
+          onCancel={onCloseDeletionDialog}
+          onConfirm={onDeleteVocabulary}
+        />
       </Show>
 
       <Show when={loading()}>

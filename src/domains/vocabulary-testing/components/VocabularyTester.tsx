@@ -21,6 +21,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '~/components/ui/popover';
+import { ConfirmationDialog } from '~/components/ConfirmationDialog';
 
 export type VocabularyTestMode = 'guess' | 'write';
 
@@ -222,17 +223,22 @@ export const VocabularyTester: Component<TesterProps> = (
         classList={{ invisible: !currentWord() }}
       >
         <div class="flex items-center justify-end">
-          <Button
-            aria-label="Remove word from vocabulary"
-            class="translate-y-[1px] opacity-60"
-            title="Remove word from vocabulary"
-            size="icon"
-            variant="ghost"
-            type="button"
-            onClick={removeWord}
-          >
-            <HiOutlineTrash size={20} />
-          </Button>
+          <ConfirmationDialog
+            trigger={
+              <Button
+                aria-label="Delete word from vocabulary"
+                class="translate-y-[1px] opacity-60"
+                title="Delete word from vocabulary"
+                size="icon"
+                variant="ghost"
+                type="button"
+              >
+                <HiOutlineTrash size={20} />
+              </Button>
+            }
+            confirmText="Delete word"
+            onConfirm={removeWord}
+          />
           <Button
             aria-label="Edit word"
             class="translate-y-[1px] opacity-60"

@@ -39,6 +39,7 @@ import {
   updateVocabularyItems,
 } from './resources/vocabulary-resource';
 import { navigateToVocabularyTest } from './util/navigation';
+import { ConfirmationDialog } from '~/components/ConfirmationDialog';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -258,14 +259,19 @@ export const VocabularyPage: Component = () => {
                   />
                 )}
               </Show>
-              <Button
-                class={cx({ invisible: selectedWords().length === 0 })}
-                size="sm"
-                variant="destructive"
-                onClick={deleteSelectedWords}
-              >
-                <HiOutlineTrash size={16} /> Delete selected
-              </Button>
+              <ConfirmationDialog
+                confirmText="Delete"
+                trigger={
+                  <Button
+                    class={cx({ invisible: selectedWords().length === 0 })}
+                    size="sm"
+                    variant="destructive"
+                  >
+                    <HiOutlineTrash size={16} /> Delete selected
+                  </Button>
+                }
+                onConfirm={deleteSelectedWords}
+              />
               <Button
                 class={cx({ invisible: selectedWords().length === 0 })}
                 size="sm"
