@@ -5,16 +5,14 @@ import {
   HiSolidInformationCircle,
 } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
-import { Show, onCleanup, onMount } from 'solid-js';
+import { Show, createEffect, onCleanup, onMount } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { Button } from '~/components/ui/button';
 import { Progress, ProgressValueLabel } from '~/components/ui/progress';
 import type { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
 import { nextWord } from '../../../worder/worder';
-import type { SavedProgress } from '../vocabulary-testing-model';
 import { WriteTester } from './WriteTester';
 import type { VocabularyTesterSettings } from './VocabularySettings';
-import { unionBy } from 'lodash-es';
 import { WordEditorDialog } from '~/domains/vocabularies/components/WordEditorDialog';
 import {
   Popover,
@@ -22,28 +20,29 @@ import {
   PopoverTrigger,
 } from '~/components/ui/popover';
 import { ConfirmationDialog } from '~/components/ConfirmationDialog';
+import type { TestResultWord } from '~/domains/vocabulary-results/model/test-result-model';
 
 export type VocabularyTestMode = 'guess' | 'write';
 
 interface TesterProps {
   testSettings: VocabularyTesterSettings;
   words: VocabularyItem[];
-  savedProgress?: SavedProgress;
-  onDone: (leftoverWords?: VocabularyItem[]) => void;
+  savedProgress?: TestResultWord[];
+  onDone: (results: TestResultWord[]) => void;
   onEditWord: (word: VocabularyItem) => void;
   onRepeat: () => void;
   onReset: () => void;
-  onProgress?: (progress: SavedProgress) => void;
+  onProgress?: (results: TestResultWord[]) => void;
   onRemoveWord: (word: VocabularyItem) => void;
   onStop?: () => void;
 }
 
 interface State {
-  wordsLeft: VocabularyItem[];
   currentWordId: number | undefined;
   peek: boolean;
   editing: boolean;
-  invalidWords: VocabularyItem[];
+  wordsLeft: VocabularyItem[];
+  resultWords: TestResultWord[];
 }
 
 export const VocabularyTester: Component<TesterProps> = (
@@ -54,7 +53,12 @@ export const VocabularyTester: Component<TesterProps> = (
     currentWordId: undefined,
     peek: false,
     editing: false,
-    invalidWords: [],
+    resultWords: props.words.map(w => ({
+      id: w.id,
+      done: false,
+      invalidAttempts: 0,
+      skipped: false,
+    })),
   });
 
   let currentWordValid: boolean | undefined = undefined;
@@ -84,19 +88,16 @@ export const VocabularyTester: Component<TesterProps> = (
   const percentageDone = () =>
     (1 - store.wordsLeft.length / props.words.length) * 100;
 
-  const progress = (): SavedProgress => ({
-    leftOverWords: store.wordsLeft,
-    invalidWords: store.invalidWords,
-  });
-
-  onMount(() => {
+  createEffect(() => {
     if (!props.savedProgress) {
       return;
     }
 
     setStore({
-      wordsLeft: props.savedProgress.leftOverWords,
-      invalidWords: props.savedProgress.invalidWords,
+      resultWords: props.savedProgress,
+      wordsLeft: props.savedProgress
+        .filter(sw => !sw.done)
+        .map(sw => props.words.find(w => w.id === sw.id)!),
     });
   });
 
@@ -118,21 +119,11 @@ export const VocabularyTester: Component<TesterProps> = (
   });
 
   function finish() {
-    const invalidAndLeftoverWords = unionBy(
-      store.invalidWords,
-      store.wordsLeft,
-      'id'
-    );
-    // There is no point in passing empty array
-    const invalidWords =
-      invalidAndLeftoverWords.length > 0 ? invalidAndLeftoverWords : undefined;
-
-    props.onDone(invalidWords);
+    props.onDone(store.resultWords);
 
     setStore({
       currentWordId: undefined,
       wordsLeft: [],
-      invalidWords: [],
     });
   }
 
@@ -157,7 +148,7 @@ export const VocabularyTester: Component<TesterProps> = (
         setStore('wordsLeft', wsLeft);
       }
       currentWordValid = undefined;
-      props.onProgress?.(progress());
+      props.onProgress?.(store.resultWords);
     }
 
     const next = nextWord(wsLeft);
@@ -172,6 +163,16 @@ export const VocabularyTester: Component<TesterProps> = (
     });
   }
 
+  function skip() {
+    setStore(
+      'resultWords',
+      rws => rws.id === store.currentWordId,
+      'skipped',
+      true
+    );
+    setNextWord();
+  }
+
   function onWordEdited(updatedWord: VocabularyItem) {
     setStore('editing', false);
     props.onEditWord(updatedWord);
@@ -180,20 +181,18 @@ export const VocabularyTester: Component<TesterProps> = (
   function onWordValidated(valid: boolean) {
     setStore('peek', true);
 
-    if (currentWordValid == null || store.wordsLeft.length === 1) {
-      currentWordValid = valid;
+    const resultWordIndex = store.resultWords.findIndex(
+      rw => rw.id === currentWord()?.id
+    );
+
+    if (valid) {
+      setStore('resultWords', resultWordIndex, 'done', true);
+    } else {
+      setStore('resultWords', resultWordIndex, 'invalidAttempts', a => a + 1);
     }
 
-    const word = currentWord();
-
-    if (
-      !valid &&
-      word &&
-      // TODO: @daelmaak not very performant is it? Optimize
-      store.invalidWords.every(w => w.original !== word.original)
-    ) {
-      // https://docs.solidjs.com/concepts/stores#appending-new-values
-      setStore('invalidWords', store.invalidWords.length, word);
+    if (currentWordValid == null || store.wordsLeft.length === 1) {
+      currentWordValid = valid;
     }
   }
 
@@ -299,7 +298,7 @@ export const VocabularyTester: Component<TesterProps> = (
                 strict={props.testSettings.strictMatch}
                 word={word()}
                 onDone={setNextWord}
-                onSkip={setNextWord}
+                onSkip={skip}
                 onValidated={onWordValidated}
               />
             ) : (

@@ -5,9 +5,10 @@ import { WordEditorDialog } from '~/domains/vocabularies/components/WordEditorDi
 import type { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
 import { ResultWord } from './ResultWord';
 import { Progress, ProgressValueLabel } from '~/components/ui/progress';
+import type { TestResultWord } from '~/domains/vocabulary-results/model/test-result-model';
 
 interface ResultsProps {
-  invalidWords?: VocabularyItem[];
+  results: TestResultWord[];
   words: VocabularyItem[];
   editWord: (word: VocabularyItem) => void;
   repeat: () => void;
@@ -17,6 +18,11 @@ interface ResultsProps {
 
 export function Results(props: ResultsProps) {
   const [wordToEdit, setWordToEdit] = createSignal<VocabularyItem>();
+
+  const invalidWords = () =>
+    props.results
+      .filter(word => word.invalidAttempts > 0)
+      .map(word => props.words.find(w => w.id === word.id)!);
 
   function onWordEdited(word: VocabularyItem) {
     props.editWord(word);
@@ -37,7 +43,7 @@ export function Results(props: ResultsProps) {
       <Progress
         class="mt-12 mx-auto w-full sm:w-96"
         barColor="#094501"
-        value={props.words.length - (props.invalidWords?.length ?? 0)}
+        value={props.words.length - (invalidWords()?.length ?? 0)}
         maxValue={props.words.length}
         getValueLabel={({ value, max }) =>
           `${value} out of ${max} (${Math.floor(
@@ -50,7 +56,7 @@ export function Results(props: ResultsProps) {
         </div>
       </Progress>
 
-      <Show when={props.invalidWords}>
+      <Show when={invalidWords()}>
         {invalidWords => (
           <section class="mx-auto mt-10 flex flex-col">
             <h2 class="mb-4 text-lg text-center">
@@ -79,7 +85,7 @@ export function Results(props: ResultsProps) {
       </Show>
 
       <div class="mx-auto mt-8 flex items-center gap-4 sm:mt-16">
-        <Show when={props.invalidWords}>
+        <Show when={invalidWords()}>
           {invalidWords => (
             <Button
               class="btn-link"
