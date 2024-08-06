@@ -316,7 +316,7 @@ export const VocabularyTester: Component<TesterProps> = (
             <Button onClick={setNextWord}>Next</Button>
           </Show>
           <Button class="btn-link" variant="outline" onClick={props.onStop}>
-            Stop test
+            Pause test
           </Button>
           <Button class="btn-link" variant="outline" onClick={finish}>
             Finish test
