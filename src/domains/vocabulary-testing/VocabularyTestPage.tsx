@@ -104,6 +104,10 @@ export const VocabularyTestPage = () => {
     navigate('/vocabulary');
   }
 
+  function goToVocabulary() {
+    navigate('..');
+  }
+
   function onRepeat() {
     setInitialWords();
     setDone(false);
@@ -160,7 +164,7 @@ export const VocabularyTestPage = () => {
                       onEditWord={onEditWord}
                       onProgress={saveProgress}
                       onRemoveWord={deleteWord}
-                      onStop={goToVocabularies}
+                      onStop={goToVocabulary}
                       onRepeat={onRepeat}
                       onReset={onReset}
                     />
