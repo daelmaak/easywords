@@ -57,7 +57,10 @@ export function Results(props: ResultsProps) {
               Words you guessed incorrectly
             </h2>
 
-            <ul class="mx-auto max-h-64 overflow-y-auto">
+            <ul
+              class="mx-auto max-h-64 overflow-y-auto"
+              data-testid="results-invalid-words"
+            >
               <For each={invalidWords()}>
                 {word => (
                   <li>
