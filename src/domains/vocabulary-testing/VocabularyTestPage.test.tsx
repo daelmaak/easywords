@@ -1,17 +1,19 @@
-import { HashRouter, Route } from '@solidjs/router';
+import { HashRouter, Navigate, Route } from '@solidjs/router';
 import { cleanup, render, screen } from '@solidjs/testing-library';
 import { afterEach, expect, it, vi } from 'vitest';
 import { VocabularyTestPage } from './VocabularyTestPage';
 import { initTestApp } from '../../init/test-init';
 import userEvent from '@testing-library/user-event';
 import type { VocabularyDB } from '../vocabularies/resources/vocabulary-api';
+import { createMockVocabularyDB } from './util/test-util';
+import { tick } from '~/lib/testing';
 
 afterEach(() => {
   cleanup();
 });
 
-it('should switch between tested vocabularies', async () => {
-  const { init, userAction } = setup();
+it('should switch between tested vocabularies without the tester breaking', async () => {
+  const { vocabularyApi, userAction } = setup();
 
   render(() => (
     <HashRouter>
@@ -20,7 +22,7 @@ it('should switch between tested vocabularies', async () => {
     </HashRouter>
   ));
 
-  init.vocabularyApi.fetchVocabulary.mockResolvedValueOnce(vocabulary1);
+  vocabularyApi.fetchVocabulary.mockResolvedValueOnce(vocabulary1);
   let testVocabularyLinks = await screen.findAllByRole('link');
   await userAction.click(testVocabularyLinks[0]);
   let testInput = screen.getByTestId('write-tester-input');
@@ -30,19 +32,61 @@ it('should switch between tested vocabularies', async () => {
   const backLink = vocabularyTestLinks[0];
   await userAction.click(backLink);
 
-  init.vocabularyApi.fetchVocabulary.mockResolvedValueOnce(vocabulary2);
+  vocabularyApi.fetchVocabulary.mockResolvedValueOnce(vocabulary2);
   testVocabularyLinks = await screen.findAllByRole('link');
   await userAction.click(testVocabularyLinks[1]);
   testInput = screen.getByTestId('write-tester-input');
   expect(testInput).toBeInTheDocument();
 });
 
+it('should show the test results after finishing test based on user performance', async () => {
+  const { vocabularyApi, userAction } = setup();
+  const vocabulary = createMockVocabularyDB({ wordAmount: 2 });
+  vocabularyApi.fetchVocabulary.mockResolvedValueOnce(vocabulary);
+
+  render(() => (
+    <HashRouter>
+      <Route path="/:id/test" component={VocabularyTestPage} />
+      <Route path="*" component={() => <Navigate href="/1/test" />} />
+    </HashRouter>
+  ));
+  await tick();
+
+  const input = screen.getByTestId('write-tester-input');
+  await userAction.type(input, 'invalid');
+
+  // validate and next word
+  await userAction.type(input, '{Enter}');
+  await userAction.type(input, '{Enter}');
+
+  const originalToTranslate = screen.getByTestId(
+    'original-to-translate'
+  ).textContent;
+  const correctAnswer = vocabulary.vocabulary_items.find(
+    i => i.original === originalToTranslate
+  )!.translation;
+  await userAction.type(input, correctAnswer);
+  await userAction.type(input, '{Enter}');
+  await userAction.type(input, '{Enter}');
+
+  const resultInvalidWords = screen.getByTestId('results-invalid-words');
+  const invalidWords = resultInvalidWords.querySelectorAll('li');
+
+  expect(invalidWords.length).toBe(1);
+
+  const wronglyGuessedWord = vocabulary.vocabulary_items.find(
+    i => i.original !== originalToTranslate
+  );
+  expect(invalidWords[0].textContent).toContain(wronglyGuessedWord!.original);
+});
+
 function setup() {
   vi.mock('idb-keyval');
 
+  const { vocabularyApi } = initTestApp();
   const userAction = userEvent.setup();
 
-  return { init: initTestApp(), userAction };
+  return { vocabularyApi, userAction };
 }
 
 export const DummyPage = () => (
