@@ -105,8 +105,8 @@ export const VocabularyPage: Component = () => {
     await updateVocabularyItems(...updatedWords);
   }
 
-  function testVocabulary() {
-    navigateToVocabularyTest(vocabularyId, navigate);
+  function testVocabulary(config: { useSavedProgress: boolean }) {
+    navigateToVocabularyTest(vocabularyId, navigate, config);
   }
 
   function testSelected() {
@@ -164,7 +164,7 @@ export const VocabularyPage: Component = () => {
           </SheetContent>
         </Sheet>
 
-        <div>
+        <div class="min-w-56 sm:max-w-72 md:min-w-64">
           <BackLink class="mb-4">Back to vocabularies</BackLink>
           <Show when={vocabulary()}>
             {v => (
@@ -182,7 +182,7 @@ export const VocabularyPage: Component = () => {
             )}
           </Show>
 
-          <div class="mt-8 flex flex-wrap gap-4">
+          <div class="mt-8 flex flex-col gap-4">
             <Button
               class="grow"
               size="sm"
@@ -190,15 +190,32 @@ export const VocabularyPage: Component = () => {
             >
               <HiOutlinePlus size={16} /> Add words
             </Button>
-            <Button
-              class="grow"
-              size="sm"
-              variant="secondary"
-              onClick={testVocabulary}
-            >
-              <HiOutlineAcademicCap />
-              Test
-            </Button>
+            <div class="flex flex-wrap gap-4">
+              <Button
+                class="grow"
+                size="sm"
+                variant={
+                  vocabulary()?.hasSavedProgress
+                    ? 'secondary'
+                    : 'defaultOutline'
+                }
+                onClick={() => testVocabulary({ useSavedProgress: false })}
+              >
+                <HiOutlineAcademicCap />
+                Test
+              </Button>
+              <Show when={vocabulary()?.hasSavedProgress}>
+                <Button
+                  class="grow"
+                  size="sm"
+                  variant="defaultOutline"
+                  onClick={() => testVocabulary({ useSavedProgress: true })}
+                >
+                  <HiOutlineAcademicCap />
+                  Continue test
+                </Button>
+              </Show>
+            </div>
           </div>
         </div>
 

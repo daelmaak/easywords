@@ -12,6 +12,8 @@ import {
   transformToVocabularyItemDB,
 } from './vocabulary-transform';
 import type { RealOmit } from '../../../util/object';
+import type { TestResult } from '~/domains/vocabulary-results/model/test-result-model';
+import { fetchVocabularyProgress } from './vocabulary-progress-api';
 
 export type VocabularyItemToCreate = RealOmit<
   VocabularyItem,
@@ -38,7 +40,18 @@ export const resetVocabularyResource = () => {
 };
 
 export const fetchVocabulary = async (id: number) =>
-  api.fetchVocabulary(id).then(v => v && transformToVocabulary(v));
+  api.fetchVocabulary(id).then(async v => {
+    if (v == null) {
+      return;
+    }
+    const progress = await fetchVocabularyProgress(id);
+    const vocabulary = transformToVocabulary(v);
+
+    if (progress != null) {
+      vocabulary.hasSavedProgress = true;
+    }
+    return vocabulary;
+  });
 
 export const updateVocabulary = async (
   vocabularyPatch: Partial<Vocabulary>,
@@ -119,6 +132,18 @@ export const updateVocabularyItems = async (...items: VocabularyItem[]) => {
   }));
 
   return true;
+};
+
+export const saveVocabularyProgress = async (
+  testResult: RealOmit<TestResult, 'updatedAt'>
+) => {
+  await saveVocabularyProgress(testResult);
+
+  const { mutate } = vocabularyResource[1];
+  mutate(v => ({
+    ...v!,
+    hasSavedProgress: true,
+  }));
 };
 
 const transformToVocabularyItemCreateDB = (
