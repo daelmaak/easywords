@@ -5,7 +5,6 @@ import type { VocabularyItem } from '../vocabularies/model/vocabulary-model';
 import {
   deleteVocabularyProgress,
   fetchVocabularyProgress,
-  saveVocabularyProgress,
 } from '../vocabularies/resources/vocabulary-progress-api';
 import { Results } from './components/Results';
 import type { VocabularyTesterSettings } from './components/VocabularySettings';
@@ -14,6 +13,7 @@ import { VocabularyTester } from './components/VocabularyTester';
 import {
   deleteVocabularyItems,
   getVocabularyResource,
+  saveVocabularyProgress,
   updateVocabularyAsInteractedWith,
   updateVocabularyItems,
 } from '../vocabularies/resources/vocabulary-resource';
