@@ -218,7 +218,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
               aria-label="Next word"
               title="Next word"
               type={isSkipBtnSubmitter() ? 'submit' : 'button'}
-              onClick={props.onSkip}
+              onClick={isSkipBtnSubmitter() ? undefined : props.onSkip}
             >
               <HiOutlineForward
                 class={cx(!valid() && 'opacity-75')}
