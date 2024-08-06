@@ -195,16 +195,14 @@ export const VocabularyPage: Component = () => {
                 class="grow"
                 size="sm"
                 variant={
-                  vocabulary()?.hasSavedProgress
-                    ? 'secondary'
-                    : 'defaultOutline'
+                  vocabulary()?.savedProgress ? 'secondary' : 'defaultOutline'
                 }
                 onClick={() => testVocabulary({ useSavedProgress: false })}
               >
                 <HiOutlineAcademicCap />
                 Test
               </Button>
-              <Show when={vocabulary()?.hasSavedProgress}>
+              <Show when={vocabulary()?.savedProgress}>
                 <Button
                   class="grow"
                   size="sm"

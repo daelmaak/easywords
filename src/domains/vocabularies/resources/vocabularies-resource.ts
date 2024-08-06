@@ -7,21 +7,25 @@ import type {
   VocabularyToCreateDB,
 } from './vocabulary-api';
 import { transformToVocabulary } from './vocabulary-transform';
-import { fetchVocabularyProgress } from './vocabulary-progress-api';
 import type { RealOmit } from '../../../util/object';
 import type { VocabularyItemToCreate } from './vocabulary-resource';
+import type { VocabularyProgressApi } from './vocabulary-progress-api';
 
 export type VocabularyToCreate = RealOmit<
   Vocabulary,
-  'id' | 'hasSavedProgress' | 'updatedAt' | 'vocabularyItems'
+  'id' | 'savedProgress' | 'updatedAt' | 'vocabularyItems'
 > & { vocabularyItems: VocabularyItemToCreate[] };
 
 let api: VocabularyApi;
+let progressApi: VocabularyProgressApi;
 let vocabulariesSignal: Signal<boolean>;
 let vocabulariesResource: ResourceReturn<Vocabulary[] | undefined>;
 
-export const initVocabulariesResource = (vocabularyApi: VocabularyApi) => {
-  api = vocabularyApi;
+export const initVocabulariesResource = (apis: {
+  vocabularyApi: VocabularyApi;
+  vocabularyProgressApi: VocabularyProgressApi;
+}) => {
+  ({ vocabularyApi: api, vocabularyProgressApi: progressApi } = apis);
   vocabulariesSignal = createSignal(false);
   vocabulariesResource = createResource(
     vocabulariesSignal[0],
@@ -75,8 +79,8 @@ const transformToVocabularies = async (vocabulariesDB: VocabularyDB[]) => {
 
   // TODO: This is only temporary and should be ultimately saved in DB
   for (const vocabulary of vocabularies) {
-    const progress = await fetchVocabularyProgress(vocabulary.id);
-    vocabulary.hasSavedProgress = Boolean(progress);
+    const progress = await progressApi.fetchVocabularyProgress(vocabulary.id);
+    vocabulary.savedProgress = progress;
   }
 
   return vocabularies;

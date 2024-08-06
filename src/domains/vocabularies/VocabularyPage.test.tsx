@@ -124,7 +124,6 @@ it('words creator should still attempt words creation if user actively pressed "
 
 function setup() {
   cleanup();
-  vi.restoreAllMocks();
 
   const userInteraction = userEvent.setup();
 

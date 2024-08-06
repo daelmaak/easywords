@@ -70,7 +70,7 @@ export const VocabularyCard: Component<Props> = props => {
         class="mt-auto p-4 pt-0 flex gap-2 justify-end"
         onClick={e => e.stopPropagation()}
       >
-        <Show when={props.vocabulary.hasSavedProgress}>
+        <Show when={props.vocabulary.savedProgress}>
           <Button
             size="sm"
             variant="secondary"
