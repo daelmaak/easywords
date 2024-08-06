@@ -1,27 +1,21 @@
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
-import { Show, createEffect, createSignal, onMount } from 'solid-js';
+import { Show, createEffect, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import type { VocabularyItem } from '../vocabularies/model/vocabulary-model';
-import {
-  deleteVocabularyProgress,
-  fetchVocabularyProgress,
-} from '../vocabularies/resources/vocabulary-progress-api';
 import { Results } from './components/Results';
 import type { VocabularyTesterSettings } from './components/VocabularySettings';
 import { VocabularySettings } from './components/VocabularySettings';
 import { VocabularyTester } from './components/VocabularyTester';
 import {
   deleteVocabularyItems,
+  deleteVocabularyProgress,
   getVocabularyResource,
   saveVocabularyProgress,
   updateVocabularyAsInteractedWith,
   updateVocabularyItems,
 } from '../vocabularies/resources/vocabulary-resource';
 import { BackLink } from '~/components/BackLink';
-import type {
-  TestResult,
-  TestResultWord,
-} from '../vocabulary-results/model/test-result-model';
+import type { TestResultWord } from '../vocabulary-results/model/test-result-model';
 import { saveTestResult } from '../vocabulary-results/resources/test-result-resource';
 
 export const VocabularyTestPage = () => {
@@ -40,7 +34,6 @@ export const VocabularyTestPage = () => {
     });
   const [words, setWords] = createSignal<VocabularyItem[]>();
   const [results, setResults] = createSignal<TestResultWord[]>();
-  const [savedProgress, setSavedProgress] = createSignal<TestResult>();
   const [done, setDone] = createSignal(false);
 
   createEffect(() => {
@@ -51,16 +44,6 @@ export const VocabularyTestPage = () => {
     }
 
     setInitialWords();
-  });
-
-  onMount(async () => {
-    if (!searchParams.useSavedProgress) {
-      return;
-    }
-
-    // move to the effect above, to handle stale vocabulary
-    const progress = await fetchVocabularyProgress(vocabularyId);
-    setSavedProgress(progress);
   });
 
   function setInitialWords() {
@@ -158,7 +141,11 @@ export const VocabularyTestPage = () => {
                   <main class="m-auto mb-4">
                     <VocabularyTester
                       testSettings={vocabularySettings}
-                      savedProgress={savedProgress()?.words}
+                      savedProgress={
+                        searchParams.useSavedProgress
+                          ? vocabulary()?.savedProgress?.words
+                          : undefined
+                      }
                       words={w()}
                       onDone={onDone}
                       onEditWord={onEditWord}

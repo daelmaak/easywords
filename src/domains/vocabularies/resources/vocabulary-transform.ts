@@ -5,7 +5,7 @@ export const transformToVocabulary = (vocabulary: VocabularyDB): Vocabulary => {
   return {
     id: vocabulary.id,
     country: vocabulary.country,
-    hasSavedProgress: false,
+    savedProgress: undefined,
     name: vocabulary.name,
     updatedAt: new Date(vocabulary.updated_at),
     vocabularyItems: vocabulary.vocabulary_items.map(transformToVocabularyItem),

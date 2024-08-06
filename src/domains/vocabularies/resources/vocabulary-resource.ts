@@ -13,7 +13,7 @@ import {
 } from './vocabulary-transform';
 import type { RealOmit } from '../../../util/object';
 import type { TestResult } from '~/domains/vocabulary-results/model/test-result-model';
-import { fetchVocabularyProgress } from './vocabulary-progress-api';
+import type { VocabularyProgressApi } from './vocabulary-progress-api';
 
 export type VocabularyItemToCreate = RealOmit<
   VocabularyItem,
@@ -21,11 +21,15 @@ export type VocabularyItemToCreate = RealOmit<
 >;
 
 let api: VocabularyApi;
+let progressApi: VocabularyProgressApi;
 let vocabularyResource: ResourceReturn<Vocabulary | undefined>;
 let vocabularyIdSignal: Signal<number | undefined>;
 
-export const initVocabularyResource = (vocabularyApi: VocabularyApi) => {
-  api = vocabularyApi;
+export const initVocabularyResource = (apis: {
+  vocabularyApi: VocabularyApi;
+  vocabularyProgressApi: VocabularyProgressApi;
+}) => {
+  ({ vocabularyApi: api, vocabularyProgressApi: progressApi } = apis);
   vocabularyIdSignal = createSignal<number>();
   vocabularyResource = createResource(vocabularyIdSignal[0], fetchVocabulary);
 };
@@ -44,12 +48,11 @@ export const fetchVocabulary = async (id: number) =>
     if (v == null) {
       return;
     }
-    const progress = await fetchVocabularyProgress(id);
+    const progress = await progressApi.fetchVocabularyProgress(id);
     const vocabulary = transformToVocabulary(v);
 
-    if (progress != null) {
-      vocabulary.hasSavedProgress = true;
-    }
+    vocabulary.savedProgress = progress;
+
     return vocabulary;
   });
 
@@ -137,12 +140,22 @@ export const updateVocabularyItems = async (...items: VocabularyItem[]) => {
 export const saveVocabularyProgress = async (
   testResult: RealOmit<TestResult, 'updatedAt'>
 ) => {
-  await saveVocabularyProgress(testResult);
+  await progressApi.saveVocabularyProgress(testResult);
 
   const { mutate } = vocabularyResource[1];
   mutate(v => ({
     ...v!,
-    hasSavedProgress: true,
+    savedProgress: { ...testResult, updatedAt: new Date() },
+  }));
+};
+
+export const deleteVocabularyProgress = async (vocabularyId: number) => {
+  await progressApi.deleteVocabularyProgress(vocabularyId);
+
+  const { mutate } = vocabularyResource[1];
+  mutate(v => ({
+    ...v!,
+    hasSavedProgress: false,
   }));
 };
 

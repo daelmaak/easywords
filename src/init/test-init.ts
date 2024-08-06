@@ -1,5 +1,5 @@
 import { vi } from 'vitest';
-import type { ResourcesInit} from './app-init';
+import type { ResourcesInit } from './app-init';
 import { initApp } from './app-init';
 import { createRoot } from 'solid-js';
 
@@ -15,6 +15,11 @@ export const initTestApp = () => {
       fetchRecentVocabularies: vi.fn(),
       updateVocabulary: vi.fn(),
       updateVocabularyItems: vi.fn(),
+    },
+    vocabularyProgressApi: {
+      deleteVocabularyProgress: vi.fn(),
+      fetchVocabularyProgress: vi.fn(),
+      saveVocabularyProgress: vi.fn(),
     },
   } satisfies ResourcesInit;
 
