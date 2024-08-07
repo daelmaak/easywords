@@ -155,7 +155,7 @@ export const deleteVocabularyProgress = async (vocabularyId: number) => {
   const { mutate } = vocabularyResource[1];
   mutate(v => ({
     ...v!,
-    hasSavedProgress: false,
+    savedProgress: undefined,
   }));
 };
 
