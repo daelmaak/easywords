@@ -48,7 +48,7 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
   const sortedWords = () =>
     props.sort?.by === 'created_at'
       ? sortedWordsByCreatedAt(props.sort.asc).flatMap(([, ws]) => ws)
-      : props.words;
+      : sortedWordsAlphabetically();
 
   const wordSelected = (word: VocabularyItem) =>
     !!props.selectedWords.find(sw => word.id === sw.id);

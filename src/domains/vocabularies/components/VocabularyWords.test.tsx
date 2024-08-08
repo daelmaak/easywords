@@ -14,7 +14,12 @@ it('should shift select all items in between', async () => {
   const { onWordEdited, user } = setup();
 
   const [selectedWords, setSelectedWords] = createSignal<VocabularyItem[]>([]);
-  const words = generateWords(5);
+  // I am putting random alphabetical order into the retrieved words so that when
+  // they get sorted a-z, they will have to appear in a different order than they were.
+  const words = generateWords(5, (item, i) => ({
+    ...item,
+    original: i % 2 > 0 ? 'ahoj' : 'hello',
+  }));
 
   const { getAllByRole } = render(() => (
     <VocabularyWords
@@ -90,9 +95,10 @@ it('should shift select all items in between when sorted by date added', async (
   const [selectedWords, setSelectedWords] = createSignal<VocabularyItem[]>([]);
   // I have to "randomize" the dates a little so that the words stack up differently
   // than in the default sorting.
-  const words = generateWords(5, {
-    createdAtFn: i => new Date(2021, 1, i % 2 > 0 ? 1 : 2),
-  });
+  const words = generateWords(5, (item, i) => ({
+    ...item,
+    createdAt: new Date(2021, 1, i % 2 > 0 ? 1 : 2),
+  }));
 
   const { getAllByRole } = render(() => (
     <VocabularyWords
@@ -122,16 +128,16 @@ it('should shift select all items in between when sorted by date added', async (
 
 function generateWords(
   amount: number,
-  config?: { createdAtFn: (i: number) => Date }
+  factoryFn?: (item: VocabularyItem, i: number) => VocabularyItem
 ): VocabularyItem[] {
   return Array.from({ length: amount }, (_, i) => ({
     id: i,
-    createdAt: config?.createdAtFn?.(i) ?? new Date(),
+    createdAt: new Date(),
     vocabularyId: 1,
     original: 'hello_' + i,
     translation: 'ahoj' + i,
     notes: 'note' + i,
-  }));
+  })).map(factoryFn ?? (item => item));
 }
 
 async function shiftClick(el: Element, userEvent: UserEvent) {
