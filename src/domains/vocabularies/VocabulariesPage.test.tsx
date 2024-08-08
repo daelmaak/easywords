@@ -49,7 +49,7 @@ it('should create vocabulary on form submit', async () => {
   const vocabularyNameInput = screen.getByLabelText('Vocabulary name');
   await userAction.type(vocabularyNameInput, 'New vocabulary');
 
-  const countryCombobox = screen.getByLabelText('Country');
+  const countryCombobox = screen.getByLabelText('Language');
   await userAction.selectOptions(countryCombobox, 'de');
 
   await addWordViaForm(screen, userAction, { submit: true });

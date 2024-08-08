@@ -15,7 +15,7 @@ it('should permit vocabulary creation even when no words filled out', async () =
   render(() => <VocabularyCreator onListCreate={onListCreateSpy} />);
 
   const vocabularyNameInput = screen.getByLabelText('Vocabulary name');
-  const countrySelect = screen.getByLabelText('Country');
+  const countrySelect = screen.getByLabelText('Language');
 
   await userInteraction.type(vocabularyNameInput, 'My vocabulary');
   await userInteraction.selectOptions(countrySelect, ['cz']);

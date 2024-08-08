@@ -176,7 +176,7 @@ export const VocabularyPage: Component = () => {
                   value={v().name}
                 />
                 <div class="mt-4"></div>
-                <Label for="country">Country</Label>
+                <Label for="country">Language</Label>
                 <CountrySelect id="country" defaultValue={v().country} />
               </form>
             )}

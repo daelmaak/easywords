@@ -1,4 +1,4 @@
-import type { Component} from 'solid-js';
+import type { Component } from 'solid-js';
 import { For, createSignal } from 'solid-js';
 import { CountrySelect } from '~/components/country-select/country-select';
 import { Button } from '~/components/ui/button';
@@ -9,8 +9,7 @@ import {
   RadioGroupItem,
   RadioGroupItemLabel,
 } from '~/components/ui/radio-group';
-import type {
-  WordsInputMode} from '~/domains/vocabulary-testing/components/WordsInput';
+import type { WordsInputMode } from '~/domains/vocabulary-testing/components/WordsInput';
 import {
   WordsInput,
   wordsInputModes,
@@ -57,7 +56,7 @@ export const VocabularyCreator: Component<Props> = props => {
       >
         <Label for="vocabulary-name">Vocabulary name</Label>
         <Input id="vocabulary-name" name="vocabularyName" required />
-        <Label for="country">Country</Label>
+        <Label for="country">Language</Label>
         <CountrySelect id="country" name="country" required />
       </form>
       <div class="mb-4 flex flex-col gap-2">
