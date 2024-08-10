@@ -2,6 +2,7 @@ import { createRoot } from 'solid-js';
 import { vi } from 'vitest';
 import type { ResourcesInit } from './app-init';
 import { initApp } from './app-init';
+import { vocabularyTestResultTestApiFactory } from '~/domains/vocabulary-results/test/vocabulary-test-result-test-api';
 
 export const initTestApp = () => {
   const resources = {
@@ -21,6 +22,7 @@ export const initTestApp = () => {
       fetchVocabularyProgress: vi.fn(),
       saveVocabularyProgress: vi.fn(),
     },
+    vocabularyTestResultApi: vocabularyTestResultTestApiFactory(),
   } satisfies ResourcesInit;
 
   return createRoot(dispose => {

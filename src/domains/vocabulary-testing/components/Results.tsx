@@ -4,23 +4,22 @@ import { Button } from '~/components/ui/button';
 import { WordEditorDialog } from '~/domains/vocabularies/components/WordEditorDialog';
 import type { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
 import { ResultWord } from './ResultWord';
-import { Progress, ProgressValueLabel } from '~/components/ui/progress';
-import type { TestResultWord } from '~/domains/vocabulary-results/model/test-result-model';
+import type { TestResult } from '~/domains/vocabulary-results/model/test-result-model';
+import { TestResultsVisualisation } from '~/domains/vocabulary-results/components/TestResultsVisualisation';
 
 interface ResultsProps {
-  results: TestResultWord[];
+  results: TestResult;
   words: VocabularyItem[];
   editWord: (word: VocabularyItem) => void;
-  repeat: () => void;
-  goToVocabularies: () => void;
-  tryInvalidWords: (invalidWords: VocabularyItem[]) => void;
+  onRepeatAll: () => void;
+  onRepeatInvalid: (invalidWords: VocabularyItem[]) => void;
 }
 
 export function Results(props: ResultsProps) {
   const [wordToEdit, setWordToEdit] = createSignal<VocabularyItem>();
 
   const invalidWords = () =>
-    props.results
+    props.results.words
       .filter(word => word.invalidAttempts > 0)
       .map(word => props.words.find(w => w.id === word.id)!);
 
@@ -38,23 +37,9 @@ export function Results(props: ResultsProps) {
         onWordEdited={onWordEdited}
       />
 
-      <h1 class="text-center text-2xl">Test finished!</h1>
-
-      <Progress
-        class="mt-12 mx-auto w-full sm:w-96"
-        barColor="#094501"
-        value={props.words.length - (invalidWords()?.length ?? 0)}
-        maxValue={props.words.length}
-        getValueLabel={({ value, max }) =>
-          `${value} out of ${max} (${Math.floor(
-            (value / max) * 100
-          )}%) guessed correctly`
-        }
-      >
-        <div class="mb-2 text-center">
-          <ProgressValueLabel />
-        </div>
-      </Progress>
+      <div class="mx-auto max-w-96 min-w-80">
+        <TestResultsVisualisation result={props.results} />
+      </div>
 
       <Show when={invalidWords()}>
         {invalidWords => (
@@ -90,13 +75,13 @@ export function Results(props: ResultsProps) {
             <Button
               class="btn-link"
               type="button"
-              onClick={() => props.tryInvalidWords(invalidWords())}
+              onClick={() => props.onRepeatInvalid(invalidWords())}
             >
               Practice incorrect
             </Button>
           )}
         </Show>
-        <Button type="button" variant="secondary" onClick={props.repeat}>
+        <Button type="button" variant="secondary" onClick={props.onRepeatAll}>
           Test all again
         </Button>
         <A class="text-primary text-sm" href="..">

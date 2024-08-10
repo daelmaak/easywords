@@ -1,11 +1,8 @@
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
 import { Show, createEffect, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
+import { BackLink } from '~/components/BackLink';
 import type { VocabularyItem } from '../vocabularies/model/vocabulary-model';
-import { Results } from './components/Results';
-import type { VocabularyTesterSettings } from './components/VocabularySettings';
-import { VocabularySettings } from './components/VocabularySettings';
-import { VocabularyTester } from './components/VocabularyTester';
 import {
   deleteVocabularyItems,
   deleteVocabularyProgress,
@@ -14,9 +11,11 @@ import {
   updateVocabularyAsInteractedWith,
   updateVocabularyItems,
 } from '../vocabularies/resources/vocabulary-resource';
-import { BackLink } from '~/components/BackLink';
 import type { TestResultWord } from '../vocabulary-results/model/test-result-model';
-import { saveTestResult } from '../vocabulary-results/resources/test-result-resource';
+import { saveTestResult } from '../vocabulary-results/resources/vocabulary-test-result-resource';
+import type { VocabularyTesterSettings } from './components/VocabularySettings';
+import { VocabularySettings } from './components/VocabularySettings';
+import { VocabularyTester } from './components/VocabularyTester';
 
 export const VocabularyTestPage = () => {
   const navigate = useNavigate();
@@ -33,8 +32,6 @@ export const VocabularyTestPage = () => {
       strictMatch: false,
     });
   const [words, setWords] = createSignal<VocabularyItem[]>();
-  const [results, setResults] = createSignal<TestResultWord[]>();
-  const [done, setDone] = createSignal(false);
 
   createEffect(() => {
     const vocab = vocabulary();
@@ -68,46 +65,22 @@ export const VocabularyTestPage = () => {
     }
   }
 
-  function onDone(results: TestResultWord[]) {
-    setDone(true);
-    setResults(results);
+  async function onDone(results: TestResultWord[]) {
     void deleteVocabularyProgress(vocabularyId);
-    void saveTestResult({
+    await saveTestResult({
       vocabularyId,
       done: true,
       words: results,
     });
+    navigate('results');
   }
 
   function onEditWord(word: VocabularyItem) {
     void updateVocabularyItems(word);
   }
 
-  function goToVocabularies() {
-    navigate('/vocabulary');
-  }
-
   function goToVocabulary() {
     navigate('..');
-  }
-
-  function onRepeat() {
-    setInitialWords();
-    setDone(false);
-  }
-
-  function onReset() {
-    setWords();
-    setDone(false);
-  }
-
-  function onTryInvalidWords(invalidWords: VocabularyItem[]) {
-    setWords(invalidWords);
-    setDone(false);
-  }
-
-  async function onWordsEdited(updatedWord: VocabularyItem) {
-    await updateVocabularyItems(updatedWord);
   }
 
   async function deleteWord(word: VocabularyItem) {
@@ -126,55 +99,36 @@ export const VocabularyTestPage = () => {
     <div class="page-container h-full">
       <Show when={!vocabulary.loading}>
         <BackLink>Back to vocabulary</BackLink>
-        <Show when={!done()}>
-          <Show when={vocabularyId} keyed>
-            <Show when={words()}>
-              {w => (
-                <div class="mt-8 grid sm:grid-cols-[1fr_2fr_1fr]">
-                  <aside class="p-4 order-1 sm:order-none">
-                    <h2 class="mb-4">Test Settings</h2>
-                    <VocabularySettings
-                      settings={vocabularySettings}
-                      onChange={setVocabularySettings}
-                    />
-                  </aside>
-                  <main class="m-auto mb-4">
-                    <VocabularyTester
-                      testSettings={vocabularySettings}
-                      savedProgress={
-                        searchParams.useSavedProgress
-                          ? vocabulary()?.savedProgress?.words
-                          : undefined
-                      }
-                      words={w()}
-                      onDone={onDone}
-                      onEditWord={onEditWord}
-                      onProgress={saveProgress}
-                      onRemoveWord={deleteWord}
-                      onStop={goToVocabulary}
-                      onRepeat={onRepeat}
-                      onReset={onReset}
-                    />
-                  </main>
-                </div>
-              )}
-            </Show>
+        <Show when={vocabularyId} keyed>
+          <Show when={words()}>
+            {w => (
+              <div class="mt-8 grid sm:grid-cols-[1fr_2fr_1fr]">
+                <aside class="p-4 order-1 sm:order-none">
+                  <h2 class="mb-4">Test Settings</h2>
+                  <VocabularySettings
+                    settings={vocabularySettings}
+                    onChange={setVocabularySettings}
+                  />
+                </aside>
+                <main class="m-auto mb-4">
+                  <VocabularyTester
+                    testSettings={vocabularySettings}
+                    savedProgress={
+                      searchParams.useSavedProgress
+                        ? vocabulary()?.savedProgress?.words
+                        : undefined
+                    }
+                    words={w()}
+                    onDone={onDone}
+                    onEditWord={onEditWord}
+                    onProgress={saveProgress}
+                    onRemoveWord={deleteWord}
+                    onStop={goToVocabulary}
+                  />
+                </main>
+              </div>
+            )}
           </Show>
-        </Show>
-
-        <Show when={done() && results()}>
-          {results => (
-            <div class="mt-8">
-              <Results
-                results={results()}
-                words={words()!}
-                editWord={onWordsEdited}
-                repeat={onRepeat}
-                goToVocabularies={goToVocabularies}
-                tryInvalidWords={onTryInvalidWords}
-              />
-            </div>
-          )}
         </Show>
       </Show>
     </div>
