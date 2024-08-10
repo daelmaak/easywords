@@ -7,13 +7,19 @@ export async function fetchTestResults(vocabularyId: number) {
     `vocabulary.${vocabularyId}.lastTestResult`
   );
 
-  return [result];
+  return result;
 }
 
 export async function saveTestResult(
   testResult: RealOmit<TestResult, 'updatedAt'>
 ) {
-  const updatedResult: TestResult = { ...testResult, updatedAt: new Date() };
+  const updatedResult: TestResult = {
+    ...testResult,
+    // I have to de-reactify the words array as it's tracked by Solid, meaning there are
+    // Symbols and Proxies which can't be cloned by idb-keyval using structuredClone().
+    words: testResult.words.map(w => ({ ...w })),
+    updatedAt: new Date(),
+  };
   await set(
     `vocabulary.${testResult.vocabularyId}.lastTestResult`,
     updatedResult

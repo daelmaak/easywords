@@ -1,11 +1,13 @@
 import { MemoryRouter, Navigate, Route } from '@solidjs/router';
 import { cleanup, render, screen } from '@solidjs/testing-library';
 import userEvent from '@testing-library/user-event';
-import { expect, it, vi } from 'vitest';
+import { afterEach, expect, it, vi } from 'vitest';
 import { initTestApp } from '~/init/test-init';
 import { tick } from '~/lib/testing';
 import VocabularyPage from './VocabularyPage';
 import { addWordViaForm } from './util/test-util';
+
+afterEach(() => cleanup());
 
 it('should filter words based on search', async () => {
   const { userInteraction, dispose } = setup();
@@ -123,7 +125,7 @@ it('words creator should still attempt words creation if user actively pressed "
 });
 
 function setup() {
-  cleanup();
+  vi.mock('idb-keyval');
 
   const userInteraction = userEvent.setup();
 
