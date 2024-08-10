@@ -1,8 +1,4 @@
-import {
-  HiOutlineAcademicCap,
-  HiOutlinePencil,
-  HiOutlineTrash,
-} from 'solid-icons/hi';
+import { HiOutlineAcademicCap, HiOutlineTrash } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
 import { For, Show } from 'solid-js';
 import { Button } from '~/components/ui/button';
@@ -19,7 +15,6 @@ export type Props = {
   vocabulary: Vocabulary;
   onClick?: (id: number) => void;
   onDeleteVocabulary?: (id: number) => void;
-  onEditVocabulary: (id: number) => void;
   onTestVocabulary: (
     id: number,
     config?: { useSavedProgress: boolean }
@@ -38,11 +33,6 @@ export const VocabularyCard: Component<Props> = props => {
           {props.vocabulary.name}
         </CardTitle>
         <div class="flex gap-4" onClick={e => e.stopPropagation()}>
-          <HiOutlinePencil
-            class="cursor-pointer"
-            size={16}
-            onClick={() => props.onEditVocabulary(props.vocabulary.id)}
-          />
           <Show when={props.onDeleteVocabulary}>
             <HiOutlineTrash
               class="cursor-pointer"
@@ -66,32 +56,33 @@ export const VocabularyCard: Component<Props> = props => {
           </Show>
         </ul>
       </CardContent>
-      <CardFooter
-        class="mt-auto p-4 pt-0 flex gap-2 justify-end"
-        onClick={e => e.stopPropagation()}
-      >
-        <Show when={props.vocabulary.savedProgress}>
+      <CardFooter class="mt-auto p-4 pt-0">
+        <div class="ml-auto flex gap-2" onClick={e => e.stopPropagation()}>
+          <Show when={props.vocabulary.savedProgress}>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() =>
+                props.onTestVocabulary(props.vocabulary.id, {
+                  useSavedProgress: true,
+                })
+              }
+            >
+              <HiOutlineAcademicCap class="mr-1" />
+              Continue Test
+            </Button>
+          </Show>
           <Button
             size="sm"
             variant="secondary"
-            onClick={() =>
-              props.onTestVocabulary(props.vocabulary.id, {
-                useSavedProgress: true,
-              })
-            }
+            onClick={() => {
+              props.onTestVocabulary(props.vocabulary.id);
+            }}
           >
             <HiOutlineAcademicCap class="mr-1" />
-            Continue Test
+            Test
           </Button>
-        </Show>
-        <Button
-          size="sm"
-          variant="secondary"
-          onClick={() => props.onTestVocabulary(props.vocabulary.id)}
-        >
-          <HiOutlineAcademicCap class="mr-1" />
-          Test
-        </Button>
+        </div>
       </CardFooter>
     </Card>
   );

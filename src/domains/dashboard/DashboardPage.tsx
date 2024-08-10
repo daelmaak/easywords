@@ -76,7 +76,6 @@ export const DashboardPage: Component = () => {
                 <VocabularyCard
                   vocabulary={vocabulary}
                   onClick={onGoToVocabulary}
-                  onEditVocabulary={onGoToVocabulary}
                   onTestVocabulary={onTestVocabulary}
                 />
               )}

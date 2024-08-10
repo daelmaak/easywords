@@ -131,7 +131,6 @@ export const VocabulariesPage = () => {
                   vocabulary={vocabulary}
                   onClick={onGoToVocabulary}
                   onDeleteVocabulary={setConfirmDeletionOf}
-                  onEditVocabulary={onGoToVocabulary}
                   onTestVocabulary={onTestVocabulary}
                 />
               )}
