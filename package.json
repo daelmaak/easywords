@@ -38,6 +38,7 @@
     "@kobalte/core": "^0.13.3",
     "@solidjs/router": "^0.14.1",
     "@supabase/supabase-js": "^2.39.8",
+    "chart.js": "^4.4.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "flag-icons": "^7.2.1",
