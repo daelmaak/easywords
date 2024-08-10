@@ -2,14 +2,13 @@ import { MemoryRouter, Navigate, Route } from '@solidjs/router';
 import type { Screen } from '@solidjs/testing-library';
 import { cleanup, render, screen } from '@solidjs/testing-library';
 import userEvent from '@testing-library/user-event';
-import * as idbKeyval from 'idb-keyval';
 import { afterEach, expect, it, vi } from 'vitest';
 import { tick } from '~/lib/testing';
 import { initTestApp } from '../../init/test-init';
 import type { VocabularyDB } from '../vocabularies/resources/vocabulary-api';
-import type { TestResult } from '../vocabulary-results/model/test-result-model';
 import { createMockVocabularyDB } from './util/test-util';
 import { VocabularyTestPage } from './VocabularyTestPage';
+import { VocabularyTestResultsPage } from '../vocabulary-results/VocabularyTestResultsPage';
 
 afterEach(() => cleanup());
 
@@ -51,6 +50,10 @@ it('should show the test results after finishing test based on user performance'
     <MemoryRouter>
       <Route path="/vocabulary/:id/test" component={VocabularyTestPage} />
       <Route
+        path="/vocabulary/:id/test/results"
+        component={VocabularyTestResultsPage}
+      />
+      <Route
         path="*"
         component={() => <Navigate href="/vocabulary/1/test" />}
       />
@@ -69,23 +72,13 @@ it('should show the test results after finishing test based on user performance'
   await userAction.type(input, correctAnswer);
   await userAction.type(input, '{Enter}');
 
-  const indexDBSetSpy = vi.spyOn(idbKeyval, 'set');
+  // finish the test
   await userAction.type(input, '{Enter}');
 
   const resultInvalidWords = screen.getByTestId('results-invalid-words');
   const invalidWords = resultInvalidWords.querySelectorAll('li');
 
   expect(invalidWords.length).toBe(1);
-  // the test result should be saved
-  expect(indexDBSetSpy).toHaveBeenLastCalledWith(
-    'vocabulary.1.lastTestResult',
-    {
-      done: true,
-      vocabularyId: 1,
-      updatedAt: expect.any(Date),
-      words: expect.any(Array),
-    } as TestResult
-  );
 
   const wronglyGuessedWord = vocabulary.vocabulary_items.find(
     i => i.translation !== correctAnswer

@@ -1,4 +1,4 @@
-import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
+import { A, useNavigate, useParams, useSearchParams } from '@solidjs/router';
 import { cx } from 'class-variance-authority';
 import {
   HiOutlineAcademicCap,
@@ -40,7 +40,7 @@ import {
   updateVocabularyItems,
 } from './resources/vocabulary-resource';
 import { navigateToVocabularyTest } from './util/navigation';
-import { fetchTestResults } from '../vocabulary-results/resources/test-result-resource';
+import { fetchTestResults } from '../vocabulary-results/resources/vocabulary-test-result-resource';
 import { VocabularyResultsMini } from '../vocabulary-results/components/VocabularyResultsMini';
 
 export const VocabularyPage: Component = () => {
@@ -220,7 +220,11 @@ export const VocabularyPage: Component = () => {
           </div>
 
           <Show when={!lastTestResult.loading && lastTestResult()}>
-            {result => <VocabularyResultsMini result={result()} />}
+            {result => (
+              <A href="test/results">
+                <VocabularyResultsMini result={result()} />
+              </A>
+            )}
           </Show>
         </div>
 

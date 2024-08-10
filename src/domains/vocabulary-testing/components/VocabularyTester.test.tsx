@@ -38,8 +38,6 @@ it('should complete the test when last word invalid when in non-repeat mode', as
       onDone={onDone}
       onEditWord={vi.fn()}
       onRemoveWord={vi.fn()}
-      onRepeat={vi.fn()}
-      onReset={vi.fn()}
     />
   ));
 
@@ -64,8 +62,6 @@ it("shouldn't pass with empty input", async () => {
       onDone={vi.fn()}
       onEditWord={vi.fn()}
       onRemoveWord={vi.fn()}
-      onRepeat={vi.fn()}
-      onReset={vi.fn()}
     />
   ));
 
@@ -85,8 +81,6 @@ it("should still be able to validate with enter even though previous word's vali
       onDone={onDone}
       onEditWord={vi.fn()}
       onRemoveWord={vi.fn()}
-      onRepeat={vi.fn()}
-      onReset={vi.fn()}
     />
   ));
 
@@ -118,8 +112,6 @@ it('should trim words during validaton', async () => {
       onDone={onDone}
       onEditWord={vi.fn()}
       onRemoveWord={vi.fn()}
-      onRepeat={vi.fn()}
-      onReset={vi.fn()}
     />
   ));
 
@@ -148,8 +140,6 @@ it(`shouldn't pass with incorrect diacritics in strict mode`, async () => {
       onDone={vi.fn()}
       onEditWord={vi.fn()}
       onRemoveWord={vi.fn()}
-      onRepeat={vi.fn()}
-      onReset={vi.fn()}
     />
   ));
 
@@ -173,8 +163,6 @@ it('should keep its validation state after changing the word', async () => {
       onDone={onDone}
       onEditWord={vi.fn()}
       onRemoveWord={vi.fn()}
-      onRepeat={vi.fn()}
-      onReset={vi.fn()}
     />
   ));
 
@@ -211,8 +199,6 @@ it('should peek after invalid guess', async () => {
       onDone={vi.fn()}
       onEditWord={vi.fn()}
       onRemoveWord={vi.fn()}
-      onRepeat={vi.fn()}
-      onReset={vi.fn()}
     />
   ));
 

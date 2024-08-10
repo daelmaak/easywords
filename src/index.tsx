@@ -8,6 +8,7 @@ import { DashboardPage } from './domains/dashboard/DashboardPage';
 import { VocabulariesPage } from './domains/vocabularies/VocabulariesPage';
 import { VocabularyTestPage } from './domains/vocabulary-testing/VocabularyTestPage';
 import './index.css';
+import { VocabularyTestResultsPage } from './domains/vocabulary-results/VocabularyTestResultsPage';
 
 const root = document.getElementById('root');
 
@@ -34,6 +35,10 @@ render(() => {
           <Route path="/" component={VocabulariesPage} />
           <Route path="/:id" component={VocabularyPage} />
           <Route path="/:id/test" component={VocabularyTestPage} />
+          <Route
+            path="/:id/test/results"
+            component={VocabularyTestResultsPage}
+          />
         </Route>
         <Route
           path={[

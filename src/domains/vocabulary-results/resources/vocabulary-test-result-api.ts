@@ -1,8 +1,8 @@
 import { get, set } from 'idb-keyval';
-import type { TestResult } from '../model/test-result-model';
 import type { RealOmit } from '~/util/object';
+import type { TestResult } from '../model/test-result-model';
 
-export async function fetchTestResults(vocabularyId: number) {
+async function fetchTestResults(vocabularyId: number) {
   const result = await get<TestResult>(
     `vocabulary.${vocabularyId}.lastTestResult`
   );
@@ -10,9 +10,7 @@ export async function fetchTestResults(vocabularyId: number) {
   return result;
 }
 
-export async function saveTestResult(
-  testResult: RealOmit<TestResult, 'updatedAt'>
-) {
+async function saveTestResult(testResult: RealOmit<TestResult, 'updatedAt'>) {
   const updatedResult: TestResult = {
     ...testResult,
     // I have to de-reactify the words array as it's tracked by Solid, meaning there are
@@ -25,3 +23,10 @@ export async function saveTestResult(
     updatedResult
   );
 }
+
+export const vocabularyTestResultApi = {
+  fetchTestResults,
+  saveTestResult,
+};
+
+export type VocabularyTestResultApi = typeof vocabularyTestResultApi;

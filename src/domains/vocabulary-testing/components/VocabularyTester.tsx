@@ -30,8 +30,6 @@ interface TesterProps {
   savedProgress?: TestResultWord[];
   onDone: (results: TestResultWord[]) => void;
   onEditWord: (word: VocabularyItem) => void;
-  onRepeat: () => void;
-  onReset: () => void;
   onProgress?: (results: TestResultWord[]) => void;
   onRemoveWord: (word: VocabularyItem) => void;
   onStop?: () => void;
