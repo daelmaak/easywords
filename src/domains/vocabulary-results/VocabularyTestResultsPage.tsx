@@ -34,7 +34,7 @@ export const VocabularyTestResultsPage: Component = () => {
   return (
     <main class="page-container">
       <BackLink href="../..">Back to vocabulary</BackLink>
-      <h1 class="text-center text-2xl">Test results</h1>
+      <h1 class="mb-4 text-center text-2xl">Test results</h1>
       <Show when={!vocabulary.loading && vocabulary()?.vocabularyItems}>
         {words => (
           <Show when={!lastTestResult.loading && lastTestResult()}>

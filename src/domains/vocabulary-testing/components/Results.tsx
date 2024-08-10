@@ -37,51 +37,51 @@ export function Results(props: ResultsProps) {
         onWordEdited={onWordEdited}
       />
 
-      <div class="mx-auto max-w-96 min-w-80">
+      <div class="mx-auto w-40 lg:w-48">
         <TestResultsVisualisation result={props.results} />
       </div>
 
-      <Show when={invalidWords()}>
-        {invalidWords => (
-          <section class="mx-auto mt-10 flex flex-col">
-            <h2 class="mb-4 text-lg text-center">
-              Words you guessed incorrectly
-            </h2>
+      <Show when={invalidWords().length}>
+        <section class="mx-auto mt-10 flex flex-col">
+          <h2 class="mb-4 text-lg text-center">
+            Words you guessed incorrectly
+          </h2>
 
-            <ul
-              class="mx-auto max-h-64 overflow-y-auto"
-              data-testid="results-invalid-words"
-            >
-              <For each={invalidWords()}>
-                {word => (
-                  <li>
-                    <ResultWord
-                      word={word}
-                      onEditWord={() => setWordToEdit(word)}
-                    />
-                  </li>
-                )}
-              </For>
-            </ul>
+          <ul
+            class="mx-auto max-h-64 overflow-y-auto"
+            data-testid="results-invalid-words"
+          >
+            <For each={invalidWords()}>
+              {word => (
+                <li>
+                  <ResultWord
+                    word={word}
+                    onEditWord={() => setWordToEdit(word)}
+                  />
+                </li>
+              )}
+            </For>
+          </ul>
 
-            <div class="mx-auto mt-2"></div>
-          </section>
-        )}
+          <div class="mx-auto mt-2"></div>
+        </section>
       </Show>
 
-      <div class="mx-auto mt-8 flex items-center gap-4 sm:mt-16">
-        <Show when={invalidWords()}>
-          {invalidWords => (
-            <Button
-              class="btn-link"
-              type="button"
-              onClick={() => props.onRepeatInvalid(invalidWords())}
-            >
-              Practice incorrect
-            </Button>
-          )}
+      <div class="mx-auto mt-8 flex flex-wrap justify-center items-center gap-4 sm:mt-16">
+        <Show when={invalidWords().length}>
+          <Button
+            class="btn-link"
+            type="button"
+            onClick={() => props.onRepeatInvalid(invalidWords())}
+          >
+            Practice incorrect
+          </Button>
         </Show>
-        <Button type="button" variant="secondary" onClick={props.onRepeatAll}>
+        <Button
+          type="button"
+          variant={invalidWords().length > 0 ? 'secondary' : 'default'}
+          onClick={props.onRepeatAll}
+        >
           Test all again
         </Button>
         <A class="text-primary text-sm" href="..">
