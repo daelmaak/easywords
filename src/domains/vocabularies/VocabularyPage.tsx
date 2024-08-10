@@ -7,7 +7,7 @@ import {
   HiOutlineTrash,
 } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
-import { Show, createSignal } from 'solid-js';
+import { Show, createResource, createSignal } from 'solid-js';
 import { BackLink } from '~/components/BackLink';
 import { ConfirmationDialog } from '~/components/ConfirmationDialog';
 import { CountrySelect } from '~/components/country-select/country-select';
@@ -40,6 +40,8 @@ import {
   updateVocabularyItems,
 } from './resources/vocabulary-resource';
 import { navigateToVocabularyTest } from './util/navigation';
+import { fetchTestResults } from '../vocabulary-results/resources/test-result-resource';
+import { VocabularyResultsMini } from '../vocabulary-results/components/VocabularyResultsMini';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -57,6 +59,7 @@ export const VocabularyPage: Component = () => {
   });
 
   const vocabulary = getVocabularyResource(vocabularyId);
+  const [lastTestResult] = createResource(vocabularyId, fetchTestResults);
 
   let wordsInputFormRef!: HTMLFormElement;
 
@@ -215,6 +218,10 @@ export const VocabularyPage: Component = () => {
               </Show>
             </div>
           </div>
+
+          <Show when={!lastTestResult.loading && lastTestResult()}>
+            {result => <VocabularyResultsMini result={result()} />}
+          </Show>
         </div>
 
         <div class="flex-grow flex flex-col items-center">
