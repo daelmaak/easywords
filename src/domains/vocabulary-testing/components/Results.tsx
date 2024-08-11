@@ -27,6 +27,28 @@ export function Results(props: ResultsProps) {
       .filter(word => word.invalidAttempts > 0)
       .map(word => props.words.find(w => w.id === word.id)!);
 
+  const feedbackText = () => {
+    if (invalidWords().length === 0) {
+      return 'You are awesome, you got all words right!';
+    }
+
+    const percentCorrect =
+      (props.results.words.filter(w => w.done && w.invalidAttempts === 0)
+        .length /
+        props.results.words.length) *
+      100;
+
+    if (percentCorrect > 90) {
+      return 'Great job! You are so close to perfection!';
+    }
+
+    if (percentCorrect > 65) {
+      return 'Good job! Keep practicing and you will be a star!';
+    }
+
+    return "Not bad! Next time it's going to be better for sure!";
+  };
+
   function onWordEdited(word: VocabularyItem) {
     props.editWord(word);
     setWordToEdit(undefined);
@@ -41,9 +63,12 @@ export function Results(props: ResultsProps) {
         onWordEdited={onWordEdited}
       />
 
-      <div class="mx-auto w-40 lg:w-48">
-        <TestResultsVisualisation result={props.results} />
-      </div>
+      <figure class="mx-auto">
+        <div class="mx-auto w-40 lg:w-48">
+          <TestResultsVisualisation result={props.results} />
+        </div>
+        <figcaption class="mt-8 text-lg">{feedbackText()}</figcaption>
+      </figure>
 
       <Show when={invalidWords().length}>
         <section class="mx-auto mt-10 flex flex-col">
