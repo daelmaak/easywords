@@ -43,7 +43,7 @@ export function Results(props: ResultsProps) {
     }
 
     if (percentCorrect > 65) {
-      return 'Good job! Keep practicing and you will be a star!';
+      return 'Good job! Keep practicing and you will be a ⭐!';
     }
 
     return "Not bad! Next time it's going to be better for sure!";
