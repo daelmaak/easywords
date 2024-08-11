@@ -1,6 +1,7 @@
 import { Navigate, Route, Router } from '@solidjs/router';
 import { render } from 'solid-js/web';
 
+import type { JSX } from 'solid-js';
 import { lazy } from 'solid-js';
 import App from './components/App';
 import { AuthRouteGuard } from './domains/auth/AuthRouteGuard';
@@ -9,6 +10,8 @@ import { VocabulariesPage } from './domains/vocabularies/VocabulariesPage';
 import { VocabularyTestPage } from './domains/vocabulary-testing/VocabularyTestPage';
 import './index.css';
 import { VocabularyTestResultsPage } from './domains/vocabulary-results/VocabularyTestResultsPage';
+import { QueryClientProvider } from '@tanstack/solid-query';
+import { queryClient } from './init/query';
 
 const root = document.getElementById('root');
 
@@ -26,9 +29,15 @@ const ConjugationsPage = lazy(
   () => import('./domains/conjugations/components/ConjugationsView')
 );
 
+const Root = (props: { children?: JSX.Element }) => (
+  <QueryClientProvider client={queryClient}>
+    <AuthRouteGuard>{props.children}</AuthRouteGuard>
+  </QueryClientProvider>
+);
+
 render(() => {
   return (
-    <Router root={AuthRouteGuard}>
+    <Router root={Root}>
       <Route path="/" component={App}>
         <Route path="/dashboard" component={DashboardPage} />
         <Route path="/vocabulary">

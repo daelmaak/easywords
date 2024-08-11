@@ -1,16 +1,21 @@
 import { A, useNavigate } from '@solidjs/router';
 import type { Component } from 'solid-js';
-import { For, createResource } from 'solid-js';
+import { For } from 'solid-js';
 import { VocabularyCard } from '../vocabularies/components/VocabularyCard';
 import { navigateToVocabularyTest } from '../vocabularies/util/navigation';
 import { Button } from '~/components/ui/button';
 import { HiOutlinePlus } from 'solid-icons/hi';
 import { fetchRecentVocabularies } from '../vocabularies/resources/vocabularies-resource';
+import { createQuery } from '@tanstack/solid-query';
 
 export const DashboardPage: Component = () => {
   const navigate = useNavigate();
 
-  const [recentVocabularies] = createResource(() => fetchRecentVocabularies(3));
+  const recentVocabulariesQuery = createQuery(() => ({
+    queryKey: ['recentVocabularies'],
+    queryFn: () => fetchRecentVocabularies(3),
+    staleTime: 1000 * 60 * 2,
+  }));
 
   function onGoToVocabulary(id: number) {
     navigate(`/vocabulary/${id}`);
@@ -54,7 +59,7 @@ export const DashboardPage: Component = () => {
           </div>
           <div class="flex flex-col gap-4">
             <For
-              each={recentVocabularies()}
+              each={recentVocabulariesQuery.data}
               fallback={
                 <div class="w-full min-h-40 grid">
                   <div class="m-auto text-center">
