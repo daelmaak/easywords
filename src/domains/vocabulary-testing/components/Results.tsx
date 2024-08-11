@@ -1,11 +1,10 @@
 import { A } from '@solidjs/router';
-import { createSignal, For, Show } from 'solid-js';
+import { createSignal, For, lazy, Show } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import { WordEditorDialog } from '~/domains/vocabularies/components/WordEditorDialog';
 import type { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
 import { ResultWord } from './ResultWord';
 import type { TestResult } from '~/domains/vocabulary-results/model/test-result-model';
-import { TestResultsVisualisation } from '~/domains/vocabulary-results/components/TestResultsVisualisation';
 
 interface ResultsProps {
   results: TestResult;
@@ -14,6 +13,11 @@ interface ResultsProps {
   onRepeatAll: () => void;
   onRepeatInvalid: (invalidWords: VocabularyItem[]) => void;
 }
+
+const TestResultsVisualisation = lazy(
+  () =>
+    import('~/domains/vocabulary-results/components/TestResultsVisualisation')
+);
 
 export function Results(props: ResultsProps) {
   const [wordToEdit, setWordToEdit] = createSignal<VocabularyItem>();

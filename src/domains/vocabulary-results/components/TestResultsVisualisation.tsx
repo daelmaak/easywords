@@ -45,3 +45,5 @@ export const TestResultsVisualisation: Component<Props> = props => {
 
   return <canvas ref={canvas}></canvas>;
 };
+
+export default TestResultsVisualisation;

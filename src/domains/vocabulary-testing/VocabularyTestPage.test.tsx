@@ -132,6 +132,7 @@ it('should save the test progress upon pausing it and pick it up again when resu
 
 function setup() {
   vi.mock('idb-keyval');
+  vi.mock('chart.js/auto');
 
   const { vocabularyApi, dispose } = initTestApp();
   const userAction = userEvent.setup();
