@@ -24,7 +24,13 @@ export interface ResourcesInit {
 let queryClient: QueryClient;
 
 export const initApp = (init?: ResourcesInit) => {
-  queryClient = new QueryClient();
+  queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: Infinity,
+      },
+    },
+  });
 
   initResources(
     init ?? {

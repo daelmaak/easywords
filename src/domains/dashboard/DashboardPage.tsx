@@ -14,7 +14,6 @@ export const DashboardPage: Component = () => {
   const recentVocabulariesQuery = createQuery(() => ({
     queryKey: ['recentVocabularies'],
     queryFn: () => fetchRecentVocabularies(3),
-    staleTime: Infinity,
   }));
 
   function onGoToVocabulary(id: number) {
