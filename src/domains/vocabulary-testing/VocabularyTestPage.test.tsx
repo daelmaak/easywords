@@ -1,6 +1,6 @@
 import { MemoryRouter, Navigate, Route } from '@solidjs/router';
 import type { Screen } from '@solidjs/testing-library';
-import { cleanup, render, screen } from '@solidjs/testing-library';
+import { cleanup, render, screen, waitFor } from '@solidjs/testing-library';
 import userEvent from '@testing-library/user-event';
 import { afterEach, expect, it, vi } from 'vitest';
 import { tick } from '~/lib/testing';
@@ -9,17 +9,20 @@ import type { VocabularyDB } from '../vocabularies/resources/vocabulary-api';
 import { createMockVocabularyDB } from './util/test-util';
 import { VocabularyTestPage } from './VocabularyTestPage';
 import { VocabularyTestResultsPage } from '../vocabulary-results/VocabularyTestResultsPage';
+import { QueryClientProvider } from '@tanstack/solid-query';
 
 afterEach(() => cleanup());
 
 it('should switch between tested vocabularies without the tester breaking', async () => {
-  const { vocabularyApi, userAction, dispose } = setup();
+  const { queryClient, vocabularyApi, userAction, dispose } = setup();
 
   render(() => (
-    <MemoryRouter>
-      <Route path="/vocabulary/:id/test" component={VocabularyTestPage} />
-      <Route path="*" component={DummyPage} />
-    </MemoryRouter>
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <Route path="/vocabulary/:id/test" component={VocabularyTestPage} />
+        <Route path="*" component={DummyPage} />
+      </MemoryRouter>
+    </QueryClientProvider>
   ));
 
   vocabularyApi.fetchVocabulary.mockResolvedValueOnce(vocabulary1);
@@ -42,22 +45,24 @@ it('should switch between tested vocabularies without the tester breaking', asyn
 });
 
 it('should show the test results after finishing test based on user performance', async () => {
-  const { vocabularyApi, userAction, dispose } = setup();
+  const { queryClient, vocabularyApi, userAction, dispose } = setup();
   const vocabulary = createMockVocabularyDB({ wordAmount: 2 });
   vocabularyApi.fetchVocabulary.mockResolvedValueOnce(vocabulary);
 
   render(() => (
-    <MemoryRouter>
-      <Route path="/vocabulary/:id/test" component={VocabularyTestPage} />
-      <Route
-        path="/vocabulary/:id/test/results"
-        component={VocabularyTestResultsPage}
-      />
-      <Route
-        path="*"
-        component={() => <Navigate href="/vocabulary/1/test" />}
-      />
-    </MemoryRouter>
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <Route path="/vocabulary/:id/test" component={VocabularyTestPage} />
+        <Route
+          path="/vocabulary/:id/test/results"
+          component={VocabularyTestResultsPage}
+        />
+        <Route
+          path="*"
+          component={() => <Navigate href="/vocabulary/1/test" />}
+        />
+      </MemoryRouter>
+    </QueryClientProvider>
   ));
   await tick();
 
@@ -75,9 +80,10 @@ it('should show the test results after finishing test based on user performance'
   // finish the test
   await userAction.type(input, '{Enter}');
 
-  const resultInvalidWords = screen.getByTestId('results-invalid-words');
+  const resultInvalidWords = await waitFor(() =>
+    screen.getByTestId('results-invalid-words')
+  );
   const invalidWords = resultInvalidWords.querySelectorAll('li');
-
   expect(invalidWords.length).toBe(1);
 
   const wronglyGuessedWord = vocabulary.vocabulary_items.find(
@@ -89,19 +95,21 @@ it('should show the test results after finishing test based on user performance'
 });
 
 it('should save the test progress upon pausing it and pick it up again when resuming', async () => {
-  const { vocabularyApi, userAction, dispose } = setup();
+  const { queryClient, vocabularyApi, userAction, dispose } = setup();
   const vocabulary = createMockVocabularyDB({ wordAmount: 2 });
   vocabularyApi.fetchVocabulary.mockResolvedValue(vocabulary);
 
   render(() => (
-    <MemoryRouter>
-      <Route path="/vocabulary/:id/test" component={VocabularyTestPage} />
-      <Route path="/vocabulary/:id" component={DummyPage} />
-      <Route
-        path="*"
-        component={() => <Navigate href="/vocabulary/1/test" />}
-      />
-    </MemoryRouter>
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <Route path="/vocabulary/:id/test" component={VocabularyTestPage} />
+        <Route path="/vocabulary/:id" component={DummyPage} />
+        <Route
+          path="*"
+          component={() => <Navigate href="/vocabulary/1/test" />}
+        />
+      </MemoryRouter>
+    </QueryClientProvider>
   ));
   await tick();
 
@@ -134,18 +142,18 @@ function setup() {
   vi.mock('idb-keyval');
   vi.mock('chart.js/auto');
 
-  const { vocabularyApi, dispose } = initTestApp();
+  const { queryClient, vocabularyApi, dispose } = initTestApp();
   const userAction = userEvent.setup();
 
-  return { vocabularyApi, userAction, dispose };
+  return { queryClient, vocabularyApi, userAction, dispose };
 }
 
 export const DummyPage = () => (
-  <>
+  <div>
     <a href="/vocabulary/1/test">Test vocab 1</a>
     <a href="/vocabulary/2/test">Test vocab 2</a>
     <a href="/vocabulary/1/test?useSavedProgress=true">Continue vocab 1 test</a>
-  </>
+  </div>
 );
 
 const vocabulary1: VocabularyDB = {

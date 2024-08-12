@@ -1,5 +1,3 @@
-import type { ResourceReturn, Signal } from 'solid-js';
-import { createResource, createSignal } from 'solid-js';
 import type { Vocabulary, VocabularyItem } from '../model/vocabulary-model';
 import type {
   VocabularyApi,
@@ -14,33 +12,28 @@ import {
 import type { RealOmit } from '../../../util/object';
 import type { TestResult } from '~/domains/vocabulary-results/model/test-result-model';
 import type { VocabularyProgressApi } from './vocabulary-progress-api';
+import type { QueryClient } from '@tanstack/solid-query';
 
 export type VocabularyItemToCreate = RealOmit<
   VocabularyItem,
   'id' | 'createdAt'
 >;
 
+export const VOCABULARY_QUERY_KEY = 'vocabulary';
+
 let api: VocabularyApi;
 let progressApi: VocabularyProgressApi;
-let vocabularyResource: ResourceReturn<Vocabulary | undefined>;
-let vocabularyIdSignal: Signal<number | undefined>;
+let queryClient: QueryClient;
 
-export const initVocabularyResource = (apis: {
-  vocabularyApi: VocabularyApi;
-  vocabularyProgressApi: VocabularyProgressApi;
-}) => {
+export const initVocabularyResource = (
+  apis: {
+    vocabularyApi: VocabularyApi;
+    vocabularyProgressApi: VocabularyProgressApi;
+  },
+  qClient: QueryClient
+) => {
   ({ vocabularyApi: api, vocabularyProgressApi: progressApi } = apis);
-  vocabularyIdSignal = createSignal<number>();
-  vocabularyResource = createResource(vocabularyIdSignal[0], fetchVocabulary);
-};
-
-export const getVocabularyResource = (id: number) => {
-  vocabularyIdSignal[1](id);
-  return vocabularyResource[0];
-};
-
-export const resetVocabularyResource = () => {
-  vocabularyIdSignal[1]();
+  queryClient = qClient;
 };
 
 export const fetchVocabulary = async (id: number) =>
@@ -57,25 +50,26 @@ export const fetchVocabulary = async (id: number) =>
   });
 
 export const updateVocabulary = async (
-  vocabularyPatch: Partial<Vocabulary>,
-  config: { mutate: boolean } = { mutate: true }
+  vocabularyPatch: Partial<Vocabulary> & Pick<Vocabulary, 'id'>
 ) => {
-  const success = await api.updateVocabulary(vocabularyPatch);
+  await api.updateVocabulary(vocabularyPatch);
 
-  if (config?.mutate && success) {
-    const { mutate } = vocabularyResource[1];
-    mutate(v => ({ ...v!, ...vocabularyPatch }));
-  }
-
-  return success;
+  queryClient.setQueryData<Vocabulary>(
+    [VOCABULARY_QUERY_KEY, vocabularyPatch.id],
+    v => ({ ...v!, ...vocabularyPatch })
+  );
+  await queryClient.invalidateQueries({
+    queryKey: ['recentVocabularies'],
+  });
 };
 
 export const updateVocabularyAsInteractedWith = async (
   vocabularyId: number
 ) => {
-  // Mutating this resource doesn't make sense, since this is relevant only to
-  // dashboard and its resource is elsewhere.
-  return await updateVocabulary({ id: vocabularyId }, { mutate: false });
+  await api.updateVocabulary({ id: vocabularyId });
+  await queryClient.invalidateQueries({
+    queryKey: ['recentVocabularies'],
+  });
 };
 
 export const createVocabularyItems = async (
@@ -87,30 +81,31 @@ export const createVocabularyItems = async (
   );
   const createdItemsDB = await api.createVocabularyItems(itemsToCreate);
 
-  if (createdItemsDB == null) {
-    return false;
-  }
-
-  const createdItems = createdItemsDB.map(transformToVocabularyItem);
-  const { mutate } = vocabularyResource[1];
-
-  mutate(v => ({
-    ...v!,
-    vocabularyItems: v!.vocabularyItems.concat(createdItems),
-  }));
-
-  return true;
+  queryClient.setQueryData<Vocabulary>(
+    [VOCABULARY_QUERY_KEY, vocabularyId],
+    v => ({
+      ...v!,
+      vocabularyItems: v!.vocabularyItems.concat(
+        (createdItemsDB ?? []).map(transformToVocabularyItem)
+      ),
+    })
+  );
 };
 
-export const deleteVocabularyItems = async (...ids: number[]) => {
+export const deleteVocabularyItems = async (
+  vocabularyId: number,
+  ...ids: number[]
+) => {
   const success = await api.deleteVocabularyItems(...ids);
 
   if (success) {
-    const { mutate } = vocabularyResource[1];
-    mutate(v => ({
-      ...v!,
-      vocabularyItems: v!.vocabularyItems.filter(i => !ids.includes(i.id)),
-    }));
+    queryClient.setQueryData<Vocabulary>(
+      [VOCABULARY_QUERY_KEY, vocabularyId],
+      v => ({
+        ...v!,
+        vocabularyItems: v!.vocabularyItems.filter(i => !ids.includes(i.id)),
+      })
+    );
   }
 
   return success;
@@ -124,15 +119,17 @@ export const updateVocabularyItems = async (...items: VocabularyItem[]) => {
     return false;
   }
 
-  const { mutate } = vocabularyResource[1];
   const updatedItemsMap = new Map(items.map(i => [i.id, i]));
 
-  mutate(v => ({
-    ...v!,
-    vocabularyItems: v!.vocabularyItems.map(
-      i => updatedItemsMap.get(i.id) ?? i
-    ),
-  }));
+  queryClient.setQueryData<Vocabulary>(
+    [VOCABULARY_QUERY_KEY, items[0].vocabularyId],
+    v => ({
+      ...v!,
+      vocabularyItems: v!.vocabularyItems.map(
+        i => updatedItemsMap.get(i.id) ?? i
+      ),
+    })
+  );
 
   return true;
 };
@@ -142,21 +139,25 @@ export const saveVocabularyProgress = async (
 ) => {
   await progressApi.saveVocabularyProgress(testResult);
 
-  const { mutate } = vocabularyResource[1];
-  mutate(v => ({
-    ...v!,
-    savedProgress: { ...testResult, updatedAt: new Date() },
-  }));
+  queryClient.setQueryData<Vocabulary>(
+    [VOCABULARY_QUERY_KEY, testResult.vocabularyId],
+    v => ({
+      ...v!,
+      savedProgress: { ...testResult, updatedAt: new Date() },
+    })
+  );
 };
 
 export const deleteVocabularyProgress = async (vocabularyId: number) => {
   await progressApi.deleteVocabularyProgress(vocabularyId);
 
-  const { mutate } = vocabularyResource[1];
-  mutate(v => ({
-    ...v!,
-    savedProgress: undefined,
-  }));
+  queryClient.setQueryData<Vocabulary>(
+    [VOCABULARY_QUERY_KEY, vocabularyId],
+    v => ({
+      ...v!,
+      savedProgress: undefined,
+    })
+  );
 };
 
 const transformToVocabularyItemCreateDB = (

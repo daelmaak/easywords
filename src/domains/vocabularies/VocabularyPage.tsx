@@ -7,7 +7,7 @@ import {
   HiOutlineTrash,
 } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
-import { Show, createResource, createSignal } from 'solid-js';
+import { Show, Suspense, createResource, createSignal } from 'solid-js';
 import { BackLink } from '~/components/BackLink';
 import { ConfirmationDialog } from '~/components/ConfirmationDialog';
 import { CountrySelect } from '~/components/country-select/country-select';
@@ -35,19 +35,22 @@ import type { VocabularyItem } from './model/vocabulary-model';
 import {
   createVocabularyItems,
   deleteVocabularyItems,
-  getVocabularyResource,
-  updateVocabulary,
+  fetchVocabulary,
   updateVocabularyItems,
+  updateVocabulary,
+  VOCABULARY_QUERY_KEY,
 } from './resources/vocabulary-resource';
 import { navigateToVocabularyTest } from './util/navigation';
 import { fetchTestResults } from '../vocabulary-results/resources/vocabulary-test-result-resource';
 import { VocabularyResultsMini } from '../vocabulary-results/components/VocabularyResultsMini';
+import { createQuery } from '@tanstack/solid-query';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const vocabularyId = +params.id;
+
   const [addedWords, setAddedWords] = createSignal<VocabularyItem[]>([]);
   const [searchedWords, setSearchedWords] = createSignal<VocabularyItem[]>();
   const [selectedWords, setSelectedWords] = createSignal<VocabularyItem[]>([]);
@@ -58,7 +61,12 @@ export const VocabularyPage: Component = () => {
     by: searchParams['sortby'] as SortState['by'] | undefined,
   });
 
-  const vocabulary = getVocabularyResource(vocabularyId);
+  const vocabularyQuery = createQuery(() => ({
+    queryKey: [VOCABULARY_QUERY_KEY, vocabularyId],
+    queryFn: () => fetchVocabulary(vocabularyId),
+    staleTime: Infinity,
+  }));
+
   const [lastTestResult] = createResource(vocabularyId, fetchTestResults);
 
   let wordsInputFormRef!: HTMLFormElement;
@@ -69,7 +77,10 @@ export const VocabularyPage: Component = () => {
       return;
     }
 
-    await deleteVocabularyItems(...selectedWords().map(word => word.id));
+    await deleteVocabularyItems(
+      vocabularyId,
+      ...selectedWords().map(word => word.id)
+    );
     setSelectedWords([]);
   }
 
@@ -98,7 +109,7 @@ export const VocabularyPage: Component = () => {
 
   function onSelectAll(selected: boolean) {
     if (selected) {
-      setSelectedWords(vocabulary()?.vocabularyItems ?? []);
+      setSelectedWords(vocabularyQuery.data?.vocabularyItems ?? []);
     } else {
       setSelectedWords([]);
     }
@@ -118,22 +129,26 @@ export const VocabularyPage: Component = () => {
     });
   }
 
-  function onVocabularyDataChange(event: Event) {
+  async function onVocabularyDataChange(event: Event) {
     const form = (event.target as Element).closest('form') as HTMLFormElement;
     const name = form.vocabularyName.value;
     const country = form.country.value;
 
-    const vocab = vocabulary();
+    const vocabulary = vocabularyQuery.data;
 
-    if (!vocab || !name || !country) {
+    if (!vocabulary || !name || !country) {
       return;
     }
 
-    if (vocab.name === name && vocab.country === country) {
+    if (vocabulary.name === name && vocabulary.country === country) {
       return;
     }
 
-    void updateVocabulary({ id: vocabulary()?.id, name, country });
+    await updateVocabulary({
+      id: vocabulary.id,
+      name,
+      country,
+    });
   }
 
   function sort(sortProps: Partial<SortState>) {
@@ -142,11 +157,8 @@ export const VocabularyPage: Component = () => {
   }
 
   return (
-    <Show
-      when={!vocabulary.loading}
-      fallback={<div class="m-auto">Loading ...</div>}
-    >
-      <main class="page-container flex flex-col gap-4 sm:flex-row">
+    <main class="page-container flex flex-col gap-4 sm:flex-row">
+      <Suspense fallback={<div class="m-auto">Loading ...</div>}>
         <Sheet open={openedAddWords()} onOpenChange={setOpenedAddWords}>
           <SheetContent
             class="w-svw sm:w-[30rem] flex flex-col gap-4"
@@ -169,7 +181,7 @@ export const VocabularyPage: Component = () => {
 
         <div class="min-w-56 sm:max-w-72 md:min-w-64">
           <BackLink class="mb-4">Back to vocabularies</BackLink>
-          <Show when={vocabulary()}>
+          <Show when={vocabularyQuery.data}>
             {v => (
               <form onFocusOut={onVocabularyDataChange} autocomplete="off">
                 <Label for="vocabulary-name">Vocabulary name</Label>
@@ -198,14 +210,16 @@ export const VocabularyPage: Component = () => {
                 class="grow"
                 size="sm"
                 variant={
-                  vocabulary()?.savedProgress ? 'secondary' : 'defaultOutline'
+                  vocabularyQuery.data?.savedProgress
+                    ? 'secondary'
+                    : 'defaultOutline'
                 }
                 onClick={() => testVocabulary({ useSavedProgress: false })}
               >
                 <HiOutlineAcademicCap />
                 Test all
               </Button>
-              <Show when={vocabulary()?.savedProgress}>
+              <Show when={vocabularyQuery.data?.savedProgress}>
                 <Button
                   class="grow"
                   size="sm"
@@ -261,18 +275,18 @@ export const VocabularyPage: Component = () => {
               <Checkbox
                 checked={
                   selectedWords().length ===
-                  (vocabulary()?.vocabularyItems.length ?? 0)
+                  (vocabularyQuery.data?.vocabularyItems.length ?? 0)
                 }
                 indeterminate={
                   selectedWords().length > 0 &&
                   selectedWords().length <
-                    (vocabulary()?.vocabularyItems.length ?? 0)
+                    (vocabularyQuery.data?.vocabularyItems.length ?? 0)
                 }
                 label="Select"
                 onChange={() => onSelectAll(selectedWords().length === 0)}
               />
             </Show>
-            <Show when={vocabulary()}>
+            <Show when={vocabularyQuery.data}>
               {v => (
                 <Search
                   placeholder="Search words..."
@@ -310,7 +324,7 @@ export const VocabularyPage: Component = () => {
             </Button>
           </div>
 
-          <Show when={vocabulary()}>
+          <Show when={vocabularyQuery.data}>
             {v => (
               <VocabularyWords
                 words={searchedWords() ?? v().vocabularyItems}
@@ -322,8 +336,8 @@ export const VocabularyPage: Component = () => {
             )}
           </Show>
         </div>
-      </main>
-    </Show>
+      </Suspense>
+    </main>
   );
 };
 

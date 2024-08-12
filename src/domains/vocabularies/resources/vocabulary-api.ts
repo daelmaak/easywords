@@ -24,14 +24,16 @@ const VOCABULARY_ITEM_FETCH_FIELDS = `
   notes
 `;
 
+const VOCABULARY_FETCH_FIELDS = `
+  id,
+  country,
+  name,
+  updated_at,
+  vocabulary_items (${VOCABULARY_ITEM_FETCH_FIELDS})
+`;
+
 const vocabulariesFetchQuery = () =>
-  supabase.from('vocabularies').select(`
-    id, 
-    country,
-    name,
-    updated_at,
-    vocabulary_items (${VOCABULARY_ITEM_FETCH_FIELDS})
-  `);
+  supabase.from('vocabularies').select(VOCABULARY_FETCH_FIELDS);
 
 export type VocabularyDB = QueryData<
   ReturnType<typeof vocabulariesFetchQuery>
@@ -116,13 +118,13 @@ const deleteVocabulary = async (id: number) => {
 const updateVocabulary = async (vocabulary: Partial<VocabularyDB>) => {
   const result = await supabase
     .from('vocabularies')
-    .update({
-      ...omit(vocabulary, 'id'),
+    .upsert({
+      ...vocabulary,
       updated_at: new Date(),
     })
-    .eq('id', vocabulary.id);
+    .select();
 
-  return !result.error;
+  return result.data?.[0];
 };
 
 const updateVocabularyItems = async (
