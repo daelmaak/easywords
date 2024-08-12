@@ -6,17 +6,20 @@ import { initTestApp } from '~/init/test-init';
 import { tick } from '~/lib/testing';
 import VocabularyPage from './VocabularyPage';
 import { addWordViaForm } from './util/test-util';
+import { QueryClientProvider } from '@tanstack/solid-query';
 
 afterEach(() => cleanup());
 
 it('should filter words based on search', async () => {
-  const { userInteraction, dispose } = setup();
+  const { queryClient, userInteraction, dispose } = setup();
 
   render(() => (
-    <MemoryRouter>
-      <Route path="/:id" component={VocabularyPage} />
-      <Route path="/" component={() => <Navigate href="/1" />} />
-    </MemoryRouter>
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <Route path="/:id" component={VocabularyPage} />
+        <Route path="/" component={() => <Navigate href="/1" />} />
+      </MemoryRouter>
+    </QueryClientProvider>
   ));
   await tick();
 
@@ -34,15 +37,17 @@ it('should filter words based on search', async () => {
 });
 
 it('words creator should submit word form if the form is not empty even without clicking "Add word"', async () => {
-  const { userInteraction, vocabularyApi, dispose } = setup();
+  const { queryClient, userInteraction, vocabularyApi, dispose } = setup();
 
   const createWordsSpy = vi.spyOn(vocabularyApi, 'createVocabularyItems');
 
   render(() => (
-    <MemoryRouter>
-      <Route path="/:id" component={VocabularyPage} />
-      <Route path="/" component={() => <Navigate href="/1" />} />
-    </MemoryRouter>
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <Route path="/:id" component={VocabularyPage} />
+        <Route path="/" component={() => <Navigate href="/1" />} />
+      </MemoryRouter>
+    </QueryClientProvider>
   ));
   await tick();
 
@@ -68,15 +73,17 @@ it('words creator should submit word form if the form is not empty even without 
 });
 
 it('words creator should not attempt words creation if no words filled in', async () => {
-  const { vocabularyApi, dispose } = setup();
+  const { queryClient, vocabularyApi, dispose } = setup();
 
   const createWordsSpy = vi.spyOn(vocabularyApi, 'createVocabularyItems');
 
   render(() => (
-    <MemoryRouter>
-      <Route path="/:id" component={VocabularyPage} />
-      <Route path="/" component={() => <Navigate href="/1" />} />
-    </MemoryRouter>
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <Route path="/:id" component={VocabularyPage} />
+        <Route path="/" component={() => <Navigate href="/1" />} />
+      </MemoryRouter>
+    </QueryClientProvider>
   ));
   await tick();
 
@@ -92,15 +99,17 @@ it('words creator should not attempt words creation if no words filled in', asyn
 });
 
 it('words creator should still attempt words creation if user actively pressed "Add word" button', async () => {
-  const { userInteraction, vocabularyApi, dispose } = setup();
+  const { queryClient, userInteraction, vocabularyApi, dispose } = setup();
 
   const createWordsSpy = vi.spyOn(vocabularyApi, 'createVocabularyItems');
 
   render(() => (
-    <MemoryRouter>
-      <Route path="/:id" component={VocabularyPage} />
-      <Route path="/" component={() => <Navigate href="/1" />} />
-    </MemoryRouter>
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <Route path="/:id" component={VocabularyPage} />
+        <Route path="/" component={() => <Navigate href="/1" />} />
+      </MemoryRouter>
+    </QueryClientProvider>
   ));
   await tick();
 
@@ -129,7 +138,7 @@ function setup() {
 
   const userInteraction = userEvent.setup();
 
-  const { vocabularyApi, dispose } = initTestApp();
+  const { queryClient, vocabularyApi, dispose } = initTestApp();
 
   vocabularyApi.fetchVocabulary.mockResolvedValue({
     id: 1,
@@ -157,6 +166,7 @@ function setup() {
   });
 
   return {
+    queryClient,
     userInteraction,
     vocabularyApi,
     dispose,

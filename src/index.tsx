@@ -1,7 +1,6 @@
 import { Navigate, Route, Router } from '@solidjs/router';
 import { render } from 'solid-js/web';
 
-import type { JSX } from 'solid-js';
 import { lazy } from 'solid-js';
 import App from './components/App';
 import { AuthRouteGuard } from './domains/auth/AuthRouteGuard';
@@ -11,7 +10,7 @@ import { VocabularyTestPage } from './domains/vocabulary-testing/VocabularyTestP
 import './index.css';
 import { VocabularyTestResultsPage } from './domains/vocabulary-results/VocabularyTestResultsPage';
 import { QueryClientProvider } from '@tanstack/solid-query';
-import { queryClient } from './init/query';
+import { initApp } from './init/app-init';
 
 const root = document.getElementById('root');
 
@@ -29,45 +28,43 @@ const ConjugationsPage = lazy(
   () => import('./domains/conjugations/components/ConjugationsView')
 );
 
-const Root = (props: { children?: JSX.Element }) => (
-  <QueryClientProvider client={queryClient}>
-    <AuthRouteGuard>{props.children}</AuthRouteGuard>
-  </QueryClientProvider>
-);
-
 render(() => {
+  const { queryClient } = initApp();
+
   return (
-    <Router root={Root}>
-      <Route path="/" component={App}>
-        <Route path="/dashboard" component={DashboardPage} />
-        <Route path="/vocabulary">
-          <Route path="/" component={VocabulariesPage} />
-          <Route path="/:id" component={VocabularyPage} />
-          <Route path="/:id/test" component={VocabularyTestPage} />
+    <QueryClientProvider client={queryClient}>
+      <Router root={AuthRouteGuard}>
+        <Route path="/" component={App}>
+          <Route path="/dashboard" component={DashboardPage} />
+          <Route path="/vocabulary">
+            <Route path="/" component={VocabulariesPage} />
+            <Route path="/:id" component={VocabularyPage} />
+            <Route path="/:id/test" component={VocabularyTestPage} />
+            <Route
+              path="/:id/test/results"
+              component={VocabularyTestResultsPage}
+            />
+          </Route>
           <Route
-            path="/:id/test/results"
-            component={VocabularyTestResultsPage}
+            path={[
+              '/conjugations',
+              '/conjugations/:lang',
+              '/conjugations/:lang/:verb',
+            ]}
+            component={ConjugationsPage}
           />
+          <Route path="/" component={() => <Navigate href="/dashboard" />} />
         </Route>
         <Route
-          path={[
-            '/conjugations',
-            '/conjugations/:lang',
-            '/conjugations/:lang/:verb',
-          ]}
-          component={ConjugationsPage}
+          path="/login"
+          component={lazy(() => import('./domains/auth/AuthPage'))}
         />
-        <Route path="/" component={() => <Navigate href="/dashboard" />} />
-      </Route>
-      <Route
-        path="/login"
-        component={lazy(() => import('./domains/auth/AuthPage'))}
-      />
-      <Route
-        path="/signup"
-        component={lazy(() => import('./domains/auth/AuthPage'))}
-      />
-      <Route path="*" component={() => <Navigate href="/" />} />{' '}
-    </Router>
+        <Route
+          path="/signup"
+          component={lazy(() => import('./domains/auth/AuthPage'))}
+        />
+        <Route path="*" component={() => <Navigate href="/" />} />{' '}
+      </Router>
+    </QueryClientProvider>
   );
 }, root!);

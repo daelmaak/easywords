@@ -3,9 +3,11 @@ import { vi } from 'vitest';
 import type { ResourcesInit } from './app-init';
 import { initApp } from './app-init';
 import { vocabularyTestResultTestApiFactory } from '~/domains/vocabulary-results/test/vocabulary-test-result-test-api';
+import { QueryClient } from '@tanstack/solid-query';
 
 export const initTestApp = () => {
   const resources = {
+    queryClient: new QueryClient(),
     vocabularyApi: {
       createVocabulary: vi.fn(),
       createVocabularyItems: vi.fn(),

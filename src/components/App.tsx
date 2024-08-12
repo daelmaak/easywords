@@ -5,7 +5,7 @@ import { Button } from '~/components/ui/button';
 import { signOut } from '~/domains/auth/auth-resource';
 import logo from '../assets/logo.svg';
 import { AccountButton } from '../domains/auth/AccountButton';
-import { initApp, resetApp } from '../init/app-init';
+import { resetApp } from '../init/app-init';
 import styles from './App.module.css';
 import {
   DropdownMenu,
@@ -20,8 +20,6 @@ interface Props {
 }
 
 const App: Component<Props> = props => {
-  initApp();
-
   async function onSignOut() {
     await signOut();
     resetApp();

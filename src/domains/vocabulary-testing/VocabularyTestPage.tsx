@@ -1,12 +1,12 @@
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
-import { Show, createEffect, createSignal } from 'solid-js';
+import { Show, Suspense, createEffect, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { BackLink } from '~/components/BackLink';
 import type { VocabularyItem } from '../vocabularies/model/vocabulary-model';
 import {
   deleteVocabularyItems,
   deleteVocabularyProgress,
-  getVocabularyResource,
+  fetchVocabulary,
   saveVocabularyProgress,
   updateVocabularyAsInteractedWith,
   updateVocabularyItems,
@@ -16,13 +16,18 @@ import { saveTestResult } from '../vocabulary-results/resources/vocabulary-test-
 import type { VocabularyTesterSettings } from './components/VocabularySettings';
 import { VocabularySettings } from './components/VocabularySettings';
 import { VocabularyTester } from './components/VocabularyTester';
+import { createQuery } from '@tanstack/solid-query';
 
 export const VocabularyTestPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const params = useParams();
   const vocabularyId = +params.id;
-  const vocabulary = getVocabularyResource(vocabularyId);
+
+  const vocabularyQuery = createQuery(() => ({
+    queryKey: ['vocabulary', vocabularyId],
+    queryFn: () => fetchVocabulary(vocabularyId),
+  }));
 
   const [vocabularySettings, setVocabularySettings] =
     createStore<VocabularyTesterSettings>({
@@ -34,10 +39,10 @@ export const VocabularyTestPage = () => {
   const [words, setWords] = createSignal<VocabularyItem[]>();
 
   createEffect(() => {
-    const vocab = vocabulary();
+    const vocabulary = vocabularyQuery.data;
 
-    if (vocab) {
-      void updateVocabularyAsInteractedWith(vocab.id);
+    if (vocabulary) {
+      void updateVocabularyAsInteractedWith(vocabulary.id);
     }
 
     setInitialWords();
@@ -46,22 +51,24 @@ export const VocabularyTestPage = () => {
   function setInitialWords() {
     // Vocabulary loading means the current one is either non existent or stale
     // so now words should be set at this moment.
-    if (vocabulary.loading) {
+    if (vocabularyQuery.isLoading) {
       return;
     }
 
-    const vocab = vocabulary();
+    const vocabulary = vocabularyQuery.data;
 
-    if (vocab == null) {
+    if (vocabulary == null) {
       return;
     }
 
     if (searchParams.wordIds) {
       const wordIds = searchParams.wordIds.split(',').map(Number);
-      const words = vocab.vocabularyItems.filter(w => wordIds.includes(w.id));
+      const words = vocabulary.vocabularyItems.filter(w =>
+        wordIds.includes(w.id)
+      );
       setWords(words);
     } else {
-      setWords(vocab.vocabularyItems);
+      setWords(vocabulary.vocabularyItems);
     }
   }
 
@@ -97,7 +104,7 @@ export const VocabularyTestPage = () => {
 
   return (
     <div class="page-container h-full">
-      <Show when={!vocabulary.loading}>
+      <Suspense>
         <BackLink>Back to vocabulary</BackLink>
         <Show when={vocabularyId} keyed>
           <Show when={words()}>
@@ -115,7 +122,7 @@ export const VocabularyTestPage = () => {
                     testSettings={vocabularySettings}
                     savedProgress={
                       searchParams.useSavedProgress
-                        ? vocabulary()?.savedProgress?.words
+                        ? vocabularyQuery.data?.savedProgress?.words
                         : undefined
                     }
                     words={w()}
@@ -130,7 +137,7 @@ export const VocabularyTestPage = () => {
             )}
           </Show>
         </Show>
-      </Show>
+      </Suspense>
     </div>
   );
 };
