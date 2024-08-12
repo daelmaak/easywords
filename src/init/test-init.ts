@@ -7,7 +7,13 @@ import { QueryClient } from '@tanstack/solid-query';
 
 export const initTestApp = () => {
   const resources = {
-    queryClient: new QueryClient(),
+    queryClient: new QueryClient({
+      defaultOptions: {
+        queries: {
+          staleTime: Infinity,
+        },
+      },
+    }),
     vocabularyApi: {
       createVocabulary: vi.fn(),
       createVocabularyItems: vi.fn(),

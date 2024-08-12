@@ -64,7 +64,6 @@ export const VocabularyPage: Component = () => {
   const vocabularyQuery = createQuery(() => ({
     queryKey: [VOCABULARY_QUERY_KEY, vocabularyId],
     queryFn: () => fetchVocabulary(vocabularyId),
-    staleTime: Infinity,
   }));
 
   const [lastTestResult] = createResource(vocabularyId, fetchTestResults);
