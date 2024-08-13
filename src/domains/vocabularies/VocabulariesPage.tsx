@@ -1,6 +1,7 @@
 import { useNavigate, useSearchParams } from '@solidjs/router';
 import { HiOutlinePlus } from 'solid-icons/hi';
-import { createSignal, For, Show } from 'solid-js';
+import { createSignal, For, Show, Suspense } from 'solid-js';
+import { ConfirmationDialog } from '~/components/ConfirmationDialog';
 import { Button } from '~/components/ui/button';
 import {
   Sheet,
@@ -8,42 +9,38 @@ import {
   SheetHeader,
   SheetTitle,
 } from '~/components/ui/sheet';
-import { Skeleton } from '~/components/ui/skeleton';
 import { VocabularyCard } from './components/VocabularyCard';
 import { VocabularyCreator } from './components/VocabularyCreator';
-import type { VocabularyToCreate } from './resources/vocabularies-resource';
+import type { VocabularyToCreate } from './resources/vocabulary-resource';
 import {
   createVocabulary,
   deleteVocabulary,
-  getVocabulariesResource,
-} from './resources/vocabularies-resource';
+} from './resources/vocabulary-resource';
 import { navigateToVocabularyTest } from './util/navigation';
-import { ConfirmationDialog } from '~/components/ConfirmationDialog';
+import { createQuery } from '@tanstack/solid-query';
+import {
+  fetchVocabularies,
+  VOCABULARIES_QUERY_KEY,
+} from './resources/vocabularies-resource';
 
 export const VocabulariesPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const [vocabularies, vocabulariesAction] = getVocabulariesResource();
+  const vocabulariesQuery = createQuery(() => ({
+    queryKey: [VOCABULARIES_QUERY_KEY],
+    queryFn: () => fetchVocabularies(),
+  }));
   const [createVocabularyOpen, setCreateVocabularyOpen] = createSignal(
     searchParams.openVocabCreator != null
   );
   const [confirmDeletionOf, setConfirmDeletionOf] = createSignal<number>();
 
-  const loading = () => vocabularies() == null;
-  const anyVocabularies = () => !!vocabularies()?.length;
+  const anyVocabularies = () => vocabulariesQuery.data?.length ?? 0 > 0;
   const vocabulariesByRecency = () =>
-    vocabularies()
+    vocabulariesQuery.data
       ?.slice()
       .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-
-  async function doDeleteVocabulary(listId: number) {
-    const success = await deleteVocabulary(listId);
-
-    if (success) {
-      vocabulariesAction.mutate(l => l?.filter(list => list.id !== listId));
-    }
-  }
 
   function onCloseDeletionDialog() {
     setConfirmDeletionOf(undefined);
@@ -67,7 +64,7 @@ export const VocabulariesPage = () => {
       return;
     }
 
-    await doDeleteVocabulary(listId);
+    await deleteVocabulary(listId);
   }
 
   function onGoToVocabulary(id: number) {
@@ -83,7 +80,7 @@ export const VocabulariesPage = () => {
 
   return (
     <main class="min-h-full bg-gray-100">
-      <Show when={!loading()}>
+      <Suspense fallback={<div>Loading...</div>}>
         <div class="page-container flex flex-wrap justify-between gap-x-4">
           <h1 class="text-lg font-semibold">Your vocabularies</h1>
           <Show when={anyVocabularies()}>
@@ -145,14 +142,7 @@ export const VocabulariesPage = () => {
           onCancel={onCloseDeletionDialog}
           onConfirm={onDeleteVocabulary}
         />
-      </Show>
-
-      <Show when={loading()}>
-        <div>
-          <Skeleton class="mx-auto h-8 w-80" />
-          <Skeleton class="mx-auto mt-4 h-12 w-20" />
-        </div>
-      </Show>
+      </Suspense>
     </main>
   );
 };

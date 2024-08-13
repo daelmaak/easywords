@@ -1,23 +1,30 @@
+import type { QueryClient } from '@tanstack/solid-query';
+import type { TestResult } from '~/domains/vocabulary-results/model/test-result-model';
+import type { RealOmit } from '../../../util/object';
 import type { Vocabulary, VocabularyItem } from '../model/vocabulary-model';
 import type {
   VocabularyApi,
   VocabularyItemDB,
   VocabularyItemToCreateDB,
+  VocabularyToCreateDB,
 } from './vocabulary-api';
+import type { VocabularyProgressApi } from './vocabulary-progress-api';
 import {
   transformToVocabulary,
   transformToVocabularyItem,
   transformToVocabularyItemDB,
 } from './vocabulary-transform';
-import type { RealOmit } from '../../../util/object';
-import type { TestResult } from '~/domains/vocabulary-results/model/test-result-model';
-import type { VocabularyProgressApi } from './vocabulary-progress-api';
-import type { QueryClient } from '@tanstack/solid-query';
+import { VOCABULARIES_QUERY_KEY } from './vocabularies-resource';
 
 export type VocabularyItemToCreate = RealOmit<
   VocabularyItem,
   'id' | 'createdAt'
 >;
+
+export type VocabularyToCreate = RealOmit<
+  Vocabulary,
+  'id' | 'savedProgress' | 'updatedAt' | 'vocabularyItems'
+> & { vocabularyItems: VocabularyItemToCreate[] };
 
 export const VOCABULARY_QUERY_KEY = 'vocabulary';
 
@@ -49,6 +56,16 @@ export const fetchVocabulary = async (id: number) =>
     return vocabulary;
   });
 
+export const createVocabulary = async (vocabulary: VocabularyToCreate) => {
+  const vocabularyDB = transformToVocabularyCreateDB(vocabulary);
+  const success = await api.createVocabulary(vocabularyDB);
+
+  if (success) {
+    await queryClient.refetchQueries({ queryKey: [VOCABULARIES_QUERY_KEY] });
+  }
+  return success;
+};
+
 export const updateVocabulary = async (
   vocabularyPatch: Partial<Vocabulary> & Pick<Vocabulary, 'id'>
 ) => {
@@ -59,8 +76,23 @@ export const updateVocabulary = async (
     v => ({ ...v!, ...vocabularyPatch })
   );
   await queryClient.invalidateQueries({
-    queryKey: ['recentVocabularies'],
+    queryKey: [VOCABULARIES_QUERY_KEY],
   });
+};
+
+export const deleteVocabulary = async (id: number) => {
+  const success = await api.deleteVocabulary(id);
+
+  if (success) {
+    queryClient.setQueryData<Vocabulary[]>([VOCABULARIES_QUERY_KEY], l =>
+      l!.filter(list => list.id !== id)
+    );
+    await queryClient.invalidateQueries({
+      queryKey: [VOCABULARIES_QUERY_KEY],
+    });
+  }
+
+  return success;
 };
 
 export const updateVocabularyAsInteractedWith = async (
@@ -68,7 +100,7 @@ export const updateVocabularyAsInteractedWith = async (
 ) => {
   await api.updateVocabulary({ id: vocabularyId });
   await queryClient.invalidateQueries({
-    queryKey: ['recentVocabularies'],
+    queryKey: [VOCABULARIES_QUERY_KEY],
   });
 };
 
@@ -167,4 +199,16 @@ const transformToVocabularyItemCreateDB = (
   original: item.original,
   translation: item.translation,
   notes: item.notes,
+});
+
+const transformToVocabularyCreateDB = (
+  vocabulary: VocabularyToCreate
+): VocabularyToCreateDB => ({
+  country: vocabulary.country,
+  name: vocabulary.name,
+  vocabulary_items: vocabulary.vocabularyItems.map(vi => ({
+    original: vi.original,
+    translation: vi.translation,
+    notes: vi.notes,
+  })),
 });

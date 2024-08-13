@@ -1,18 +1,21 @@
 import { A, useNavigate } from '@solidjs/router';
 import type { Component } from 'solid-js';
-import { For } from 'solid-js';
+import { For, Suspense } from 'solid-js';
 import { VocabularyCard } from '../vocabularies/components/VocabularyCard';
 import { navigateToVocabularyTest } from '../vocabularies/util/navigation';
 import { Button } from '~/components/ui/button';
 import { HiOutlinePlus } from 'solid-icons/hi';
-import { fetchRecentVocabularies } from '../vocabularies/resources/vocabularies-resource';
+import {
+  fetchRecentVocabularies,
+  VOCABULARIES_QUERY_KEY,
+} from '../vocabularies/resources/vocabularies-resource';
 import { createQuery } from '@tanstack/solid-query';
 
 export const DashboardPage: Component = () => {
   const navigate = useNavigate();
 
   const recentVocabulariesQuery = createQuery(() => ({
-    queryKey: ['recentVocabularies'],
+    queryKey: [VOCABULARIES_QUERY_KEY, { type: 'recent' }],
     queryFn: () => fetchRecentVocabularies(3),
   }));
 
@@ -57,33 +60,35 @@ export const DashboardPage: Component = () => {
             </A>
           </div>
           <div class="flex flex-col gap-4">
-            <For
-              each={recentVocabulariesQuery.data}
-              fallback={
-                <div class="w-full min-h-40 grid">
-                  <div class="m-auto text-center">
-                    <p class="mb-4">
-                      Easywords is all about Vocabularies, so why don't you
-                      start off by creating one?
-                    </p>
-                    <Button
-                      onClick={onCreateVocabulary}
-                      aria-label="Create first vocabulary"
-                    >
-                      <HiOutlinePlus size={16} /> Create first
-                    </Button>
+            <Suspense fallback={<div>Loading...</div>}>
+              <For
+                each={recentVocabulariesQuery.data}
+                fallback={
+                  <div class="w-full min-h-40 grid">
+                    <div class="m-auto text-center">
+                      <p class="mb-4">
+                        Easywords is all about Vocabularies, so why don't you
+                        start off by creating one?
+                      </p>
+                      <Button
+                        onClick={onCreateVocabulary}
+                        aria-label="Create first vocabulary"
+                      >
+                        <HiOutlinePlus size={16} /> Create first
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              }
-            >
-              {vocabulary => (
-                <VocabularyCard
-                  vocabulary={vocabulary}
-                  onClick={onGoToVocabulary}
-                  onTestVocabulary={onTestVocabulary}
-                />
-              )}
-            </For>
+                }
+              >
+                {vocabulary => (
+                  <VocabularyCard
+                    vocabulary={vocabulary}
+                    onClick={onGoToVocabulary}
+                    onTestVocabulary={onTestVocabulary}
+                  />
+                )}
+              </For>
+            </Suspense>
           </div>
         </section>
       </div>
