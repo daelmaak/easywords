@@ -38,14 +38,16 @@ export const VocabularyTestPage = () => {
     });
   const [words, setWords] = createSignal<VocabularyItem[]>();
 
-  createEffect(() => {
+  createEffect(prevVocabularyId => {
     const vocabulary = vocabularyQuery.data;
 
-    if (vocabulary) {
-      void updateVocabularyAsInteractedWith(vocabulary.id);
+    if (vocabulary == null || vocabulary.id === prevVocabularyId) {
+      return vocabulary?.id;
     }
-
+    void updateVocabularyAsInteractedWith(vocabulary.id);
     setInitialWords();
+
+    return vocabulary.id;
   });
 
   function setInitialWords() {
