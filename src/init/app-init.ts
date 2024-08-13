@@ -1,7 +1,4 @@
-import {
-  initVocabulariesResource,
-  resetVocabulariesResource,
-} from '~/domains/vocabularies/resources/vocabularies-resource';
+import { initVocabulariesResource } from '~/domains/vocabularies/resources/vocabularies-resource';
 import type { VocabularyApi } from '~/domains/vocabularies/resources/vocabulary-api';
 import { vocabularyApi } from '~/domains/vocabularies/resources/vocabulary-api';
 import type { VocabularyProgressApi } from '~/domains/vocabularies/resources/vocabulary-progress-api';
@@ -56,6 +53,5 @@ export const initResources = ({
 };
 
 export const resetApp = () => {
-  resetVocabulariesResource();
   queryClient.clear();
 };

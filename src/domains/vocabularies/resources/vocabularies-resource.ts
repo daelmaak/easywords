@@ -1,72 +1,22 @@
-import type { ResourceReturn, Signal } from 'solid-js';
-import { createResource, createSignal } from 'solid-js';
-import type { Vocabulary } from '../model/vocabulary-model';
-import type {
-  VocabularyApi,
-  VocabularyDB,
-  VocabularyToCreateDB,
-} from './vocabulary-api';
-import { transformToVocabulary } from './vocabulary-transform';
-import type { RealOmit } from '../../../util/object';
-import type { VocabularyItemToCreate } from './vocabulary-resource';
+import type { VocabularyApi, VocabularyDB } from './vocabulary-api';
 import type { VocabularyProgressApi } from './vocabulary-progress-api';
+import { transformToVocabulary } from './vocabulary-transform';
 
-export type VocabularyToCreate = RealOmit<
-  Vocabulary,
-  'id' | 'savedProgress' | 'updatedAt' | 'vocabularyItems'
-> & { vocabularyItems: VocabularyItemToCreate[] };
+export const VOCABULARIES_QUERY_KEY = 'vocabularies';
 
 let api: VocabularyApi;
 let progressApi: VocabularyProgressApi;
-let vocabulariesSignal: Signal<boolean>;
-let vocabulariesResource: ResourceReturn<Vocabulary[] | undefined>;
 
 export const initVocabulariesResource = (apis: {
   vocabularyApi: VocabularyApi;
   vocabularyProgressApi: VocabularyProgressApi;
 }) => {
   ({ vocabularyApi: api, vocabularyProgressApi: progressApi } = apis);
-  vocabulariesSignal = createSignal(false);
-  vocabulariesResource = createResource(
-    vocabulariesSignal[0],
-    fetchVocabularies
-  );
-};
-
-export const getVocabulariesResource = () => {
-  vocabulariesSignal[1](true);
-  return vocabulariesResource;
-};
-
-export const resetVocabulariesResource = () => {
-  vocabulariesSignal[1](false);
 };
 
 export const fetchVocabularies = async () => {
   const vocabulariesDB = await api.fetchVocabularies();
   return transformToVocabularies(vocabulariesDB ?? []);
-};
-
-export const createVocabulary = async (vocabulary: VocabularyToCreate) => {
-  const vocabularyDB = transformToVocabularyCreateDB(vocabulary);
-  const success = await api.createVocabulary(vocabularyDB);
-
-  if (success) {
-    const { refetch } = vocabulariesResource[1];
-    await refetch();
-  }
-  return success;
-};
-
-export const deleteVocabulary = async (id: number) => {
-  const success = await api.deleteVocabulary(id);
-
-  if (success) {
-    const { mutate } = vocabulariesResource[1];
-    mutate(l => l!.filter(list => list.id !== id));
-  }
-
-  return success;
 };
 
 export const fetchRecentVocabularies = async (amount: number) => {
@@ -85,15 +35,3 @@ const transformToVocabularies = async (vocabulariesDB: VocabularyDB[]) => {
 
   return vocabularies;
 };
-
-const transformToVocabularyCreateDB = (
-  vocabulary: VocabularyToCreate
-): VocabularyToCreateDB => ({
-  country: vocabulary.country,
-  name: vocabulary.name,
-  vocabulary_items: vocabulary.vocabularyItems.map(vi => ({
-    original: vi.original,
-    translation: vi.translation,
-    notes: vi.notes,
-  })),
-});

@@ -115,16 +115,17 @@ const deleteVocabulary = async (id: number) => {
   return !result.error;
 };
 
-const updateVocabulary = async (vocabulary: Partial<VocabularyDB>) => {
+const updateVocabulary = async (
+  vocabulary: Partial<VocabularyDB> & Pick<VocabularyDB, 'id'>
+) => {
   const result = await supabase
     .from('vocabularies')
-    .upsert({
-      ...vocabulary,
+    .update({
+      ...omit(vocabulary, 'id'),
       updated_at: new Date(),
     })
-    .select();
-
-  return result.data?.[0];
+    .eq('id', vocabulary.id);
+  return !result.error;
 };
 
 const updateVocabularyItems = async (
@@ -143,6 +144,13 @@ const deleteVocabularyItems = async (...ids: number[]) => {
   return !result.error;
 };
 
+const updateVocabularyUpdatedAt = async (id: number) => {
+  await supabase
+    .from('vocabularies')
+    .update({ updated_at: new Date() })
+    .eq('id', id);
+};
+
 export const vocabularyApi = {
   createVocabularyItems,
   createVocabulary,
@@ -156,10 +164,3 @@ export const vocabularyApi = {
 };
 
 export type VocabularyApi = typeof vocabularyApi;
-
-const updateVocabularyUpdatedAt = async (id: number) => {
-  await supabase
-    .from('vocabularies')
-    .update({ updated_at: new Date() })
-    .eq('id', id);
-};

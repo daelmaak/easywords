@@ -16,7 +16,7 @@ import {
 } from '~/domains/vocabulary-testing/components/WordsInput';
 import type { CountryCode } from '../../../components/country-select/countries';
 import type { VocabularyItem } from '../model/vocabulary-model';
-import type { VocabularyToCreate } from '../resources/vocabularies-resource';
+import type { VocabularyToCreate } from '../resources/vocabulary-resource';
 
 interface Props {
   onListCreate: (vocabulary: VocabularyToCreate) => void;
