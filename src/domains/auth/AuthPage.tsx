@@ -75,7 +75,7 @@ export const AuthPage = () => {
           <h2 class="mb-4 text-center text-lg font-semibold">How to</h2>
           <div style="padding-bottom:56.25%; position:relative; display:block; width: 100%">
             <iframe
-              src="https://app.vidcast.io/share/embed/d851cd74-8275-4b09-8e62-ff0646e66b53"
+              src="https://app.vidcast.io/share/embed/7c72416a-a85a-4cc0-8603-d1765974d1c3"
               width="100%"
               height="100%"
               title="Watch how to use Easywords"
