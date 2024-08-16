@@ -3,7 +3,10 @@ import type { RealOmit } from '~/util/object';
 import { omit } from '~/util/object';
 import type { QueryData } from '@supabase/supabase-js';
 
-export type WordToCreateDB = RealOmit<WordDB, 'id' | 'created_at' | 'list_id'>;
+export type WordToCreateDB = RealOmit<
+  WordDB,
+  'id' | 'created_at' | 'vocabulary_id'
+>;
 
 export type VocabularyToCreateDB = RealOmit<
   VocabularyDB,
@@ -15,7 +18,7 @@ export type VocabularyToCreateDB = RealOmit<
 const WORD_FETCH_FIELDS = `
   id,
   created_at,
-  list_id,
+  vocabulary_id,
   original,
   translation,
   notes
@@ -76,7 +79,7 @@ const createVocabulary = async (vocabulary: VocabularyToCreateDB) => {
 
   const attachedWords = vocabulary.words.map(word => ({
     ...word,
-    list_id: createdList?.id,
+    vocabulary_id: createdList?.id,
   }));
 
   const itemsResult = await supabase.from('words').insert(attachedWords);
@@ -91,7 +94,7 @@ const createWords = async (items: WordToCreateDB[]) => {
     .select(WORD_FETCH_FIELDS);
 
   if (result.data) {
-    const vocabularyId = result.data[0].list_id;
+    const vocabularyId = result.data[0].vocabulary_id;
     void updateVocabularyUpdatedAt(vocabularyId);
   }
 
@@ -118,7 +121,7 @@ const updateVocabulary = async (
 
 const updateWords = async (items: RealOmit<WordDB, 'created_at'>[]) => {
   const result = await supabase.from('words').upsert(items);
-  const vocabularyId = items[0].list_id;
+  const vocabularyId = items[0].vocabulary_id;
 
   void updateVocabularyUpdatedAt(vocabularyId);
 

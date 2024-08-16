@@ -57,14 +57,14 @@ export const VocabulariesPage = () => {
   }
 
   async function onDeleteVocabulary() {
-    const listId = confirmDeletionOf();
+    const vocabularyId = confirmDeletionOf();
     setConfirmDeletionOf(undefined);
 
-    if (listId == null) {
+    if (vocabularyId == null) {
       return;
     }
 
-    await deleteVocabulary(listId);
+    await deleteVocabulary(vocabularyId);
   }
 
   function onGoToVocabulary(id: number) {

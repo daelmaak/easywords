@@ -64,7 +64,7 @@ it('words creator should submit word form if the form is not empty even without 
     {
       original: 'ahoj',
       translation: 'hello',
-      list_id: 1,
+      vocabulary_id: 1,
       notes: '',
     },
   ]);
@@ -125,7 +125,7 @@ it('words creator should still attempt words creation if user actively pressed "
     {
       original: 'ahoj',
       translation: 'hello',
-      list_id: 1,
+      vocabulary_id: 1,
       notes: '',
     },
   ]);
@@ -149,7 +149,7 @@ function setup() {
       {
         id: 1,
         created_at: '2021-01-01',
-        list_id: 1,
+        vocabulary_id: 1,
         original: 'ahoj',
         translation: 'hello',
         notes: undefined,
@@ -157,7 +157,7 @@ function setup() {
       {
         id: 2,
         created_at: '2021-01-01',
-        list_id: 1,
+        vocabulary_id: 1,
         original: 'nashle',
         translation: 'bye',
         notes: undefined,

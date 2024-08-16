@@ -185,8 +185,8 @@ export const deleteVocabularyProgress = async (vocabularyId: number) => {
 
 const transformToWordCreateDB = (
   word: WordToCreate
-): WordToCreateDB & Pick<WordDB, 'list_id'> => ({
-  list_id: word.vocabularyId,
+): WordToCreateDB & Pick<WordDB, 'vocabulary_id'> => ({
+  vocabulary_id: word.vocabularyId,
   original: word.original,
   translation: word.translation,
   notes: word.notes,

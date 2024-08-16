@@ -15,7 +15,7 @@ export function createMockVocabularyDB(config: {
     (_, index) => ({
       id: index,
       created_at: String(new Date().getTime()),
-      list_id: 1,
+      vocabulary_id: 1,
       original: `original${index}`,
       translation: `translation${index}`,
       notes: '',

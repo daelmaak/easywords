@@ -199,7 +199,7 @@ const vocabulary1: VocabularyDB = {
     {
       id: 1,
       created_at: '2024-02-02',
-      list_id: 1,
+      vocabulary_id: 1,
       original: 'orig 1',
       translation: 'trans 1',
       notes: undefined,
@@ -216,7 +216,7 @@ const vocabulary2: VocabularyDB = {
     {
       id: 2,
       created_at: '2024-02-02',
-      list_id: 2,
+      vocabulary_id: 2,
       original: 'orig 2',
       translation: 'trans 2',
       notes: undefined,
