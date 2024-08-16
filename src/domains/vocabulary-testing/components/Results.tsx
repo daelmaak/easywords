@@ -1,10 +1,10 @@
 import { A } from '@solidjs/router';
-import { createSignal, For, lazy, Show } from 'solid-js';
+import { createSignal, lazy, Show } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import { WordEditorDialog } from '~/domains/vocabularies/components/WordEditorDialog';
 import type { Word } from '~/domains/vocabularies/model/vocabulary-model';
-import { ResultWord } from './ResultWord';
 import type { TestResult } from '~/domains/vocabulary-results/model/test-result-model';
+import { ResultWordGuessesVisualisation } from './ResultWordGuessesVisualisation';
 
 interface ResultsProps {
   results: TestResult;
@@ -70,31 +70,12 @@ export function Results(props: ResultsProps) {
         <figcaption class="mt-8 text-lg">{feedbackText()}</figcaption>
       </figure>
 
-      <Show when={invalidWords().length}>
-        <section class="mx-auto mt-10 flex flex-col">
-          <h2 class="mb-4 text-lg text-center">
-            Words you guessed incorrectly
-          </h2>
-
-          <ul
-            class="mx-auto max-h-64 overflow-y-auto"
-            data-testid="results-invalid-words"
-          >
-            <For each={invalidWords()}>
-              {word => (
-                <li>
-                  <ResultWord
-                    word={word}
-                    onEditWord={() => setWordToEdit(word)}
-                  />
-                </li>
-              )}
-            </For>
-          </ul>
-
-          <div class="mx-auto mt-2"></div>
-        </section>
-      </Show>
+      <section class="mt-4 mx-auto">
+        <ResultWordGuessesVisualisation
+          results={props.results}
+          words={props.words}
+        />
+      </section>
 
       <div class="mx-auto mt-8 flex flex-wrap justify-center items-center gap-4 sm:mt-16">
         <Show when={invalidWords().length}>

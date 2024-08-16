@@ -35,7 +35,7 @@ export const TestResultsVisualisation: Component<Props> = props => {
           {
             label: '# of words',
             data: [correctAnswers(), incorrectAnswers(), skippedAnswers()],
-            backgroundColor: ['#10681a', '#8c0f37', '#879292'],
+            backgroundColor: ['#158a66f2', '#c64072', '#879292'],
             borderWidth: 1,
           },
         ],
