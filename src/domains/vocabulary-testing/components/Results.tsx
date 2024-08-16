@@ -113,7 +113,7 @@ export function Results(props: ResultsProps) {
         >
           Test all again
         </Button>
-        <A class="text-primary text-sm" href="..">
+        <A class="text-primary text-sm" href="../..">
           Back to Vocabulary
         </A>
       </div>
