@@ -15,6 +15,7 @@ export interface ConfirmationDialogProps {
   confirmText: string;
   children?: JSX.Element;
   trigger?: JSX.Element;
+  triggerClass?: JSX.HTMLAttributes<HTMLElement>['class'];
   onClose?: () => void;
   onCancel?: () => void;
   onConfirm: () => void;
@@ -26,7 +27,9 @@ export const ConfirmationDialog: Component<ConfirmationDialogProps> = props => {
       open={props.open}
       onOpenChange={open => open === false && props.onClose?.()}
     >
-      <DialogTrigger>{props.trigger}</DialogTrigger>
+      <DialogTrigger class={props.triggerClass} as="span">
+        {props.trigger}
+      </DialogTrigger>
       <DialogContent class="w-80">
         <DialogHeader>
           <h2 class="text-lg font-bold">{props.headingText ?? 'You sure?'}</h2>

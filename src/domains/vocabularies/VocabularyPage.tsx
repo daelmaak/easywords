@@ -295,17 +295,13 @@ export const VocabularyPage: Component = () => {
             <ConfirmationDialog
               confirmText="Delete"
               trigger={
-                <Button
-                  class={cx({
-                    'hidden lg:inline lg:invisible':
-                      selectedWords().length === 0,
-                  })}
-                  size="sm"
-                  variant="destructive"
-                >
+                <Button size="sm" variant="destructive">
                   <HiOutlineTrash size={16} /> Delete selected
                 </Button>
               }
+              triggerClass={cx({
+                'hidden lg:inline lg:invisible': selectedWords().length === 0,
+              })}
               onConfirm={deleteSelectedWords}
             />
             <Button
