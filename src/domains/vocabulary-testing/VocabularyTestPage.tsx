@@ -1,5 +1,5 @@
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
-import { Show, Suspense, createEffect, createSignal } from 'solid-js';
+import { Show, Suspense, createEffect } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { BackLink } from '~/components/BackLink';
 import type { VocabularyItem } from '../vocabularies/model/vocabulary-model';
@@ -36,27 +36,8 @@ export const VocabularyTestPage = () => {
       repeatInvalid: false,
       strictMatch: false,
     });
-  const [words, setWords] = createSignal<VocabularyItem[]>();
 
-  createEffect(prevVocabularyId => {
-    const vocabulary = vocabularyQuery.data;
-
-    if (vocabulary == null || vocabulary.id === prevVocabularyId) {
-      return vocabulary?.id;
-    }
-    void updateVocabularyAsInteractedWith(vocabulary.id);
-    setInitialWords();
-
-    return vocabulary.id;
-  });
-
-  function setInitialWords() {
-    // Vocabulary loading means the current one is either non existent or stale
-    // so now words should be set at this moment.
-    if (vocabularyQuery.isLoading) {
-      return;
-    }
-
+  const words = () => {
     const vocabulary = vocabularyQuery.data;
 
     if (vocabulary == null) {
@@ -68,11 +49,28 @@ export const VocabularyTestPage = () => {
       const words = vocabulary.vocabularyItems.filter(w =>
         wordIds.includes(w.id)
       );
-      setWords(words);
-    } else {
-      setWords(vocabulary.vocabularyItems);
+      return words;
     }
-  }
+
+    if (searchParams.useSavedProgress && vocabulary.savedProgress) {
+      return vocabulary.savedProgress.words.map(
+        w => vocabulary.vocabularyItems.find(v => v.id === w.id)!
+      );
+    }
+
+    return vocabulary.vocabularyItems;
+  };
+
+  createEffect(prevVocabularyId => {
+    const vocabulary = vocabularyQuery.data;
+
+    if (vocabulary == null || vocabulary.id === prevVocabularyId) {
+      return vocabulary?.id;
+    }
+    void updateVocabularyAsInteractedWith(vocabulary.id);
+
+    return vocabulary.id;
+  });
 
   async function onDone(results: TestResultWord[]) {
     void deleteVocabularyProgress(vocabularyId);

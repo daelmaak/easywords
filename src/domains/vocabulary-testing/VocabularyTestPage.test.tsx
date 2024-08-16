@@ -6,7 +6,10 @@ import { afterEach, expect, it, vi } from 'vitest';
 import { tick } from '~/lib/testing';
 import { initTestApp } from '../../init/test-init';
 import type { VocabularyDB } from '../vocabularies/resources/vocabulary-api';
-import { createMockVocabularyDB } from './util/test-util';
+import {
+  createMockTestProgress,
+  createMockVocabularyDB,
+} from './util/test-util';
 import { VocabularyTestPage } from './VocabularyTestPage';
 import { VocabularyTestResultsPage } from '../vocabulary-results/VocabularyTestResultsPage';
 import { QueryClientProvider } from '@tanstack/solid-query';
@@ -138,14 +141,45 @@ it('should save the test progress upon pausing it and pick it up again when resu
   dispose();
 });
 
+it('should pick up the saved progress of a partial test when resuming', async () => {
+  const { queryClient, vocabularyApi, vocabularyProgressApi, dispose } =
+    setup();
+  const vocabularyDB = createMockVocabularyDB({ wordAmount: 3 });
+  vocabularyApi.fetchVocabulary.mockResolvedValue(vocabularyDB);
+  vocabularyProgressApi.fetchVocabularyProgress.mockResolvedValue(
+    createMockTestProgress(vocabularyDB, { correct: 1, totalPartial: 2 })
+  );
+
+  render(() => (
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <Route path="/vocabulary/:id/test" component={VocabularyTestPage} />
+        <Route
+          path="*"
+          component={() => (
+            <Navigate href="/vocabulary/1/test?useSavedProgress=true" />
+          )}
+        />
+      </MemoryRouter>
+    </QueryClientProvider>
+  ));
+  await tick();
+
+  const progressBar = screen.getByRole('progressbar');
+  expect(progressBar).toBeInTheDocument();
+  expect(progressBar.textContent).toContain('1 out of 2 done');
+
+  dispose();
+});
+
 function setup() {
   vi.mock('idb-keyval');
   vi.mock('chart.js/auto');
 
-  const { queryClient, vocabularyApi, dispose } = initTestApp();
+  const initResult = initTestApp();
   const userAction = userEvent.setup();
 
-  return { queryClient, vocabularyApi, userAction, dispose };
+  return { ...initResult, userAction };
 }
 
 export const DummyPage = () => (
