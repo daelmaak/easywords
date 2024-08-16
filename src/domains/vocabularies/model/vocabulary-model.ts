@@ -1,7 +1,7 @@
 import type { CountryCode } from '~/components/country-select/countries';
 import type { TestResult } from '~/domains/vocabulary-results/model/test-result-model';
 
-export interface VocabularyItem {
+export interface Word {
   id: number;
   createdAt: Date;
   vocabularyId: number;
@@ -15,6 +15,6 @@ export interface Vocabulary {
   country: CountryCode;
   name: string;
   updatedAt: Date;
-  vocabularyItems: VocabularyItem[];
+  words: Word[];
   savedProgress?: TestResult;
 }

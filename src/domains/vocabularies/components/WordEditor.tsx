@@ -1,21 +1,19 @@
 import type { Component } from 'solid-js';
-import type { VocabularyItem } from '../model/vocabulary-model';
+import type { Word } from '../model/vocabulary-model';
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
 import { processFormSubmit } from '~/util/form';
 import { Textarea } from '~/components/ui/textarea';
 
 interface Props {
-  word: VocabularyItem;
-  onChange: (word: VocabularyItem) => void;
+  word: Word;
+  onChange: (word: Word) => void;
 }
 
 export const WordEditor: Component<Props> = props => {
   function handleSubmit(e: SubmitEvent) {
     const formData =
-      processFormSubmit<
-        Pick<VocabularyItem, 'original' | 'translation' | 'notes'>
-      >(e);
+      processFormSubmit<Pick<Word, 'original' | 'translation' | 'notes'>>(e);
 
     if (formData.original == null || formData.translation == null) {
       return;

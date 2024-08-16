@@ -89,7 +89,7 @@ it('should show the test results after finishing test based on user performance'
   const invalidWords = resultInvalidWords.querySelectorAll('li');
   expect(invalidWords.length).toBe(1);
 
-  const wronglyGuessedWord = vocabulary.vocabulary_items.find(
+  const wronglyGuessedWord = vocabulary.words.find(
     i => i.translation !== correctAnswer
   );
   expect(invalidWords[0].textContent).toContain(wronglyGuessedWord!.original);
@@ -195,7 +195,7 @@ const vocabulary1: VocabularyDB = {
   country: 'vn',
   updated_at: '2024-02-03',
   name: 'Vocabulary 1',
-  vocabulary_items: [
+  words: [
     {
       id: 1,
       created_at: '2024-02-02',
@@ -212,7 +212,7 @@ const vocabulary2: VocabularyDB = {
   country: 'vn',
   updated_at: '2024-02-03',
   name: 'Vocabulary 2',
-  vocabulary_items: [
+  words: [
     {
       id: 2,
       created_at: '2024-02-02',
@@ -228,7 +228,7 @@ function getCorrectAnswer(screen: Screen, vocabulary: VocabularyDB) {
   const originalToTranslate = screen.getByTestId(
     'original-to-translate'
   ).textContent;
-  const correctAnswer = vocabulary.vocabulary_items.find(
+  const correctAnswer = vocabulary.words.find(
     i => i.original === originalToTranslate
   )!.translation;
 

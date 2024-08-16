@@ -44,14 +44,14 @@ export const VocabularyCard: Component<Props> = props => {
       </CardHeader>
       <CardContent class="px-4 pt-0 pb-2 overflow-hidden">
         <ul class="text-center">
-          <For each={props.vocabulary.vocabularyItems.slice(0, 10)}>
+          <For each={props.vocabulary.words.slice(0, 10)}>
             {item => (
               <li>
                 {item.original} - {item.translation}
               </li>
             )}
           </For>
-          <Show when={props.vocabulary.vocabularyItems.length > 10}>
+          <Show when={props.vocabulary.words.length > 10}>
             <li class="text-center">...</li>
           </Show>
         </ul>

@@ -15,7 +15,7 @@ import {
 } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
-import type { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
+import type { Word } from '~/domains/vocabularies/model/vocabulary-model';
 
 export interface WriteTesterInstance {
   input: HTMLInputElement;
@@ -23,7 +23,7 @@ export interface WriteTesterInstance {
 }
 
 // The id is optional since not all words have to have an id, like conjugations
-type TestedWord = Pick<VocabularyItem, 'translation'> & { id?: number };
+type TestedWord = Pick<Word, 'translation'> & { id?: number };
 
 export interface WriteTesterProps {
   autoFocus?: boolean;

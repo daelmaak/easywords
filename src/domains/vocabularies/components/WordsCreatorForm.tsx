@@ -4,7 +4,7 @@ import { Label } from '~/components/ui/label';
 import { Textarea } from '~/components/ui/textarea';
 import type { WordTranslation } from '~/model/word-translation';
 import { processFormSubmit } from '~/util/form';
-import type { VocabularyItem } from '../model/vocabulary-model';
+import type { Word } from '../model/vocabulary-model';
 
 interface Props {
   id: string;
@@ -15,9 +15,7 @@ interface Props {
 export const WordsCreatorForm: Component<Props> = props => {
   function onAddWord(e: SubmitEvent) {
     const formData =
-      processFormSubmit<
-        Pick<VocabularyItem, 'original' | 'translation' | 'notes'>
-      >(e);
+      processFormSubmit<Pick<Word, 'original' | 'translation' | 'notes'>>(e);
 
     if (formData.original == null || formData.translation == null) {
       return;

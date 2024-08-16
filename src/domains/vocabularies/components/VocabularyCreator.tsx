@@ -15,7 +15,7 @@ import {
   wordsInputModes,
 } from '~/domains/vocabulary-testing/components/WordsInput';
 import type { CountryCode } from '../../../components/country-select/countries';
-import type { VocabularyItem } from '../model/vocabulary-model';
+import type { Word } from '../model/vocabulary-model';
 import type { VocabularyToCreate } from '../resources/vocabulary-resource';
 
 interface Props {
@@ -30,7 +30,7 @@ const l10n: { mode: Record<WordsInputMode, string> } = {
 };
 
 export const VocabularyCreator: Component<Props> = props => {
-  const [words, setWords] = createSignal<VocabularyItem[]>([]);
+  const [words, setWords] = createSignal<Word[]>([]);
   const [wordsInputMode, setWordsInputMode] =
     createSignal<WordsInputMode>('form');
 
@@ -42,7 +42,7 @@ export const VocabularyCreator: Component<Props> = props => {
     props.onListCreate({
       name: formData.get('vocabularyName') as string,
       country: formData.get('country') as CountryCode,
-      vocabularyItems: words(),
+      words: words(),
     });
   };
 

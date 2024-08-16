@@ -1,30 +1,27 @@
 import type { QueryClient } from '@tanstack/solid-query';
 import type { TestResult } from '~/domains/vocabulary-results/model/test-result-model';
 import type { RealOmit } from '../../../util/object';
-import type { Vocabulary, VocabularyItem } from '../model/vocabulary-model';
+import type { Vocabulary, Word } from '../model/vocabulary-model';
 import type {
   VocabularyApi,
-  VocabularyItemDB,
-  VocabularyItemToCreateDB,
+  WordDB,
+  WordToCreateDB,
   VocabularyToCreateDB,
 } from './vocabulary-api';
 import type { VocabularyProgressApi } from './vocabulary-progress-api';
 import {
   transformToVocabulary,
-  transformToVocabularyItem,
-  transformToVocabularyItemDB,
+  transformToWord,
+  transformToWordDB,
 } from './vocabulary-transform';
 import { VOCABULARIES_QUERY_KEY } from './vocabularies-resource';
 
-export type VocabularyItemToCreate = RealOmit<
-  VocabularyItem,
-  'id' | 'createdAt'
->;
+export type WordToCreate = RealOmit<Word, 'id' | 'createdAt'>;
 
 export type VocabularyToCreate = RealOmit<
   Vocabulary,
-  'id' | 'savedProgress' | 'updatedAt' | 'vocabularyItems'
-> & { vocabularyItems: VocabularyItemToCreate[] };
+  'id' | 'savedProgress' | 'updatedAt' | 'words'
+> & { words: WordToCreate[] };
 
 export const VOCABULARY_QUERY_KEY = 'vocabulary';
 
@@ -67,7 +64,8 @@ export const createVocabulary = async (vocabulary: VocabularyToCreate) => {
 };
 
 export const updateVocabulary = async (
-  vocabularyPatch: Partial<Vocabulary> & Pick<Vocabulary, 'id'>
+  vocabularyPatch: Partial<RealOmit<Vocabulary, 'words'>> &
+    Pick<Vocabulary, 'id'>
 ) => {
   await api.updateVocabulary(vocabularyPatch);
 
@@ -104,38 +102,33 @@ export const updateVocabularyAsInteractedWith = async (
   });
 };
 
-export const createVocabularyItems = async (
+export const createWords = async (
   vocabularyId: number,
-  ...items: VocabularyItemToCreate[]
+  ...items: WordToCreate[]
 ) => {
   const itemsToCreate = items.map(i =>
-    transformToVocabularyItemCreateDB({ ...i, vocabularyId })
+    transformToWordCreateDB({ ...i, vocabularyId })
   );
-  const createdItemsDB = await api.createVocabularyItems(itemsToCreate);
+  const createdItemsDB = await api.createWords(itemsToCreate);
 
   queryClient.setQueryData<Vocabulary>(
     [VOCABULARY_QUERY_KEY, vocabularyId],
     v => ({
       ...v!,
-      vocabularyItems: v!.vocabularyItems.concat(
-        (createdItemsDB ?? []).map(transformToVocabularyItem)
-      ),
+      words: v!.words.concat((createdItemsDB ?? []).map(transformToWord)),
     })
   );
 };
 
-export const deleteVocabularyItems = async (
-  vocabularyId: number,
-  ...ids: number[]
-) => {
-  const success = await api.deleteVocabularyItems(...ids);
+export const deleteWords = async (vocabularyId: number, ...ids: number[]) => {
+  const success = await api.deleteWords(...ids);
 
   if (success) {
     queryClient.setQueryData<Vocabulary>(
       [VOCABULARY_QUERY_KEY, vocabularyId],
       v => ({
         ...v!,
-        vocabularyItems: v!.vocabularyItems.filter(i => !ids.includes(i.id)),
+        words: v!.words.filter(i => !ids.includes(i.id)),
       })
     );
   }
@@ -143,9 +136,9 @@ export const deleteVocabularyItems = async (
   return success;
 };
 
-export const updateVocabularyItems = async (...items: VocabularyItem[]) => {
-  const itemsDB = items.map(transformToVocabularyItemDB);
-  const result = await api.updateVocabularyItems(itemsDB);
+export const updateWords = async (...items: Word[]) => {
+  const itemsDB = items.map(transformToWordDB);
+  const result = await api.updateWords(itemsDB);
 
   if (!result) {
     return false;
@@ -157,9 +150,7 @@ export const updateVocabularyItems = async (...items: VocabularyItem[]) => {
     [VOCABULARY_QUERY_KEY, items[0].vocabularyId],
     v => ({
       ...v!,
-      vocabularyItems: v!.vocabularyItems.map(
-        i => updatedItemsMap.get(i.id) ?? i
-      ),
+      words: v!.words.map(i => updatedItemsMap.get(i.id) ?? i),
     })
   );
 
@@ -192,13 +183,13 @@ export const deleteVocabularyProgress = async (vocabularyId: number) => {
   );
 };
 
-const transformToVocabularyItemCreateDB = (
-  item: VocabularyItemToCreate
-): VocabularyItemToCreateDB & Pick<VocabularyItemDB, 'list_id'> => ({
-  list_id: item.vocabularyId,
-  original: item.original,
-  translation: item.translation,
-  notes: item.notes,
+const transformToWordCreateDB = (
+  word: WordToCreate
+): WordToCreateDB & Pick<WordDB, 'list_id'> => ({
+  list_id: word.vocabularyId,
+  original: word.original,
+  translation: word.translation,
+  notes: word.notes,
 });
 
 const transformToVocabularyCreateDB = (
@@ -206,7 +197,7 @@ const transformToVocabularyCreateDB = (
 ): VocabularyToCreateDB => ({
   country: vocabulary.country,
   name: vocabulary.name,
-  vocabulary_items: vocabulary.vocabularyItems.map(vi => ({
+  words: vocabulary.words.map(vi => ({
     original: vi.original,
     translation: vi.translation,
     notes: vi.notes,

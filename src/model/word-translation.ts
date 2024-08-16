@@ -1,4 +1,4 @@
-import type { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
+import type { Word } from '~/domains/vocabularies/model/vocabulary-model';
 
-export type WordTranslation = Pick<VocabularyItem, 'original' | 'translation'> &
-  Partial<Pick<VocabularyItem, 'notes'>>;
+export type WordTranslation = Pick<Word, 'original' | 'translation'> &
+  Partial<Pick<Word, 'notes'>>;

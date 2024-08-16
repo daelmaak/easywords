@@ -9,7 +9,7 @@ import { Show, createEffect, onCleanup, onMount } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { Button } from '~/components/ui/button';
 import { Progress, ProgressValueLabel } from '~/components/ui/progress';
-import type { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
+import type { Word } from '~/domains/vocabularies/model/vocabulary-model';
 import { nextWord } from '../../../worder/worder';
 import { WriteTester } from './WriteTester';
 import type { VocabularyTesterSettings } from './VocabularySettings';
@@ -26,12 +26,12 @@ export type VocabularyTestMode = 'guess' | 'write';
 
 interface TesterProps {
   testSettings: VocabularyTesterSettings;
-  words: VocabularyItem[];
+  words: Word[];
   savedProgress?: TestResultWord[];
   onDone: (results: TestResultWord[]) => void;
-  onEditWord: (word: VocabularyItem) => void;
+  onEditWord: (word: Word) => void;
   onProgress?: (results: TestResultWord[]) => void;
-  onRemoveWord: (word: VocabularyItem) => void;
+  onRemoveWord: (word: Word) => void;
   onStop?: () => void;
 }
 
@@ -39,7 +39,7 @@ interface State {
   currentWordId: number | undefined;
   peek: boolean;
   editing: boolean;
-  wordsLeft: VocabularyItem[];
+  wordsLeft: Word[];
   resultWords: TestResultWord[];
 }
 
@@ -171,7 +171,7 @@ export const VocabularyTester: Component<TesterProps> = (
     setNextWord();
   }
 
-  function onWordEdited(updatedWord: VocabularyItem) {
+  function onWordEdited(updatedWord: Word) {
     setStore('editing', false);
     props.onEditWord(updatedWord);
   }

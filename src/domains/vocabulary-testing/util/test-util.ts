@@ -1,6 +1,6 @@
 import type {
   VocabularyDB,
-  VocabularyItemDB,
+  WordDB,
 } from '~/domains/vocabularies/resources/vocabulary-api';
 import type {
   TestResult,
@@ -10,7 +10,7 @@ import type {
 export function createMockVocabularyDB(config: {
   wordAmount: number;
 }): VocabularyDB {
-  const words: VocabularyItemDB[] = Array.from(
+  const words: WordDB[] = Array.from(
     { length: config.wordAmount },
     (_, index) => ({
       id: index,
@@ -26,7 +26,7 @@ export function createMockVocabularyDB(config: {
     id: 1,
     name: 'Vocabulary title',
     country: 'cz',
-    vocabulary_items: words,
+    words: words,
     updated_at: new Date(),
   };
 }
@@ -57,7 +57,7 @@ export function createMockTestProgress(
 
   for (let i = 0; i < totalWordResultsToAffect; i++) {
     const testResultWord: TestResultWord = {
-      id: vocabulary.vocabulary_items[i].id,
+      id: vocabulary.words[i].id,
       done: false,
       invalidAttempts: 0,
       skipped: false,

@@ -26,7 +26,7 @@ it('should permit vocabulary creation even when no words filled out', async () =
   expect(onListCreateSpy).toHaveBeenCalledWith({
     country: 'cz',
     name: 'My vocabulary',
-    vocabularyItems: [],
+    words: [],
   } satisfies VocabularyToCreate);
 });
 

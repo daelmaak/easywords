@@ -2,14 +2,14 @@ import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
 import { Show, Suspense, createEffect } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { BackLink } from '~/components/BackLink';
-import type { VocabularyItem } from '../vocabularies/model/vocabulary-model';
+import type { Word } from '../vocabularies/model/vocabulary-model';
 import {
-  deleteVocabularyItems,
+  deleteWords,
   deleteVocabularyProgress,
   fetchVocabulary,
   saveVocabularyProgress,
   updateVocabularyAsInteractedWith,
-  updateVocabularyItems,
+  updateWords,
 } from '../vocabularies/resources/vocabulary-resource';
 import type { TestResultWord } from '../vocabulary-results/model/test-result-model';
 import { saveTestResult } from '../vocabulary-results/resources/vocabulary-test-result-resource';
@@ -46,19 +46,17 @@ export const VocabularyTestPage = () => {
 
     if (searchParams.wordIds) {
       const wordIds = searchParams.wordIds.split(',').map(Number);
-      const words = vocabulary.vocabularyItems.filter(w =>
-        wordIds.includes(w.id)
-      );
+      const words = vocabulary.words.filter(w => wordIds.includes(w.id));
       return words;
     }
 
     if (searchParams.useSavedProgress && vocabulary.savedProgress) {
       return vocabulary.savedProgress.words.map(
-        w => vocabulary.vocabularyItems.find(v => v.id === w.id)!
+        w => vocabulary.words.find(v => v.id === w.id)!
       );
     }
 
-    return vocabulary.vocabularyItems;
+    return vocabulary.words;
   };
 
   createEffect(prevVocabularyId => {
@@ -82,16 +80,16 @@ export const VocabularyTestPage = () => {
     navigate('results');
   }
 
-  function onEditWord(word: VocabularyItem) {
-    void updateVocabularyItems(word);
+  function onEditWord(word: Word) {
+    void updateWords(word);
   }
 
   function goToVocabulary() {
     navigate('..');
   }
 
-  async function deleteWord(word: VocabularyItem) {
-    await deleteVocabularyItems(vocabularyId, word.id);
+  async function deleteWord(word: Word) {
+    await deleteWords(vocabularyId, word.id);
   }
 
   function saveProgress(results: TestResultWord[]) {

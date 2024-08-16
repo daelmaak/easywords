@@ -4,9 +4,9 @@ import { cleanup, render, screen } from '@solidjs/testing-library';
 import type { VocabularyTesterSettings } from './VocabularySettings';
 import userEvent from '@testing-library/user-event';
 import { createSignal } from 'solid-js';
-import type { VocabularyItem } from '../../vocabularies/model/vocabulary-model';
+import type { Word } from '../../vocabularies/model/vocabulary-model';
 
-const TEST_WORDS: VocabularyItem[] = [
+const TEST_WORDS: Word[] = [
   {
     id: 1,
     createdAt: new Date(),

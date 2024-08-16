@@ -3,19 +3,16 @@ import type { RealOmit } from '~/util/object';
 import { omit } from '~/util/object';
 import type { QueryData } from '@supabase/supabase-js';
 
-export type VocabularyItemToCreateDB = RealOmit<
-  VocabularyItemDB,
-  'id' | 'created_at' | 'list_id'
->;
+export type WordToCreateDB = RealOmit<WordDB, 'id' | 'created_at' | 'list_id'>;
 
 export type VocabularyToCreateDB = RealOmit<
   VocabularyDB,
-  'id' | 'updated_at' | 'vocabulary_items'
+  'id' | 'updated_at' | 'words'
 > & {
-  vocabulary_items: VocabularyItemToCreateDB[];
+  words: WordToCreateDB[];
 };
 
-const VOCABULARY_ITEM_FETCH_FIELDS = `
+const WORD_FETCH_FIELDS = `
   id,
   created_at,
   list_id,
@@ -29,7 +26,7 @@ const VOCABULARY_FETCH_FIELDS = `
   country,
   name,
   updated_at,
-  vocabulary_items (${VOCABULARY_ITEM_FETCH_FIELDS})
+  words (${WORD_FETCH_FIELDS})
 `;
 
 const vocabulariesFetchQuery = () =>
@@ -39,14 +36,7 @@ export type VocabularyDB = QueryData<
   ReturnType<typeof vocabulariesFetchQuery>
 >[number];
 
-export interface VocabularyItemDB {
-  id: number;
-  created_at: string;
-  list_id: number;
-  original: string;
-  translation: string;
-  notes: string | undefined;
-}
+export type WordDB = VocabularyDB['words'][number];
 
 const fetchVocabulary = async (id: number) => {
   const result = await vocabulariesFetchQuery().eq('id', id);
@@ -75,7 +65,7 @@ const fetchRecentVocabularies = async (count: number) => {
 const createVocabulary = async (vocabulary: VocabularyToCreateDB) => {
   const listResult = await supabase
     .from('vocabularies')
-    .insert({ ...omit(vocabulary, 'vocabulary_items') })
+    .insert({ ...omit(vocabulary, 'words') })
     .select();
 
   if (listResult.error) {
@@ -84,23 +74,21 @@ const createVocabulary = async (vocabulary: VocabularyToCreateDB) => {
 
   const createdList = listResult.data?.[0];
 
-  const attachedWords = vocabulary.vocabulary_items.map(word => ({
+  const attachedWords = vocabulary.words.map(word => ({
     ...word,
     list_id: createdList?.id,
   }));
 
-  const itemsResult = await supabase
-    .from('vocabulary_items')
-    .insert(attachedWords);
+  const itemsResult = await supabase.from('words').insert(attachedWords);
 
   return !itemsResult.error;
 };
 
-const createVocabularyItems = async (items: VocabularyItemToCreateDB[]) => {
+const createWords = async (items: WordToCreateDB[]) => {
   const result = await supabase
-    .from('vocabulary_items')
+    .from('words')
     .insert(items)
-    .select(VOCABULARY_ITEM_FETCH_FIELDS);
+    .select(WORD_FETCH_FIELDS);
 
   if (result.data) {
     const vocabularyId = result.data[0].list_id;
@@ -128,10 +116,8 @@ const updateVocabulary = async (
   return !result.error;
 };
 
-const updateVocabularyItems = async (
-  items: RealOmit<VocabularyItemDB, 'created_at'>[]
-) => {
-  const result = await supabase.from('vocabulary_items').upsert(items);
+const updateWords = async (items: RealOmit<WordDB, 'created_at'>[]) => {
+  const result = await supabase.from('words').upsert(items);
   const vocabularyId = items[0].list_id;
 
   void updateVocabularyUpdatedAt(vocabularyId);
@@ -139,8 +125,8 @@ const updateVocabularyItems = async (
   return !result.error;
 };
 
-const deleteVocabularyItems = async (...ids: number[]) => {
-  const result = await supabase.from('vocabulary_items').delete().in('id', ids);
+const deleteWords = async (...ids: number[]) => {
+  const result = await supabase.from('words').delete().in('id', ids);
   return !result.error;
 };
 
@@ -152,15 +138,15 @@ const updateVocabularyUpdatedAt = async (id: number) => {
 };
 
 export const vocabularyApi = {
-  createVocabularyItems,
+  createWords,
   createVocabulary,
-  deleteVocabularyItems,
+  deleteWords,
   deleteVocabulary,
   fetchVocabulary,
   fetchVocabularies,
   fetchRecentVocabularies,
   updateVocabulary,
-  updateVocabularyItems,
+  updateWords,
 };
 
 export type VocabularyApi = typeof vocabularyApi;

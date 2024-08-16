@@ -16,14 +16,14 @@ export const initTestApp = () => {
     }),
     vocabularyApi: {
       createVocabulary: vi.fn(),
-      createVocabularyItems: vi.fn(),
-      deleteVocabularyItems: vi.fn(),
+      createWords: vi.fn(),
+      deleteWords: vi.fn(),
       deleteVocabulary: vi.fn(),
       fetchVocabulary: vi.fn(),
       fetchVocabularies: vi.fn(),
       fetchRecentVocabularies: vi.fn(),
       updateVocabulary: vi.fn(),
-      updateVocabularyItems: vi.fn(),
+      updateWords: vi.fn(),
     },
     vocabularyProgressApi: {
       deleteVocabularyProgress: vi.fn(),

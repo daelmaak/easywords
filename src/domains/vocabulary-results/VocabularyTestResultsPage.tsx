@@ -3,10 +3,10 @@ import { Results } from '../vocabulary-testing/components/Results';
 import { useNavigate, useParams } from '@solidjs/router';
 import {
   fetchVocabulary,
-  updateVocabularyItems,
+  updateWords,
 } from '../vocabularies/resources/vocabulary-resource';
 import { fetchTestResults } from './resources/vocabulary-test-result-resource';
-import type { VocabularyItem } from '../vocabularies/model/vocabulary-model';
+import type { Word } from '../vocabularies/model/vocabulary-model';
 import { navigateToVocabularyTest } from '../vocabularies/util/navigation';
 import { BackLink } from '~/components/BackLink';
 import { createQuery } from '@tanstack/solid-query';
@@ -27,14 +27,14 @@ export const VocabularyTestResultsPage: Component = () => {
     navigate('..');
   }
 
-  function onRepeatInvalid(invalidWords: VocabularyItem[]) {
+  function onRepeatInvalid(invalidWords: Word[]) {
     navigateToVocabularyTest(vocabularyId, navigate, {
       wordIds: invalidWords.map(w => w.id),
     });
   }
 
-  async function onWordsEdited(updatedWord: VocabularyItem) {
-    await updateVocabularyItems(updatedWord);
+  async function onWordsEdited(updatedWord: Word) {
+    await updateWords(updatedWord);
   }
 
   return (
@@ -42,7 +42,7 @@ export const VocabularyTestResultsPage: Component = () => {
       <BackLink href="../..">Back to vocabulary</BackLink>
       <h1 class="mb-4 text-center text-2xl">Test results</h1>
       <Suspense fallback={<div>Loading...</div>}>
-        <Show when={vocabularyQuery.data?.vocabularyItems}>
+        <Show when={vocabularyQuery.data?.words}>
           {words => (
             <Show when={lastTestResult()}>
               {results => (

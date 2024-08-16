@@ -1,6 +1,6 @@
-import type { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
+import type { Word } from '~/domains/vocabularies/model/vocabulary-model';
 
-export function nextWord(words: VocabularyItem[]): VocabularyItem | undefined {
+export function nextWord(words: Word[]): Word | undefined {
   if (!words.length) {
     return undefined;
   }

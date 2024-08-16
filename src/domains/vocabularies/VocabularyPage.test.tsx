@@ -39,7 +39,7 @@ it('should filter words based on search', async () => {
 it('words creator should submit word form if the form is not empty even without clicking "Add word"', async () => {
   const { queryClient, userInteraction, vocabularyApi, dispose } = setup();
 
-  const createWordsSpy = vi.spyOn(vocabularyApi, 'createVocabularyItems');
+  const createWordsSpy = vi.spyOn(vocabularyApi, 'createWords');
 
   render(() => (
     <QueryClientProvider client={queryClient}>
@@ -75,7 +75,7 @@ it('words creator should submit word form if the form is not empty even without 
 it('words creator should not attempt words creation if no words filled in', async () => {
   const { queryClient, vocabularyApi, dispose } = setup();
 
-  const createWordsSpy = vi.spyOn(vocabularyApi, 'createVocabularyItems');
+  const createWordsSpy = vi.spyOn(vocabularyApi, 'createWords');
 
   render(() => (
     <QueryClientProvider client={queryClient}>
@@ -101,7 +101,7 @@ it('words creator should not attempt words creation if no words filled in', asyn
 it('words creator should still attempt words creation if user actively pressed "Add word" button', async () => {
   const { queryClient, userInteraction, vocabularyApi, dispose } = setup();
 
-  const createWordsSpy = vi.spyOn(vocabularyApi, 'createVocabularyItems');
+  const createWordsSpy = vi.spyOn(vocabularyApi, 'createWords');
 
   render(() => (
     <QueryClientProvider client={queryClient}>
@@ -145,7 +145,7 @@ function setup() {
     name: 'Vocabulary 1',
     country: 'cz',
     updated_at: '2021-02-01',
-    vocabulary_items: [
+    words: [
       {
         id: 1,
         created_at: '2021-01-01',

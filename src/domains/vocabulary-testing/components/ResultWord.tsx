@@ -1,10 +1,10 @@
 import { HiOutlinePencil } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
 import { Button } from '~/components/ui/button';
-import type { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
+import type { Word } from '~/domains/vocabularies/model/vocabulary-model';
 
 interface ResultWordProps {
-  word: VocabularyItem;
+  word: Word;
   onEditWord: () => void;
 }
 

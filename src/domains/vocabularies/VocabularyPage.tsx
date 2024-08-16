@@ -31,12 +31,12 @@ import {
 import { WordsInput } from '../vocabulary-testing/components/WordsInput';
 import type { SortState } from './components/VocabularyWords';
 import { VocabularyWords } from './components/VocabularyWords';
-import type { VocabularyItem } from './model/vocabulary-model';
+import type { Word } from './model/vocabulary-model';
 import {
-  createVocabularyItems,
-  deleteVocabularyItems,
+  createWords,
+  deleteWords,
   fetchVocabulary,
-  updateVocabularyItems,
+  updateWords,
   updateVocabulary,
   VOCABULARY_QUERY_KEY,
 } from './resources/vocabulary-resource';
@@ -51,9 +51,9 @@ export const VocabularyPage: Component = () => {
   const navigate = useNavigate();
   const vocabularyId = +params.id;
 
-  const [addedWords, setAddedWords] = createSignal<VocabularyItem[]>([]);
-  const [searchedWords, setSearchedWords] = createSignal<VocabularyItem[]>();
-  const [selectedWords, setSelectedWords] = createSignal<VocabularyItem[]>([]);
+  const [addedWords, setAddedWords] = createSignal<Word[]>([]);
+  const [searchedWords, setSearchedWords] = createSignal<Word[]>();
+  const [selectedWords, setSelectedWords] = createSignal<Word[]>([]);
   const [openedAddWords, setOpenedAddWords] = createSignal(false);
   const [creatingWords, setCreatingWords] = createSignal(false);
   const [sortState, setSortState] = createSignal<SortState>({
@@ -76,10 +76,7 @@ export const VocabularyPage: Component = () => {
       return;
     }
 
-    await deleteVocabularyItems(
-      vocabularyId,
-      ...selectedWords().map(word => word.id)
-    );
+    await deleteWords(vocabularyId, ...selectedWords().map(word => word.id));
     setSelectedWords([]);
   }
 
@@ -100,7 +97,7 @@ export const VocabularyPage: Component = () => {
     }
 
     setCreatingWords(true);
-    await createVocabularyItems(vocabularyId, ...addedWords());
+    await createWords(vocabularyId, ...addedWords());
     setAddedWords([]);
     setOpenedAddWords(false);
     setCreatingWords(false);
@@ -108,14 +105,14 @@ export const VocabularyPage: Component = () => {
 
   function onSelectAll(selected: boolean) {
     if (selected) {
-      setSelectedWords(vocabularyQuery.data?.vocabularyItems ?? []);
+      setSelectedWords(vocabularyQuery.data?.words ?? []);
     } else {
       setSelectedWords([]);
     }
   }
 
-  async function onWordsEdited(updatedWords: VocabularyItem[]) {
-    await updateVocabularyItems(...updatedWords);
+  async function onWordsEdited(updatedWords: Word[]) {
+    await updateWords(...updatedWords);
   }
 
   function testVocabulary(config: { useSavedProgress: boolean }) {
@@ -274,12 +271,12 @@ export const VocabularyPage: Component = () => {
               <Checkbox
                 checked={
                   selectedWords().length ===
-                  (vocabularyQuery.data?.vocabularyItems.length ?? 0)
+                  (vocabularyQuery.data?.words.length ?? 0)
                 }
                 indeterminate={
                   selectedWords().length > 0 &&
                   selectedWords().length <
-                    (vocabularyQuery.data?.vocabularyItems.length ?? 0)
+                    (vocabularyQuery.data?.words.length ?? 0)
                 }
                 label="Select"
                 onChange={() => onSelectAll(selectedWords().length === 0)}
@@ -289,7 +286,7 @@ export const VocabularyPage: Component = () => {
               {v => (
                 <Search
                   placeholder="Search words..."
-                  terms={v().vocabularyItems}
+                  terms={v().words}
                   searchKeys={['original', 'translation']}
                   onSearch={setSearchedWords}
                 />
@@ -326,7 +323,7 @@ export const VocabularyPage: Component = () => {
           <Show when={vocabularyQuery.data}>
             {v => (
               <VocabularyWords
-                words={searchedWords() ?? v().vocabularyItems}
+                words={searchedWords() ?? v().words}
                 selectedWords={selectedWords()}
                 sort={sortState()}
                 onWordsEdited={onWordsEdited}

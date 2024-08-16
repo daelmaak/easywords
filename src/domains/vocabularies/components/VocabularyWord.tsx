@@ -7,18 +7,18 @@ import {
   Popover,
 } from '../../../components/ui/popover';
 import { Checkbox } from '../../../components/ui/checkbox';
-import type { VocabularyItem } from '../model/vocabulary-model';
+import type { Word } from '../model/vocabulary-model';
 import { Button } from '~/components/ui/button';
 
 interface Props {
-  word: VocabularyItem;
+  word: Word;
   selected?: boolean;
   onWordSelected: (
-    word: VocabularyItem,
+    word: Word,
     selected: boolean,
     meta?: { shiftSelection: boolean }
   ) => void;
-  onWordDetailToOpen: (word: VocabularyItem) => void;
+  onWordDetailToOpen: (word: Word) => void;
 }
 
 export const VocabularyWord: Component<Props> = props => {

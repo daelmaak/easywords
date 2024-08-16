@@ -1,6 +1,6 @@
 import type { Component } from 'solid-js';
 import { For, Show, createSignal } from 'solid-js';
-import type { VocabularyItem } from '../model/vocabulary-model';
+import type { Word } from '../model/vocabulary-model';
 import { VocabularyWord } from './VocabularyWord';
 import { differenceBy, unionBy } from 'lodash-es';
 import { WordEditorDialog } from './WordEditorDialog';
@@ -11,15 +11,15 @@ export interface SortState {
 }
 
 interface VocabularyWordsProps {
-  words: VocabularyItem[];
-  selectedWords: VocabularyItem[];
+  words: Word[];
+  selectedWords: Word[];
   sort?: SortState;
-  onWordsEdited: (words: VocabularyItem[]) => void;
-  onWordsSelected: (words: VocabularyItem[]) => void;
+  onWordsEdited: (words: Word[]) => void;
+  onWordsSelected: (words: Word[]) => void;
 }
 
 export const VocabularyWords: Component<VocabularyWordsProps> = props => {
-  const [wordToEdit, setWordToEdit] = createSignal<VocabularyItem>();
+  const [wordToEdit, setWordToEdit] = createSignal<Word>();
   const [lastSelectedWordIndex, setLastSelectedWordIndex] = createSignal(-1);
 
   const groupedWordsByCreatedAt = () =>
@@ -34,7 +34,7 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
       }
       acc.get(createdAt)!.push(word);
       return acc;
-    }, new Map<number, VocabularyItem[]>());
+    }, new Map<number, Word[]>());
 
   const sortedWordsAlphabetically = () =>
     props.words.slice().sort((a, b) => a.original.localeCompare(b.original));
@@ -50,21 +50,21 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
       ? sortedWordsByCreatedAt(props.sort.asc).flatMap(([, ws]) => ws)
       : sortedWordsAlphabetically();
 
-  const wordSelected = (word: VocabularyItem) =>
+  const wordSelected = (word: Word) =>
     !!props.selectedWords.find(sw => word.id === sw.id);
 
-  function onWordEdited(word: VocabularyItem) {
+  function onWordEdited(word: Word) {
     props.onWordsEdited([word]);
     setWordToEdit(undefined);
   }
 
   function onWordSelected(
-    word: VocabularyItem,
+    word: Word,
     selected: boolean,
     meta?: { shiftSelection: boolean }
   ) {
     const wordIndex = sortedWords().findIndex(w => w.id === word.id);
-    let selectedWords: VocabularyItem[] = [word];
+    let selectedWords: Word[] = [word];
 
     if (meta?.shiftSelection) {
       const startIndex = Math.min(lastSelectedWordIndex(), wordIndex);

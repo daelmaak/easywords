@@ -66,7 +66,7 @@ it('should create vocabulary on form submit', async () => {
   >({
     name: 'New vocabulary',
     country: 'de',
-    vocabulary_items: [
+    words: [
       {
         original: 'ahoj',
         translation: 'hello',

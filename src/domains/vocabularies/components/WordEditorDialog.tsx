@@ -1,13 +1,13 @@
 import { Show, type Component } from 'solid-js';
 import { Dialog, DialogContent, DialogHeader } from '~/components/ui/dialog';
 import { WordEditor } from './WordEditor';
-import type { VocabularyItem } from '../model/vocabulary-model';
+import type { Word } from '../model/vocabulary-model';
 
 interface WordEditorDialogProps {
-  word?: VocabularyItem;
+  word?: Word;
   open: boolean;
   onClose: () => void;
-  onWordEdited: (word: VocabularyItem) => void;
+  onWordEdited: (word: Word) => void;
 }
 
 export const WordEditorDialog: Component<WordEditorDialogProps> = props => {

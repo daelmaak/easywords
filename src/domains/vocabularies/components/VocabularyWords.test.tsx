@@ -2,7 +2,7 @@ import { cleanup, render } from '@solidjs/testing-library';
 import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { createSignal } from 'solid-js';
 import { afterEach, expect, it, vi } from 'vitest';
-import type { VocabularyItem } from '../model/vocabulary-model';
+import type { Word } from '../model/vocabulary-model';
 import { VocabularyWords } from './VocabularyWords';
 
 afterEach(() => {
@@ -13,7 +13,7 @@ afterEach(() => {
 it('should shift select all items in between', async () => {
   const { onWordEdited, user } = setup();
 
-  const [selectedWords, setSelectedWords] = createSignal<VocabularyItem[]>([]);
+  const [selectedWords, setSelectedWords] = createSignal<Word[]>([]);
   // I am putting random alphabetical order into the retrieved words so that when
   // they get sorted a-z, they will have to appear in a different order than they were.
   const words = generateWords(5, (item, i) => ({
@@ -49,7 +49,7 @@ it('should shift select all items in between', async () => {
 it('should shift deselect all items in between', async () => {
   const { onWordEdited, user } = setup();
 
-  const [selectedWords, setSelectedWords] = createSignal<VocabularyItem[]>([]);
+  const [selectedWords, setSelectedWords] = createSignal<Word[]>([]);
   const words = generateWords(5);
 
   const { getAllByRole } = render(() => (
@@ -92,7 +92,7 @@ function setup() {
 it('should shift select all items in between when sorted by date added', async () => {
   const { onWordEdited, user } = setup();
 
-  const [selectedWords, setSelectedWords] = createSignal<VocabularyItem[]>([]);
+  const [selectedWords, setSelectedWords] = createSignal<Word[]>([]);
   // I have to "randomize" the dates a little so that the words stack up differently
   // than in the default sorting.
   const words = generateWords(5, (item, i) => ({
@@ -128,8 +128,8 @@ it('should shift select all items in between when sorted by date added', async (
 
 function generateWords(
   amount: number,
-  factoryFn?: (item: VocabularyItem, i: number) => VocabularyItem
-): VocabularyItem[] {
+  factoryFn?: (item: Word, i: number) => Word
+): Word[] {
   return Array.from({ length: amount }, (_, i) => ({
     id: i,
     createdAt: new Date(),

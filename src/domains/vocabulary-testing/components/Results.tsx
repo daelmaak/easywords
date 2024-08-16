@@ -2,16 +2,16 @@ import { A } from '@solidjs/router';
 import { createSignal, For, lazy, Show } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import { WordEditorDialog } from '~/domains/vocabularies/components/WordEditorDialog';
-import type { VocabularyItem } from '~/domains/vocabularies/model/vocabulary-model';
+import type { Word } from '~/domains/vocabularies/model/vocabulary-model';
 import { ResultWord } from './ResultWord';
 import type { TestResult } from '~/domains/vocabulary-results/model/test-result-model';
 
 interface ResultsProps {
   results: TestResult;
-  words: VocabularyItem[];
-  editWord: (word: VocabularyItem) => void;
+  words: Word[];
+  editWord: (word: Word) => void;
   onRepeatAll: () => void;
-  onRepeatInvalid: (invalidWords: VocabularyItem[]) => void;
+  onRepeatInvalid: (invalidWords: Word[]) => void;
 }
 
 const TestResultsVisualisation = lazy(
@@ -20,7 +20,7 @@ const TestResultsVisualisation = lazy(
 );
 
 export function Results(props: ResultsProps) {
-  const [wordToEdit, setWordToEdit] = createSignal<VocabularyItem>();
+  const [wordToEdit, setWordToEdit] = createSignal<Word>();
 
   const invalidWords = () =>
     props.results.words
@@ -49,7 +49,7 @@ export function Results(props: ResultsProps) {
     return "Not bad! Next time it's going to be better for sure!";
   };
 
-  function onWordEdited(word: VocabularyItem) {
+  function onWordEdited(word: Word) {
     props.editWord(word);
     setWordToEdit(undefined);
   }
