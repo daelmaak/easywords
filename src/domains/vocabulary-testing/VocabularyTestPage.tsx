@@ -1,5 +1,5 @@
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
-import { Show, Suspense, createEffect } from 'solid-js';
+import { Show, createEffect } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { BackLink } from '~/components/BackLink';
 import type { Word } from '../vocabularies/model/vocabulary-model';
@@ -102,7 +102,9 @@ export const VocabularyTestPage = () => {
 
   return (
     <div class="page-container h-full">
-      <Suspense>
+      {/* TODO don't use Suspense here since it causes rerender after navigating to the test page and pressing "Next word" button. 
+          That breaks the maintenance/restoration of focus on the write tester input. */}
+      <Show when={!vocabularyQuery.isLoading}>
         <BackLink>Back to vocabulary</BackLink>
         <div class="mx-auto flex justify-center items-center">
           <span class={`size-5 mr-2 fi fi-${vocabularyQuery.data?.country}`} />
@@ -139,7 +141,7 @@ export const VocabularyTestPage = () => {
             )}
           </Show>
         </Show>
-      </Suspense>
+      </Show>
     </div>
   );
 };
