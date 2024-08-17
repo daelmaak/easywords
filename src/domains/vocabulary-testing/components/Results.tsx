@@ -72,10 +72,12 @@ export function Results(props: ResultsProps) {
 
       <section class="mt-4 mx-auto" data-testid="results-word-breakdown">
         <h2 class="sr-only text-center">Word by word results breakdown</h2>
-        <ResultWordGuessesVisualisation
-          results={props.results}
-          words={props.words}
-        />
+        <div class="max-h-80 overflow-y-auto">
+          <ResultWordGuessesVisualisation
+            results={props.results}
+            words={props.words}
+          />
+        </div>
       </section>
 
       <div class="mx-auto mt-8 flex flex-wrap justify-center items-center gap-4 sm:mt-16">
