@@ -70,7 +70,8 @@ export function Results(props: ResultsProps) {
         <figcaption class="mt-8 text-lg">{feedbackText()}</figcaption>
       </figure>
 
-      <section class="mt-4 mx-auto">
+      <section class="mt-4 mx-auto" data-testid="results-word-breakdown">
+        <h2 class="sr-only text-center">Word by word results breakdown</h2>
         <ResultWordGuessesVisualisation
           results={props.results}
           words={props.words}

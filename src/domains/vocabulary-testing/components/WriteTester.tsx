@@ -133,13 +133,15 @@ export const WriteTester: Component<WriteTesterProps> = props => {
       return props.onDone?.();
     }
 
-    validateText();
+    const goNext = e.submitter?.title === 'Next word';
 
-    const canGoOn = e.submitter?.title === 'Next word';
+    if (!goNext) {
+      validateText();
+    }
 
     // NOTE: This handles the case where use resigned on giving an answer. So for his convenience, we let him submit which first
     // shows him the right answer and then it moves to next word on second submit.
-    if (canGoOn) {
+    if (goNext) {
       props.onDone?.();
     }
   }
