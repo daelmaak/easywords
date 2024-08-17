@@ -83,16 +83,30 @@ it('should show the test results after finishing test based on user performance'
   // finish the test
   await userAction.type(input, '{Enter}');
 
-  const resultInvalidWords = await waitFor(() =>
-    screen.getByTestId('results-invalid-words')
+  const wordsBreakdownSection = await waitFor(() =>
+    screen.getByTestId('results-word-breakdown')
   );
-  const invalidWords = resultInvalidWords.querySelectorAll('li');
-  expect(invalidWords.length).toBe(1);
+  const breakdownTableRows =
+    wordsBreakdownSection.querySelectorAll('table > tbody > tr');
+  expect(breakdownTableRows.length).toBe(2);
 
+  const [invalidRow, correctRow] = breakdownTableRows;
   const wronglyGuessedWord = vocabulary.words.find(
     i => i.translation !== correctAnswer
+  )!;
+  const correctlyGuessedWord = vocabulary.words.find(
+    i => i.translation === correctAnswer
+  )!;
+
+  expect(invalidRow.querySelector('td:first-child')).toHaveTextContent(
+    wronglyGuessedWord.original
   );
-  expect(invalidWords[0].textContent).toContain(wronglyGuessedWord!.original);
+  expect(invalidRow.querySelector('td:last-child')).toHaveTextContent('1');
+
+  expect(correctRow.querySelector('td:first-child')).toHaveTextContent(
+    correctlyGuessedWord.original
+  );
+  expect(correctRow.querySelector('td:last-child')).toHaveTextContent('');
 
   dispose();
 });
