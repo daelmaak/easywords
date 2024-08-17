@@ -105,7 +105,7 @@ export const VocabularyTestPage = () => {
       <Suspense>
         <BackLink>Back to vocabulary</BackLink>
         <div class="mx-auto flex justify-center items-center">
-          <span class={`w-5 h-5 mr-2 fi fi-${vocabularyQuery.data?.country}`} />
+          <span class={`size-5 mr-2 fi fi-${vocabularyQuery.data?.country}`} />
           <h1>{vocabularyQuery.data?.name}</h1>
         </div>
         <Show when={vocabularyId} keyed>
