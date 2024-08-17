@@ -40,8 +40,12 @@ export const VocabularyTestResultsPage: Component = () => {
   return (
     <main class="page-container">
       <BackLink href="../..">Back to vocabulary</BackLink>
-      <h1 class="mb-4 text-center text-2xl">Test results</h1>
       <Suspense fallback={<div>Loading...</div>}>
+        <h1 class="mb-4 flex justify-center items-center">
+          <span class="text-2xl">Test results</span>
+          <span class={`size-4 mx-2 fi fi-${vocabularyQuery.data?.country}`} />
+          {vocabularyQuery.data?.name}
+        </h1>
         <Show when={vocabularyQuery.data?.words}>
           {words => (
             <Show when={lastTestResult()}>
