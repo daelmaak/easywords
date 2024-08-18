@@ -162,12 +162,14 @@ export const VocabularyTester: Component<TesterProps> = (
   }
 
   function skip() {
-    setStore(
-      'resultWords',
-      rws => rws.id === store.currentWordId,
-      'skipped',
-      true
-    );
+    if (!props.testSettings.repeatInvalid) {
+      setStore(
+        'resultWords',
+        rws => rws.id === store.currentWordId,
+        'skipped',
+        true
+      );
+    }
     setNextWord();
   }
 
