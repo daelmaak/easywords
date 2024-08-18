@@ -48,7 +48,7 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
                 <td class="flex sm:w-60">
                   <Show when={result.invalidAttempts > 0}>
                     <div
-                      class="px-2 h-6 bg-[#cd497a] rounded-e-lg text-white"
+                      class="px-2 h-6 flex items-center bg-[#cd497a] rounded-e-lg text-white text-sm"
                       style={{
                         'flex-grow': `${result.invalidAttempts}`,
                       }}
