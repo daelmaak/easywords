@@ -238,8 +238,8 @@ export const VocabularyPage: Component = () => {
           </Show>
         </div>
 
-        <div class="flex-grow flex flex-col items-center">
-          <div class="sticky z-10 top-0 pb-4 w-full flex flex-wrap justify-center items-center gap-2 bg-background lg:gap-4">
+        <div class="mt-[-1rem] flex-grow flex flex-col items-center">
+          <div class="sticky z-10 top-0 py-2 w-full flex flex-wrap justify-center items-center gap-2 bg-background lg:gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Button class="text-base font-normal" variant="ghost">
