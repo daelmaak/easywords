@@ -23,14 +23,14 @@ it('should filter words based on search', async () => {
   ));
   await tick();
 
-  let words = screen.getAllByTestId('editor-word');
+  let words = screen.getAllByRole('listitem');
   expect(words.length).toBe(2);
 
-  const searchInput = screen.getByTestId('search-input');
+  const searchInput = screen.getByPlaceholderText('Search words...');
   expect(searchInput).toBeTruthy();
 
   await userInteraction.type(searchInput, 'ahoj');
-  words = screen.getAllByTestId('editor-word');
+  words = screen.getAllByRole('listitem');
   expect(words.length).toBe(1);
 
   dispose();

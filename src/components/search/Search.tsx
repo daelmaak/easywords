@@ -37,7 +37,6 @@ export const Search = <T,>(props: Props<T>) => {
   return (
     <Input
       class="w-auto"
-      data-testid="search-input"
       placeholder={props.placeholder ?? 'Search...'}
       onInput={e => search(e.target.value)}
     />

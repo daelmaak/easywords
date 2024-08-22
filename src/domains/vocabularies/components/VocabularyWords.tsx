@@ -84,7 +84,7 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
   }
 
   return (
-    <>
+    <div class="relative w-full h-full p-2 flex flex-col items-center bg-gray-100 rounded-md">
       <WordEditorDialog
         word={wordToEdit()}
         open={wordToEdit() != null}
@@ -92,18 +92,20 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
         onWordEdited={onWordEdited}
       />
       <Show when={props.sort?.by == null}>
-        <div class="relative grid justify-center content-start sm:grid-cols-2">
+        <ul class="flex flex-col items-start gap-2">
           <For each={sortedWordsAlphabetically()}>
             {word => (
-              <VocabularyWord
-                selected={wordSelected(word)}
-                word={word}
-                onWordSelected={onWordSelected}
-                onWordDetailToOpen={setWordToEdit}
-              />
+              <li>
+                <VocabularyWord
+                  selected={wordSelected(word)}
+                  word={word}
+                  onWordSelected={onWordSelected}
+                  onWordDetailToOpen={setWordToEdit}
+                />
+              </li>
             )}
           </For>
-        </div>
+        </ul>
       </Show>
       <Show when={props.sort}>
         {sort => (
@@ -112,19 +114,23 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
               <For each={sortedWordsByCreatedAt(sort().asc)}>
                 {([, words]) => (
                   <section>
-                    <h3 class="mt-4 mb-2 w-full">
+                    <h3 class="mt-4 mb-2 w-full font-semibold">
                       {words[0].createdAt.toDateString()}
                     </h3>
-                    <For each={words}>
-                      {word => (
-                        <VocabularyWord
-                          selected={wordSelected(word)}
-                          word={word}
-                          onWordSelected={onWordSelected}
-                          onWordDetailToOpen={setWordToEdit}
-                        />
-                      )}
-                    </For>
+                    <ul class="flex flex-col items-start gap-2">
+                      <For each={words}>
+                        {word => (
+                          <li>
+                            <VocabularyWord
+                              selected={wordSelected(word)}
+                              word={word}
+                              onWordSelected={onWordSelected}
+                              onWordDetailToOpen={setWordToEdit}
+                            />
+                          </li>
+                        )}
+                      </For>
+                    </ul>
                   </section>
                 )}
               </For>
@@ -132,6 +138,6 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
           </Show>
         )}
       </Show>
-    </>
+    </div>
   );
 };

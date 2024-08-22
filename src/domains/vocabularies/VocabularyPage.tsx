@@ -153,7 +153,7 @@ export const VocabularyPage: Component = () => {
   }
 
   return (
-    <main class="page-container flex flex-col gap-4 sm:flex-row">
+    <main class="page-container h-full flex flex-col gap-4 sm:flex-row">
       <Suspense fallback={<div class="m-auto">Loading ...</div>}>
         <Sheet open={openedAddWords()} onOpenChange={setOpenedAddWords}>
           <SheetContent
