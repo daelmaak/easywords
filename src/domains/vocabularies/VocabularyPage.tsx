@@ -248,18 +248,21 @@ export const VocabularyPage: Component = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent class="p-4">
                 <DropdownMenuItem
+                  as="button"
                   class="text-base"
                   onClick={() => sort({ by: 'created_at', asc: true })}
                 >
                   Oldest to newest
                 </DropdownMenuItem>
                 <DropdownMenuItem
+                  as="button"
                   class="text-base"
                   onClick={() => sort({ by: 'created_at', asc: false })}
                 >
                   Newest to oldest
                 </DropdownMenuItem>
                 <DropdownMenuItem
+                  as="button"
                   class="text-base"
                   onClick={() => sort({ by: undefined })}
                 >
