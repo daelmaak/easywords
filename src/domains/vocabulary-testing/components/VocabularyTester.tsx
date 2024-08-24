@@ -21,6 +21,7 @@ import {
 } from '~/components/ui/popover';
 import { ConfirmationDialog } from '~/components/ConfirmationDialog';
 import type { TestResultWord } from '~/domains/vocabulary-results/model/test-result-model';
+import { GuessTester } from './GuessTester';
 
 export type VocabularyTestMode = 'guess' | 'write';
 
@@ -232,17 +233,19 @@ export const VocabularyTester: Component<TesterProps> = (
           >
             <HiOutlinePencil size={20} />
           </Button>
-          <Button
-            aria-label="Reveal translation"
-            class="mr-2 translate-y-[1px] opacity-60"
-            title="Peek"
-            size="icon"
-            variant="ghost"
-            type="button"
-            onClick={togglePeek}
-          >
-            <HiOutlineEye size={20} />
-          </Button>
+          <Show when={props.testSettings.mode === 'write'}>
+            <Button
+              aria-label="Reveal translation"
+              class="mr-2 translate-y-[1px] opacity-60"
+              title="Peek"
+              size="icon"
+              variant="ghost"
+              type="button"
+              onClick={togglePeek}
+            >
+              <HiOutlineEye size={20} />
+            </Button>
+          </Show>
         </div>
 
         <WordEditorDialog
@@ -287,9 +290,10 @@ export const VocabularyTester: Component<TesterProps> = (
                 />
               </Match>
               <Match when={props.testSettings.mode === 'guess'}>
-                <span class="text-left" classList={{ invisible: !store.peek }}>
-                  {word().translation}
-                </span>
+                <GuessTester
+                  translation={word().translation}
+                  onDone={setNextWord}
+                />
               </Match>
             </Switch>
           )}
@@ -298,9 +302,6 @@ export const VocabularyTester: Component<TesterProps> = (
 
       <Show when={currentWord() && !done()}>
         <div class="mt-6 flex justify-center gap-4 sm:mt-12">
-          <Show when={props.testSettings.mode === 'guess'}>
-            <Button onClick={setNextWord}>Next</Button>
-          </Show>
           <Button class="btn-link" variant="outline" onClick={props.onStop}>
             Pause test
           </Button>
