@@ -5,7 +5,7 @@ import {
   HiSolidInformationCircle,
 } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
-import { Show, createEffect, onCleanup, onMount } from 'solid-js';
+import { Match, Show, Switch, createEffect } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { Button } from '~/components/ui/button';
 import { Progress, ProgressValueLabel } from '~/components/ui/progress';
@@ -97,23 +97,6 @@ export const VocabularyTester: Component<TesterProps> = (
         .filter(sw => !sw.done)
         .map(sw => props.words.find(w => w.id === sw.id)!),
     });
-  });
-
-  onMount(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (props.testSettings.mode !== 'guess') {
-        return;
-      }
-      if (e.key === 'r') {
-        setStore('peek', true);
-      }
-      if (e.key === 'n') {
-        setNextWord();
-      }
-    };
-
-    document.addEventListener('keydown', onKey);
-    onCleanup(() => document.removeEventListener('keydown', onKey));
   });
 
   function finish() {
@@ -289,24 +272,27 @@ export const VocabularyTester: Component<TesterProps> = (
           </Show>
         </div>
         <Show when={translatedWord()}>
-          {word =>
-            props.testSettings.mode === 'write' ? (
-              <WriteTester
-                autoFocus
-                mode="full"
-                peek={store.peek}
-                strict={props.testSettings.strictMatch}
-                word={word()}
-                onDone={setNextWord}
-                onSkip={skip}
-                onValidated={onWordValidated}
-              />
-            ) : (
-              <span class="text-left" classList={{ invisible: !store.peek }}>
-                {word().translation}
-              </span>
-            )
-          }
+          {word => (
+            <Switch>
+              <Match when={props.testSettings.mode === 'write'}>
+                <WriteTester
+                  autoFocus
+                  mode="full"
+                  peek={store.peek}
+                  strict={props.testSettings.strictMatch}
+                  word={word()}
+                  onDone={setNextWord}
+                  onSkip={skip}
+                  onValidated={onWordValidated}
+                />
+              </Match>
+              <Match when={props.testSettings.mode === 'guess'}>
+                <span class="text-left" classList={{ invisible: !store.peek }}>
+                  {word().translation}
+                </span>
+              </Match>
+            </Switch>
+          )}
         </Show>
       </div>
 
