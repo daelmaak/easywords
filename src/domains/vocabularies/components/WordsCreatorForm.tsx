@@ -44,23 +44,13 @@ export const WordsCreatorForm: Component<Props> = props => {
           <Label class="text-xs" for="word-original">
             Original*
           </Label>
-          <Input
-            id="word-original"
-            class="text-base"
-            name="original"
-            required
-          />
+          <Input id="word-original" name="original" required />
         </div>
         <div class="flex flex-col gap-2">
           <Label class="text-xs" for="word-translation">
             Translation*
           </Label>
-          <Input
-            id="word-translation"
-            class="text-base"
-            name="translation"
-            required
-          />
+          <Input id="word-translation" name="translation" required />
         </div>
       </div>
       <div class="w-full flex flex-col gap-2">
