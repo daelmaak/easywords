@@ -1,3 +1,16 @@
+export enum TestWordStatus {
+  NotDone,
+  Skipped,
+  Done,
+}
+
+export enum TestWordResult {
+  Correct = 1,
+  Wrong,
+  Ok,
+  Mediocre,
+}
+
 export interface TestResult {
   vocabularyId: number;
   updatedAt: Date;
@@ -7,7 +20,7 @@ export interface TestResult {
 
 export interface TestResultWord {
   id: number;
-  done: boolean;
   invalidAttempts: number;
-  skipped: boolean;
+  status: TestWordStatus;
+  result?: TestWordResult;
 }

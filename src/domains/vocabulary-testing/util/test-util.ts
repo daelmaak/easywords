@@ -2,9 +2,11 @@ import type {
   VocabularyDB,
   WordDB,
 } from '~/domains/vocabularies/resources/vocabulary-api';
-import type {
-  TestResult,
-  TestResultWord,
+import {
+  TestWordResult,
+  TestWordStatus,
+  type TestResult,
+  type TestResultWord,
 } from '~/domains/vocabulary-results/model/test-result-model';
 
 export function createMockVocabularyDB(config: {
@@ -58,21 +60,22 @@ export function createMockTestProgress(
   for (let i = 0; i < totalWordResultsToAffect; i++) {
     const testResultWord: TestResultWord = {
       id: vocabulary.words[i].id,
-      done: false,
       invalidAttempts: 0,
-      skipped: false,
+      status: TestWordStatus.Done,
     };
 
     if (correct > 0) {
-      testResultWord.done = true;
+      testResultWord.result = TestWordResult.Correct;
       correct--;
     } else if (incorrect > 0) {
-      testResultWord.done = true;
+      testResultWord.result = TestWordResult.Wrong;
       testResultWord.invalidAttempts = 1;
       incorrect--;
     } else if (skipped > 0) {
-      testResultWord.skipped = true;
+      testResultWord.status = TestWordStatus.Skipped;
       skipped--;
+    } else {
+      testResultWord.status = TestWordStatus.NotDone;
     }
     testResult.words.push(testResultWord);
   }

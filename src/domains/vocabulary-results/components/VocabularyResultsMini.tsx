@@ -1,5 +1,9 @@
 import { Show, type Component } from 'solid-js';
-import type { TestResult } from '../model/test-result-model';
+import {
+  TestWordResult,
+  TestWordStatus,
+  type TestResult,
+} from '../model/test-result-model';
 import { Card, CardContent } from '~/components/ui/card';
 
 interface Props {
@@ -8,10 +12,11 @@ interface Props {
 
 export const VocabularyResultsMini: Component<Props> = props => {
   const correctAnswers = () =>
-    props.result.words.filter(w => w.done && w.invalidAttempts === 0).length;
+    props.result.words.filter(w => w.result === TestWordResult.Correct).length;
   const incorrectAnswers = () =>
     props.result.words.filter(w => w.invalidAttempts > 0).length;
-  const skippedAnswers = () => props.result.words.filter(w => w.skipped).length;
+  const skippedAnswers = () =>
+    props.result.words.filter(w => w.status === TestWordStatus.Skipped).length;
 
   return (
     <Card class="mt-8">
