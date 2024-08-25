@@ -1,7 +1,10 @@
 import { HiSolidCheckCircle } from 'solid-icons/hi';
 import { For, Show, type Component } from 'solid-js';
 import type { Word } from '~/domains/vocabularies/model/vocabulary-model';
-import type { TestResult } from '~/domains/vocabulary-results/model/test-result-model';
+import {
+  TestWordStatus,
+  type TestResult,
+} from '~/domains/vocabulary-results/model/test-result-model';
 
 export interface Props {
   results: TestResult;
@@ -33,11 +36,11 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
       </thead>
       <tbody>
         <For each={enrichedWords()}>
-          {result => (
+          {resultWord => (
             <tr>
-              <td class="mr-2">{result.word.original}</td>
+              <td class="mr-2">{resultWord.word.original}</td>
               <td class="text-center">
-                <Show when={result.done}>
+                <Show when={resultWord.status === TestWordStatus.Done}>
                   <HiSolidCheckCircle
                     class="mx-auto text-[#00825b]"
                     size={28}
@@ -46,20 +49,20 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
               </td>
               <Show when={maxInvalidAttempts() > 0}>
                 <td class="flex sm:w-60">
-                  <Show when={result.invalidAttempts > 0}>
+                  <Show when={resultWord.invalidAttempts > 0}>
                     <div
                       class="px-2 h-6 flex items-center bg-[#cd497a] rounded-e-lg text-white text-sm"
                       style={{
-                        'flex-grow': `${result.invalidAttempts}`,
+                        'flex-grow': `${resultWord.invalidAttempts}`,
                       }}
                     >
-                      {result.invalidAttempts}
+                      {resultWord.invalidAttempts}
                     </div>
                   </Show>
                   <div
                     style={{
                       'flex-grow': `${
-                        maxInvalidAttempts() - result.invalidAttempts
+                        maxInvalidAttempts() - resultWord.invalidAttempts
                       }`,
                     }}
                   ></div>

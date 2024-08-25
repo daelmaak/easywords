@@ -3,7 +3,10 @@ import { createSignal, lazy, Show } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import { WordEditorDialog } from '~/domains/vocabularies/components/WordEditorDialog';
 import type { Word } from '~/domains/vocabularies/model/vocabulary-model';
-import type { TestResult } from '~/domains/vocabulary-results/model/test-result-model';
+import {
+  TestWordResult,
+  type TestResult,
+} from '~/domains/vocabulary-results/model/test-result-model';
 import { ResultWordGuessesVisualisation } from './ResultWordGuessesVisualisation';
 
 interface ResultsProps {
@@ -33,7 +36,7 @@ export function Results(props: ResultsProps) {
     }
 
     const percentCorrect =
-      (props.results.words.filter(w => w.done && w.invalidAttempts === 0)
+      (props.results.words.filter(w => w.result === TestWordResult.Correct)
         .length /
         props.results.words.length) *
       100;

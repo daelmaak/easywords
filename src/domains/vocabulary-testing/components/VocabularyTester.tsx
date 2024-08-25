@@ -20,7 +20,11 @@ import {
   PopoverTrigger,
 } from '~/components/ui/popover';
 import { ConfirmationDialog } from '~/components/ConfirmationDialog';
-import type { TestResultWord } from '~/domains/vocabulary-results/model/test-result-model';
+import {
+  TestWordResult,
+  TestWordStatus,
+  type TestResultWord,
+} from '~/domains/vocabulary-results/model/test-result-model';
 import { GuessTester } from './GuessTester';
 
 export type VocabularyTestMode = 'guess' | 'write';
@@ -54,9 +58,8 @@ export const VocabularyTester: Component<TesterProps> = (
     editing: false,
     resultWords: props.words.map(w => ({
       id: w.id,
-      done: false,
       invalidAttempts: 0,
-      skipped: false,
+      status: TestWordStatus.NotDone,
     })),
   });
 
@@ -95,7 +98,7 @@ export const VocabularyTester: Component<TesterProps> = (
     setStore({
       resultWords: props.savedProgress,
       wordsLeft: props.savedProgress
-        .filter(sw => !sw.done)
+        .filter(sw => sw.status === TestWordStatus.NotDone)
         .map(sw => props.words.find(w => w.id === sw.id)!),
     });
   });
@@ -150,8 +153,8 @@ export const VocabularyTester: Component<TesterProps> = (
       setStore(
         'resultWords',
         rws => rws.id === store.currentWordId,
-        'skipped',
-        true
+        'status',
+        TestWordStatus.Skipped
       );
     }
     setNextWord();
@@ -170,9 +173,18 @@ export const VocabularyTester: Component<TesterProps> = (
     );
 
     if (valid) {
-      setStore('resultWords', resultWordIndex, 'done', true);
+      setStore('resultWords', resultWordIndex, rw => ({
+        // This is allowed to be overwritten if the result is already set
+        result: TestWordResult.Correct,
+        ...rw,
+        status: TestWordStatus.Done,
+      }));
     } else {
-      setStore('resultWords', resultWordIndex, 'invalidAttempts', a => a + 1);
+      setStore('resultWords', resultWordIndex, rw => ({
+        ...rw,
+        invalidAttempts: rw.invalidAttempts + 1,
+        result: TestWordResult.Wrong,
+      }));
     }
 
     if (currentWordValid == null || store.wordsLeft.length === 1) {
