@@ -6,9 +6,9 @@ export enum TestWordStatus {
 
 export enum TestWordResult {
   Correct = 1,
-  Wrong,
   Ok,
   Mediocre,
+  Wrong,
 }
 
 export interface TestResult {
