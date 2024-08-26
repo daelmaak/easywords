@@ -1,19 +1,20 @@
 import { HiOutlineEye } from 'solid-icons/hi';
 import { createSignal, Show, type Component } from 'solid-js';
 import { Button } from '~/components/ui/button';
+import { TestWordResult } from '~/domains/vocabulary-results/model/test-result-model';
 
 export interface GuessTesterProps {
   translation: string;
-  onDone: () => void;
+  onDone: (correctness: TestWordResult) => void;
 }
 
 export const GuessTester: Component<GuessTesterProps> = props => {
   const [showSolution, setShowSolution] = createSignal(false);
 
-  function onDone() {
+  function onDone(correctness: TestWordResult) {
     setShowSolution(false);
 
-    props.onDone();
+    props.onDone(correctness);
   }
 
   return (
@@ -30,16 +31,28 @@ export const GuessTester: Component<GuessTesterProps> = props => {
           </Button>
         </Show>
         <Show when={showSolution()}>
-          <Button variant="defaultOutline" onClick={onDone}>
+          <Button
+            variant="defaultOutline"
+            onClick={() => onDone(TestWordResult.Wrong)}
+          >
             Hard
           </Button>
-          <Button variant="defaultOutline" onClick={onDone}>
+          <Button
+            variant="defaultOutline"
+            onClick={() => onDone(TestWordResult.Mediocre)}
+          >
             So-So
           </Button>
-          <Button variant="defaultOutline" onClick={onDone}>
+          <Button
+            variant="defaultOutline"
+            onClick={() => onDone(TestWordResult.Ok)}
+          >
             OK
           </Button>
-          <Button variant="defaultOutline" onClick={onDone}>
+          <Button
+            variant="defaultOutline"
+            onClick={() => onDone(TestWordResult.Correct)}
+          >
             Easy
           </Button>
         </Show>

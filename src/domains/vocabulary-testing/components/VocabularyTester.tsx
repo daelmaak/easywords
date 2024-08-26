@@ -160,6 +160,21 @@ export const VocabularyTester: Component<TesterProps> = (
     setNextWord();
   }
 
+  function onGuessResult(correctness: TestWordResult) {
+    const resultWordIndex = store.resultWords.findIndex(
+      rw => rw.id === currentWord()?.id
+    );
+
+    setStore('resultWords', resultWordIndex, rw => ({
+      ...rw,
+      result: correctness,
+      status: TestWordStatus.Done,
+    }));
+
+    currentWordValid = correctness <= TestWordResult.Ok;
+    setNextWord();
+  }
+
   function onWordEdited(updatedWord: Word) {
     setStore('editing', false);
     props.onEditWord(updatedWord);
@@ -304,7 +319,7 @@ export const VocabularyTester: Component<TesterProps> = (
               <Match when={props.testSettings.mode === 'guess'}>
                 <GuessTester
                   translation={word().translation}
-                  onDone={setNextWord}
+                  onDone={onGuessResult}
                 />
               </Match>
             </Switch>
