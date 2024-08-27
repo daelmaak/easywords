@@ -60,7 +60,7 @@ export function createMockTestProgress(
   for (let i = 0; i < totalWordResultsToAffect; i++) {
     const testResultWord: TestResultWord = {
       id: vocabulary.words[i].id,
-      invalidAttempts: 0,
+      attempts: [],
       status: TestWordStatus.Done,
     };
 
@@ -69,7 +69,7 @@ export function createMockTestProgress(
       correct--;
     } else if (incorrect > 0) {
       testResultWord.result = TestWordResult.Wrong;
-      testResultWord.invalidAttempts = 1;
+      testResultWord.attempts.push(TestWordResult.Wrong);
       incorrect--;
     } else if (skipped > 0) {
       testResultWord.status = TestWordStatus.Skipped;

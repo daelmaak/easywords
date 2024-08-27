@@ -12,16 +12,13 @@ export interface Props {
 }
 
 export const ResultWordGuessesVisualisation: Component<Props> = props => {
-  const maxInvalidAttempts = () =>
-    Math.max(...props.results.words.map(word => word.invalidAttempts));
-
   const enrichedWords = () =>
     props.results.words
       .map(word => ({
         ...word,
         word: props.words.find(w => w.id === word.id)!,
       }))
-      .sort((a, b) => b.invalidAttempts - a.invalidAttempts);
+      .sort((a, b) => b.attempts.length - a.attempts.length);
 
   return (
     <table class="table-auto border-separate sm:border-spacing-x-8 border-spacing-y-1">
@@ -29,9 +26,7 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
         <tr>
           <th></th>
           <th class="font-normal">Finished</th>
-          <Show when={maxInvalidAttempts() > 0}>
-            <th class="font-normal">Incorrect attempts</th>
-          </Show>
+          <th class="font-normal">Attempts</th>
         </tr>
       </thead>
       <tbody>
@@ -47,27 +42,11 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
                   />
                 </Show>
               </td>
-              <Show when={maxInvalidAttempts() > 0}>
-                <td class="flex sm:w-60">
-                  <Show when={resultWord.invalidAttempts > 0}>
-                    <div
-                      class="px-2 h-6 flex items-center bg-[#cd497a] rounded-e-lg text-white text-sm"
-                      style={{
-                        'flex-grow': `${resultWord.invalidAttempts}`,
-                      }}
-                    >
-                      {resultWord.invalidAttempts}
-                    </div>
-                  </Show>
-                  <div
-                    style={{
-                      'flex-grow': `${
-                        maxInvalidAttempts() - resultWord.invalidAttempts
-                      }`,
-                    }}
-                  ></div>
-                </td>
-              </Show>
+              <td class="flex sm:w-60">
+                <For each={resultWord.attempts}>
+                  {() => <span class="size-2 bg-red-700"></span>}
+                </For>
+              </td>
             </tr>
           )}
         </For>

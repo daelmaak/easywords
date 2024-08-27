@@ -35,7 +35,7 @@ export const GuessTester: Component<GuessTesterProps> = props => {
             variant="defaultOutline"
             onClick={() => onDone(TestWordResult.Wrong)}
           >
-            Hard
+            Wrong
           </Button>
           <Button
             variant="defaultOutline"

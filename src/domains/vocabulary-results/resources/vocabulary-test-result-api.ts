@@ -15,7 +15,7 @@ async function saveTestResult(testResult: RealOmit<TestResult, 'updatedAt'>) {
     ...testResult,
     // I have to de-reactify the words array as it's tracked by Solid, meaning there are
     // Symbols and Proxies which can't be cloned by idb-keyval using structuredClone().
-    words: testResult.words.map(w => ({ ...w })),
+    words: testResult.words.map(w => ({ ...w, attempts: [...w.attempts] })),
     updatedAt: new Date(),
   };
   await set(
