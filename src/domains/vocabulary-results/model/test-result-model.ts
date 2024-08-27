@@ -20,7 +20,7 @@ export interface TestResult {
 
 export interface TestResultWord {
   id: number;
-  invalidAttempts: number;
+  attempts: TestWordResult[];
   status: TestWordStatus;
   result?: TestWordResult;
 }

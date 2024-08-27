@@ -14,7 +14,7 @@ export const VocabularyResultsMini: Component<Props> = props => {
   const correctAnswers = () =>
     props.result.words.filter(w => w.result === TestWordResult.Correct).length;
   const incorrectAnswers = () =>
-    props.result.words.filter(w => w.invalidAttempts > 0).length;
+    props.result.words.filter(w => w.result === TestWordResult.Wrong).length;
   const skippedAnswers = () =>
     props.result.words.filter(w => w.status === TestWordStatus.Skipped).length;
 

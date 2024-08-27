@@ -27,7 +27,9 @@ export function Results(props: ResultsProps) {
 
   const invalidWords = () =>
     props.results.words
-      .filter(word => word.invalidAttempts > 0)
+      .filter(
+        word => word.result != null && word.result >= TestWordResult.Mediocre
+      )
       .map(word => props.words.find(w => w.id === word.id)!);
 
   const feedbackText = () => {

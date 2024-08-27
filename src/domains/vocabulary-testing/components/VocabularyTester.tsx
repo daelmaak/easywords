@@ -58,7 +58,7 @@ export const VocabularyTester: Component<TesterProps> = (
     editing: false,
     resultWords: props.words.map(w => ({
       id: w.id,
-      invalidAttempts: 0,
+      attempts: [],
       status: TestWordStatus.NotDone,
     })),
   });
@@ -169,6 +169,7 @@ export const VocabularyTester: Component<TesterProps> = (
       ...rw,
       result: correctness,
       status: TestWordStatus.Done,
+      attempts: [...rw.attempts, correctness],
     }));
 
     currentWordValid = correctness <= TestWordResult.Ok;
@@ -192,12 +193,13 @@ export const VocabularyTester: Component<TesterProps> = (
         // This is allowed to be overwritten if the result is already set
         result: TestWordResult.Correct,
         ...rw,
+        attempts: [...rw.attempts, TestWordResult.Correct],
         status: TestWordStatus.Done,
       }));
     } else {
       setStore('resultWords', resultWordIndex, rw => ({
         ...rw,
-        invalidAttempts: rw.invalidAttempts + 1,
+        attempts: [...rw.attempts, TestWordResult.Wrong],
         result: TestWordResult.Wrong,
       }));
     }
