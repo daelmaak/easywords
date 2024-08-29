@@ -3,16 +3,17 @@ import type { TestResult } from '../model/test-result-model';
 import { TestWordResult, TestWordStatus } from '../model/test-result-model';
 import { Chart } from 'chart.js/auto';
 import { groupBy } from 'lodash-es';
+import { RESULT_COLORS } from '../model/colors';
 
 interface Props {
   result: TestResult;
 }
 
-const LABELS: Record<TestWordResult, { label: string; color: string }> = {
-  [TestWordResult.Correct]: { label: 'Correct', color: '#158a66f2' },
-  [TestWordResult.Ok]: { label: 'Ok', color: 'teal' },
-  [TestWordResult.Mediocre]: { label: 'Mediocre', color: 'orange' },
-  [TestWordResult.Wrong]: { label: 'Wrong', color: '#c64072' },
+const LABELS: Record<TestWordResult, string> = {
+  [TestWordResult.Correct]: 'Correct',
+  [TestWordResult.Ok]: 'Ok',
+  [TestWordResult.Mediocre]: 'Mediocre',
+  [TestWordResult.Wrong]: 'Wrong',
 };
 
 export const TestResultsVisualisation: Component<Props> = props => {
@@ -27,7 +28,9 @@ export const TestResultsVisualisation: Component<Props> = props => {
         .map(([k, v]) => [+k as TestWordResult, v])
     );
 
-    const labels = Array.from(resultsMap.keys()).map(k => LABELS[k]);
+    const resultCategories = Array.from(resultsMap.keys());
+    const labels = resultCategories.map(k => LABELS[k]);
+    const colors = resultCategories.map(k => RESULT_COLORS[k]);
     const data = Array.from(resultsMap.values()).map(v => v.length);
 
     const skipped = props.result.words.filter(
@@ -35,7 +38,8 @@ export const TestResultsVisualisation: Component<Props> = props => {
     );
 
     if (skipped.length > 0) {
-      labels.push({ label: 'Skipped', color: '#879292' });
+      labels.push('Skipped');
+      colors.push('#879292');
       data.push(skipped.length);
     }
 
@@ -49,12 +53,12 @@ export const TestResultsVisualisation: Component<Props> = props => {
         },
       },
       data: {
-        labels: labels.map(l => l.label),
+        labels,
         datasets: [
           {
             label: '# of words',
             data,
-            backgroundColor: labels.map(l => l.color),
+            backgroundColor: colors,
             borderWidth: 1,
           },
         ],
