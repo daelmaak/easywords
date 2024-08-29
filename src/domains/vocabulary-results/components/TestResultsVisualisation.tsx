@@ -56,7 +56,7 @@ export const TestResultsVisualisation: Component<Props> = props => {
         labels,
         datasets: [
           {
-            label: '# of words',
+            label: ' words',
             data,
             backgroundColor: colors,
             borderWidth: 1,

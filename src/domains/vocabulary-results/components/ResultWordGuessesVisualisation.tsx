@@ -7,6 +7,11 @@ import {
   type TestResult,
 } from '~/domains/vocabulary-results/model/test-result-model';
 import { RESULT_COLORS } from '../model/colors';
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '~/components/ui/tooltip';
 
 export interface Props {
   results: TestResult;
@@ -54,11 +59,16 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
               <td>
                 <For each={resultWord.attempts}>
                   {attempt => (
-                    <div
-                      class="size-4 rounded-sm"
-                      title={ATTEMPT_TOOLTIP[attempt]}
-                      style={{ 'background-color': RESULT_COLORS[attempt] }}
-                    ></div>
+                    <Tooltip openDelay={100}>
+                      <TooltipTrigger
+                        class="size-4 rounded-sm"
+                        tabindex="-1"
+                        style={{ 'background-color': RESULT_COLORS[attempt] }}
+                      />
+                      <TooltipContent>
+                        {ATTEMPT_TOOLTIP[attempt]}
+                      </TooltipContent>
+                    </Tooltip>
                   )}
                 </For>
               </td>
