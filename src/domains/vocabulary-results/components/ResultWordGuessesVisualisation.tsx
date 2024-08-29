@@ -2,14 +2,23 @@ import { HiSolidCheckCircle } from 'solid-icons/hi';
 import { For, Show, type Component } from 'solid-js';
 import type { Word } from '~/domains/vocabularies/model/vocabulary-model';
 import {
+  TestWordResult,
   TestWordStatus,
   type TestResult,
 } from '~/domains/vocabulary-results/model/test-result-model';
+import { RESULT_COLORS } from '../model/colors';
 
 export interface Props {
   results: TestResult;
   words: Word[];
 }
+
+const ATTEMPT_TOOLTIP: Record<TestWordResult, string> = {
+  [TestWordResult.Correct]: 'Correct attempt',
+  [TestWordResult.Ok]: 'Ok attempt',
+  [TestWordResult.Mediocre]: 'Mediocre attempt',
+  [TestWordResult.Wrong]: 'Wrong attempt',
+};
 
 export const ResultWordGuessesVisualisation: Component<Props> = props => {
   const enrichedWords = () =>
@@ -23,8 +32,8 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
   return (
     <table class="table-auto border-separate sm:border-spacing-x-8 border-spacing-y-1">
       <thead>
-        <tr>
-          <th></th>
+        <tr class="text-left">
+          <th class="font-normal">Words</th>
           <th class="font-normal">Finished</th>
           <th class="font-normal">Attempts</th>
         </tr>
@@ -42,9 +51,15 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
                   />
                 </Show>
               </td>
-              <td class="flex sm:w-60">
+              <td>
                 <For each={resultWord.attempts}>
-                  {() => <span class="size-2 bg-red-700"></span>}
+                  {attempt => (
+                    <div
+                      class="size-4 rounded-sm"
+                      title={ATTEMPT_TOOLTIP[attempt]}
+                      style={{ 'background-color': RESULT_COLORS[attempt] }}
+                    ></div>
+                  )}
                 </For>
               </td>
             </tr>
