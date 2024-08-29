@@ -1,5 +1,5 @@
 import { createResource, Show, Suspense, type Component } from 'solid-js';
-import { Results } from '../vocabulary-testing/components/Results';
+import { Results } from './components/Results';
 import { useNavigate, useParams } from '@solidjs/router';
 import {
   fetchVocabulary,
