@@ -61,10 +61,12 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
                   {attempt => (
                     <Tooltip openDelay={100}>
                       <TooltipTrigger
-                        class="size-4 rounded-sm"
+                        class="ml-1 size-4 rounded-sm"
                         tabindex="-1"
                         style={{ 'background-color': RESULT_COLORS[attempt] }}
-                      />
+                      >
+                        <span class="sr-only">Open attempt tooltip</span>
+                      </TooltipTrigger>
                       <TooltipContent>
                         {ATTEMPT_TOOLTIP[attempt]}
                       </TooltipContent>
