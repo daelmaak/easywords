@@ -75,17 +75,7 @@ export function Results(props: ResultsProps) {
         <figcaption class="mt-8 text-lg">{feedbackText()}</figcaption>
       </figure>
 
-      <section class="mt-4 mx-auto" data-testid="results-word-breakdown">
-        <h2 class="sr-only text-center">Word by word results breakdown</h2>
-        <div class="max-h-80 overflow-y-auto">
-          <ResultWordGuessesVisualisation
-            results={props.results}
-            words={props.words}
-          />
-        </div>
-      </section>
-
-      <div class="mx-auto mt-8 flex flex-wrap justify-center items-center gap-4 sm:mt-16">
+      <div class="mx-auto mt-8 flex flex-wrap justify-center items-center gap-4 sm:mt-12">
         <Show when={invalidWords().length}>
           <Button
             class="btn-link"
@@ -106,6 +96,14 @@ export function Results(props: ResultsProps) {
           Back to Vocabulary
         </A>
       </div>
+
+      <section class="mt-8 mx-auto" data-testid="results-word-breakdown">
+        <h2 class="sr-only text-center">Word by word results breakdown</h2>
+        <ResultWordGuessesVisualisation
+          results={props.results}
+          words={props.words}
+        />
+      </section>
     </div>
   );
 }
