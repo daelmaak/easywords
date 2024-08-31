@@ -1,5 +1,5 @@
 import { A } from '@solidjs/router';
-import { createSignal, lazy, Show } from 'solid-js';
+import { createSignal, For, lazy, Show } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import { WordEditorDialog } from '~/domains/vocabularies/components/WordEditorDialog';
 import type { Word } from '~/domains/vocabularies/model/vocabulary-model';
@@ -8,6 +8,8 @@ import {
   type TestResult,
 } from '~/domains/vocabulary-results/model/test-result-model';
 import { ResultWordGuessesVisualisation } from './ResultWordGuessesVisualisation';
+import { RESULT_COLORS } from '../model/colors';
+import { groupBy } from 'lodash-es';
 
 interface ResultsProps {
   results: TestResult;
@@ -24,6 +26,18 @@ const TestResultsVisualisation = lazy(
 
 export function Results(props: ResultsProps) {
   const [wordToEdit, setWordToEdit] = createSignal<Word>();
+
+  const resultsMap = () =>
+    new Map<TestWordResult, TestResult['words']>(
+      Object.entries(
+        groupBy(
+          props.results.words.filter(w => w.result != null),
+          v => v.result
+        )
+      )
+        .filter(([key, value]) => key != null && value.length > 0)
+        .map(([key, value]) => [Number(key) as TestWordResult, value])
+    );
 
   const invalidWords = () =>
     props.results.words
@@ -69,6 +83,21 @@ export function Results(props: ResultsProps) {
       <figure class="mx-auto">
         <div class="mx-auto w-40 lg:w-48">
           <TestResultsVisualisation result={props.results} />
+          <div class="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm">
+            <For each={Array.from(resultsMap().entries())}>
+              {([result, words]) => (
+                <div class="flex items-center gap-2">
+                  <div
+                    class="size-4 rounded-sm"
+                    style={`background-color: ${RESULT_COLORS[result]};`}
+                  ></div>
+                  <span>
+                    {words.length} {TestWordResult[result]}
+                  </span>
+                </div>
+              )}
+            </For>
+          </div>
         </div>
         <figcaption class="mt-8 text-lg">{feedbackText()}</figcaption>
       </figure>
