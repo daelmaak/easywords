@@ -165,14 +165,26 @@ export const VocabularyTester: Component<TesterProps> = (
       rw => rw.id === currentWord()?.id
     );
 
-    setStore('resultWords', resultWordIndex, rw => ({
-      ...rw,
-      result: correctness,
-      status: TestWordStatus.Done,
-      attempts: [...rw.attempts, correctness],
-    }));
+    const isValid = correctness <= TestWordResult.Ok;
 
-    currentWordValid = correctness <= TestWordResult.Ok;
+    setStore('resultWords', resultWordIndex, rw => {
+      const newAttempts = [...rw.attempts, correctness];
+      const averageCorrectness = Math.round(
+        newAttempts.reduce((sum, attempt) => sum + attempt, 0) /
+          newAttempts.length
+      );
+
+      const isDone = !props.testSettings.repeatInvalid || isValid;
+
+      return {
+        ...rw,
+        result: averageCorrectness as TestWordResult,
+        status: isDone ? TestWordStatus.Done : TestWordStatus.NotDone,
+        attempts: newAttempts,
+      };
+    });
+
+    currentWordValid = isValid;
     setNextWord();
   }
 
