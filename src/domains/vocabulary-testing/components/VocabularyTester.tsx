@@ -99,7 +99,11 @@ export const VocabularyTester: Component<TesterProps> = (
       resultWords: props.savedProgress,
       wordsLeft: props.savedProgress
         .filter(sw => sw.status === TestWordStatus.NotDone)
-        .map(sw => props.words.find(w => w.id === sw.id)!),
+        .map(sw => props.words.find(w => w.id === sw.id)!)
+        // Fix for test progresses which contain deleted words, which in turn caused
+        // tests to break.
+        // TODO: Should be safe to remove in the near future.
+        .filter(w => w != null),
     });
   });
 
@@ -231,6 +235,11 @@ export const VocabularyTester: Component<TesterProps> = (
     props.onRemoveWord(word);
 
     setStore('wordsLeft', wl => wl.filter(w => w.original !== word.original));
+
+    const filteredResults = store.resultWords.filter(rw => rw.id !== word.id);
+    setStore('resultWords', filteredResults);
+    props.onProgress?.(filteredResults);
+
     setNextWord();
   }
 
