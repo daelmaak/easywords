@@ -165,7 +165,7 @@ export const VocabularyTester: Component<TesterProps> = (
       rw => rw.id === currentWord()?.id
     );
 
-    const isValid = correctness <= TestWordResult.Ok;
+    const isValid = correctness === TestWordResult.Correct;
 
     setStore('resultWords', resultWordIndex, rw => {
       const newAttempts = [...rw.attempts, correctness];
