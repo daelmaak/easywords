@@ -59,7 +59,7 @@ export const TestResultsVisualisation: Component<Props> = props => {
             label: ' words',
             data,
             backgroundColor: colors,
-            borderWidth: 1,
+            borderWidth: 2,
           },
         ],
       },
