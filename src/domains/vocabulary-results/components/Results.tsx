@@ -37,17 +37,15 @@ export function Results(props: ResultsProps) {
       return 'You are awesome, you got all words right!';
     }
 
-    const percentCorrect =
-      (props.results.words.filter(w => w.result === TestWordResult.Correct)
-        .length /
-        props.results.words.length) *
-      100;
+    const averageResult =
+      props.results.words.reduce((sum, word) => sum + (word.result ?? 0), 0) /
+      props.results.words.length;
 
-    if (percentCorrect > 90) {
+    if (averageResult <= TestWordResult.Correct + 0.5) {
       return 'Great job! You are so close to perfection!';
     }
 
-    if (percentCorrect > 65) {
+    if (averageResult <= TestWordResult.Ok + 0.5) {
       return 'Good job! Keep practicing and you will be a ⭐!';
     }
 
