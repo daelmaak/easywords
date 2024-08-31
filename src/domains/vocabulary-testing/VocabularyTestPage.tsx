@@ -51,9 +51,17 @@ export const VocabularyTestPage = () => {
     }
 
     if (searchParams.useSavedProgress && vocabulary.savedProgress) {
-      return vocabulary.savedProgress.words.map(
-        w => vocabulary.words.find(v => v.id === w.id)!
+      // This dict is a performance optimization to avoid having to filter the words
+      // by iterating over the saved progress words.
+      const savedProgressDict = vocabulary.savedProgress.words.reduce(
+        (acc, word) => {
+          acc[word.id] = word;
+          return acc;
+        },
+        {} as Record<number, TestResultWord>
       );
+
+      return vocabulary.words.filter(w => savedProgressDict[w.id] != null);
     }
 
     return vocabulary.words;
