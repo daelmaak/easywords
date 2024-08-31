@@ -32,7 +32,14 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
         ...word,
         word: props.words.find(w => w.id === word.id)!,
       }))
-      .sort((a, b) => b.attempts.length - a.attempts.length);
+      .sort((a, b) => {
+        // First, sort by result (worse results first)
+        const resultDiff = (b.result ?? 0) - (a.result ?? 0);
+        if (resultDiff !== 0) return resultDiff;
+
+        // If results are equal, sort by number of attempts (descending)
+        return b.attempts.length - a.attempts.length;
+      });
 
   return (
     <table class="table-auto border-separate sm:border-spacing-x-8 border-spacing-y-1">
