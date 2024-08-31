@@ -32,6 +32,10 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
         ...word,
         word: props.words.find(w => w.id === word.id)!,
       }))
+      // Fix for test progresses which contain deleted words, which in turn caused
+      // tests to break.
+      // TODO: Should be safe to remove in the near future.
+      .filter(w => w.word != null)
       .sort((a, b) => {
         // First, sort by result (worse results first)
         const resultDiff = (b.result ?? 0) - (a.result ?? 0);
