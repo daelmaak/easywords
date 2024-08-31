@@ -1,22 +1,27 @@
 import { Show, type Component } from 'solid-js';
-import {
-  TestWordResult,
-  TestWordStatus,
-  type TestResult,
-} from '../model/test-result-model';
+import { TestWordResult, type TestResult } from '../model/test-result-model';
 import { Card, CardContent } from '~/components/ui/card';
+import { RESULT_COLORS } from '../model/colors';
 
 interface Props {
   result: TestResult;
 }
 
+const resultGroups = [
+  { label: 'Correct', result: TestWordResult.Correct },
+  { label: 'Ok', result: TestWordResult.Ok },
+  { label: 'Mediocre', result: TestWordResult.Mediocre },
+  { label: 'Wrong', result: TestWordResult.Wrong },
+];
+
 export const VocabularyResultsMini: Component<Props> = props => {
-  const correctAnswers = () =>
-    props.result.words.filter(w => w.result === TestWordResult.Correct).length;
-  const incorrectAnswers = () =>
-    props.result.words.filter(w => w.result === TestWordResult.Wrong).length;
-  const skippedAnswers = () =>
-    props.result.words.filter(w => w.status === TestWordStatus.Skipped).length;
+  const getResultCount = (result: TestWordResult) => {
+    return props.result.words.filter(word => word.result === result).length;
+  };
+
+  const getColorForStatus = (result: TestWordResult) => {
+    return RESULT_COLORS[result];
+  };
 
   return (
     <Card class="mt-8">
@@ -30,41 +35,31 @@ export const VocabularyResultsMini: Component<Props> = props => {
         <figure class="mt-2">
           <figcaption>
             <dl class="text-sm font-semibold">
-              <div class="flex gap-1 text-green-900">
-                <dd class="">{correctAnswers().toFixed(0)}</dd>
-                <dt>correct</dt>
-              </div>
-              <div class="flex gap-1 text-red-900">
-                <dd class="">{incorrectAnswers().toFixed(0)}</dd>
-                <dt>incorrect</dt>
-              </div>
-              <Show when={+skippedAnswers() > 0}>
-                <div class="flex gap-1 text-gray-700">
-                  <dd class="">{skippedAnswers().toFixed(0)}</dd>
-                  <dt>skipped</dt>
-                </div>
-              </Show>
+              {resultGroups.map(group => (
+                <Show when={getResultCount(group.result) > 0}>
+                  <div
+                    class="flex gap-1 brightness-50"
+                    style={{ color: getColorForStatus(group.result) }}
+                  >
+                    <dd>{getResultCount(group.result)}</dd>
+                    <dt>{group.label}</dt>
+                  </div>
+                </Show>
+              ))}
             </dl>
           </figcaption>
           <div class="mt-2 w-full flex gap-[2px] rounded-sm overflow-hidden">
-            <Show when={correctAnswers() > 0}>
-              <div
-                class="h-2 bg-green-900"
-                style={{ 'flex-grow': correctAnswers() }}
-              ></div>
-            </Show>
-            <Show when={incorrectAnswers() > 0}>
-              <div
-                class="h-2 bg-red-700"
-                style={{ 'flex-grow': incorrectAnswers() }}
-              ></div>
-            </Show>
-            <Show when={skippedAnswers() > 0}>
-              <div
-                class="h-2 bg-gray-400"
-                style={{ 'flex-grow': skippedAnswers() }}
-              ></div>
-            </Show>
+            {resultGroups.map(group => (
+              <Show when={getResultCount(group.result) > 0}>
+                <div
+                  style={{
+                    'background-color': getColorForStatus(group.result),
+                    'flex-grow': getResultCount(group.result),
+                    height: '8px',
+                  }}
+                ></div>
+              </Show>
+            ))}
           </div>
         </figure>
       </CardContent>
