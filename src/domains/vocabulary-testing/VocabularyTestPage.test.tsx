@@ -104,7 +104,7 @@ it('should show the test results after finishing test based on user performance'
     row.textContent!.includes(correctlyGuessedWord.original)
   )!;
 
-  expect(invalidRow.querySelector('td:first-child')).toHaveTextContent(
+  expect(invalidRow.querySelector('td:nth-child(2)')).toHaveTextContent(
     wronglyGuessedWord.original
   );
   const invalidRowButton = invalidRow.querySelector('td:last-child button')!;
@@ -112,7 +112,7 @@ it('should show the test results after finishing test based on user performance'
   // I simulate the hover event, the tooltip doesn't close after unhover.
   expect(invalidRowButton).toHaveTextContent('Open attempt tooltip');
 
-  expect(correctRow.querySelector('td:first-child')).toHaveTextContent(
+  expect(correctRow.querySelector('td:nth-child(2)')).toHaveTextContent(
     correctlyGuessedWord.original
   );
   const correctRowButton = correctRow.querySelector('td:last-child button')!;
