@@ -1,5 +1,5 @@
 import { HiSolidCheckCircle } from 'solid-icons/hi';
-import { For, Show, type Component } from 'solid-js';
+import { createMemo, createSignal, For, Show, type Component } from 'solid-js';
 import type { Word } from '~/domains/vocabularies/model/vocabulary-model';
 import {
   TestWordResult,
@@ -12,6 +12,8 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from '~/components/ui/tooltip';
+import { Checkbox } from '~/components/ui/checkbox'; // Import Checkbox
+import { wordsSelector } from '~/util/selection';
 
 export interface Props {
   results: TestResult;
@@ -26,7 +28,10 @@ const ATTEMPT_TOOLTIP: Record<TestWordResult, string> = {
 };
 
 export const ResultWordGuessesVisualisation: Component<Props> = props => {
-  const enrichedWords = () =>
+  const [selectedWords, setSelectedWords] = createSignal<Word[]>([]);
+  const selectWords = wordsSelector();
+
+  const enrichedWords = createMemo(() =>
     props.results.words
       .map(word => ({
         ...word,
@@ -43,12 +48,55 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
 
         // If results are equal, sort by number of attempts (descending)
         return b.attempts.length - a.attempts.length;
-      });
+      })
+  );
+
+  const wordSelected = (word: Word) =>
+    selectedWords().find(sw => word.id === sw.id) != null;
+
+  function onCheckboxClick(e: MouseEvent, checked: boolean, word: Word) {
+    onWordSelected(word, checked, {
+      shiftSelection: e.shiftKey,
+    });
+  }
+
+  function onSelectAll(selected: boolean) {
+    setSelectedWords(selected ? props.words : []);
+  }
+
+  function onWordSelected(
+    word: Word,
+    selected: boolean,
+    meta?: { shiftSelection: boolean }
+  ) {
+    const newSelectedWords = selectWords(
+      word,
+      selected,
+      enrichedWords().map(w => w.word),
+      selectedWords(),
+      meta
+    );
+
+    setSelectedWords(newSelectedWords);
+  }
 
   return (
     <table class="table-auto border-separate sm:border-spacing-x-8 border-spacing-y-1">
       <thead>
         <tr class="text-left">
+          <th class="font-normal">
+            <Show when={selectedWords().length > 0}>
+              <Checkbox
+                checked={selectedWords().length === props.words.length}
+                indeterminate={
+                  selectedWords().length > 0 &&
+                  selectedWords().length < props.words.length
+                }
+                onChange={() => onSelectAll(selectedWords().length === 0)}
+              />
+            </Show>
+          </th>
+          {/* Added header for checkbox */}
           <th class="font-normal">Words</th>
           <th class="font-normal">Finished</th>
           <th class="font-normal">Attempts</th>
@@ -58,6 +106,21 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
         <For each={enrichedWords()}>
           {resultWord => (
             <tr>
+              <td>
+                <Checkbox
+                  class="mr-2"
+                  checked={wordSelected(resultWord.word)}
+                  onClick={(e: MouseEvent) =>
+                    onCheckboxClick(
+                      e,
+                      !wordSelected(resultWord.word),
+                      resultWord.word
+                    )
+                  }
+                  // Prevents text selection when shift clicking
+                  onMouseDown={(e: MouseEvent) => e.preventDefault()}
+                />
+              </td>
               <td class="mr-2">{resultWord.word.original}</td>
               <td class="text-center">
                 <Show when={resultWord.status === TestWordStatus.Done}>

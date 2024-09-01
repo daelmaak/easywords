@@ -2,8 +2,8 @@ import type { Component } from 'solid-js';
 import { For, Show, createSignal } from 'solid-js';
 import type { Word } from '../model/vocabulary-model';
 import { VocabularyWord } from './VocabularyWord';
-import { differenceBy, unionBy } from 'lodash-es';
 import { WordEditorDialog } from './WordEditorDialog';
+import { wordsSelector } from '~/util/selection';
 
 export interface SortState {
   by?: 'created_at' | undefined;
@@ -20,7 +20,7 @@ interface VocabularyWordsProps {
 
 export const VocabularyWords: Component<VocabularyWordsProps> = props => {
   const [wordToEdit, setWordToEdit] = createSignal<Word>();
-  const [lastSelectedWordIndex, setLastSelectedWordIndex] = createSignal(-1);
+  const selectWords = wordsSelector();
 
   const groupedWordsByCreatedAt = () =>
     props.words.reduce((acc, word) => {
@@ -63,24 +63,15 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
     selected: boolean,
     meta?: { shiftSelection: boolean }
   ) {
-    const wordIndex = sortedWords().findIndex(w => w.id === word.id);
-    let selectedWords: Word[] = [word];
+    const selectedWords = selectWords(
+      word,
+      selected,
+      sortedWords(),
+      props.selectedWords,
+      meta
+    );
 
-    if (meta?.shiftSelection) {
-      const startIndex = Math.min(lastSelectedWordIndex(), wordIndex);
-      const endIndex = Math.max(lastSelectedWordIndex(), wordIndex);
-      selectedWords = sortedWords().slice(startIndex, endIndex + 1);
-    }
-
-    if (selected) {
-      props.onWordsSelected(unionBy(props.selectedWords, selectedWords, 'id'));
-    } else {
-      props.onWordsSelected(
-        differenceBy(props.selectedWords, selectedWords, 'id')
-      );
-    }
-
-    setLastSelectedWordIndex(wordIndex);
+    props.onWordsSelected(selectedWords);
   }
 
   return (
