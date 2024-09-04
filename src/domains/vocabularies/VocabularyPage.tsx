@@ -28,7 +28,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../../components/ui/dropdown-menu';
-import { WordsInput } from '../vocabulary-testing/components/WordsInput';
 import type { SortState } from './components/VocabularyWords';
 import { VocabularyWords } from './components/VocabularyWords';
 import type { Word } from './model/vocabulary-model';
@@ -44,6 +43,8 @@ import { navigateToVocabularyTest } from './util/navigation';
 import { fetchTestResults } from '../vocabulary-results/resources/vocabulary-test-result-resource';
 import { VocabularyResultsMini } from '../vocabulary-results/components/VocabularyResultsMini';
 import { createQuery } from '@tanstack/solid-query';
+import { WordsAdder } from './components/WordsAdder';
+import { WordTranslation } from '~/model/word-translation';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -51,7 +52,6 @@ export const VocabularyPage: Component = () => {
   const navigate = useNavigate();
   const vocabularyId = +params.id;
 
-  const [addedWords, setAddedWords] = createSignal<Word[]>([]);
   const [searchedWords, setSearchedWords] = createSignal<Word[]>();
   const [selectedWords, setSelectedWords] = createSignal<Word[]>([]);
   const [openedAddWords, setOpenedAddWords] = createSignal(false);
@@ -80,25 +80,9 @@ export const VocabularyPage: Component = () => {
     setSelectedWords([]);
   }
 
-  async function onCreateWords() {
-    // When no words were added yet, I attempt wordsInputForm submission because maybe
-    // the user just didn't press "Add word" button.
-    // If there already are some words added, I just check whether the wordsInputForm
-    // is submittable, ie. whether it has filled out fields and is valid, and if it is
-    // I submit it which adds a word.
-    if (addedWords().length === 0 || wordsInputFormRef.checkValidity()) {
-      wordsInputFormRef.requestSubmit();
-    }
-
-    // If still no words added, even after the form submission, just return. The native
-    // form validation will display the error messages.
-    if (addedWords().length === 0) {
-      return;
-    }
-
+  async function onCreateWords(words: WordTranslation[]) {
     setCreatingWords(true);
-    await createWords(vocabularyId, ...addedWords());
-    setAddedWords([]);
+    await createWords(vocabularyId, ...words);
     setOpenedAddWords(false);
     setCreatingWords(false);
   }
@@ -163,15 +147,11 @@ export const VocabularyPage: Component = () => {
             <SheetHeader>
               <SheetTitle>Add words</SheetTitle>
             </SheetHeader>
-            <WordsInput
-              mode="form"
-              ref={wordsInputFormRef}
-              onWordsChange={setAddedWords}
+
+            <WordsAdder
+              creatingWords={creatingWords()}
+              onCreateWords={onCreateWords}
             />
-            <hr />
-            <Button loading={creatingWords()} onClick={onCreateWords}>
-              Save
-            </Button>
           </SheetContent>
         </Sheet>
 

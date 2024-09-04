@@ -5,8 +5,9 @@ import type { QueryData } from '@supabase/supabase-js';
 
 export type WordToCreateDB = RealOmit<
   WordDB,
-  'id' | 'created_at' | 'vocabulary_id'
->;
+  'id' | 'created_at' | 'vocabulary_id' | 'notes'
+> &
+  Partial<Pick<WordDB, 'notes'>>;
 
 export type VocabularyToCreateDB = RealOmit<
   VocabularyDB,

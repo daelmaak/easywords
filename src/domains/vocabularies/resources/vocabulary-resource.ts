@@ -15,8 +15,10 @@ import {
   transformToWordDB,
 } from './vocabulary-transform';
 import { VOCABULARIES_QUERY_KEY } from './vocabularies-resource';
+import { WordTranslation } from '~/model/word-translation';
 
-export type WordToCreate = RealOmit<Word, 'id' | 'createdAt'>;
+export type WordToCreate = RealOmit<Word, 'id' | 'createdAt' | 'notes'> &
+  Partial<Pick<Word, 'notes'>>;
 
 export type VocabularyToCreate = RealOmit<
   Vocabulary,
@@ -104,7 +106,7 @@ export const updateVocabularyAsInteractedWith = async (
 
 export const createWords = async (
   vocabularyId: number,
-  ...items: WordToCreate[]
+  ...items: WordTranslation[]
 ) => {
   const itemsToCreate = items.map(i =>
     transformToWordCreateDB({ ...i, vocabularyId })
