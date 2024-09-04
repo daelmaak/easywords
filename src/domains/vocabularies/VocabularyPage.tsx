@@ -58,7 +58,7 @@ export const VocabularyPage: Component = () => {
   const [creatingWords, setCreatingWords] = createSignal(false);
   const [sortState, setSortState] = createSignal<SortState>({
     asc: searchParams['sortasc'] === 'true',
-    by: searchParams['sortby'] as SortState['by'] | undefined,
+    by: (searchParams['sortby'] as SortState['by']) ?? 'original',
   });
 
   const vocabularyQuery = createQuery(() => ({
@@ -230,23 +230,44 @@ export const VocabularyPage: Component = () => {
                 <DropdownMenuItem
                   as="button"
                   class="text-base"
-                  onClick={() => sort({ by: 'created_at', asc: true })}
+                  onClick={() => sort({ by: 'createdAt', asc: true })}
                 >
                   Oldest to newest
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   as="button"
                   class="text-base"
-                  onClick={() => sort({ by: 'created_at', asc: false })}
+                  onClick={() => sort({ by: 'createdAt', asc: false })}
                 >
                   Newest to oldest
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   as="button"
                   class="text-base"
-                  onClick={() => sort({ by: undefined })}
+                  onClick={() => sort({ by: 'original', asc: true })}
                 >
-                  Alphabetically
+                  Original (A-Z)
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  as="button"
+                  class="text-base"
+                  onClick={() => sort({ by: 'original', asc: false })}
+                >
+                  Original (Z-A)
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  as="button"
+                  class="text-base"
+                  onClick={() => sort({ by: 'translation', asc: true })}
+                >
+                  Translation (A-Z)
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  as="button"
+                  class="text-base"
+                  onClick={() => sort({ by: 'translation', asc: false })}
+                >
+                  Translation (Z-A)
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
