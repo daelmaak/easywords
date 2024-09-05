@@ -48,7 +48,7 @@ export function Results(props: ResultsProps) {
 
   const feedbackText = () => {
     if (invalidWords().length === 0) {
-      return 'You are awesome, you got all words right!';
+      return 'You are awesome, you got all words right! 😍';
     }
 
     const averageResult =
@@ -56,14 +56,14 @@ export function Results(props: ResultsProps) {
       props.results.words.length;
 
     if (averageResult <= TestWordResult.Correct + 0.5) {
-      return 'Great job! You are so close to perfection!';
+      return 'Great job! You are so close to perfection! 🚀';
     }
 
     if (averageResult <= TestWordResult.Ok + 0.5) {
       return 'Good job! Keep practicing and you will be a ⭐!';
     }
 
-    return "Not bad! Next time it's going to be better for sure!";
+    return "Not bad! Next time it's going to be better for sure! 💗";
   };
 
   function onWordEdited(word: Word) {
