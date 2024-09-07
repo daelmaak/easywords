@@ -27,9 +27,9 @@ export const VocabularyTestResultsPage: Component = () => {
     navigate('..');
   }
 
-  function onRepeatInvalid(invalidWords: Word[]) {
+  function onRepeat(words: Word[]) {
     navigateToVocabularyTest(vocabularyId, navigate, {
-      wordIds: invalidWords.map(w => w.id),
+      wordIds: words.map(w => w.id),
     });
   }
 
@@ -55,7 +55,7 @@ export const VocabularyTestResultsPage: Component = () => {
                   words={words()}
                   editWord={onWordsEdited}
                   onRepeatAll={onRepeatAll}
-                  onRepeatInvalid={onRepeatInvalid}
+                  onRepeat={onRepeat}
                 />
               )}
             </Show>
