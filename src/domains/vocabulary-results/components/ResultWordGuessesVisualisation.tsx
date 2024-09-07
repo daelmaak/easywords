@@ -12,12 +12,13 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from '~/components/ui/tooltip';
-import { Checkbox } from '~/components/ui/checkbox'; // Import Checkbox
+import { Checkbox } from '~/components/ui/checkbox';
 import { wordsSelector } from '~/util/selection';
 
 export interface Props {
   results: TestResult;
   words: Word[];
+  onSelectionChange: (selectedWords: Word[]) => void;
 }
 
 const ATTEMPT_TOOLTIP: Record<TestWordResult, string> = {
@@ -60,8 +61,13 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
     });
   }
 
+  function setSelectedWordsAndNotify(newSelectedWords: Word[]) {
+    setSelectedWords(newSelectedWords);
+    props.onSelectionChange(newSelectedWords);
+  }
+
   function onSelectAll(selected: boolean) {
-    setSelectedWords(selected ? props.words : []);
+    setSelectedWordsAndNotify(selected ? props.words : []);
   }
 
   function onWordSelected(
@@ -77,7 +83,7 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
       meta
     );
 
-    setSelectedWords(newSelectedWords);
+    setSelectedWordsAndNotify(newSelectedWords);
   }
 
   return (
@@ -121,7 +127,9 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
                   onMouseDown={(e: MouseEvent) => e.preventDefault()}
                 />
               </td>
-              <td class="mr-2">{resultWord.word.original}</td>
+              <td class="mr-2">
+                {resultWord.word.original} - {resultWord.word.translation}
+              </td>
               <td class="text-center">
                 <Show when={resultWord.status === TestWordStatus.Done}>
                   <HiSolidCheckCircle

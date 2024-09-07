@@ -16,7 +16,7 @@ interface ResultsProps {
   words: Word[];
   editWord: (word: Word) => void;
   onRepeatAll: () => void;
-  onRepeatInvalid: (invalidWords: Word[]) => void;
+  onRepeat: (words: Word[]) => void;
 }
 
 const TestResultsVisualisation = lazy(
@@ -26,6 +26,7 @@ const TestResultsVisualisation = lazy(
 
 export function Results(props: ResultsProps) {
   const [wordToEdit, setWordToEdit] = createSignal<Word>();
+  const [selectedWords, setSelectedWords] = createSignal<Word[]>([]);
 
   const resultsMap = () =>
     new Map<TestWordResult, TestResult['words']>(
@@ -71,6 +72,14 @@ export function Results(props: ResultsProps) {
     setWordToEdit(undefined);
   }
 
+  function onWordSelectionChange(newSelectedWords: Word[]) {
+    setSelectedWords(newSelectedWords);
+  }
+
+  function onRepeatSelected() {
+    props.onRepeat(selectedWords());
+  }
+
   return (
     <div class="mx-auto flex flex-col">
       <WordEditorDialog
@@ -107,7 +116,7 @@ export function Results(props: ResultsProps) {
           <Button
             class="btn-link"
             type="button"
-            onClick={() => props.onRepeatInvalid(invalidWords())}
+            onClick={() => props.onRepeat(invalidWords())}
           >
             Practice incorrect
           </Button>
@@ -119,6 +128,15 @@ export function Results(props: ResultsProps) {
         >
           Test all again
         </Button>
+        <Show when={selectedWords().length > 0}>
+          <Button
+            type="button"
+            variant="defaultOutline"
+            onClick={onRepeatSelected}
+          >
+            Test selected ({selectedWords().length})
+          </Button>
+        </Show>
         <A class="text-primary text-sm" href="../..">
           Back to Vocabulary
         </A>
@@ -129,6 +147,7 @@ export function Results(props: ResultsProps) {
         <ResultWordGuessesVisualisation
           results={props.results}
           words={props.words}
+          onSelectionChange={onWordSelectionChange}
         />
       </section>
     </div>

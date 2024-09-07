@@ -1,6 +1,6 @@
 import { unionBy, differenceBy } from 'lodash-es';
 import { createSignal } from 'solid-js';
-import { Word } from '~/domains/vocabularies/model/vocabulary-model';
+import type { Word } from '~/domains/vocabularies/model/vocabulary-model';
 
 export function wordsSelector() {
   const [lastSelectedWordIndex, setLastSelectedWordIndex] = createSignal(-1);
