@@ -10,9 +10,12 @@ import {
   CardTitle,
 } from '~/components/ui/card';
 import type { Vocabulary } from '../model/vocabulary-model';
+import { cn } from '~/lib/utils';
 
 export type Props = {
   vocabulary: Vocabulary;
+  wordCount?: number;
+  class?: string;
   onClick?: (id: number) => void;
   onDeleteVocabulary?: (id: number) => void;
   onTestVocabulary: (
@@ -22,9 +25,11 @@ export type Props = {
 };
 
 export const VocabularyCard: Component<Props> = props => {
+  const wordCount = () => props.wordCount ?? 10;
+
   return (
     <Card
-      class="flex flex-col cursor-pointer"
+      class={cn('flex flex-col cursor-pointer', props.class)}
       onClick={() => props.onClick?.(props.vocabulary.id)}
     >
       <CardHeader class="p-4 flex flex-row justify-between items-center gap-4">
@@ -44,14 +49,14 @@ export const VocabularyCard: Component<Props> = props => {
       </CardHeader>
       <CardContent class="px-4 pt-0 pb-2 overflow-hidden">
         <ul class="text-center">
-          <For each={props.vocabulary.words.slice(0, 10)}>
+          <For each={props.vocabulary.words.slice(0, wordCount())}>
             {item => (
-              <li>
+              <li class="truncate">
                 {item.original} - {item.translation}
               </li>
             )}
           </For>
-          <Show when={props.vocabulary.words.length > 10}>
+          <Show when={props.vocabulary.words.length > wordCount()}>
             <li class="text-center">...</li>
           </Show>
         </ul>

@@ -16,7 +16,7 @@ export const DashboardPage: Component = () => {
 
   const recentVocabulariesQuery = createQuery(() => ({
     queryKey: [VOCABULARIES_QUERY_KEY, { type: 'recent' }],
-    queryFn: () => fetchRecentVocabularies(3),
+    queryFn: () => fetchRecentVocabularies(5),
   }));
 
   function onGoToVocabulary(id: number) {
@@ -37,29 +37,15 @@ export const DashboardPage: Component = () => {
   return (
     <>
       <h1 class="sr-only">Dashboard</h1>
-      <div class="sm:grid sm:grid-cols-[3fr,2fr] sm:8 sm:content-start 2xl:gap-20">
-        <section class="p-6">
-          <h2 class="mb-4 text-lg font-semibold">How to</h2>
-          <div style="padding-bottom:56.25%; position:relative; display:block; width: 100%">
-            <iframe
-              src="https://app.vidcast.io/share/embed/7c72416a-a85a-4cc0-8603-d1765974d1c3"
-              width="100%"
-              height="100%"
-              title="Watch how to use Easywords"
-              loading="lazy"
-              allowfullscreen
-              style="position:absolute; top:0; left: 0;border: solid; border-radius:12px;"
-            ></iframe>
-          </div>
-        </section>
+      <div>
         <section class="bg-gray-100 rounded-b-xl p-6">
-          <div class="mb-4 flex justify-between items-center">
+          <div class="mb-4 flex items-center gap-4">
             <h2 class="text-lg font-semibold">Recent vocabularies</h2>
             <A href="/vocabulary" class="text-primary">
               See all
             </A>
           </div>
-          <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-4 sm:flex-row sm:overflow-x-auto">
             <Suspense fallback={<div>Loading...</div>}>
               <For
                 each={recentVocabulariesQuery.data}
@@ -83,12 +69,28 @@ export const DashboardPage: Component = () => {
                 {vocabulary => (
                   <VocabularyCard
                     vocabulary={vocabulary}
+                    wordCount={5}
+                    class="flex-grow hidden [&:nth-child(-n+3)]:block lg:block lg:flex-grow-0"
                     onClick={onGoToVocabulary}
                     onTestVocabulary={onTestVocabulary}
                   />
                 )}
               </For>
             </Suspense>
+          </div>
+        </section>
+        <section class="mx-auto max-w-[40rem] p-6">
+          <h2 class="mb-4 text-lg font-semibold">How to</h2>
+          <div style="padding-bottom:56.25%; position:relative; display:block; width: 100%">
+            <iframe
+              src="https://app.vidcast.io/share/embed/7c72416a-a85a-4cc0-8603-d1765974d1c3"
+              width="100%"
+              height="100%"
+              title="Watch how to use Easywords"
+              loading="lazy"
+              allowfullscreen
+              style="position:absolute; top:0; left: 0;border: solid; border-radius:12px;"
+            ></iframe>
           </div>
         </section>
       </div>
