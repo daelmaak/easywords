@@ -44,7 +44,7 @@ import { fetchTestResults } from '../vocabulary-results/resources/vocabulary-tes
 import { VocabularyResultsMini } from '../vocabulary-results/components/VocabularyResultsMini';
 import { createQuery } from '@tanstack/solid-query';
 import { WordsAdder } from './components/WordsAdder';
-import { WordTranslation } from '~/model/word-translation';
+import type { WordTranslation } from '~/model/word-translation';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -57,8 +57,8 @@ export const VocabularyPage: Component = () => {
   const [openedAddWords, setOpenedAddWords] = createSignal(false);
   const [creatingWords, setCreatingWords] = createSignal(false);
   const [sortState, setSortState] = createSignal<SortState>({
-    asc: searchParams['sortasc'] === 'true',
-    by: (searchParams['sortby'] as SortState['by']) ?? 'original',
+    asc: searchParams['sortasc'] === 'false',
+    by: (searchParams['sortby'] as SortState['by']) ?? 'createdAt',
   });
 
   const vocabularyQuery = createQuery(() => ({
@@ -67,8 +67,6 @@ export const VocabularyPage: Component = () => {
   }));
 
   const [lastTestResult] = createResource(vocabularyId, fetchTestResults);
-
-  let wordsInputFormRef!: HTMLFormElement;
 
   async function deleteSelectedWords() {
     const words = selectedWords();
