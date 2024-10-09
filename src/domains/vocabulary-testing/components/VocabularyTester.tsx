@@ -237,7 +237,10 @@ export const VocabularyTester: Component<TesterProps> = (
     setStore('wordsLeft', wl => wl.filter(w => w.original !== word.original));
 
     const filteredResults = store.resultWords.filter(rw => rw.id !== word.id);
-    setStore('resultWords', filteredResults);
+    setStore({
+      peek: false,
+      resultWords: filteredResults,
+    });
     props.onProgress?.(filteredResults);
 
     setNextWord();
