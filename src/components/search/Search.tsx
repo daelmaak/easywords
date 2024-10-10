@@ -38,6 +38,7 @@ export const Search = <T,>(props: Props<T>) => {
     <Input
       class="w-auto"
       placeholder={props.placeholder ?? 'Search...'}
+      type="search"
       onInput={e => search(e.target.value)}
     />
   );
