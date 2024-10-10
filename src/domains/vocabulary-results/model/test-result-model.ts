@@ -1,7 +1,7 @@
 export enum TestWordStatus {
   NotDone,
-  Skipped,
   Done,
+  Skipped,
 }
 
 export enum TestWordResult {

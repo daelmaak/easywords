@@ -15,7 +15,7 @@ import {
   transformToWordDB,
 } from './vocabulary-transform';
 import { VOCABULARIES_QUERY_KEY } from './vocabularies-resource';
-import { WordTranslation } from '~/model/word-translation';
+import type { WordTranslation } from '~/model/word-translation';
 
 export type WordToCreate = RealOmit<Word, 'id' | 'createdAt' | 'notes'> &
   Partial<Pick<Word, 'notes'>>;
