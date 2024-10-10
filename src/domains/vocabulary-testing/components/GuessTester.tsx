@@ -1,5 +1,5 @@
 import { HiOutlineEye } from 'solid-icons/hi';
-import { createSignal, Show, type Component } from 'solid-js';
+import { createEffect, createSignal, Show, type Component } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import { TestWordResult } from '~/domains/vocabulary-results/model/test-result-model';
 
@@ -10,6 +10,15 @@ export interface GuessTesterProps {
 
 export const GuessTester: Component<GuessTesterProps> = props => {
   const [showSolution, setShowSolution] = createSignal(false);
+
+  createEffect((prevTranslation?: string) => {
+    if (prevTranslation == null || prevTranslation === props.translation) {
+      return props.translation;
+    }
+
+    setShowSolution(false);
+    return props.translation;
+  });
 
   function onDone(correctness: TestWordResult) {
     setShowSolution(false);
