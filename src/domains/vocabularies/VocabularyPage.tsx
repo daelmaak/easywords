@@ -191,7 +191,7 @@ export const VocabularyPage: Component = () => {
                 onClick={() => testVocabulary({ useSavedProgress: false })}
               >
                 <HiOutlineAcademicCap />
-                Test all
+                Test all ({vocabularyQuery.data?.words?.length})
               </Button>
               <Show when={vocabularyQuery.data?.savedProgress}>
                 <Button
