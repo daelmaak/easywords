@@ -16,5 +16,8 @@ export const vocabularyTestResultTestApiFactory: () => VocabularyTestResultApi =
       });
     };
 
-    return { fetchTestResults, saveTestResult };
+    return {
+      fetchTestResultsLocal: fetchTestResults,
+      saveTestResultLocal: saveTestResult,
+    };
   };

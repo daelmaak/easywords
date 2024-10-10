@@ -8,6 +8,7 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   {
     rules: {
+      'object-shorthand': ['error', 'always'],
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/require-await': 'error',

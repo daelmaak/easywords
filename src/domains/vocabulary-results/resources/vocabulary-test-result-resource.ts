@@ -13,9 +13,9 @@ export const initVocabularyTestResultResource = (
 };
 
 export function fetchTestResults(vocabularyId: number) {
-  return api.fetchTestResults(vocabularyId);
+  return api.fetchTestResultsLocal(vocabularyId);
 }
 
 export function saveTestResult(testResult: TestResultToCreate) {
-  return api.saveTestResult(testResult);
+  return api.saveTestResultLocal(testResult);
 }
