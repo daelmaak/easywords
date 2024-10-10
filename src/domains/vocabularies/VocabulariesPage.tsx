@@ -121,7 +121,7 @@ export const VocabulariesPage = () => {
             </div>
           }
         >
-          <div class="mt-6 px-2 pb-12 flex flex-col sm:grid sm:justify-center sm:content-start grid-cols-[repeat(auto-fit,_18rem)] gap-4">
+          <div class="mt-6 px-2 pb-12 flex flex-col gap-4 sm:grid sm:justify-center sm:content-start sm:items-start sm:grid-cols-[repeat(auto-fit,_18rem)]">
             <For each={vocabulariesByRecency()}>
               {vocabulary => (
                 <VocabularyCard

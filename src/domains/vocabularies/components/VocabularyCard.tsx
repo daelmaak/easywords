@@ -10,7 +10,6 @@ import {
   CardTitle,
 } from '~/components/ui/card';
 import type { Vocabulary } from '../model/vocabulary-model';
-import { cn } from '~/lib/utils';
 
 export type Props = {
   vocabulary: Vocabulary;
@@ -29,7 +28,7 @@ export const VocabularyCard: Component<Props> = props => {
 
   return (
     <button
-      class={cn('flex flex-col cursor-pointer', props.class)}
+      class={props.class}
       onClick={() => props.onClick?.(props.vocabulary.id)}
     >
       <Card>
