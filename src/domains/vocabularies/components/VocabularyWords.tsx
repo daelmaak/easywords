@@ -109,7 +109,7 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
         onWordEdited={onWordEdited}
       />
       <Show when={props.sort.by !== 'createdAt'}>
-        <ul class="flex flex-col items-start gap-2">
+        <ul class="flex flex-col items-start gap-0.5">
           <For each={sortedWords()}>
             {word => (
               <li>
@@ -125,33 +125,31 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
         </ul>
       </Show>
       <Show when={props.sort.by === 'createdAt'}>
-        {sort => (
-          <div>
-            <For each={sortedWordsByCreatedAt()}>
-              {([, words]) => (
-                <section>
-                  <h3 class="mt-4 mb-2 w-full font-semibold">
-                    {words[0].createdAt.toDateString()}
-                  </h3>
-                  <ul class="flex flex-col items-start gap-2">
-                    <For each={words}>
-                      {word => (
-                        <li>
-                          <VocabularyWord
-                            selected={wordSelected(word)}
-                            word={word}
-                            onWordSelected={onWordSelected}
-                            onWordDetailToOpen={setWordToEdit}
-                          />
-                        </li>
-                      )}
-                    </For>
-                  </ul>
-                </section>
-              )}
-            </For>
-          </div>
-        )}
+        <div>
+          <For each={sortedWordsByCreatedAt()}>
+            {([, words]) => (
+              <section>
+                <h3 class="mt-4 mb-1 w-full font-semibold">
+                  {words[0].createdAt.toDateString()}
+                </h3>
+                <ul class="flex flex-col items-start gap-0.5">
+                  <For each={words}>
+                    {word => (
+                      <li>
+                        <VocabularyWord
+                          selected={wordSelected(word)}
+                          word={word}
+                          onWordSelected={onWordSelected}
+                          onWordDetailToOpen={setWordToEdit}
+                        />
+                      </li>
+                    )}
+                  </For>
+                </ul>
+              </section>
+            )}
+          </For>
+        </div>
       </Show>
     </div>
   );
