@@ -311,10 +311,10 @@ export const VocabularyPage: Component = () => {
                 'hidden lg:inline lg:invisible': selectedWords().length === 0,
               })}
               size="sm"
-              variant="defaultOutline"
+              variant="default"
               onClick={testSelected}
             >
-              <HiOutlineAcademicCap /> Test selected
+              <HiOutlineAcademicCap /> Test selected ({selectedWords().length})
             </Button>
           </div>
 
