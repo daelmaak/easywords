@@ -33,6 +33,7 @@ it('should complete the test when last word invalid when in non-repeat mode', as
   const { defaultTestSettings, onDone, userAction } = setup();
   render(() => (
     <VocabularyTester
+      vocabularyId={1}
       words={TEST_WORDS.slice(0, 1)}
       testSettings={{ ...defaultTestSettings, repeatInvalid: false }}
       onDone={onDone}
@@ -57,6 +58,7 @@ it("shouldn't pass with empty input", async () => {
   const { defaultTestSettings, userAction } = setup();
   render(() => (
     <VocabularyTester
+      vocabularyId={1}
       words={TEST_WORDS.slice(0, 1)}
       testSettings={{ ...defaultTestSettings, repeatInvalid: false }}
       onDone={vi.fn()}
@@ -76,6 +78,7 @@ it("should still be able to validate with enter even though previous word's vali
   const { defaultTestSettings, onDone, userAction } = setup();
   render(() => (
     <VocabularyTester
+      vocabularyId={1}
       words={TEST_WORDS.slice(0, 2)}
       testSettings={{ ...defaultTestSettings, repeatInvalid: false }}
       onDone={onDone}
@@ -102,6 +105,7 @@ it('should trim words during validaton', async () => {
   const { defaultTestSettings, onDone, userAction } = setup();
   render(() => (
     <VocabularyTester
+      vocabularyId={1}
       words={[
         {
           ...TEST_WORDS[0],
@@ -130,6 +134,7 @@ it(`shouldn't pass with incorrect diacritics in strict mode`, async () => {
   const { defaultTestSettings, userAction } = setup();
   render(() => (
     <VocabularyTester
+      vocabularyId={1}
       words={[
         {
           ...TEST_WORDS[0],
@@ -158,6 +163,7 @@ it('should keep its validation state after changing the word', async () => {
 
   render(() => (
     <VocabularyTester
+      vocabularyId={1}
       words={words()}
       testSettings={{ ...defaultTestSettings, repeatInvalid: false }}
       onDone={onDone}
@@ -194,6 +200,7 @@ it('should peek after invalid guess', async () => {
 
   render(() => (
     <VocabularyTester
+      vocabularyId={1}
       words={TEST_WORDS.slice(0, 1)}
       testSettings={defaultTestSettings}
       onDone={vi.fn()}

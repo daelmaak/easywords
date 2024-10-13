@@ -20,10 +20,14 @@ import {
   PopoverTrigger,
 } from '~/components/ui/popover';
 import { ConfirmationDialog } from '~/components/ConfirmationDialog';
+import type {
+  TestResult,
+  TestResultToCreate,
+  TestResultWordToCreate,
+} from '~/domains/vocabulary-results/model/test-result-model';
 import {
   TestWordResult,
   TestWordStatus,
-  type TestResultWord,
 } from '~/domains/vocabulary-results/model/test-result-model';
 import { GuessTester } from './GuessTester';
 
@@ -31,11 +35,12 @@ export type VocabularyTestMode = 'guess' | 'write';
 
 interface TesterProps {
   testSettings: VocabularyTesterSettings;
+  vocabularyId: number;
   words: Word[];
-  savedProgress?: TestResultWord[];
-  onDone: (results: TestResultWord[]) => void;
+  savedProgress?: TestResult;
+  onDone: (result: TestResultToCreate) => void;
   onEditWord: (word: Word) => void;
-  onProgress?: (results: TestResultWord[]) => void;
+  onProgress?: (results: TestResultToCreate) => void;
   onRemoveWord: (word: Word) => void;
   onStop?: () => void;
 }
@@ -45,7 +50,7 @@ interface State {
   peek: boolean;
   editing: boolean;
   wordsLeft: Word[];
-  resultWords: TestResultWord[];
+  resultWords: TestResultWordToCreate[];
 }
 
 export const VocabularyTester: Component<TesterProps> = (
@@ -57,7 +62,7 @@ export const VocabularyTester: Component<TesterProps> = (
     peek: false,
     editing: false,
     resultWords: props.words.map(w => ({
-      id: w.id,
+      word_id: w.id,
       attempts: [],
       status: TestWordStatus.NotDone,
     })),
@@ -96,10 +101,10 @@ export const VocabularyTester: Component<TesterProps> = (
     }
 
     setStore({
-      resultWords: props.savedProgress,
-      wordsLeft: props.savedProgress
+      resultWords: props.savedProgress.words,
+      wordsLeft: props.savedProgress.words
         .filter(sw => sw.status === TestWordStatus.NotDone)
-        .map(sw => props.words.find(w => w.id === sw.id)!)
+        .map(sw => props.words.find(w => w.id === sw.word_id)!)
         // Fix for test progresses which contain deleted words, which in turn caused
         // tests to break.
         // TODO: Should be safe to remove in the near future.
@@ -108,11 +113,25 @@ export const VocabularyTester: Component<TesterProps> = (
   });
 
   function finish() {
-    props.onDone(store.resultWords);
+    props.onDone({
+      ...props.savedProgress,
+      done: true,
+      vocabulary_id: props.vocabularyId,
+      words: store.resultWords,
+    });
 
     setStore({
       currentWordId: undefined,
       wordsLeft: [],
+    });
+  }
+
+  function markProgress() {
+    props.onProgress?.({
+      ...props.savedProgress,
+      done: false,
+      vocabulary_id: props.vocabularyId,
+      words: store.resultWords,
     });
   }
 
@@ -137,7 +156,7 @@ export const VocabularyTester: Component<TesterProps> = (
         setStore('wordsLeft', wsLeft);
       }
       currentWordValid = undefined;
-      props.onProgress?.(store.resultWords);
+      markProgress();
     }
 
     const next = nextWord(wsLeft);
@@ -156,7 +175,7 @@ export const VocabularyTester: Component<TesterProps> = (
     if (!props.testSettings.repeatInvalid) {
       setStore(
         'resultWords',
-        rws => rws.id === store.currentWordId,
+        rws => rws.word_id === store.currentWordId,
         'status',
         TestWordStatus.Skipped
       );
@@ -166,13 +185,13 @@ export const VocabularyTester: Component<TesterProps> = (
 
   function onGuessResult(correctness: TestWordResult) {
     const resultWordIndex = store.resultWords.findIndex(
-      rw => rw.id === currentWord()?.id
+      rw => rw.word_id === currentWord()?.id
     );
 
     const isValid = correctness === TestWordResult.Correct;
 
     setStore('resultWords', resultWordIndex, rw => {
-      const newAttempts = [...rw.attempts, correctness];
+      const newAttempts = [...rw.attempts!, correctness];
       const averageCorrectness = Math.round(
         newAttempts.reduce((sum, attempt) => sum + attempt, 0) /
           newAttempts.length
@@ -201,7 +220,7 @@ export const VocabularyTester: Component<TesterProps> = (
     setStore('peek', true);
 
     const resultWordIndex = store.resultWords.findIndex(
-      rw => rw.id === currentWord()?.id
+      rw => rw.word_id === currentWord()?.id
     );
 
     if (valid) {
@@ -209,13 +228,13 @@ export const VocabularyTester: Component<TesterProps> = (
         // This is allowed to be overwritten if the result is already set
         result: TestWordResult.Correct,
         ...rw,
-        attempts: [...rw.attempts, TestWordResult.Correct],
+        attempts: [...rw.attempts!, TestWordResult.Correct],
         status: TestWordStatus.Done,
       }));
     } else {
       setStore('resultWords', resultWordIndex, rw => ({
         ...rw,
-        attempts: [...rw.attempts, TestWordResult.Wrong],
+        attempts: [...rw.attempts!, TestWordResult.Wrong],
         result: TestWordResult.Wrong,
       }));
     }
@@ -236,12 +255,14 @@ export const VocabularyTester: Component<TesterProps> = (
 
     setStore('wordsLeft', wl => wl.filter(w => w.original !== word.original));
 
-    const filteredResults = store.resultWords.filter(rw => rw.id !== word.id);
+    const filteredResults = store.resultWords.filter(
+      rw => rw.word_id !== word.id
+    );
     setStore({
       peek: false,
       resultWords: filteredResults,
     });
-    props.onProgress?.(filteredResults);
+    markProgress();
 
     setNextWord();
   }

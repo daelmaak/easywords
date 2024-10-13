@@ -28,8 +28,8 @@ export function createMockVocabularyDB(config: {
     id: 1,
     name: 'Vocabulary title',
     country: 'cz',
-    words: words,
-    updated_at: new Date(),
+    words,
+    updated_at: new Date().toISOString(),
   };
 }
 
@@ -48,9 +48,11 @@ export function createMockTestProgress(
   }
 ) {
   const testResult: TestResult = {
-    vocabularyId: vocabulary.id,
+    id: 1,
+    vocabulary_id: vocabulary.id,
     done: false,
-    updatedAt: new Date(),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
     words: [],
   };
 
@@ -59,8 +61,8 @@ export function createMockTestProgress(
 
   for (let i = 0; i < totalWordResultsToAffect; i++) {
     const testResultWord: TestResultWord = {
-      id: vocabulary.words[i].id,
-      attempts: [],
+      created_at: new Date().toISOString(),
+      word_id: vocabulary.words[i].id,
       status: TestWordStatus.Done,
     };
 
@@ -69,7 +71,7 @@ export function createMockTestProgress(
       correct--;
     } else if (incorrect > 0) {
       testResultWord.result = TestWordResult.Wrong;
-      testResultWord.attempts.push(TestWordResult.Wrong);
+      testResultWord.attempts = [TestWordResult.Wrong];
       incorrect--;
     } else if (skipped > 0) {
       testResultWord.status = TestWordStatus.Skipped;

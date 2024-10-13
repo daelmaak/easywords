@@ -29,7 +29,7 @@ export const VocabularyResultsMini: Component<Props> = props => {
         <div class="flex justify-between items-center">
           <h2 class="text-md">Last test results</h2>
           <span class="text-sm">
-            {props.result.updatedAt.toLocaleDateString()}
+            {new Date(props.result.updated_at).toLocaleDateString()}
           </span>
         </div>
         <figure class="mt-2">

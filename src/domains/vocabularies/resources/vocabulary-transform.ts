@@ -1,15 +1,23 @@
+import type { CountryCode } from '~/components/country-select/countries';
 import type { Vocabulary, Word } from '../model/vocabulary-model';
 import type { VocabularyDB, WordDB } from './vocabulary-api';
 
-export const transformToVocabulary = (vocabulary: VocabularyDB): Vocabulary => {
-  return {
-    id: vocabulary.id,
-    country: vocabulary.country,
+export const transformToVocabulary = (
+  vocabularyDB: VocabularyDB
+): Vocabulary => {
+  const vocabulary: Vocabulary = {
+    id: vocabularyDB.id,
+    country: vocabularyDB.country as CountryCode,
     savedProgress: undefined,
-    name: vocabulary.name,
-    updatedAt: new Date(vocabulary.updated_at),
-    words: vocabulary.words.map(transformToWord),
+    name: vocabularyDB.name,
+    words: vocabularyDB.words.map(transformToWord),
   };
+
+  if (vocabularyDB.updated_at) {
+    vocabulary.updatedAt = new Date(vocabularyDB.updated_at);
+  }
+
+  return vocabulary;
 };
 
 export const transformToVocabularyDB = (
@@ -18,7 +26,7 @@ export const transformToVocabularyDB = (
   id: vocabulary.id,
   country: vocabulary.country,
   name: vocabulary.name,
-  updated_at: vocabulary.updatedAt.toISOString(),
+  updated_at: vocabulary.updatedAt?.toISOString(),
   words: vocabulary.words.map(transformToWordDB),
 });
 

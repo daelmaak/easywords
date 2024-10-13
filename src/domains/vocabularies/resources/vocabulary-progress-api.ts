@@ -11,10 +11,10 @@ const fetchVocabularyProgress = async (vocabularyId: number) => {
 };
 
 const saveVocabularyProgress = async (
-  testResult: RealOmit<TestResult, 'updatedAt'>
+  testResult: RealOmit<TestResult, 'updated_at'>
 ) => {
   await set(
-    `vocabulary.${testResult.vocabularyId}.progress`,
+    `vocabulary.${testResult.vocabulary_id}.progress`,
     JSON.parse(JSON.stringify(testResult))
   );
 };

@@ -36,7 +36,7 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
     props.results.words
       .map(word => ({
         ...word,
-        word: props.words.find(w => w.id === word.id)!,
+        word: props.words.find(w => w.id === word.word_id)!,
       }))
       // Fix for test progresses which contain deleted words, which in turn caused
       // tests to break.
@@ -48,7 +48,7 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
         if (resultDiff !== 0) return resultDiff;
 
         // If results are equal, sort by number of attempts (descending)
-        return b.attempts.length - a.attempts.length;
+        return (b.attempts?.length ?? 0) - (a.attempts?.length ?? 0);
       })
   );
 

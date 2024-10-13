@@ -40,7 +40,9 @@ export const VocabulariesPage = () => {
   const vocabulariesByRecency = () =>
     vocabulariesQuery.data
       ?.slice()
-      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+      .sort(
+        (a, b) => (b.updatedAt?.getTime() ?? 0) - (a.updatedAt?.getTime() ?? 0)
+      );
 
   function onCloseDeletionDialog() {
     setConfirmDeletionOf(undefined);

@@ -1,8 +1,8 @@
-import type { TestResult } from '../model/test-result-model';
-import type { RealOmit } from '~/util/object';
+import type {
+  TestResult,
+  TestResultToCreate,
+} from '../model/test-result-model';
 import type { VocabularyTestResultApi as VocabularyTestResultApi } from './vocabulary-test-result-api';
-
-export type TestResultToCreate = RealOmit<TestResult, 'updatedAt'>;
 
 let api: VocabularyTestResultApi;
 
@@ -12,10 +12,12 @@ export const initVocabularyTestResultResource = (
   api = testResultApi;
 };
 
-export function fetchTestResults(vocabularyId: number) {
-  return api.fetchTestResultsLocal(vocabularyId);
+export async function fetchTestResults(
+  vocabularyId: number
+): Promise<TestResult | undefined> {
+  return await api.fetchLastTestResult(vocabularyId);
 }
 
 export function saveTestResult(testResult: TestResultToCreate) {
-  return api.saveTestResultLocal(testResult);
+  return api.saveTestResult(testResult);
 }
