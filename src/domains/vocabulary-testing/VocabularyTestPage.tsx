@@ -5,18 +5,19 @@ import { BackLink } from '~/components/BackLink';
 import type { Word } from '../vocabularies/model/vocabulary-model';
 import {
   deleteWords,
-  deleteVocabularyProgress,
   fetchVocabulary,
-  saveVocabularyProgress,
   updateVocabularyAsInteractedWith,
   updateWords,
 } from '../vocabularies/resources/vocabulary-resource';
-import type { TestResultWord } from '../vocabulary-results/model/test-result-model';
 import { saveTestResult } from '../vocabulary-results/resources/vocabulary-test-result-resource';
 import type { VocabularyTesterSettings } from './components/VocabularySettings';
 import { VocabularySettings } from './components/VocabularySettings';
 import { VocabularyTester } from './components/VocabularyTester';
 import { createQuery } from '@tanstack/solid-query';
+import type {
+  TestResultToCreate,
+  TestResultWord,
+} from '../vocabulary-results/model/test-result-model';
 
 export const VocabularyTestPage = () => {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ export const VocabularyTestPage = () => {
       // by iterating over the saved progress words.
       const savedProgressDict = vocabulary.savedProgress.words.reduce(
         (acc, word) => {
-          acc[word.id] = word;
+          acc[word.word_id] = word;
           return acc;
         },
         {} as Record<number, TestResultWord>
@@ -78,13 +79,8 @@ export const VocabularyTestPage = () => {
     return vocabulary.id;
   });
 
-  async function onDone(results: TestResultWord[]) {
-    void deleteVocabularyProgress(vocabularyId);
-    await saveTestResult({
-      vocabularyId,
-      done: true,
-      words: results,
-    });
+  async function onDone(result: TestResultToCreate) {
+    await saveTestResult(result);
     navigate('results');
   }
 
@@ -100,12 +96,8 @@ export const VocabularyTestPage = () => {
     await deleteWords(vocabularyId, word.id);
   }
 
-  function saveProgress(results: TestResultWord[]) {
-    void saveVocabularyProgress({
-      done: false,
-      vocabularyId,
-      words: results,
-    });
+  function saveProgress(result: TestResultToCreate) {
+    void saveTestResult(result);
   }
 
   return (
@@ -134,9 +126,10 @@ export const VocabularyTestPage = () => {
                     testSettings={vocabularySettings}
                     savedProgress={
                       searchParams.useSavedProgress
-                        ? vocabularyQuery.data?.savedProgress?.words
+                        ? vocabularyQuery.data?.savedProgress
                         : undefined
                     }
+                    vocabularyId={vocabularyId}
                     words={w()}
                     onDone={onDone}
                     onEditWord={onEditWord}
