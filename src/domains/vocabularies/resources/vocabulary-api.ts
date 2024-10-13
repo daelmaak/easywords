@@ -3,17 +3,14 @@ import type { RealOmit } from '~/util/object';
 import { omit } from '~/util/object';
 import type { QueryData } from '@supabase/supabase-js';
 
-export type WordToCreateDB = RealOmit<
-  WordDB,
-  'id' | 'created_at' | 'vocabulary_id' | 'notes'
-> &
+export type WordToCreateDB = RealOmit<WordDB, 'id' | 'created_at' | 'notes'> &
   Partial<Pick<WordDB, 'notes'>>;
 
 export type VocabularyToCreateDB = RealOmit<
   VocabularyDB,
   'id' | 'updated_at' | 'words'
 > & {
-  words: WordToCreateDB[];
+  words: RealOmit<WordToCreateDB, 'vocabulary_id'>[];
 };
 
 const WORD_FETCH_FIELDS = `

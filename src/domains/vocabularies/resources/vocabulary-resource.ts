@@ -1,5 +1,4 @@
 import type { QueryClient } from '@tanstack/solid-query';
-import type { TestResult } from '~/domains/vocabulary-results/model/test-result-model';
 import type { RealOmit } from '../../../util/object';
 import type { Vocabulary, Word } from '../model/vocabulary-model';
 import type {
@@ -157,32 +156,6 @@ export const updateWords = async (...items: Word[]) => {
   );
 
   return true;
-};
-
-export const saveVocabularyProgress = async (
-  testResult: RealOmit<TestResult, 'updatedAt'>
-) => {
-  await progressApi.saveVocabularyProgress(testResult);
-
-  queryClient.setQueryData<Vocabulary>(
-    [VOCABULARY_QUERY_KEY, testResult.vocabularyId],
-    v => ({
-      ...v!,
-      savedProgress: { ...testResult, updatedAt: new Date() },
-    })
-  );
-};
-
-export const deleteVocabularyProgress = async (vocabularyId: number) => {
-  await progressApi.deleteVocabularyProgress(vocabularyId);
-
-  queryClient.setQueryData<Vocabulary>(
-    [VOCABULARY_QUERY_KEY, vocabularyId],
-    v => ({
-      ...v!,
-      savedProgress: undefined,
-    })
-  );
 };
 
 const transformToWordCreateDB = (

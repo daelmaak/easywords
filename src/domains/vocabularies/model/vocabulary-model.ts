@@ -14,7 +14,7 @@ export interface Vocabulary {
   id: number;
   country: CountryCode;
   name: string;
-  updatedAt: Date;
+  updatedAt?: Date;
   words: Word[];
   savedProgress?: TestResult;
 }
