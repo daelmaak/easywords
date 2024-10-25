@@ -125,6 +125,7 @@ export const VocabulariesPage = () => {
             <For each={vocabulariesByRecency()}>
               {vocabulary => (
                 <VocabularyCard
+                  wordCount={5}
                   vocabulary={vocabulary}
                   onClick={onGoToVocabulary}
                   onDeleteVocabulary={setConfirmDeletionOf}

@@ -56,9 +56,6 @@ export const VocabularyCard: Component<Props> = props => {
                 </li>
               )}
             </For>
-            <Show when={props.vocabulary.words.length > wordCount()}>
-              <li class="text-center">...</li>
-            </Show>
           </ul>
         </CardContent>
         <CardFooter class="mt-auto p-4 pt-0">
