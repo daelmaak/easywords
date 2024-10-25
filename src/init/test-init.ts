@@ -2,7 +2,6 @@ import { createRoot } from 'solid-js';
 import { vi } from 'vitest';
 import type { ResourcesInit } from './app-init';
 import { initApp } from './app-init';
-import { vocabularyTestResultTestApiFactory } from '~/domains/vocabulary-results/test/vocabulary-test-result-test-api';
 import { QueryClient } from '@tanstack/solid-query';
 
 export const initTestApp = () => {
@@ -25,12 +24,11 @@ export const initTestApp = () => {
       updateVocabulary: vi.fn(),
       updateWords: vi.fn(),
     },
-    vocabularyProgressApi: {
-      deleteVocabularyProgress: vi.fn(),
-      fetchVocabularyProgress: vi.fn(),
-      saveVocabularyProgress: vi.fn(),
+    vocabularyTestResultApi: {
+      fetchLastTestResult: vi.fn(),
+      hasTestProgress: vi.fn(),
+      saveTestResult: vi.fn(),
     },
-    vocabularyTestResultApi: vocabularyTestResultTestApiFactory(),
   } satisfies ResourcesInit;
 
   return createRoot(dispose => {

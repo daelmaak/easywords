@@ -8,7 +8,7 @@ export type WordToCreateDB = RealOmit<WordDB, 'id' | 'created_at' | 'notes'> &
 
 export type VocabularyToCreateDB = RealOmit<
   VocabularyDB,
-  'id' | 'updated_at' | 'words'
+  'id' | 'updated_at' | 'words' | 'test_in_progress'
 > & {
   words: RealOmit<WordToCreateDB, 'vocabulary_id'>[];
 };
@@ -35,7 +35,7 @@ const vocabulariesFetchQuery = () =>
 
 export type VocabularyDB = QueryData<
   ReturnType<typeof vocabulariesFetchQuery>
->[number];
+>[number] & { test_in_progress?: boolean };
 
 export type WordDB = VocabularyDB['words'][number];
 
@@ -45,14 +45,28 @@ const fetchVocabulary = async (id: number) => {
 };
 
 const fetchVocabularies = async () => {
-  const result = await vocabulariesFetchQuery();
+  const result = await supabase
+    .from('vocabularies')
+    .select(
+      `
+    ${VOCABULARY_FETCH_FIELDS},
+    test_in_progress: vocabulary_test_results!left(
+      id
+    )
+  `
+    )
+    .eq('vocabulary_test_results.done', false);
+
   const vocabularies = result.data;
 
   if (vocabularies == null) {
     return;
   }
 
-  return vocabularies;
+  return vocabularies.map(v => ({
+    ...v,
+    test_in_progress: Boolean(v.test_in_progress?.length),
+  }));
 };
 
 const fetchRecentVocabularies = async (count: number) => {

@@ -38,11 +38,18 @@ const testResultsQuery = () =>
   );
 
 async function fetchLastTestResult(
-  vocabularyId: number
+  vocabularyId: number,
+  options?: { done: boolean }
 ): Promise<TestResultDB | undefined> {
-  const result = await testResultsQuery()
-    .eq('vocabulary_id', vocabularyId)
-    .order('created_at', { ascending: false })
+  let query = testResultsQuery().eq('vocabulary_id', vocabularyId);
+
+  if (options) {
+    query = query.eq('done', options.done);
+  }
+
+  const result = await query
+    .order('updated_at', { ascending: false })
+    .limit(1)
     .maybeSingle();
 
   if (!result.data) {
@@ -53,6 +60,18 @@ async function fetchLastTestResult(
     ...omit(result.data, 'vocabulary_test_result_words'),
     words: result.data?.vocabulary_test_result_words,
   };
+}
+
+async function hasTestProgress(vocabularyId: number) {
+  const result = await supabase
+    .from('vocabulary_test_results')
+    .select('id')
+    .eq('vocabulary_id', vocabularyId)
+    .eq('done', false)
+    .order('updated_at', { ascending: false })
+    .maybeSingle();
+
+  return Boolean(result.data);
 }
 
 async function saveTestResult(testResult: TestResultToCreateDB) {
@@ -85,6 +104,7 @@ async function saveTestResult(testResult: TestResultToCreateDB) {
 
 export const vocabularyTestResultApi = {
   fetchLastTestResult,
+  hasTestProgress,
   saveTestResult,
 };
 

@@ -1,5 +1,4 @@
 import type { CountryCode } from '~/components/country-select/countries';
-import type { TestResult } from '~/domains/vocabulary-results/model/test-result-model';
 
 export interface Word {
   id: number;
@@ -16,5 +15,5 @@ export interface Vocabulary {
   name: string;
   updatedAt?: Date;
   words: Word[];
-  savedProgress?: TestResult;
+  testInProgress?: boolean;
 }
