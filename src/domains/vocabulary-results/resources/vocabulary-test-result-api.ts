@@ -27,7 +27,7 @@ const testResultsQuery = () =>
       created_at,
       updated_at,
       done,
-      vocabulary_test_result_words (
+      words: vocabulary_test_result_words (
         word_id,
         created_at,
         result,
@@ -56,10 +56,7 @@ async function fetchLastTestResult(
     return undefined;
   }
 
-  return {
-    ...omit(result.data, 'vocabulary_test_result_words'),
-    words: result.data?.vocabulary_test_result_words,
-  };
+  return result.data;
 }
 
 async function hasTestProgress(vocabularyId: number) {
