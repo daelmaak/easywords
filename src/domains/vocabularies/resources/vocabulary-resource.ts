@@ -7,7 +7,6 @@ import type {
   WordToCreateDB,
   VocabularyToCreateDB,
 } from './vocabulary-api';
-import type { VocabularyProgressApi } from './vocabulary-progress-api';
 import {
   transformToVocabulary,
   transformToWord,
@@ -21,38 +20,33 @@ export type WordToCreate = RealOmit<Word, 'id' | 'createdAt' | 'notes'> &
 
 export type VocabularyToCreate = RealOmit<
   Vocabulary,
-  'id' | 'savedProgress' | 'updatedAt' | 'words'
+  'id' | 'savedProgress' | 'updatedAt' | 'words' | 'testInProgress'
 > & { words: WordToCreate[] };
 
 export const VOCABULARY_QUERY_KEY = 'vocabulary';
 
 let api: VocabularyApi;
-let progressApi: VocabularyProgressApi;
 let queryClient: QueryClient;
 
 export const initVocabularyResource = (
   apis: {
     vocabularyApi: VocabularyApi;
-    vocabularyProgressApi: VocabularyProgressApi;
   },
   qClient: QueryClient
 ) => {
-  ({ vocabularyApi: api, vocabularyProgressApi: progressApi } = apis);
+  ({ vocabularyApi: api } = apis);
   queryClient = qClient;
 };
 
-export const fetchVocabulary = async (id: number) =>
-  api.fetchVocabulary(id).then(async v => {
-    if (v == null) {
-      return;
-    }
-    const progress = await progressApi.fetchVocabularyProgress(id);
-    const vocabulary = transformToVocabulary(v);
+export const fetchVocabulary = async (id: number) => {
+  const vocabulary = await api.fetchVocabulary(id);
 
-    vocabulary.savedProgress = progress;
+  if (vocabulary == null) {
+    return;
+  }
 
-    return vocabulary;
-  });
+  return transformToVocabulary(vocabulary);
+};
 
 export const createVocabulary = async (vocabulary: VocabularyToCreate) => {
   const vocabularyDB = transformToVocabularyCreateDB(vocabulary);

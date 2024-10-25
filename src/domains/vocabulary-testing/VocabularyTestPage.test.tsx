@@ -166,11 +166,11 @@ it('should save the test progress upon pausing it and pick it up again when resu
 });
 
 it('should pick up the saved progress of a partial test when resuming', async () => {
-  const { queryClient, vocabularyApi, vocabularyProgressApi, dispose } =
+  const { queryClient, vocabularyApi, vocabularyTestResultApi, dispose } =
     setup();
   const vocabularyDB = createMockVocabularyDB({ wordAmount: 3 });
   vocabularyApi.fetchVocabulary.mockResolvedValue(vocabularyDB);
-  vocabularyProgressApi.fetchVocabularyProgress.mockResolvedValue(
+  vocabularyTestResultApi.fetchLastTestResult.mockResolvedValue(
     createMockTestProgress(vocabularyDB, { correct: 1, totalPartial: 2 })
   );
 

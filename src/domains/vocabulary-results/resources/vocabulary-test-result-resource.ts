@@ -1,3 +1,4 @@
+import type { QueryClient } from '@tanstack/solid-query';
 import type {
   TestResult,
   TestResultToCreate,
@@ -5,11 +6,14 @@ import type {
 import type { VocabularyTestResultApi as VocabularyTestResultApi } from './vocabulary-test-result-api';
 
 let api: VocabularyTestResultApi;
+let queryClient: QueryClient;
 
 export const initVocabularyTestResultResource = (
-  testResultApi: VocabularyTestResultApi
+  testResultApi: VocabularyTestResultApi,
+  qClient: QueryClient
 ) => {
   api = testResultApi;
+  queryClient = qClient;
 };
 
 export async function fetchTestResults(
@@ -18,6 +22,19 @@ export async function fetchTestResults(
   return await api.fetchLastTestResult(vocabularyId);
 }
 
-export function saveTestResult(testResult: TestResultToCreate) {
-  return api.saveTestResult(testResult);
+export async function fetchTestProgress(
+  vocabularyId: number
+): Promise<TestResult | undefined> {
+  return api.fetchLastTestResult(vocabularyId, { done: false });
+}
+
+export async function saveTestResult(testResult: TestResultToCreate) {
+  const savedResult = await api.saveTestResult(testResult);
+
+  queryClient.setQueryData(
+    ['vocabulary', testResult.vocabulary_id, 'progress'],
+    savedResult
+  );
+
+  return savedResult;
 }

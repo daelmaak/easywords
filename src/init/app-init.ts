@@ -1,8 +1,6 @@
 import { initVocabulariesResource } from '~/domains/vocabularies/resources/vocabularies-resource';
 import type { VocabularyApi } from '~/domains/vocabularies/resources/vocabulary-api';
 import { vocabularyApi } from '~/domains/vocabularies/resources/vocabulary-api';
-import type { VocabularyProgressApi } from '~/domains/vocabularies/resources/vocabulary-progress-api';
-import { vocabularyProgressApi } from '~/domains/vocabularies/resources/vocabulary-progress-api';
 import { initVocabularyResource } from '~/domains/vocabularies/resources/vocabulary-resource';
 import {
   vocabularyTestResultApi,
@@ -14,7 +12,6 @@ import { QueryClient } from '@tanstack/solid-query';
 export interface ResourcesInit {
   queryClient: QueryClient;
   vocabularyApi: VocabularyApi;
-  vocabularyProgressApi: VocabularyProgressApi;
   vocabularyTestResultApi: VocabularyTestResultApi;
 }
 
@@ -33,7 +30,6 @@ export const initApp = (init?: ResourcesInit) => {
     init ?? {
       queryClient,
       vocabularyApi,
-      vocabularyProgressApi,
       vocabularyTestResultApi,
     }
   );
@@ -44,12 +40,11 @@ export const initApp = (init?: ResourcesInit) => {
 export const initResources = ({
   queryClient,
   vocabularyApi,
-  vocabularyProgressApi,
   vocabularyTestResultApi,
 }: ResourcesInit) => {
-  initVocabulariesResource({ vocabularyApi, vocabularyProgressApi });
-  initVocabularyResource({ vocabularyApi, vocabularyProgressApi }, queryClient);
-  initVocabularyTestResultResource(vocabularyTestResultApi);
+  initVocabulariesResource(vocabularyApi);
+  initVocabularyResource({ vocabularyApi }, queryClient);
+  initVocabularyTestResultResource(vocabularyTestResultApi, queryClient);
 };
 
 export const resetApp = () => {

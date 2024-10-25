@@ -184,7 +184,7 @@ export const VocabularyPage: Component = () => {
                 class="grow"
                 size="sm"
                 variant={
-                  vocabularyQuery.data?.savedProgress
+                  vocabularyQuery.data?.testInProgress
                     ? 'secondary'
                     : 'defaultOutline'
                 }
@@ -193,7 +193,7 @@ export const VocabularyPage: Component = () => {
                 <HiOutlineAcademicCap />
                 Test all ({vocabularyQuery.data?.words?.length})
               </Button>
-              <Show when={vocabularyQuery.data?.savedProgress}>
+              <Show when={vocabularyQuery.data?.testInProgress}>
                 <Button
                   class="grow"
                   size="sm"

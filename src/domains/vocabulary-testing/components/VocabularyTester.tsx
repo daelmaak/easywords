@@ -34,10 +34,11 @@ import { GuessTester } from './GuessTester';
 export type VocabularyTestMode = 'guess' | 'write';
 
 interface TesterProps {
+  applySavedProgress?: boolean;
   testSettings: VocabularyTesterSettings;
   vocabularyId: number;
   words: Word[];
-  savedProgress?: TestResult;
+  savedProgress?: TestResult | null;
   onDone: (result: TestResultToCreate) => void;
   onEditWord: (word: Word) => void;
   onProgress?: (results: TestResultToCreate) => void;
@@ -95,9 +96,15 @@ export const VocabularyTester: Component<TesterProps> = (
   const percentageDone = () =>
     (1 - store.wordsLeft.length / props.words.length) * 100;
 
-  createEffect(() => {
-    if (!props.savedProgress) {
+  createEffect((prevSavedProgress: TestResult | undefined) => {
+    if (!props.savedProgress || !props.applySavedProgress) {
       return;
+    }
+
+    // I want to use the saved progress only as a starting point, not update the test
+    // every time the progress changes.
+    if (prevSavedProgress) {
+      return props.savedProgress;
     }
 
     setStore({
@@ -110,6 +117,8 @@ export const VocabularyTester: Component<TesterProps> = (
         // TODO: Should be safe to remove in the near future.
         .filter(w => w != null),
     });
+
+    return props.savedProgress;
   });
 
   function finish() {
@@ -156,12 +165,15 @@ export const VocabularyTester: Component<TesterProps> = (
         setStore('wordsLeft', wsLeft);
       }
       currentWordValid = undefined;
-      markProgress();
     }
 
     const next = nextWord(wsLeft);
 
-    if (!next) {
+    if (current && next) {
+      markProgress();
+    }
+
+    if (next == null) {
       return finish();
     }
 

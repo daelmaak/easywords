@@ -60,7 +60,7 @@ export const VocabularyCard: Component<Props> = props => {
         </CardContent>
         <CardFooter class="mt-auto p-4 pt-0">
           <div class="ml-auto flex gap-2" onClick={e => e.stopPropagation()}>
-            <Show when={props.vocabulary.savedProgress}>
+            <Show when={props.vocabulary.testInProgress}>
               <Button
                 size="sm"
                 variant="secondary"

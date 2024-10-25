@@ -9,7 +9,10 @@ import {
   updateVocabularyAsInteractedWith,
   updateWords,
 } from '../vocabularies/resources/vocabulary-resource';
-import { saveTestResult } from '../vocabulary-results/resources/vocabulary-test-result-resource';
+import {
+  fetchTestProgress,
+  saveTestResult,
+} from '../vocabulary-results/resources/vocabulary-test-result-resource';
 import type { VocabularyTesterSettings } from './components/VocabularySettings';
 import { VocabularySettings } from './components/VocabularySettings';
 import { VocabularyTester } from './components/VocabularyTester';
@@ -28,6 +31,11 @@ export const VocabularyTestPage = () => {
   const vocabularyQuery = createQuery(() => ({
     queryKey: ['vocabulary', vocabularyId],
     queryFn: () => fetchVocabulary(vocabularyId),
+  }));
+
+  const testProgressQuery = createQuery(() => ({
+    queryKey: ['vocabulary', vocabularyId, 'progress'],
+    queryFn: () => fetchTestProgress(vocabularyId).then(r => r ?? null),
   }));
 
   const [vocabularySettings, setVocabularySettings] =
@@ -51,10 +59,10 @@ export const VocabularyTestPage = () => {
       return words;
     }
 
-    if (searchParams.useSavedProgress && vocabulary.savedProgress) {
+    if (searchParams.useSavedProgress && testProgressQuery.data) {
       // This dict is a performance optimization to avoid having to filter the words
       // by iterating over the saved progress words.
-      const savedProgressDict = vocabulary.savedProgress.words.reduce(
+      const savedProgressDict = testProgressQuery.data.words.reduce(
         (acc, word) => {
           acc[word.word_id] = word;
           return acc;
@@ -124,11 +132,8 @@ export const VocabularyTestPage = () => {
                 <main class="m-auto mb-4">
                   <VocabularyTester
                     testSettings={vocabularySettings}
-                    savedProgress={
-                      searchParams.useSavedProgress
-                        ? vocabularyQuery.data?.savedProgress
-                        : undefined
-                    }
+                    applySavedProgress={searchParams.useSavedProgress != null}
+                    savedProgress={testProgressQuery.data}
                     vocabularyId={vocabularyId}
                     words={w()}
                     onDone={onDone}
