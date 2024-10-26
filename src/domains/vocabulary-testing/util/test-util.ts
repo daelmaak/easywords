@@ -4,7 +4,6 @@ import type {
 } from '~/domains/vocabularies/resources/vocabulary-api';
 import {
   TestWordResult,
-  TestWordStatus,
   type TestResult,
   type TestResultWord,
 } from '~/domains/vocabulary-results/model/test-result-model';
@@ -39,12 +38,12 @@ export function createMockTestProgress(
     correct = 0,
     incorrect = 0,
     skipped = 0,
-    totalPartial,
+    total,
   }: {
     correct?: number;
     incorrect?: number;
     skipped?: number;
-    totalPartial?: number;
+    total?: number;
   }
 ) {
   const testResult: TestResult = {
@@ -56,14 +55,14 @@ export function createMockTestProgress(
     words: [],
   };
 
-  const totalWordResultsToAffect =
-    totalPartial ?? correct + incorrect + skipped;
+  const totalWordResultsToAffect = total ?? correct + incorrect + skipped;
 
   for (let i = 0; i < totalWordResultsToAffect; i++) {
     const testResultWord: TestResultWord = {
       created_at: new Date().toISOString(),
+      done: true,
+      result: TestWordResult.NotDone,
       word_id: vocabulary.words[i].id,
-      status: TestWordStatus.Done,
     };
 
     if (correct > 0) {
@@ -74,10 +73,9 @@ export function createMockTestProgress(
       testResultWord.attempts = [TestWordResult.Wrong];
       incorrect--;
     } else if (skipped > 0) {
-      testResultWord.status = TestWordStatus.Skipped;
       skipped--;
     } else {
-      testResultWord.status = TestWordStatus.NotDone;
+      testResultWord.done = false;
     }
     testResult.words.push(testResultWord);
   }

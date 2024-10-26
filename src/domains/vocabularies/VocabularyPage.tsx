@@ -224,7 +224,7 @@ export const VocabularyPage: Component = () => {
 
           <Show when={testProgressQuery.data}>
             {progress => (
-              <A href="test">
+              <A href="test?useSavedProgress=true">
                 <VocabularyResultsMini result={progress()} />
               </A>
             )}

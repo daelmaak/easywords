@@ -9,6 +9,7 @@ export default tseslint.config(
   {
     rules: {
       'object-shorthand': ['error', 'always'],
+      'no-useless-rename': ['error'],
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/require-await': 'error',

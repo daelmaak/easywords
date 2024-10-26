@@ -173,7 +173,7 @@ it('should pick up the saved progress of a partial test when resuming', async ()
   const vocabularyDB = createMockVocabularyDB({ wordAmount: 3 });
   vocabularyApi.fetchVocabulary.mockResolvedValue(vocabularyDB);
   vocabularyTestResultApi.fetchLastTestResult.mockResolvedValue(
-    createMockTestProgress(vocabularyDB, { correct: 1, totalPartial: 2 })
+    createMockTestProgress(vocabularyDB, { correct: 1, total: 2 })
   );
 
   render(() => (

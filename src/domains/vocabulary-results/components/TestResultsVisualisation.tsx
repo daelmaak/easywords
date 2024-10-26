@@ -1,6 +1,6 @@
 import { onMount, type Component } from 'solid-js';
 import type { TestResult } from '../model/test-result-model';
-import { TestWordResult, TestWordStatus } from '../model/test-result-model';
+import { TestWordResult } from '../model/test-result-model';
 import { Chart } from 'chart.js/auto';
 import { groupBy } from 'lodash-es';
 import { RESULT_COLORS } from '../model/colors';
@@ -10,6 +10,7 @@ interface Props {
 }
 
 const LABELS: Record<TestWordResult, string> = {
+  [TestWordResult.NotDone]: 'Skipped',
   [TestWordResult.Correct]: 'Correct',
   [TestWordResult.Ok]: 'Ok',
   [TestWordResult.Mediocre]: 'Mediocre',
@@ -34,9 +35,7 @@ export const TestResultsVisualisation: Component<Props> = props => {
     const data = Array.from(resultsMap.values()).map(v => v.length);
 
     const skipped = props.result.words.filter(
-      w =>
-        w.status === TestWordStatus.Skipped ||
-        w.status == TestWordStatus.NotDone
+      w => w.result == TestWordResult.NotDone
     );
 
     if (skipped.length > 0) {
