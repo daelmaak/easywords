@@ -1,15 +1,16 @@
-import { createResource, Show, Suspense, type Component } from 'solid-js';
+import { Show, Suspense, type Component } from 'solid-js';
 import { Results } from './components/Results';
 import { useNavigate, useParams } from '@solidjs/router';
 import {
   fetchVocabulary,
   updateWords,
 } from '../vocabularies/resources/vocabulary-resource';
-import { fetchTestResults } from './resources/vocabulary-test-result-resource';
+import { fetchLastTestResult } from './resources/vocabulary-test-result-resource';
 import type { Word } from '../vocabularies/model/vocabulary-model';
 import { navigateToVocabularyTest } from '../vocabularies/util/navigation';
 import { BackLink } from '~/components/BackLink';
 import { createQuery } from '@tanstack/solid-query';
+import { lastTestResultKey } from './resources/cache-keys';
 
 export const VocabularyTestResultsPage: Component = () => {
   const params = useParams();
@@ -21,7 +22,10 @@ export const VocabularyTestResultsPage: Component = () => {
     queryFn: () => fetchVocabulary(vocabularyId),
   }));
 
-  const [lastTestResult] = createResource(vocabularyId, fetchTestResults);
+  const lastTestResultQuery = createQuery(() => ({
+    queryKey: lastTestResultKey(vocabularyId),
+    queryFn: () => fetchLastTestResult(vocabularyId),
+  }));
 
   function onRepeatAll() {
     navigate('..');
@@ -48,7 +52,7 @@ export const VocabularyTestResultsPage: Component = () => {
         </h1>
         <Show when={vocabularyQuery.data?.words}>
           {words => (
-            <Show when={lastTestResult()}>
+            <Show when={lastTestResultQuery.data}>
               {results => (
                 <Results
                   results={results()}

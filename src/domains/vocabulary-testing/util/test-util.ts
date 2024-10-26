@@ -26,7 +26,7 @@ export function createMockVocabularyDB(config: {
 
   return {
     id: 1,
-    name: 'Vocabulary title',
+    name: 'Test Vocabulary',
     country: 'cz',
     words,
     updated_at: new Date().toISOString(),
