@@ -27,7 +27,9 @@ export const initTestApp = () => {
     vocabularyTestResultApi: {
       fetchLastTestResult: vi.fn(),
       hasTestProgress: vi.fn(),
-      saveTestResult: vi.fn(),
+      saveTestResult: vi
+        .fn()
+        .mockImplementation(tr => Promise.resolve({ ...tr, id: 1 })),
     },
   } satisfies ResourcesInit;
 

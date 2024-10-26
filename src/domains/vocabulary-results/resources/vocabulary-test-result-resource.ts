@@ -4,6 +4,7 @@ import type {
   TestResultToCreate,
 } from '../model/test-result-model';
 import type { VocabularyTestResultApi as VocabularyTestResultApi } from './vocabulary-test-result-api';
+import { lastTestResultKey, testProgressKey } from './cache-keys';
 
 let api: VocabularyTestResultApi;
 let queryClient: QueryClient;
@@ -16,7 +17,7 @@ export const initVocabularyTestResultResource = (
   queryClient = qClient;
 };
 
-export async function fetchTestResults(
+export async function fetchLastTestResult(
   vocabularyId: number
 ): Promise<TestResult | undefined> {
   return await api.fetchLastTestResult(vocabularyId);
@@ -31,10 +32,18 @@ export async function fetchTestProgress(
 export async function saveTestResult(testResult: TestResultToCreate) {
   const savedResult = await api.saveTestResult(testResult);
 
-  queryClient.setQueryData(
-    ['vocabulary', testResult.vocabulary_id, 'progress'],
-    savedResult
-  );
+  if (testResult.done) {
+    queryClient.setQueryData(testProgressKey(testResult.vocabulary_id), null);
+    queryClient.setQueryData(
+      lastTestResultKey(testResult.vocabulary_id),
+      savedResult
+    );
+  } else {
+    queryClient.setQueryData(
+      testProgressKey(testResult.vocabulary_id),
+      savedResult
+    );
+  }
 
   return savedResult;
 }

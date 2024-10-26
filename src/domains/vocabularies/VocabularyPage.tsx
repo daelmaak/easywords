@@ -7,7 +7,7 @@ import {
   HiOutlineTrash,
 } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
-import { Show, Suspense, createResource, createSignal } from 'solid-js';
+import { Show, Suspense, createSignal } from 'solid-js';
 import { BackLink } from '~/components/BackLink';
 import { ConfirmationDialog } from '~/components/ConfirmationDialog';
 import { CountrySelect } from '~/components/country-select/country-select';
@@ -40,11 +40,12 @@ import {
   VOCABULARY_QUERY_KEY,
 } from './resources/vocabulary-resource';
 import { navigateToVocabularyTest } from './util/navigation';
-import { fetchTestResults } from '../vocabulary-results/resources/vocabulary-test-result-resource';
+import { fetchLastTestResult } from '../vocabulary-results/resources/vocabulary-test-result-resource';
 import { VocabularyResultsMini } from '../vocabulary-results/components/VocabularyResultsMini';
 import { createQuery } from '@tanstack/solid-query';
 import { WordsAdder } from './components/WordsAdder';
 import type { WordTranslation } from '~/model/word-translation';
+import { lastTestResultKey } from '../vocabulary-results/resources/cache-keys';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -66,7 +67,10 @@ export const VocabularyPage: Component = () => {
     queryFn: () => fetchVocabulary(vocabularyId),
   }));
 
-  const [lastTestResult] = createResource(vocabularyId, fetchTestResults);
+  const lastTestResultQuery = createQuery(() => ({
+    queryKey: lastTestResultKey(vocabularyId),
+    queryFn: () => fetchLastTestResult(vocabularyId),
+  }));
 
   async function deleteSelectedWords() {
     const words = selectedWords();
@@ -207,7 +211,7 @@ export const VocabularyPage: Component = () => {
             </div>
           </div>
 
-          <Show when={!lastTestResult.loading && lastTestResult()}>
+          <Show when={lastTestResultQuery.data}>
             {result => (
               <A href="test/results">
                 <VocabularyResultsMini result={result()} />

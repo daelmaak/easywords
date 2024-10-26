@@ -82,6 +82,7 @@ it('should show the test results after finishing test based on user performance'
 
   // finish the test
   await userAction.type(input, '{Enter}');
+  await tick();
 
   const wordsBreakdownSection = await waitFor(() =>
     screen.getByTestId('results-word-breakdown')
@@ -124,6 +125,7 @@ it('should show the test results after finishing test based on user performance'
 it('should save the test progress upon pausing it and pick it up again when resuming', async () => {
   const { queryClient, vocabularyApi, userAction, dispose } = setup();
   const vocabulary = createMockVocabularyDB({ wordAmount: 2 });
+
   vocabularyApi.fetchVocabulary.mockResolvedValue(vocabulary);
 
   render(() => (
