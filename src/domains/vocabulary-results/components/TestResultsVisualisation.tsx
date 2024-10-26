@@ -34,7 +34,9 @@ export const TestResultsVisualisation: Component<Props> = props => {
     const data = Array.from(resultsMap.values()).map(v => v.length);
 
     const skipped = props.result.words.filter(
-      w => w.status === TestWordStatus.Skipped
+      w =>
+        w.status === TestWordStatus.Skipped ||
+        w.status == TestWordStatus.NotDone
     );
 
     if (skipped.length > 0) {

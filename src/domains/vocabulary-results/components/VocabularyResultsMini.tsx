@@ -12,22 +12,25 @@ const resultGroups = [
   { label: 'Ok', result: TestWordResult.Ok },
   { label: 'Mediocre', result: TestWordResult.Mediocre },
   { label: 'Wrong', result: TestWordResult.Wrong },
+  { label: 'To Do', result: undefined },
 ];
 
 export const VocabularyResultsMini: Component<Props> = props => {
-  const getResultCount = (result: TestWordResult) => {
+  const getResultCount = (result: TestWordResult | undefined) => {
     return props.result.words.filter(word => word.result === result).length;
   };
 
-  const getColorForStatus = (result: TestWordResult) => {
-    return RESULT_COLORS[result];
+  const getColorForStatus = (result: TestWordResult | undefined) => {
+    return result == null ? '#cecece' : RESULT_COLORS[result];
   };
 
   return (
     <Card class="mt-8">
       <CardContent class="p-4">
         <div class="flex justify-between items-center">
-          <h2 class="text-md">Last test results</h2>
+          <h2 class="text-md">
+            {props.result.done ? 'Last test results' : 'Test in progress'}
+          </h2>
           <span class="text-sm">
             {new Date(props.result.updated_at).toLocaleDateString()}
           </span>
