@@ -40,12 +40,18 @@ import {
   VOCABULARY_QUERY_KEY,
 } from './resources/vocabulary-resource';
 import { navigateToVocabularyTest } from './util/navigation';
-import { fetchLastTestResult } from '../vocabulary-results/resources/vocabulary-test-result-resource';
+import {
+  fetchLastTestResult,
+  fetchTestProgress,
+} from '../vocabulary-results/resources/vocabulary-test-result-resource';
 import { VocabularyResultsMini } from '../vocabulary-results/components/VocabularyResultsMini';
 import { createQuery } from '@tanstack/solid-query';
 import { WordsAdder } from './components/WordsAdder';
 import type { WordTranslation } from '~/model/word-translation';
-import { lastTestResultKey } from '../vocabulary-results/resources/cache-keys';
+import {
+  lastTestResultKey,
+  testProgressKey,
+} from '../vocabulary-results/resources/cache-keys';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -67,9 +73,14 @@ export const VocabularyPage: Component = () => {
     queryFn: () => fetchVocabulary(vocabularyId),
   }));
 
+  const testProgressQuery = createQuery(() => ({
+    queryKey: testProgressKey(vocabularyId),
+    queryFn: () => fetchTestProgress(vocabularyId).then(r => r ?? null),
+  }));
+
   const lastTestResultQuery = createQuery(() => ({
     queryKey: lastTestResultKey(vocabularyId),
-    queryFn: () => fetchLastTestResult(vocabularyId),
+    queryFn: () => fetchLastTestResult(vocabularyId).then(r => r ?? null),
   }));
 
   async function deleteSelectedWords() {
@@ -210,6 +221,14 @@ export const VocabularyPage: Component = () => {
               </Show>
             </div>
           </div>
+
+          <Show when={testProgressQuery.data}>
+            {progress => (
+              <A href="test">
+                <VocabularyResultsMini result={progress()} />
+              </A>
+            )}
+          </Show>
 
           <Show when={lastTestResultQuery.data}>
             {result => (

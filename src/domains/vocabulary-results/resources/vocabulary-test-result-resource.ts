@@ -20,7 +20,7 @@ export const initVocabularyTestResultResource = (
 export async function fetchLastTestResult(
   vocabularyId: number
 ): Promise<TestResult | undefined> {
-  return await api.fetchLastTestResult(vocabularyId);
+  return await api.fetchLastTestResult(vocabularyId, { done: true });
 }
 
 export async function fetchTestProgress(
