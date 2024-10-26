@@ -32,7 +32,7 @@ export const CountrySelect = (props: Props) => {
       itemComponent={props => (
         <ComboboxItem item={props.item}>
           <ComboboxItemLabel class="flex items-center gap-2">
-            <span class={`w-5 h-5 fi fi-${props.item.rawValue}`} />
+            <span class={`fi h-5 w-5 fi-${props.item.rawValue}`} />
             {COUNTRIES[props.item.rawValue]}
           </ComboboxItemLabel>
         </ComboboxItem>
@@ -43,7 +43,7 @@ export const CountrySelect = (props: Props) => {
       <ComboboxControl>
         {state => (
           <>
-            <span class={`w-5 h-5 mr-2 fi fi-${state.selectedOptions()[0]}`} />
+            <span class={`fi mr-2 h-5 w-5 fi-${state.selectedOptions()[0]}`} />
             <ComboboxInput
               placeholder={props.placeholder}
               // For some reason, required on the HiddenSelect doesn't have an effect,

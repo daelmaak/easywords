@@ -28,23 +28,23 @@ const App: Component<Props> = props => {
   return (
     <>
       <nav>
-        <div class="hidden sm:flex items-center px-4 py-2 border-b">
+        <div class="hidden items-center border-b px-4 py-2 sm:flex">
           <A href="/dashboard" class="flex items-center">
             <img src={logo} alt="logo" class="size-8" />
             <span class="mr-8">Easywords</span>
           </A>
           <A class={styles.navLink} href="/dashboard">
-            <Button class="font-normal text-inherit px-2" variant="link">
+            <Button class="px-2 font-normal text-inherit" variant="link">
               Dashboard
             </Button>
           </A>
           <A class={styles.navLink} href="/vocabulary">
-            <Button class="font-normal text-inherit px-2" variant="link">
+            <Button class="px-2 font-normal text-inherit" variant="link">
               Vocabularies
             </Button>
           </A>
           <A class={styles.navLink} href="/conjugations">
-            <Button class="font-normal text-inherit px-2" variant="link">
+            <Button class="px-2 font-normal text-inherit" variant="link">
               Conjugations
             </Button>
           </A>
@@ -52,7 +52,7 @@ const App: Component<Props> = props => {
             <AccountButton loggedIn={true} onSignOut={onSignOut} />
           </div>
         </div>
-        <div class="sm:hidden flex items-center gap-4 p-2">
+        <div class="flex items-center gap-4 p-2 sm:hidden">
           <A href="/" class="flex items-center">
             <img src={logo} alt="logo" class="size-8" />
           </A>
@@ -75,7 +75,7 @@ const App: Component<Props> = props => {
               <DropdownMenuSeparator />
               <DropdownMenuItem class="text-base">
                 <Button
-                  class="sm:hidden p-0 text-base font-normal bg-inherit"
+                  class="bg-inherit p-0 text-base font-normal sm:hidden"
                   variant="ghost"
                   onClick={onSignOut}
                 >
@@ -86,7 +86,7 @@ const App: Component<Props> = props => {
           </DropdownMenu>
         </div>
       </nav>
-      <div class="flex-grow w-full">{props.children}</div>
+      <div class="w-full flex-grow">{props.children}</div>
     </>
   );
 };

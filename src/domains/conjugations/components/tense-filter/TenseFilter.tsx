@@ -1,4 +1,4 @@
-import type { Component} from 'solid-js';
+import type { Component } from 'solid-js';
 import { For } from 'solid-js';
 import type { ConjugationLang } from '../../../../model/lang';
 import type { ConjugationsByMood } from '../../conjugation';
@@ -20,7 +20,7 @@ export const TenseFilter: Component<Props> = props => {
     props.conjugationsByMood[mood].map(c => c.tense);
 
   return (
-    <div class="w-[min(640px,100%)] flex flex-col items-center">
+    <div class="flex w-[min(640px,100%)] flex-col items-center">
       <Chips
         chips={moods()}
         selectedChips={props.selectedMoods}

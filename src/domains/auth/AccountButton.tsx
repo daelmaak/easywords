@@ -1,5 +1,5 @@
 import { HiOutlineUser } from 'solid-icons/hi';
-import type { Component} from 'solid-js';
+import type { Component } from 'solid-js';
 import { Show } from 'solid-js';
 import { AuthDialog } from './AuthDialog';
 import { Button } from '~/components/ui/button';
@@ -32,7 +32,7 @@ export const AccountButton: Component<Props> = props => {
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Button
-              class="hidden sm:flex p-0 text-base font-normal"
+              class="hidden p-0 text-base font-normal sm:flex"
               variant="ghost"
             >
               <HiOutlineUser size={20} />
@@ -41,7 +41,7 @@ export const AccountButton: Component<Props> = props => {
           <DropdownMenuContent class="p-4">
             <DropdownMenuItem class="text-base">
               <Button
-                class="p-0 text-base font-normal bg-inherit"
+                class="bg-inherit p-0 text-base font-normal"
                 variant="ghost"
                 onClick={props.onSignOut}
               >

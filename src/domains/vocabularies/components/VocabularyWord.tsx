@@ -31,7 +31,7 @@ export const VocabularyWord: Component<Props> = props => {
 
   return (
     <Card>
-      <CardContent class="px-2 py-0.5 flex items-center gap-1">
+      <CardContent class="flex items-center gap-1 px-2 py-0.5">
         <Checkbox
           checked={props.selected}
           id={`word-selector-${props.word.id}`}
@@ -43,7 +43,7 @@ export const VocabularyWord: Component<Props> = props => {
         <span class="mx-2 text-center">-</span>
         <span>{props.word.translation}</span>
         <Button
-          class="p-0 size-8 opacity-50 hover:opacity-80"
+          class="size-8 p-0 opacity-50 hover:opacity-80"
           title="Edit word"
           variant="ghost"
           onClick={() => props.onWordDetailToOpen(props.word)}
@@ -57,7 +57,7 @@ export const VocabularyWord: Component<Props> = props => {
               as={(props: object) => (
                 <Button
                   {...props}
-                  class="p-0 size-8 text-blue-600 hover:text-blue-900"
+                  class="size-8 p-0 text-blue-600 hover:text-blue-900"
                   variant="ghost"
                 >
                   <HiSolidInformationCircle size={20} title="Show notes" />

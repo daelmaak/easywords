@@ -39,7 +39,7 @@ export const WordsCreatorForm: Component<Props> = props => {
       ref={props.ref}
       onSubmit={onAddWord}
     >
-      <div class="w-full flex gap-2">
+      <div class="flex w-full gap-2">
         <div class="flex flex-col gap-2">
           <Label class="text-xs" for="word-original">
             Original*
@@ -53,7 +53,7 @@ export const WordsCreatorForm: Component<Props> = props => {
           <Input id="word-translation" name="translation" required />
         </div>
       </div>
-      <div class="w-full flex flex-col gap-2">
+      <div class="flex w-full flex-col gap-2">
         <Label class="text-xs" for="word-translation">
           Notes
         </Label>

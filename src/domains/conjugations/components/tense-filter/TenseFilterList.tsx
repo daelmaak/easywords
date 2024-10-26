@@ -1,4 +1,4 @@
-import type { Component} from 'solid-js';
+import type { Component } from 'solid-js';
 import { createMemo, createSignal, For, Show } from 'solid-js';
 import type { ConjugationLang } from '../../../../model/lang';
 import { capitalizeFirstLetter } from '../../../../util/string';

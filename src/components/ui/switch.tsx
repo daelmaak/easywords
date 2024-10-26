@@ -1,17 +1,17 @@
-import type { Component } from "solid-js"
-import { Show, splitProps } from "solid-js"
+import type { Component } from 'solid-js';
+import { Show, splitProps } from 'solid-js';
 
-import { Switch as SwitchPrimitive } from "@kobalte/core"
+import { Switch as SwitchPrimitive } from '@kobalte/core';
 
-import { cn } from "~/lib/utils"
+import { cn } from '~/lib/utils';
 
 interface SwitchProps extends SwitchPrimitive.SwitchRootProps {
-  label?: string
-  errorMessage?: string
+  label?: string;
+  errorMessage?: string;
 }
 
-const Switch: Component<SwitchProps> = (props) => {
-  const [, rest] = splitProps(props, ["label"])
+const Switch: Component<SwitchProps> = props => {
+  const [, rest] = splitProps(props, ['label']);
   return (
     <SwitchPrimitive.Root {...rest}>
       <SwitchPrimitive.Input />
@@ -19,7 +19,7 @@ const Switch: Component<SwitchProps> = (props) => {
         <SwitchPrimitive.Control class="peer inline-flex h-[24px] w-[44px] shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent bg-input transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[checked]:bg-primary">
           <SwitchPrimitive.Thumb
             class={cn(
-              "pointer-events-none block size-5 translate-x-0 rounded-full bg-background shadow-lg ring-0 transition-transform data-[checked]:translate-x-5"
+              'pointer-events-none block size-5 translate-x-0 rounded-full bg-background shadow-lg ring-0 transition-transform data-[checked]:translate-x-5'
             )}
           />
         </SwitchPrimitive.Control>
@@ -37,7 +37,7 @@ const Switch: Component<SwitchProps> = (props) => {
         </div>
       </div>
     </SwitchPrimitive.Root>
-  )
-}
+  );
+};
 
-export { Switch }
+export { Switch };

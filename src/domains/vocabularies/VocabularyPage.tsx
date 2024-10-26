@@ -157,11 +157,11 @@ export const VocabularyPage: Component = () => {
   }
 
   return (
-    <main class="page-container h-full flex flex-col gap-4 sm:flex-row">
+    <main class="page-container flex h-full flex-col gap-4 sm:flex-row">
       <Suspense fallback={<div class="m-auto">Loading ...</div>}>
         <Sheet open={openedAddWords()} onOpenChange={setOpenedAddWords}>
           <SheetContent
-            class="w-svw sm:w-[30rem] flex flex-col gap-4"
+            class="flex w-svw flex-col gap-4 sm:w-[30rem]"
             onPointerDownOutside={e => e.preventDefault()}
           >
             <SheetHeader>
@@ -246,12 +246,12 @@ export const VocabularyPage: Component = () => {
           </Show>
         </div>
 
-        <div class="mt-[-1rem] flex-grow flex flex-col items-center">
-          <div class="sticky z-10 top-0 py-2 w-full flex flex-wrap justify-center items-center gap-2 bg-background lg:gap-4">
+        <div class="mt-[-1rem] flex flex-grow flex-col items-center">
+          <div class="sticky top-0 z-10 flex w-full flex-wrap items-center justify-center gap-2 bg-background py-2 lg:gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Button class="text-base font-normal" variant="ghost">
-                  <HiOutlineArrowsUpDown class="size-5 mr-1" /> Sort
+                  <HiOutlineArrowsUpDown class="mr-1 size-5" /> Sort
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent class="p-4">
@@ -338,7 +338,7 @@ export const VocabularyPage: Component = () => {
             />
             <Button
               class={cx({
-                'hidden lg:inline lg:invisible': selectedWords().length === 0,
+                'hidden lg:invisible lg:inline': selectedWords().length === 0,
               })}
               size="sm"
               variant="default"

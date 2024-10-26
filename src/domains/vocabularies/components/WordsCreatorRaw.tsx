@@ -35,7 +35,7 @@ export const WordsCreatorRaw: Component<Props> = props => {
       ></Textarea>
       <div
         id="raw-words-input-description"
-        class="mt-2 text-xs text-center text-zinc-400"
+        class="mt-2 text-center text-xs text-zinc-400"
       >
         words have to be in format:
         <figure>

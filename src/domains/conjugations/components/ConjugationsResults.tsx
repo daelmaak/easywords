@@ -22,7 +22,7 @@ export const ConjugationsResults: Component<Props> = props => {
       <div class="flex flex-wrap gap-8">
         <For each={Object.keys(props.conjugationsResults)}>
           {tense => (
-            <div class="mt-6 mx-auto">
+            <div class="mx-auto mt-6">
               <h3 class="text-center text-lg">{tense}</h3>
               <table class="mt-2 border-separate border-spacing-x-4 border-spacing-y-2">
                 <thead class="text-center opacity-80">

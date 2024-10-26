@@ -285,7 +285,7 @@ export const VocabularyTester: Component<TesterProps> = (
   return (
     <>
       <div
-        class="flex flex-wrap flex-col justify-center items-center gap-4 sm:flex-nowrap text-2xl"
+        class="flex flex-col flex-wrap items-center justify-center gap-4 text-2xl sm:flex-nowrap"
         classList={{ invisible: !currentWord() }}
       >
         <div class="flex items-center justify-end">
@@ -344,7 +344,7 @@ export const VocabularyTester: Component<TesterProps> = (
           <Show when={currentWord()?.notes}>
             {notes => (
               <Popover>
-                <PopoverTrigger class="size-8 flex justify-center items-center">
+                <PopoverTrigger class="flex size-8 items-center justify-center">
                   <HiSolidInformationCircle
                     aria-label="Show notes"
                     class="text-blue-600 hover:text-blue-900"
@@ -396,7 +396,7 @@ export const VocabularyTester: Component<TesterProps> = (
 
       <Progress
         aria-label="Words done progress"
-        class="my-6 mx-auto w-full sm:mt-20"
+        class="mx-auto my-6 w-full sm:mt-20"
         value={percentageDone()}
         getValueLabel={() =>
           `${props.words.length - store.wordsLeft.length} out of ${

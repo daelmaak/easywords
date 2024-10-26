@@ -28,7 +28,7 @@ export const VocabularyResultsMini: Component<Props> = props => {
   return (
     <Card class="mt-8">
       <CardContent class="p-4">
-        <div class="flex justify-between items-center">
+        <div class="flex items-center justify-between">
           <span class="inline-flex items-center gap-1">
             <span class="text-xl">
               <Switch>
@@ -58,7 +58,7 @@ export const VocabularyResultsMini: Component<Props> = props => {
                       {getResultCount(group.result)}x
                     </dd>
                     <dt
-                      class="px-1.5 py-0.5 rounded-sm text-xs text-white"
+                      class="rounded-sm px-1.5 py-0.5 text-xs text-white"
                       style={{
                         'background-color': getColorForStatus(group.result),
                       }}
@@ -70,7 +70,7 @@ export const VocabularyResultsMini: Component<Props> = props => {
               ))}
             </dl>
           </figcaption>
-          <div class="mt-3 w-full flex gap-[2px] rounded-sm overflow-hidden">
+          <div class="mt-3 flex w-full gap-[2px] overflow-hidden rounded-sm">
             {resultGroups.map(group => (
               <Show when={getResultCount(group.result) > 0}>
                 <div

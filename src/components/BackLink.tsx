@@ -9,7 +9,7 @@ export const BackLink: Component<ComponentProps<'a'>> = props => {
 
   return (
     <A
-      class={cx(local.class, 'flex items-center text-inherit text-sm')}
+      class={cx(local.class, 'flex items-center text-sm text-inherit')}
       href=".."
       {...rest}
     >

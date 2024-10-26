@@ -1,12 +1,9 @@
-import type { Component} from 'solid-js';
+import type { Component } from 'solid-js';
 import { createSignal, For, Show } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import type { Conjugation, ConjugationByTense } from '../conjugation';
-import type {
-  WriteTesterInstance} from '~/domains/vocabulary-testing/components/WriteTester';
-import {
-  WriteTester,
-} from '~/domains/vocabulary-testing/components/WriteTester';
+import type { WriteTesterInstance } from '~/domains/vocabulary-testing/components/WriteTester';
+import { WriteTester } from '~/domains/vocabulary-testing/components/WriteTester';
 import { Button } from '~/components/ui/button';
 
 interface Props {
@@ -112,7 +109,7 @@ export const ConjugationsTester: Component<Props> = props => {
             </tbody>
           </table>
 
-          <Button class="block ml-auto" type="button" onClick={nextOrFinish}>
+          <Button class="ml-auto block" type="button" onClick={nextOrFinish}>
             {isLastConjugation() ? 'Finish' : 'Next'}
           </Button>
         </div>

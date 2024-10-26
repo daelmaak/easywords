@@ -157,7 +157,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
   return (
     <div class="relative">
       <i
-        class={cx('block mb-2 mx-auto text-lg text-center', {
+        class={cx('mx-auto mb-2 block text-center text-lg', {
           invisible: !props.peek,
           'absolute top-0 translate-y-[-75%]': props.mode === 'inline',
         })}
@@ -168,12 +168,12 @@ export const WriteTester: Component<WriteTesterProps> = props => {
         {props.word.translation}
       </i>
       <form
-        class="flex flex-col justify-center items-center gap-2 sm:flex-row"
+        class="flex flex-col items-center justify-center gap-2 sm:flex-row"
         onSubmit={onSubmit}
       >
         <div class="flex items-center gap-2">
           <div
-            class={cx('w-8 h-8', {
+            class={cx('h-8 w-8', {
               'order-1': props.mode === 'inline',
             })}
           >
@@ -201,7 +201,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
             onBlur={onBlur}
             onInput={onInput}
           />
-          <div aria-hidden class="w-8 h-8 sm:hidden"></div>
+          <div aria-hidden class="h-8 w-8 sm:hidden"></div>
         </div>
         <Show when={props.mode === 'full'}>
           <div class="flex gap-2">

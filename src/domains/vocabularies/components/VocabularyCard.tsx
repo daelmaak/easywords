@@ -32,9 +32,9 @@ export const VocabularyCard: Component<Props> = props => {
       onClick={() => props.onClick?.(props.vocabulary.id)}
     >
       <Card>
-        <CardHeader class="p-4 flex flex-row justify-between items-center gap-4">
+        <CardHeader class="flex flex-row items-center justify-between gap-4 p-4">
           <CardTitle class="text-md">
-            <span class={`mr-2 fi fi-${props.vocabulary.country}`}></span>
+            <span class={`fi mr-2 fi-${props.vocabulary.country}`}></span>
             {props.vocabulary.name}
           </CardTitle>
           <div class="flex gap-4" onClick={e => e.stopPropagation()}>
@@ -47,7 +47,7 @@ export const VocabularyCard: Component<Props> = props => {
             </Show>
           </div>
         </CardHeader>
-        <CardContent class="px-4 pt-0 pb-2 overflow-hidden">
+        <CardContent class="overflow-hidden px-4 pb-2 pt-0">
           <ul class="text-center">
             <For each={props.vocabulary.words.slice(0, wordCount())}>
               {item => (

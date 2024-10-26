@@ -114,15 +114,15 @@ export const VocabularyTestPage = () => {
           That breaks the maintenance/restoration of focus on the write tester input. */}
       <Show when={!vocabularyQuery.isLoading}>
         <BackLink>Back to vocabulary</BackLink>
-        <div class="mx-auto flex justify-center items-center">
-          <span class={`size-5 mr-2 fi fi-${vocabularyQuery.data?.country}`} />
+        <div class="mx-auto flex items-center justify-center">
+          <span class={`fi mr-2 size-5 fi-${vocabularyQuery.data?.country}`} />
           <h1>{vocabularyQuery.data?.name}</h1>
         </div>
         <Show when={vocabularyId} keyed>
           <Show when={words()}>
             {w => (
               <div class="mt-8 grid sm:grid-cols-[1fr_2fr_1fr]">
-                <aside class="p-4 order-1 sm:order-none">
+                <aside class="order-1 p-4 sm:order-none">
                   <h2 class="mb-4">Test Settings</h2>
                   <VocabularySettings
                     settings={vocabularySettings}

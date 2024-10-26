@@ -111,7 +111,7 @@ export function Results(props: ResultsProps) {
         <figcaption class="mt-8 text-lg">{feedbackText()}</figcaption>
       </figure>
 
-      <div class="mx-auto mt-8 flex flex-wrap justify-center items-center gap-4 sm:mt-12">
+      <div class="mx-auto mt-8 flex flex-wrap items-center justify-center gap-4 sm:mt-12">
         <Show when={invalidWords().length}>
           <Button
             class="btn-link"
@@ -137,12 +137,12 @@ export function Results(props: ResultsProps) {
             Test selected ({selectedWords().length})
           </Button>
         </Show>
-        <A class="text-primary text-sm" href="../..">
+        <A class="text-sm text-primary" href="../..">
           Back to Vocabulary
         </A>
       </div>
 
-      <section class="mt-8 mx-auto" data-testid="results-word-breakdown">
+      <section class="mx-auto mt-8" data-testid="results-word-breakdown">
         <h2 class="sr-only text-center">Word by word results breakdown</h2>
         <ResultWordGuessesVisualisation
           results={props.results}

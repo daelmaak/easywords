@@ -87,7 +87,7 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
   }
 
   return (
-    <table class="table-auto border-separate sm:border-spacing-x-8 border-spacing-y-1">
+    <table class="table-auto border-separate border-spacing-y-1 sm:border-spacing-x-8">
       <thead>
         <tr class="text-left">
           <th class="font-normal">

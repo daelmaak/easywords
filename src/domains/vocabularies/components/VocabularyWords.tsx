@@ -101,7 +101,7 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
   }
 
   return (
-    <div class="relative w-full h-full p-2 flex flex-col items-center bg-gray-100 rounded-md">
+    <div class="relative flex h-full w-full flex-col items-center rounded-md bg-gray-100 p-2">
       <WordEditorDialog
         word={wordToEdit()}
         open={wordToEdit() != null}
@@ -129,7 +129,7 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
           <For each={sortedWordsByCreatedAt()}>
             {([, words]) => (
               <section>
-                <h3 class="mt-4 mb-1 w-full font-semibold">
+                <h3 class="mb-1 mt-4 w-full font-semibold">
                   {words[0].createdAt.toDateString()}
                 </h3>
                 <ul class="flex flex-col items-start gap-0.5">

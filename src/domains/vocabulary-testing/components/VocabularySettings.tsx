@@ -37,9 +37,8 @@ export const VocabularySettings: Component<Props> = props => {
   }
 
   async function retrieveSetting() {
-    const storedSettings = await get<Partial<VocabularyTesterSettings>>(
-      `config.vocabulary`
-    );
+    const storedSettings =
+      await get<Partial<VocabularyTesterSettings>>(`config.vocabulary`);
     return Object.assign({}, props.settings, storedSettings);
   }
 

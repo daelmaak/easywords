@@ -110,7 +110,7 @@ export const VocabulariesPage = () => {
           when={anyVocabularies()}
           fallback={
             <div
-              class="h-60 flex flex-col gap-4 justify-center items-center"
+              class="flex h-60 flex-col items-center justify-center gap-4"
               data-testid="empty-vocabulary-list"
             >
               <h2 class="text-xl">Create your first vocabulary!</h2>
@@ -123,7 +123,7 @@ export const VocabulariesPage = () => {
             </div>
           }
         >
-          <div class="mt-6 px-2 pb-12 flex flex-col gap-4 sm:grid sm:justify-center sm:content-start sm:items-start sm:grid-cols-[repeat(auto-fit,_18rem)]">
+          <div class="mt-6 flex flex-col gap-4 px-2 pb-12 sm:grid sm:grid-cols-[repeat(auto-fit,_18rem)] sm:content-start sm:items-start sm:justify-center">
             <For each={vocabulariesByRecency()}>
               {vocabulary => (
                 <VocabularyCard

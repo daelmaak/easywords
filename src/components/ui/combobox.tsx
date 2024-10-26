@@ -71,7 +71,7 @@ const ComboboxSection = <T extends ValidComponent = 'li'>(
   return (
     <ComboboxPrimitive.Section
       class={cn(
-        'overflow-hidden p-1 px-2 py-1.5 text-xs font-medium text-muted-foreground ',
+        'overflow-hidden p-1 px-2 py-1.5 text-xs font-medium text-muted-foreground',
         local.class
       )}
       {...others}
@@ -81,7 +81,7 @@ const ComboboxSection = <T extends ValidComponent = 'li'>(
 
 type ComboboxControlProps<
   U,
-  T extends ValidComponent = 'div'
+  T extends ValidComponent = 'div',
 > = ComboboxPrimitive.ComboboxControlProps<U, T> & {
   class?: string | undefined;
 };
@@ -168,7 +168,7 @@ const ComboboxContent = <T extends ValidComponent = 'div'>(
     <ComboboxPrimitive.Portal>
       <ComboboxPrimitive.Content
         class={cn(
-          'relative z-50 min-w-32 overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md animate-in fade-in-80 max-h-[var(--kb-popper-content-available-height)] overflow-y-auto',
+          'relative z-50 max-h-[var(--kb-popper-content-available-height)] min-w-32 overflow-hidden overflow-y-auto rounded-md border bg-popover text-popover-foreground shadow-md animate-in fade-in-80',
           local.class
         )}
         {...others}

@@ -50,7 +50,7 @@ export function WordsInput(props: WordsInputProps) {
       </Show>
 
       <Button
-        class="mt-4 mx-auto w-full"
+        class="mx-auto mt-4 w-full"
         form={formId}
         variant="defaultOutline"
         type="submit"

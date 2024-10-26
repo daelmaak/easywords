@@ -58,7 +58,7 @@ export const WordsAdder: Component<WordsAdderProps> = props => {
   return (
     <>
       <RadioGroup
-        class="flex mt-2"
+        class="mt-2 flex"
         value={wordsInputMode()}
         onChange={m => setWordsInputMode(m as WordsInputMode)}
       >

@@ -38,7 +38,7 @@ export const DashboardPage: Component = () => {
     <>
       <h1 class="sr-only">Dashboard</h1>
       <div>
-        <section class="bg-gray-100 rounded-b-xl p-6">
+        <section class="rounded-b-xl bg-gray-100 p-6">
           <div class="mb-4 flex items-center gap-4">
             <h2 class="text-lg font-semibold">Recent vocabularies</h2>
             <A href="/vocabulary" class="text-primary">
@@ -50,7 +50,7 @@ export const DashboardPage: Component = () => {
               <For
                 each={recentVocabulariesQuery.data}
                 fallback={
-                  <div class="w-full min-h-40 grid">
+                  <div class="grid min-h-40 w-full">
                     <div class="m-auto text-center">
                       <p class="mb-4">
                         Easywords is all about Vocabularies, so why don't you
@@ -70,7 +70,7 @@ export const DashboardPage: Component = () => {
                   <VocabularyCard
                     vocabulary={vocabulary}
                     wordCount={5}
-                    class="flex-grow hidden [&:nth-child(-n+3)]:block lg:block lg:flex-grow-0"
+                    class="hidden flex-grow lg:block lg:flex-grow-0 [&:nth-child(-n+3)]:block"
                     onClick={onGoToVocabulary}
                     onTestVocabulary={onTestVocabulary}
                   />

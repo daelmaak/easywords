@@ -15,7 +15,7 @@ export const ResultWord: Component<ResultWordProps> = props => {
       <span class="mx-2 text-center">-</span>
       <span>{props.word.translation}</span>
       <Button
-        class="mt-1 p-0 size-8 opacity-50 hover:opacity-80"
+        class="mt-1 size-8 p-0 opacity-50 hover:opacity-80"
         title="Edit word"
         variant="ghost"
         onClick={props.onEditWord}

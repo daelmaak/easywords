@@ -41,9 +41,8 @@ export const ConjugationsView: Component = () => {
   const navigate = useNavigate();
   let verbInputEl: HTMLInputElement | undefined;
 
-  const [state, setState] = createStore<ConjugationsViewState>(
-    getInitialState()
-  );
+  const [state, setState] =
+    createStore<ConjugationsViewState>(getInitialState());
 
   const language = () => params.lang as ConjugationLang | undefined;
 
