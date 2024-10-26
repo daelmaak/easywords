@@ -1,6 +1,7 @@
 import { TestWordResult } from './test-result-model';
 
 export const RESULT_COLORS: Record<TestWordResult, string> = {
+  [TestWordResult.NotDone]: '#817777',
   [TestWordResult.Correct]: '#158a66f2',
   [TestWordResult.Ok]: '#acba5c',
   [TestWordResult.Mediocre]: '#ff9037',

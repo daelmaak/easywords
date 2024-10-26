@@ -3,7 +3,6 @@ import { createMemo, createSignal, For, Show, type Component } from 'solid-js';
 import type { Word } from '~/domains/vocabularies/model/vocabulary-model';
 import {
   TestWordResult,
-  TestWordStatus,
   type TestResult,
 } from '~/domains/vocabulary-results/model/test-result-model';
 import { RESULT_COLORS } from '../model/colors';
@@ -22,6 +21,7 @@ export interface Props {
 }
 
 const ATTEMPT_TOOLTIP: Record<TestWordResult, string> = {
+  [TestWordResult.NotDone]: 'Not done',
   [TestWordResult.Correct]: 'Correct attempt',
   [TestWordResult.Ok]: 'Ok attempt',
   [TestWordResult.Mediocre]: 'Mediocre attempt',
@@ -131,7 +131,7 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
                 {resultWord.word.original} - {resultWord.word.translation}
               </td>
               <td class="text-center">
-                <Show when={resultWord.status === TestWordStatus.Done}>
+                <Show when={resultWord.result !== TestWordResult.NotDone}>
                   <HiSolidCheckCircle
                     class="mx-auto text-[#00825b]"
                     size={28}

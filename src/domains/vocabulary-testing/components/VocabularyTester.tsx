@@ -25,10 +25,7 @@ import type {
   TestResultToCreate,
   TestResultWordToCreate,
 } from '~/domains/vocabulary-results/model/test-result-model';
-import {
-  TestWordResult,
-  TestWordStatus,
-} from '~/domains/vocabulary-results/model/test-result-model';
+import { TestWordResult } from '~/domains/vocabulary-results/model/test-result-model';
 import { GuessTester } from './GuessTester';
 
 export type VocabularyTestMode = 'guess' | 'write';
@@ -63,9 +60,10 @@ export const VocabularyTester: Component<TesterProps> = (
     peek: false,
     editing: false,
     resultWords: props.words.map(w => ({
+      done: false,
       word_id: w.id,
       attempts: [],
-      status: TestWordStatus.NotDone,
+      result: TestWordResult.NotDone,
     })),
   });
 
@@ -110,7 +108,7 @@ export const VocabularyTester: Component<TesterProps> = (
     setStore({
       resultWords: props.savedProgress.words,
       wordsLeft: props.savedProgress.words
-        .filter(sw => sw.status === TestWordStatus.NotDone)
+        .filter(sw => !sw.done)
         .map(sw => props.words.find(w => w.id === sw.word_id)!)
         // Fix for test progresses which contain deleted words, which in turn caused
         // tests to break.
@@ -188,8 +186,8 @@ export const VocabularyTester: Component<TesterProps> = (
       setStore(
         'resultWords',
         rws => rws.word_id === store.currentWordId,
-        'status',
-        TestWordStatus.Skipped
+        'done',
+        true
       );
     }
     setNextWord();
@@ -214,7 +212,7 @@ export const VocabularyTester: Component<TesterProps> = (
       return {
         ...rw,
         result: averageCorrectness as TestWordResult,
-        status: isDone ? TestWordStatus.Done : TestWordStatus.NotDone,
+        done: isDone,
         attempts: newAttempts,
       };
     });
@@ -237,11 +235,10 @@ export const VocabularyTester: Component<TesterProps> = (
 
     if (valid) {
       setStore('resultWords', resultWordIndex, rw => ({
-        // This is allowed to be overwritten if the result is already set
-        result: TestWordResult.Correct,
         ...rw,
+        result: TestWordResult.Correct,
         attempts: [...rw.attempts!, TestWordResult.Correct],
-        status: TestWordStatus.Done,
+        done: true,
       }));
     } else {
       setStore('resultWords', resultWordIndex, rw => ({

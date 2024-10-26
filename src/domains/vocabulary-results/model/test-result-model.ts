@@ -6,14 +6,9 @@ import type {
 } from '../resources/vocabulary-test-result-api';
 import type { PartialExcept } from '~/util/type';
 
-export enum TestWordStatus {
-  NotDone,
-  Done,
-  Skipped,
-}
-
 export enum TestWordResult {
-  Correct = 1,
+  NotDone = 0,
+  Correct,
   Ok,
   Mediocre,
   Wrong,
@@ -25,7 +20,7 @@ export interface TestResult extends TestResultDB {
 
 export interface TestResultWord extends TestResultWordDB {
   attempts?: TestWordResult[];
-  result?: TestWordResult;
+  result: TestWordResult;
 }
 
 export interface TestResultToCreate extends TestResultToCreateDB {
@@ -34,5 +29,5 @@ export interface TestResultToCreate extends TestResultToCreateDB {
 
 export type TestResultWordToCreate = PartialExcept<
   TestResultWordToCreateDB,
-  'status' | 'word_id'
+  'done' | 'result' | 'word_id'
 >;

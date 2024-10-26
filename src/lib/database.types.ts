@@ -48,25 +48,25 @@ export type Database = {
         Row: {
           attempts?: number[];
           created_at: string;
-          result?: number;
+          done: boolean;
+          result: number;
           results_id: number;
-          status: number;
           word_id: number;
         };
         Insert: {
           attempts?: number[];
           created_at?: Date | string;
-          result?: number;
+          done: boolean;
+          result: number;
           results_id: number;
-          status: number;
           word_id: number;
         };
         Update: {
           attempts?: number[] | undefined;
           created_at?: Date | string;
-          result?: number | undefined;
+          done: boolean;
+          result: number;
           results_id?: number;
-          status?: number;
           word_id?: number;
         };
         Relationships: [

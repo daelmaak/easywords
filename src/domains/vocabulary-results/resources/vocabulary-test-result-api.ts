@@ -30,9 +30,9 @@ const testResultsQuery = () =>
       words: vocabulary_test_result_words (
         word_id,
         created_at,
+        done,
         result,
-        attempts,
-        status
+        attempts
       )
       `
   );
