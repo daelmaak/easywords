@@ -1,16 +1,17 @@
-import { Component, createSignal, For } from 'solid-js';
+import type { Component } from 'solid-js';
+import { createSignal, For } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import {
   RadioGroup,
   RadioGroupItem,
   RadioGroupItemLabel,
 } from '~/components/ui/radio-group';
+import type { WordsInputMode } from '~/domains/vocabulary-testing/components/WordsInput';
 import {
   WordsInput,
-  WordsInputMode,
   wordsInputModes,
 } from '~/domains/vocabulary-testing/components/WordsInput';
-import { WordTranslation } from '~/model/word-translation';
+import type { WordTranslation } from '~/model/word-translation';
 
 interface WordsAdderProps {
   creatingWords: boolean;
