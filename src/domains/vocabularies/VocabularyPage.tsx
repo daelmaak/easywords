@@ -43,6 +43,7 @@ import { navigateToVocabularyTest } from './util/navigation';
 import {
   fetchLastTestResult,
   fetchTestProgress,
+  saveTestResult,
 } from '../vocabulary-results/resources/vocabulary-test-result-resource';
 import { VocabularyResultsMini } from '../vocabulary-results/components/VocabularyResultsMini';
 import { createQuery } from '@tanstack/solid-query';
@@ -113,10 +114,16 @@ export const VocabularyPage: Component = () => {
   }
 
   function testVocabulary(config: { useSavedProgress: boolean }) {
+    if (!config.useSavedProgress && testProgressQuery.data) {
+      void saveTestResult({ ...testProgressQuery.data, done: true });
+    }
     navigateToVocabularyTest(vocabularyId, navigate, config);
   }
 
   function testSelected() {
+    if (testProgressQuery.data) {
+      void saveTestResult({ ...testProgressQuery.data, done: true });
+    }
     navigateToVocabularyTest(vocabularyId, navigate, {
       wordIds: selectedWords().map(w => w.id),
     });

@@ -3,7 +3,7 @@ import type {
   TestResult,
   TestResultToCreate,
 } from '../model/test-result-model';
-import type { VocabularyTestResultApi as VocabularyTestResultApi } from './vocabulary-test-result-api';
+import type { VocabularyTestResultApi } from './vocabulary-test-result-api';
 import { lastTestResultKey, testProgressKey } from './cache-keys';
 
 let api: VocabularyTestResultApi;
