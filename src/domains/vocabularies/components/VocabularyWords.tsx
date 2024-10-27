@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { For, Show, createMemo, createSignal } from 'solid-js';
+import { For, createMemo, createSignal } from 'solid-js';
 import type { Word } from '../model/vocabulary-model';
 import { VocabularyWord } from './VocabularyWord';
 import { WordEditorDialog } from './WordEditorDialog';
@@ -22,34 +22,9 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
   const [wordToEdit, setWordToEdit] = createSignal<Word>();
   const selectWords = wordsSelector();
 
-  const groupedWordsByCreatedAt = createMemo(() =>
-    props.words.reduce((acc, word) => {
-      const createdAt = new Date(
-        word.createdAt.getFullYear(),
-        word.createdAt.getMonth(),
-        word.createdAt.getDate()
-      ).getTime();
-      if (!acc.has(createdAt)) {
-        acc.set(createdAt, []);
-      }
-      acc.get(createdAt)!.push(word);
-      return acc;
-    }, new Map<number, Word[]>())
-  );
-
-  const sortedWordsByCreatedAt = createMemo(() => {
-    return Array.from(groupedWordsByCreatedAt().entries()).sort(([a], [b]) =>
-      props.sort.asc ? a - b : b - a
-    );
-  });
-
   const sortedWords = createMemo(() => {
     const sortBy = props.sort.by;
     const sortAsc = props.sort.asc;
-
-    if (sortBy === 'createdAt') {
-      return sortedWordsByCreatedAt().flatMap(([_, words]) => words);
-    }
 
     return props.words.slice().sort((a, b) => {
       const aValue = a[sortBy];
@@ -70,6 +45,12 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
 
       if (typeof aValue === 'number' && typeof bValue === 'number') {
         return sortAsc ? aValue - bValue : bValue - aValue;
+      }
+
+      if (aValue instanceof Date && bValue instanceof Date) {
+        return sortAsc
+          ? aValue.getTime() - bValue.getTime()
+          : bValue.getTime() - aValue.getTime();
       }
 
       return 0;
@@ -101,56 +82,27 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
   }
 
   return (
-    <div class="relative flex h-full w-full flex-col items-center rounded-md bg-gray-100 p-2">
+    <div class="relative">
       <WordEditorDialog
         word={wordToEdit()}
         open={wordToEdit() != null}
         onClose={() => setWordToEdit(undefined)}
         onWordEdited={onWordEdited}
       />
-      <Show when={props.sort.by !== 'createdAt'}>
-        <ul class="flex flex-col items-start gap-0.5">
-          <For each={sortedWords()}>
-            {word => (
-              <li>
-                <VocabularyWord
-                  selected={wordSelected(word)}
-                  word={word}
-                  onWordSelected={onWordSelected}
-                  onWordDetailToOpen={setWordToEdit}
-                />
-              </li>
-            )}
-          </For>
-        </ul>
-      </Show>
-      <Show when={props.sort.by === 'createdAt'}>
-        <div>
-          <For each={sortedWordsByCreatedAt()}>
-            {([, words]) => (
-              <section>
-                <h3 class="mb-1 mt-4 w-full font-semibold">
-                  {words[0].createdAt.toDateString()}
-                </h3>
-                <ul class="flex flex-col items-start gap-0.5">
-                  <For each={words}>
-                    {word => (
-                      <li>
-                        <VocabularyWord
-                          selected={wordSelected(word)}
-                          word={word}
-                          onWordSelected={onWordSelected}
-                          onWordDetailToOpen={setWordToEdit}
-                        />
-                      </li>
-                    )}
-                  </For>
-                </ul>
-              </section>
-            )}
-          </For>
-        </div>
-      </Show>
+      <ul>
+        <For each={sortedWords()}>
+          {word => (
+            <li class="border-b border-neutral-200">
+              <VocabularyWord
+                selected={wordSelected(word)}
+                word={word}
+                onWordSelected={onWordSelected}
+                onWordDetailToOpen={setWordToEdit}
+              />
+            </li>
+          )}
+        </For>
+      </ul>
     </div>
   );
 };

@@ -1,15 +1,6 @@
-import { HiOutlinePencil, HiSolidInformationCircle } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
-import { Show } from 'solid-js';
-import {
-  PopoverTrigger,
-  PopoverContent,
-  Popover,
-} from '../../../components/ui/popover';
 import { Checkbox } from '../../../components/ui/checkbox';
 import type { Word } from '../model/vocabulary-model';
-import { Button } from '~/components/ui/button';
-import { Card, CardContent } from '~/components/ui/card';
 
 interface Props {
   word: Word;
@@ -22,52 +13,40 @@ interface Props {
   onWordDetailToOpen: (word: Word) => void;
 }
 
+const dateOptions: Intl.DateTimeFormatOptions = {
+  month: 'short',
+  day: 'numeric',
+};
+
 export const VocabularyWord: Component<Props> = props => {
-  function onClick(e: MouseEvent) {
+  function onSelected(e: MouseEvent) {
+    e.stopPropagation();
     props.onWordSelected(props.word, !props.selected, {
       shiftSelection: e.shiftKey,
     });
   }
 
   return (
-    <Card>
-      <CardContent class="flex items-center gap-1 px-2 py-0.5">
-        <Checkbox
-          checked={props.selected}
-          id={`word-selector-${props.word.id}`}
-          onClick={(e: MouseEvent) => onClick(e)}
-          // Prevents text selection when shift clicking
-          onMouseDown={(e: MouseEvent) => e.preventDefault()}
-        />
-        <span>{props.word.original}</span>
-        <span class="mx-2 text-center">-</span>
-        <span>{props.word.translation}</span>
-        <Button
-          class="size-8 p-0 opacity-50 hover:opacity-80"
-          title="Edit word"
-          variant="ghost"
-          onClick={() => props.onWordDetailToOpen(props.word)}
-        >
-          <HiOutlinePencil />
-        </Button>
+    <div
+      class="flex cursor-pointer items-center gap-1 py-2"
+      onClick={() => props.onWordDetailToOpen(props.word)}
+    >
+      <Checkbox
+        checked={props.selected}
+        id={`word-selector-${props.word.id}`}
+        onClick={(e: MouseEvent) => onSelected(e)}
+        // Prevents text selection when shift clicking
+        onMouseDown={(e: MouseEvent) => e.preventDefault()}
+      />
+      <span>{props.word.original}</span>
+      <span class="mx-2 text-center">-</span>
+      <span>{props.word.translation}</span>
 
-        <Show when={props.word.notes}>
-          <Popover>
-            <PopoverTrigger
-              as={(props: object) => (
-                <Button
-                  {...props}
-                  class="size-8 p-0 text-blue-600 hover:text-blue-900"
-                  variant="ghost"
-                >
-                  <HiSolidInformationCircle size={20} title="Show notes" />
-                </Button>
-              )}
-            ></PopoverTrigger>
-            <PopoverContent>{props.word.notes}</PopoverContent>
-          </Popover>
-        </Show>
-      </CardContent>
-    </Card>
+      <span class="ml-auto inline-flex items-center gap-1 md:gap-2">
+        <span class="ml-2 text-right text-xs text-neutral-500">
+          {props.word.createdAt.toLocaleDateString(undefined, dateOptions)}
+        </span>
+      </span>
+    </div>
   );
 };
