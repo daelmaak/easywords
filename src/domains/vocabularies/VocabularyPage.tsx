@@ -47,6 +47,8 @@ import {
   testProgressKey,
 } from '../vocabulary-results/resources/cache-keys';
 import { VocabularyWordsSorter } from './components/VocabularyWordsSorter';
+import { WordEditorDialog } from './components/WordEditorDialog';
+import { createMediaQuery } from '@solid-primitives/media';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -62,6 +64,7 @@ export const VocabularyPage: Component = () => {
     asc: searchParams['sortasc'] === 'false',
     by: (searchParams['sortby'] as SortState['by']) ?? 'createdAt',
   });
+  const [wordToShowDetail, setWordToShowDetail] = createSignal<Word>();
 
   const vocabularyQuery = createQuery(() => ({
     queryKey: [VOCABULARY_QUERY_KEY, vocabularyId],
@@ -77,6 +80,8 @@ export const VocabularyPage: Component = () => {
     queryKey: lastTestResultKey(vocabularyId),
     queryFn: () => fetchLastTestResult(vocabularyId).then(r => r ?? null),
   }));
+
+  const displayFullWordDetail = createMediaQuery('(min-width: 1024px)');
 
   async function deleteSelectedWords() {
     const words = selectedWords();
@@ -103,8 +108,9 @@ export const VocabularyPage: Component = () => {
     }
   }
 
-  async function onWordsEdited(updatedWords: Word[]) {
+  async function onWordsEdited(...updatedWords: Word[]) {
     await updateWords(...updatedWords);
+    setWordToShowDetail(undefined);
   }
 
   function testVocabulary(config: { useSavedProgress: boolean }) {
@@ -240,7 +246,21 @@ export const VocabularyPage: Component = () => {
           </Show>
         </div>
 
-        <div class="hidden h-full grow lg:block">Detail content</div>
+        <Show
+          when={displayFullWordDetail()}
+          fallback={
+            <WordEditorDialog
+              word={wordToShowDetail()}
+              open={wordToShowDetail() != null}
+              onClose={() => setWordToShowDetail(undefined)}
+              onWordEdited={onWordsEdited}
+            />
+          }
+        >
+          <div class="hidden h-full grow lg:block">
+            {wordToShowDetail()?.original}
+          </div>
+        </Show>
 
         <div class="flex flex-grow flex-col rounded-lg bg-white shadow-md lg:flex-grow-0">
           <div class="sticky top-0 z-10 flex w-full flex-wrap items-center gap-1 rounded-t-lg border-b border-neutral-100 bg-background bg-white px-2 pb-2 pt-1 text-sm md:static md:z-0 lg:gap-2">
@@ -300,7 +320,7 @@ export const VocabularyPage: Component = () => {
                   words={searchedWords() ?? v().words}
                   selectedWords={selectedWords()}
                   sort={sortState()}
-                  onWordsEdited={onWordsEdited}
+                  onWordDetail={setWordToShowDetail}
                   onWordsSelected={setSelectedWords}
                 />
               )}
