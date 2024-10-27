@@ -1,8 +1,10 @@
 import Fuse from 'fuse.js';
 import { createEffect, createSignal } from 'solid-js';
 import { Input } from '../ui/input';
+import { cn } from '~/lib/utils';
 
 interface Props<T> {
+  class?: string;
   terms: T[];
   searchKeys: (keyof T)[];
   placeholder?: string;
@@ -36,7 +38,7 @@ export const Search = <T,>(props: Props<T>) => {
 
   return (
     <Input
-      class="w-auto"
+      class={cn('w-auto', props.class)}
       placeholder={props.placeholder ?? 'Search...'}
       type="search"
       onInput={e => search(e.target.value)}

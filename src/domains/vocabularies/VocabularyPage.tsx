@@ -2,7 +2,6 @@ import { A, useNavigate, useParams, useSearchParams } from '@solidjs/router';
 import { cx } from 'class-variance-authority';
 import {
   HiOutlineAcademicCap,
-  HiOutlineArrowsUpDown,
   HiOutlinePlus,
   HiOutlineTrash,
 } from 'solid-icons/hi';
@@ -22,12 +21,6 @@ import {
   SheetTitle,
 } from '~/components/ui/sheet';
 import { Checkbox } from '../../components/ui/checkbox';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '../../components/ui/dropdown-menu';
 import type { SortState } from './components/VocabularyWords';
 import { VocabularyWords } from './components/VocabularyWords';
 import type { Word } from './model/vocabulary-model';
@@ -53,6 +46,7 @@ import {
   lastTestResultKey,
   testProgressKey,
 } from '../vocabulary-results/resources/cache-keys';
+import { VocabularyWordsSorter } from './components/VocabularyWordsSorter';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -157,7 +151,7 @@ export const VocabularyPage: Component = () => {
   }
 
   return (
-    <main class="page-container flex h-full flex-col gap-4 sm:flex-row">
+    <main class="page-container flex h-full flex-col gap-4 bg-neutral-100 p-2 sm:max-h-[calc(100vh-57px)] sm:flex-row">
       <Suspense fallback={<div class="m-auto">Loading ...</div>}>
         <Sheet open={openedAddWords()} onOpenChange={setOpenedAddWords}>
           <SheetContent
@@ -175,7 +169,7 @@ export const VocabularyPage: Component = () => {
           </SheetContent>
         </Sheet>
 
-        <div class="min-w-56 sm:max-w-72 md:min-w-64">
+        <div class="min-w-56 rounded-lg bg-white px-6 py-4 shadow-md md:min-w-64">
           <BackLink class="mb-4">Back to vocabularies</BackLink>
           <Show when={vocabularyQuery.data}>
             {v => (
@@ -246,59 +240,10 @@ export const VocabularyPage: Component = () => {
           </Show>
         </div>
 
-        <div class="mt-[-1rem] flex flex-grow flex-col items-center">
-          <div class="sticky top-0 z-10 flex w-full flex-wrap items-center justify-center gap-2 bg-background py-2 lg:gap-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Button class="text-base font-normal" variant="ghost">
-                  <HiOutlineArrowsUpDown class="mr-1 size-5" /> Sort
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent class="p-4">
-                <DropdownMenuItem
-                  as="button"
-                  class="text-base"
-                  onClick={() => sort({ by: 'createdAt', asc: true })}
-                >
-                  Oldest to newest
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  as="button"
-                  class="text-base"
-                  onClick={() => sort({ by: 'createdAt', asc: false })}
-                >
-                  Newest to oldest
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  as="button"
-                  class="text-base"
-                  onClick={() => sort({ by: 'original', asc: true })}
-                >
-                  Original (A-Z)
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  as="button"
-                  class="text-base"
-                  onClick={() => sort({ by: 'original', asc: false })}
-                >
-                  Original (Z-A)
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  as="button"
-                  class="text-base"
-                  onClick={() => sort({ by: 'translation', asc: true })}
-                >
-                  Translation (A-Z)
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  as="button"
-                  class="text-base"
-                  onClick={() => sort({ by: 'translation', asc: false })}
-                >
-                  Translation (Z-A)
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+        <div class="hidden h-full grow lg:block">Detail content</div>
+
+        <div class="flex flex-grow flex-col rounded-lg bg-white shadow-md lg:flex-grow-0">
+          <div class="sticky top-0 z-10 flex w-full flex-wrap items-center gap-1 rounded-t-lg border-b border-neutral-100 bg-background bg-white px-2 pb-2 pt-1 text-sm md:static md:z-0 lg:gap-2">
             <Show when={selectedWords()}>
               <Checkbox
                 checked={
@@ -310,13 +255,14 @@ export const VocabularyPage: Component = () => {
                   selectedWords().length <
                     (vocabularyQuery.data?.words.length ?? 0)
                 }
-                label="Select"
                 onChange={() => onSelectAll(selectedWords().length === 0)}
               />
             </Show>
+            <VocabularyWordsSorter sort={sort} />
             <Show when={vocabularyQuery.data}>
               {v => (
                 <Search
+                  class="h-8 w-40 py-0"
                   placeholder="Search words..."
                   terms={v().words}
                   searchKeys={['original', 'translation']}
@@ -324,18 +270,6 @@ export const VocabularyPage: Component = () => {
                 />
               )}
             </Show>
-            <ConfirmationDialog
-              confirmText="Delete"
-              trigger={
-                <Button size="sm" variant="destructive">
-                  <HiOutlineTrash size={16} /> Delete selected
-                </Button>
-              }
-              triggerClass={cx({
-                'hidden lg:inline lg:invisible': selectedWords().length === 0,
-              })}
-              onConfirm={deleteSelectedWords}
-            />
             <Button
               class={cx({
                 'hidden lg:invisible lg:inline': selectedWords().length === 0,
@@ -344,21 +278,34 @@ export const VocabularyPage: Component = () => {
               variant="default"
               onClick={testSelected}
             >
-              <HiOutlineAcademicCap /> Test selected ({selectedWords().length})
+              <HiOutlineAcademicCap /> Test
             </Button>
+            <ConfirmationDialog
+              confirmText="Delete"
+              trigger={
+                <Button class="px-2" size="sm" variant="ghost">
+                  <HiOutlineTrash size={18} class="text-destructive" />
+                </Button>
+              }
+              triggerClass={cx({
+                'hidden lg:inline lg:invisible': selectedWords().length === 0,
+              })}
+              onConfirm={deleteSelectedWords}
+            />
           </div>
-
-          <Show when={vocabularyQuery.data}>
-            {v => (
-              <VocabularyWords
-                words={searchedWords() ?? v().words}
-                selectedWords={selectedWords()}
-                sort={sortState()}
-                onWordsEdited={onWordsEdited}
-                onWordsSelected={setSelectedWords}
-              />
-            )}
-          </Show>
+          <div class="overflow-y-auto px-2">
+            <Show when={vocabularyQuery.data}>
+              {v => (
+                <VocabularyWords
+                  words={searchedWords() ?? v().words}
+                  selectedWords={selectedWords()}
+                  sort={sortState()}
+                  onWordsEdited={onWordsEdited}
+                  onWordsSelected={setSelectedWords}
+                />
+              )}
+            </Show>
+          </div>
         </div>
       </Suspense>
     </main>
