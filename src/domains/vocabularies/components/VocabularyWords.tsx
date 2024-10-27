@@ -1,8 +1,7 @@
 import type { Component } from 'solid-js';
-import { For, createMemo, createSignal } from 'solid-js';
+import { For, createMemo } from 'solid-js';
 import type { Word } from '../model/vocabulary-model';
 import { VocabularyWord } from './VocabularyWord';
-import { WordEditorDialog } from './WordEditorDialog';
 import { wordsSelector } from '~/util/selection';
 
 export interface SortState {
@@ -14,12 +13,11 @@ interface VocabularyWordsProps {
   words: Word[];
   selectedWords: Word[];
   sort: SortState;
-  onWordsEdited: (words: Word[]) => void;
+  onWordDetail: (word: Word) => void;
   onWordsSelected: (words: Word[]) => void;
 }
 
 export const VocabularyWords: Component<VocabularyWordsProps> = props => {
-  const [wordToEdit, setWordToEdit] = createSignal<Word>();
   const selectWords = wordsSelector();
 
   const sortedWords = createMemo(() => {
@@ -60,11 +58,6 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
   const wordSelected = (word: Word) =>
     !!props.selectedWords.find(sw => word.id === sw.id);
 
-  function onWordEdited(word: Word) {
-    props.onWordsEdited([word]);
-    setWordToEdit(undefined);
-  }
-
   function onWordSelected(
     word: Word,
     selected: boolean,
@@ -82,27 +75,19 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
   }
 
   return (
-    <div class="relative">
-      <WordEditorDialog
-        word={wordToEdit()}
-        open={wordToEdit() != null}
-        onClose={() => setWordToEdit(undefined)}
-        onWordEdited={onWordEdited}
-      />
-      <ul>
-        <For each={sortedWords()}>
-          {word => (
-            <li class="border-b border-neutral-200">
-              <VocabularyWord
-                selected={wordSelected(word)}
-                word={word}
-                onWordSelected={onWordSelected}
-                onWordDetailToOpen={setWordToEdit}
-              />
-            </li>
-          )}
-        </For>
-      </ul>
-    </div>
+    <ul>
+      <For each={sortedWords()}>
+        {word => (
+          <li class="border-b border-neutral-200">
+            <VocabularyWord
+              selected={wordSelected(word)}
+              word={word}
+              onWordSelected={onWordSelected}
+              onWordDetailToOpen={props.onWordDetail}
+            />
+          </li>
+        )}
+      </For>
+    </ul>
   );
 };

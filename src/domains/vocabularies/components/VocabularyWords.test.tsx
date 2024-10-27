@@ -11,7 +11,7 @@ afterEach(() => {
 });
 
 it('should shift select all items in between', async () => {
-  const { onWordEdited, user } = setup();
+  const { onWordDetail, user } = setup();
 
   const [selectedWords, setSelectedWords] = createSignal<Word[]>([]);
   // I am putting random alphabetical order into the retrieved words so that when
@@ -26,7 +26,7 @@ it('should shift select all items in between', async () => {
       words={words}
       selectedWords={selectedWords()}
       sort={{ by: 'original', asc: true }}
-      onWordsEdited={onWordEdited}
+      onWordDetail={onWordDetail}
       onWordsSelected={setSelectedWords}
     />
   ));
@@ -48,7 +48,7 @@ it('should shift select all items in between', async () => {
 });
 
 it('should shift deselect all items in between', async () => {
-  const { onWordEdited, user } = setup();
+  const { onWordDetail, user } = setup();
 
   const [selectedWords, setSelectedWords] = createSignal<Word[]>([]);
   const words = generateWords(5);
@@ -58,7 +58,7 @@ it('should shift deselect all items in between', async () => {
       words={words}
       selectedWords={selectedWords()}
       sort={{ by: 'original', asc: true }}
-      onWordsEdited={onWordEdited}
+      onWordDetail={onWordDetail}
       onWordsSelected={setSelectedWords}
     />
   ));
@@ -78,21 +78,8 @@ it('should shift deselect all items in between', async () => {
   expect(checkedCheckboxes).toHaveLength(1);
 });
 
-function setup() {
-  const onWordEdited = vi.fn();
-  const onWordSelected = vi.fn();
-
-  const user = userEvent.setup();
-
-  return {
-    onWordEdited,
-    onWordSelected,
-    user,
-  };
-}
-
 it('should shift select all items in between when sorted by date added', async () => {
-  const { onWordEdited, user } = setup();
+  const { onWordDetail, user } = setup();
 
   const [selectedWords, setSelectedWords] = createSignal<Word[]>([]);
   // I have to "randomize" the dates a little so that the words stack up differently
@@ -107,7 +94,7 @@ it('should shift select all items in between when sorted by date added', async (
       words={words}
       selectedWords={selectedWords()}
       sort={{ by: 'createdAt', asc: false }}
-      onWordsEdited={onWordEdited}
+      onWordDetail={onWordDetail}
       onWordsSelected={setSelectedWords}
     />
   ));
@@ -146,4 +133,17 @@ async function shiftClick(el: Element, userEvent: UserEvent) {
   await userEvent.keyboard('{Shift>}');
   await userEvent.click(el);
   await userEvent.keyboard('{/Shift}');
+}
+
+function setup() {
+  const onWordDetail = vi.fn();
+  const onWordSelected = vi.fn();
+
+  const user = userEvent.setup();
+
+  return {
+    onWordDetail,
+    onWordSelected,
+    user,
+  };
 }

@@ -1,10 +1,19 @@
-import { createRoot } from 'solid-js';
+import { createRoot, createSignal } from 'solid-js';
 import { vi } from 'vitest';
 import type { ResourcesInit } from './app-init';
 import { initApp } from './app-init';
 import { QueryClient } from '@tanstack/solid-query';
 
 export const initTestApp = () => {
+  vi.mock(import('@solid-primitives/media'), async importOriginal => {
+    const mod = await importOriginal(); // type is inferred
+    return {
+      ...mod,
+      // replace some exports
+      createMediaQuery: vi.fn().mockReturnValue(() => createSignal(true)),
+    };
+  });
+
   const resources = {
     queryClient: new QueryClient({
       defaultOptions: {
