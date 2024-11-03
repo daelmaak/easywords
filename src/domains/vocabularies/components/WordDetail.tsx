@@ -5,9 +5,12 @@ import type { Word } from '../model/vocabulary-model';
 import { fetchWordResults } from '~/domains/vocabulary-results/resources/vocabulary-test-result-resource';
 import { wordResultsKey } from '~/domains/vocabulary-results/resources/cache-keys';
 import { WordDetailProgress } from './WordDetailProgress';
+import { Textarea } from '~/components/ui/textarea';
+import { Input } from '~/components/ui/input';
 
 interface WordDetailProps {
   word: Word;
+  onWordEdited: (word: Word) => void;
 }
 
 export const WordDetail: Component<WordDetailProps> = props => {
@@ -15,6 +18,24 @@ export const WordDetail: Component<WordDetailProps> = props => {
     queryKey: wordResultsKey(props.word.id),
     queryFn: () => fetchWordResults(props.word.id),
   }));
+
+  const handleBlur =
+    (key: keyof Word) =>
+    (
+      e: FocusEvent & {
+        currentTarget: HTMLInputElement | HTMLTextAreaElement;
+      }
+    ) => {
+      const { value } = e.currentTarget;
+
+      if (value === props.word[key]) {
+        return;
+      }
+      props.onWordEdited({
+        ...props.word,
+        [key]: value,
+      });
+    };
 
   return (
     <div class="h-full w-full overflow-y-auto rounded-lg bg-white p-6 shadow-md">
@@ -24,26 +45,67 @@ export const WordDetail: Component<WordDetailProps> = props => {
         <p class="text-xl text-gray-600">{props.word.translation}</p>
       </div>
 
-      {/* Details Section */}
-      <div class="mb-6 grid grid-cols-2 gap-4">
-        <div class="rounded-lg bg-gray-50 p-4">
-          <h3 class="mb-2 font-semibold text-gray-700">Created</h3>
+      {/* Word Section */}
+      <div class="mb-6 flex w-full gap-4">
+        <div class="flex-grow">
+          <label class="mb-2 block font-semibold text-gray-700" for="original">
+            Original
+          </label>
+          <Input
+            id="original"
+            class="rounded-lg border-none bg-gray-50 p-4 text-gray-600"
+            name="original"
+            value={props.word.original}
+            onBlur={handleBlur('original')}
+          />
+        </div>
+
+        <div class="flex-grow">
+          <label
+            class="mb-2 block font-semibold text-gray-700"
+            for="translation"
+          >
+            Translation
+          </label>
+          <Input
+            id="translation"
+            class="rounded-lg border-none bg-gray-50 p-4 text-gray-600"
+            name="translation"
+            value={props.word.translation}
+            onBlur={handleBlur('translation')}
+          />
+        </div>
+      </div>
+
+      {/* Notes Section */}
+      <div class="mb-6">
+        <label class="mb-2 block font-semibold text-gray-700" for="notes">
+          Notes
+        </label>
+        <Textarea
+          id="notes"
+          class="rounded-lg border-none bg-gray-50 p-4 text-base text-gray-600"
+          name="notes"
+          placeholder="Notes"
+          rows="2"
+          value={props.word.notes}
+          onBlur={handleBlur('notes')}
+        />
+      </div>
+
+      <div class="mb-6">
+        <label class="mb-2 block font-semibold text-gray-700" for="created">
+          Created
+        </label>
+        <div id="created" class="rounded-lg bg-gray-50 p-4">
           <p class="text-gray-600">
             {new Date(props.word.createdAt).toLocaleDateString()}
           </p>
         </div>
       </div>
 
-      {/* Notes Section */}
       <div class="mb-6">
-        <h3 class="mb-2 font-semibold text-gray-700">Notes</h3>
-        <p class="rounded-lg bg-gray-50 p-4 text-gray-600">
-          {props.word.notes || 'No notes available'}
-        </p>
-      </div>
-
-      <div class="mb-6">
-        <h3 class="mb-4 font-semibold text-gray-700">Test History</h3>
+        <span class="mb-4 font-semibold text-gray-700">Test History</span>
         <div>
           <Suspense>
             <Show
