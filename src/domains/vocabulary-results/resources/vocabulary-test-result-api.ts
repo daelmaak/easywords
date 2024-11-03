@@ -59,6 +59,15 @@ async function fetchLastTestResult(
   return result.data;
 }
 
+async function fetchWordResults(wordId: number) {
+  const result = await supabase
+    .from('vocabulary_test_result_words')
+    .select('*')
+    .eq('word_id', wordId);
+
+  return result.data ?? undefined;
+}
+
 async function hasTestProgress(vocabularyId: number) {
   const result = await supabase
     .from('vocabulary_test_results')
@@ -100,6 +109,7 @@ async function saveTestResult(testResult: TestResultToCreateDB) {
 }
 
 export const vocabularyTestResultApi = {
+  fetchWordResults,
   fetchLastTestResult,
   hasTestProgress,
   saveTestResult,

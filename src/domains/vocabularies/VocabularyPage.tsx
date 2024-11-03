@@ -31,6 +31,7 @@ import { VocabularyWordsSorter } from './components/VocabularyWordsSorter';
 import { WordEditorDialog } from './components/WordEditorDialog';
 import { createMediaQuery } from '@solid-primitives/media';
 import { VocabularySummary } from './components/VocabularySummary';
+import { WordDetail } from './components/WordDetail';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -131,7 +132,9 @@ export const VocabularyPage: Component = () => {
           }
         >
           <div class="hidden h-full grow lg:block">
-            {wordToShowDetail()?.original}
+            <Show when={wordToShowDetail()}>
+              {word => <WordDetail word={word()} />}
+            </Show>
           </div>
         </Show>
 
