@@ -1,4 +1,4 @@
-import { createEffect, type Component } from 'solid-js';
+import { createEffect, createMemo, type Component } from 'solid-js';
 import Chart from 'chart.js/auto';
 import type { ChartData, ChartOptions } from 'chart.js';
 import type { Word } from '../model/vocabulary-model';
@@ -13,6 +13,8 @@ export const WordDetailProgress: Component<WordDetailProgressProps> = props => {
   let canvas!: HTMLCanvasElement;
   let chart: Chart<'line'> | undefined;
 
+  const results = createMemo(() => props.results?.filter(r => r.done) ?? []);
+
   createEffect(() => {
     if (!props.results) return;
 
@@ -21,14 +23,12 @@ export const WordDetailProgress: Component<WordDetailProgressProps> = props => {
     }
 
     const chartData: ChartData<'line'> = {
-      labels:
-        props.results?.map(r => new Date(r.created_at).toLocaleDateString()) ??
-        [],
+      labels: results().map(r => new Date(r.created_at).toLocaleDateString()),
       datasets: [
         {
-          data: props.results.map(r => r.result),
+          data: results().map(r => r.result),
           borderColor: '#888888',
-          backgroundColor: props.results.map(r => {
+          backgroundColor: results().map(r => {
             switch (r.result) {
               case 1:
                 return 'rgb(34, 197, 94)';
