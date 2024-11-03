@@ -2,7 +2,7 @@ import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
 import { cx } from 'class-variance-authority';
 import { HiOutlineAcademicCap, HiOutlineTrash } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
-import { Show, Suspense, createSignal } from 'solid-js';
+import { Show, Suspense, createMemo, createSignal } from 'solid-js';
 import { ConfirmationDialog } from '~/components/ConfirmationDialog';
 import { Search } from '~/components/search/Search';
 import { Button } from '~/components/ui/button';
@@ -45,7 +45,7 @@ export const VocabularyPage: Component = () => {
     asc: searchParams['sortasc'] === 'false',
     by: (searchParams['sortby'] as SortState['by']) ?? 'createdAt',
   });
-  const [wordToShowDetail, setWordToShowDetail] = createSignal<Word>();
+  const [wordToShowDetailId, setWordToShowDetailId] = createSignal<number>();
 
   const vocabularyQuery = createQuery(() => ({
     queryKey: [VOCABULARY_QUERY_KEY, vocabularyId],
@@ -63,6 +63,12 @@ export const VocabularyPage: Component = () => {
   }));
 
   const displayFullWordDetail = createMediaQuery('(min-width: 1024px)');
+
+  const wordToShowDetail = createMemo(() =>
+    wordToShowDetailId()
+      ? vocabularyQuery.data?.words.find(w => w.id === wordToShowDetailId())
+      : undefined
+  );
 
   async function deleteSelectedWords() {
     const words = selectedWords();
@@ -82,9 +88,12 @@ export const VocabularyPage: Component = () => {
     }
   }
 
-  async function onWordsEdited(...updatedWords: Word[]) {
-    await updateWords(...updatedWords);
-    setWordToShowDetail(undefined);
+  async function onWordsEdited(updatedWord: Word, resetWordToShow = false) {
+    await updateWords(updatedWord);
+
+    if (resetWordToShow) {
+      setWordToShowDetailId(undefined);
+    }
   }
 
   function testVocabulary(config: { useSavedProgress: boolean }) {
@@ -126,14 +135,16 @@ export const VocabularyPage: Component = () => {
             <WordEditorDialog
               word={wordToShowDetail()}
               open={wordToShowDetail() != null}
-              onClose={() => setWordToShowDetail(undefined)}
-              onWordEdited={onWordsEdited}
+              onClose={() => setWordToShowDetailId(undefined)}
+              onWordEdited={w => onWordsEdited(w, true)}
             />
           }
         >
           <div class="hidden h-full grow lg:block">
             <Show when={wordToShowDetail()}>
-              {word => <WordDetail word={word()} />}
+              {word => (
+                <WordDetail word={word()} onWordEdited={onWordsEdited} />
+              )}
             </Show>
           </div>
         </Show>
@@ -196,7 +207,7 @@ export const VocabularyPage: Component = () => {
                   words={searchedWords() ?? v().words}
                   selectedWords={selectedWords()}
                   sort={sortState()}
-                  onWordDetail={setWordToShowDetail}
+                  onWordDetail={w => setWordToShowDetailId(w.id)}
                   onWordsSelected={setSelectedWords}
                 />
               )}
