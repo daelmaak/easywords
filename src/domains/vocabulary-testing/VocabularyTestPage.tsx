@@ -129,7 +129,7 @@ export const VocabularyTestPage = () => {
                     onChange={setVocabularySettings}
                   />
                 </aside>
-                <main class="m-auto mb-4">
+                <main class="m-auto mb-4 w-full">
                   <VocabularyTester
                     testSettings={vocabularySettings}
                     applySavedProgress={searchParams.useSavedProgress != null}

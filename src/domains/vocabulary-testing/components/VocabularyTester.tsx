@@ -396,7 +396,7 @@ export const VocabularyTester: Component<TesterProps> = (
 
       <Progress
         aria-label="Words done progress"
-        class="mx-auto my-6 w-full sm:mt-20"
+        class="mx-auto my-6 w-full max-w-96 sm:mt-20 sm:w-80"
         value={percentageDone()}
         getValueLabel={() =>
           `${props.words.length - store.wordsLeft.length} out of ${
