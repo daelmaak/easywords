@@ -2,6 +2,7 @@ import type { QueryClient } from '@tanstack/solid-query';
 import type {
   TestResult,
   TestResultToCreate,
+  TestResultWord,
 } from '../model/test-result-model';
 import type { VocabularyTestResultApi } from './vocabulary-test-result-api';
 import { lastTestResultKey, testProgressKey } from './cache-keys';
@@ -21,6 +22,12 @@ export async function fetchLastTestResult(
   vocabularyId: number
 ): Promise<TestResult | undefined> {
   return await api.fetchLastTestResult(vocabularyId, { done: true });
+}
+
+export async function fetchWordResults(
+  wordId: number
+): Promise<TestResultWord[] | undefined> {
+  return api.fetchWordResults(wordId);
 }
 
 export async function fetchTestProgress(

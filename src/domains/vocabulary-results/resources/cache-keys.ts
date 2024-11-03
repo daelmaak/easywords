@@ -5,3 +5,7 @@ export function testProgressKey(vocabularyId: number) {
 export function lastTestResultKey(vocabularyId: number) {
   return ['vocabulary', vocabularyId, 'lastResult'];
 }
+
+export function wordResultsKey(wordId: number) {
+  return ['wordResults', wordId];
+}
