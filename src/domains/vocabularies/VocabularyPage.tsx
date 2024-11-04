@@ -1,12 +1,6 @@
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
-import { cx } from 'class-variance-authority';
-import { HiOutlineAcademicCap, HiOutlineTrash } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
 import { Show, Suspense, createMemo, createSignal } from 'solid-js';
-import { ConfirmationDialog } from '~/components/ConfirmationDialog';
-import { Search } from '~/components/search/Search';
-import { Button } from '~/components/ui/button';
-import { Checkbox } from '../../components/ui/checkbox';
 import type { SortState } from './components/VocabularyWords';
 import { VocabularyWords } from './components/VocabularyWords';
 import type { Word } from './model/vocabulary-model';
@@ -27,11 +21,11 @@ import {
   lastTestResultKey,
   testProgressKey,
 } from '../vocabulary-results/resources/cache-keys';
-import { VocabularyWordsSorter } from './components/VocabularyWordsSorter';
 import { WordEditorDialog } from './components/WordEditorDialog';
 import { createMediaQuery } from '@solid-primitives/media';
 import { VocabularySummary } from './components/VocabularySummary';
 import { WordDetail } from './components/WordDetail';
+import { VocabularyWordsToolbar } from './components/VocabularyWordsToolbar';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -150,54 +144,15 @@ export const VocabularyPage: Component = () => {
         </Show>
 
         <div class="flex flex-grow flex-col rounded-lg bg-white shadow-md lg:flex-grow-0">
-          <div class="sticky top-0 z-10 flex w-full flex-wrap items-center gap-1 rounded-t-lg border-b border-neutral-100 bg-background bg-white px-2 pb-2 pt-1 text-sm md:static md:z-0 lg:gap-2">
-            <Show when={selectedWords()}>
-              <Checkbox
-                checked={
-                  selectedWords().length ===
-                  (vocabularyQuery.data?.words.length ?? 0)
-                }
-                indeterminate={
-                  selectedWords().length > 0 &&
-                  selectedWords().length <
-                    (vocabularyQuery.data?.words.length ?? 0)
-                }
-                onChange={() => onSelectAll(selectedWords().length === 0)}
-              />
-            </Show>
-            <VocabularyWordsSorter sort={sort} />
-            <Show when={vocabularyQuery.data}>
-              {v => (
-                <Search
-                  class="h-8 w-40 py-0"
-                  placeholder="Search words..."
-                  terms={v().words}
-                  searchKeys={['original', 'translation']}
-                  onSearch={setSearchedWords}
-                />
-              )}
-            </Show>
-            <Button
-              class={cx({
-                'hidden lg:invisible lg:inline': selectedWords().length === 0,
-              })}
-              size="sm"
-              variant="default"
-              onClick={testSelected}
-            >
-              <HiOutlineAcademicCap /> Test
-            </Button>
-            <ConfirmationDialog
-              confirmText="Delete"
-              trigger={
-                <Button class="px-2" size="sm" variant="ghost">
-                  <HiOutlineTrash size={18} class="text-destructive" />
-                </Button>
-              }
-              triggerClass={cx({
-                'hidden lg:inline lg:invisible': selectedWords().length === 0,
-              })}
-              onConfirm={deleteSelectedWords}
+          <div class="sticky top-0 z-10 rounded-t-lg bg-background md:static md:z-0">
+            <VocabularyWordsToolbar
+              words={vocabularyQuery.data?.words}
+              selectedWords={selectedWords()}
+              onSearch={setSearchedWords}
+              onSelectAll={onSelectAll}
+              onSort={sort}
+              onTestSelected={testSelected}
+              onDeleteSelected={deleteSelectedWords}
             />
           </div>
           <div class="overflow-y-auto px-2">
