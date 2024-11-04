@@ -50,7 +50,7 @@ export const VocabularyResultsMini: Component<Props> = props => {
         </div>
         <figure class="mt-3">
           <figcaption>
-            <dl class="flex gap-2 text-sm">
+            <dl class="flex flex-wrap gap-x-2 text-sm">
               {resultGroups.map(group => (
                 <Show when={getResultCount(group.result) > 0}>
                   <div class="mt-1 flex items-center gap-1">
