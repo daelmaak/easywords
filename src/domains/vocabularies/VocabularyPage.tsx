@@ -120,7 +120,7 @@ export const VocabularyPage: Component = () => {
   return (
     <main class="page-container flex h-full flex-col gap-4 bg-neutral-100 p-2 sm:max-h-[calc(100vh-57px)] sm:flex-row">
       <Suspense fallback={<div class="m-auto">Loading ...</div>}>
-        <div class="min-w-56 rounded-lg bg-white px-6 py-4 shadow-md md:min-w-64">
+        <div class="min-w-56 rounded-lg bg-white px-6 py-4 shadow-md md:min-w-64 md:max-w-80">
           <VocabularySummary
             vocabulary={vocabularyQuery.data}
             lastTestResult={lastTestResultQuery.data}
