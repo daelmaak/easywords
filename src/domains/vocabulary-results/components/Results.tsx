@@ -4,7 +4,7 @@ import { Button } from '~/components/ui/button';
 import { WordEditorDialog } from '~/domains/vocabularies/components/WordEditorDialog';
 import type { Word } from '~/domains/vocabularies/model/vocabulary-model';
 import {
-  TestWordResult,
+  TestWordStatus,
   type TestResult,
 } from '~/domains/vocabulary-results/model/test-result-model';
 import { ResultWordGuessesVisualisation } from './ResultWordGuessesVisualisation';
@@ -29,7 +29,7 @@ export function Results(props: ResultsProps) {
   const [selectedWords, setSelectedWords] = createSignal<Word[]>([]);
 
   const resultsMap = () =>
-    new Map<TestWordResult, TestResult['words']>(
+    new Map<TestWordStatus, TestResult['words']>(
       Object.entries(
         groupBy(
           props.results.words.filter(w => w.result != null),
@@ -37,13 +37,13 @@ export function Results(props: ResultsProps) {
         )
       )
         .filter(([key, value]) => key != null && value.length > 0)
-        .map(([key, value]) => [Number(key) as TestWordResult, value])
+        .map(([key, value]) => [Number(key) as TestWordStatus, value])
     );
 
   const invalidWords = () =>
     props.results.words
       .filter(
-        word => word.result != null && word.result >= TestWordResult.Mediocre
+        word => word.result != null && word.result >= TestWordStatus.Mediocre
       )
       .map(word => props.words.find(w => w.id === word.word_id)!);
 
@@ -56,11 +56,11 @@ export function Results(props: ResultsProps) {
       props.results.words.reduce((sum, word) => sum + (word.result ?? 0), 0) /
       props.results.words.length;
 
-    if (averageResult <= TestWordResult.Correct + 0.5) {
+    if (averageResult <= TestWordStatus.Correct + 0.5) {
       return 'Great job! You are so close to perfection! 🚀';
     }
 
-    if (averageResult <= TestWordResult.Ok + 0.5) {
+    if (averageResult <= TestWordStatus.Ok + 0.5) {
       return 'Good job! Keep practicing and you will be a ⭐!';
     }
 
@@ -101,7 +101,7 @@ export function Results(props: ResultsProps) {
                     style={`background-color: ${RESULT_COLORS[result]};`}
                   ></div>
                   <span>
-                    {words.length} {TestWordResult[result]}
+                    {words.length} {TestWordStatus[result]}
                   </span>
                 </div>
               )}

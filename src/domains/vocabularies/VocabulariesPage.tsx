@@ -16,7 +16,7 @@ import {
   createVocabulary,
   deleteVocabulary,
 } from './resources/vocabulary-resource';
-import { navigateToVocabularyTest } from './util/navigation';
+import { navigateToVocabularyTest } from '../vocabulary-testing/util/navigation';
 import { createQuery } from '@tanstack/solid-query';
 import {
   fetchVocabularies,

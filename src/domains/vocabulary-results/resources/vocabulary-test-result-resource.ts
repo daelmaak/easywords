@@ -24,6 +24,13 @@ export async function fetchLastTestResult(
   return await api.fetchLastTestResult(vocabularyId, { done: true });
 }
 
+export async function fetchTestResults(
+  vocabularyId: number,
+  options: { upToDaysAgo: number }
+) {
+  return api.fetchTestResults(vocabularyId, options);
+}
+
 export async function fetchWordResults(
   wordId: number
 ): Promise<TestResultWord[] | undefined> {

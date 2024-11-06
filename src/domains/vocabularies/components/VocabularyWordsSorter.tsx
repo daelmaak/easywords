@@ -65,6 +65,20 @@ export const VocabularyWordsSorter: Component<
       >
         Translation (Z-A)
       </DropdownMenuItem>
+      <DropdownMenuItem
+        as="button"
+        class="text-base"
+        onClick={() => props.sort({ by: 'latestTestDate', asc: false })}
+      >
+        Tested (newest first)
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        as="button"
+        class="text-base"
+        onClick={() => props.sort({ by: 'latestTestDate', asc: true })}
+      >
+        Tested (oldest first)
+      </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
 );

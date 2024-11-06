@@ -6,7 +6,7 @@ import type {
 } from '../resources/vocabulary-test-result-api';
 import type { PartialExcept } from '~/util/type';
 
-export enum TestWordResult {
+export enum TestWordStatus {
   NotDone = 0,
   Correct,
   Ok,
@@ -19,8 +19,8 @@ export interface TestResult extends TestResultDB {
 }
 
 export interface TestResultWord extends TestResultWordDB {
-  attempts?: TestWordResult[];
-  result: TestWordResult;
+  attempts?: TestWordStatus[];
+  result: TestWordStatus;
 }
 
 export interface TestResultToCreate extends TestResultToCreateDB {

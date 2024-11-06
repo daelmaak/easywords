@@ -6,11 +6,11 @@ import { VocabularyWords } from './components/VocabularyWords';
 import type { Word } from './model/vocabulary-model';
 import {
   deleteWords,
-  fetchVocabulary,
+  fetchVocabularyWithResults,
   updateWords,
   VOCABULARY_QUERY_KEY,
 } from './resources/vocabulary-resource';
-import { navigateToVocabularyTest } from './util/navigation';
+import { navigateToVocabularyTest } from '../vocabulary-testing/util/navigation';
 import {
   fetchLastTestResult,
   fetchTestProgress,
@@ -43,7 +43,7 @@ export const VocabularyPage: Component = () => {
 
   const vocabularyQuery = createQuery(() => ({
     queryKey: [VOCABULARY_QUERY_KEY, vocabularyId],
-    queryFn: () => fetchVocabulary(vocabularyId),
+    queryFn: () => fetchVocabularyWithResults(vocabularyId),
   }));
 
   const testProgressQuery = createQuery(() => ({
@@ -156,17 +156,19 @@ export const VocabularyPage: Component = () => {
             />
           </div>
           <div class="overflow-y-auto px-2">
-            <Show when={vocabularyQuery.data}>
-              {v => (
-                <VocabularyWords
-                  words={searchedWords() ?? v().words}
-                  selectedWords={selectedWords()}
-                  sort={sortState()}
-                  onWordDetail={w => setWordToShowDetailId(w.id)}
-                  onWordsSelected={setSelectedWords}
-                />
-              )}
-            </Show>
+            <Suspense fallback={<div class="m-auto">Loading ...</div>}>
+              <Show when={vocabularyQuery.data}>
+                {v => (
+                  <VocabularyWords
+                    words={searchedWords() ?? v().words}
+                    selectedWords={selectedWords()}
+                    sort={sortState()}
+                    onWordDetail={w => setWordToShowDetailId(w.id)}
+                    onWordsSelected={setSelectedWords}
+                  />
+                )}
+              </Show>
+            </Suspense>
           </div>
         </div>
       </Suspense>

@@ -25,7 +25,7 @@ import type {
   TestResultToCreate,
   TestResultWordToCreate,
 } from '~/domains/vocabulary-results/model/test-result-model';
-import { TestWordResult } from '~/domains/vocabulary-results/model/test-result-model';
+import { TestWordStatus } from '~/domains/vocabulary-results/model/test-result-model';
 import { GuessTester } from './GuessTester';
 
 export type VocabularyTestMode = 'guess' | 'write';
@@ -63,7 +63,7 @@ export const VocabularyTester: Component<TesterProps> = (
       done: false,
       word_id: w.id,
       attempts: [],
-      result: TestWordResult.NotDone,
+      result: TestWordStatus.NotDone,
     })),
   });
 
@@ -193,12 +193,12 @@ export const VocabularyTester: Component<TesterProps> = (
     setNextWord();
   }
 
-  function onGuessResult(correctness: TestWordResult) {
+  function onGuessResult(correctness: TestWordStatus) {
     const resultWordIndex = store.resultWords.findIndex(
       rw => rw.word_id === currentWord()?.id
     );
 
-    const isValid = correctness === TestWordResult.Correct;
+    const isValid = correctness === TestWordStatus.Correct;
 
     setStore('resultWords', resultWordIndex, rw => {
       const newAttempts = [...rw.attempts!, correctness];
@@ -211,7 +211,7 @@ export const VocabularyTester: Component<TesterProps> = (
 
       return {
         ...rw,
-        result: averageCorrectness as TestWordResult,
+        result: averageCorrectness as TestWordStatus,
         done: isDone,
         attempts: newAttempts,
       };
@@ -236,15 +236,15 @@ export const VocabularyTester: Component<TesterProps> = (
     if (valid) {
       setStore('resultWords', resultWordIndex, rw => ({
         ...rw,
-        result: TestWordResult.Correct,
-        attempts: [...rw.attempts!, TestWordResult.Correct],
+        result: TestWordStatus.Correct,
+        attempts: [...rw.attempts!, TestWordStatus.Correct],
         done: true,
       }));
     } else {
       setStore('resultWords', resultWordIndex, rw => ({
         ...rw,
-        attempts: [...rw.attempts!, TestWordResult.Wrong],
-        result: TestWordResult.Wrong,
+        attempts: [...rw.attempts!, TestWordStatus.Wrong],
+        result: TestWordStatus.Wrong,
       }));
     }
 

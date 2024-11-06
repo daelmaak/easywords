@@ -7,7 +7,7 @@ import {
 } from '../vocabularies/resources/vocabulary-resource';
 import { fetchLastTestResult } from './resources/vocabulary-test-result-resource';
 import type { Word } from '../vocabularies/model/vocabulary-model';
-import { navigateToVocabularyTest } from '../vocabularies/util/navigation';
+import { navigateToVocabularyTest } from '../vocabulary-testing/util/navigation';
 import { BackLink } from '~/components/BackLink';
 import { createQuery } from '@tanstack/solid-query';
 import { lastTestResultKey } from './resources/cache-keys';

@@ -1,5 +1,5 @@
 import { Match, Show, Switch, type Component } from 'solid-js';
-import { TestWordResult, type TestResult } from '../model/test-result-model';
+import { TestWordStatus, type TestResult } from '../model/test-result-model';
 import { Card, CardContent } from '~/components/ui/card';
 import { RESULT_COLORS } from '../model/colors';
 import { HiOutlineCheckCircle, HiOutlinePauseCircle } from 'solid-icons/hi';
@@ -9,19 +9,19 @@ interface Props {
 }
 
 const resultGroups = [
-  { label: 'Correct', result: TestWordResult.Correct },
-  { label: 'Ok', result: TestWordResult.Ok },
-  { label: 'Mediocre', result: TestWordResult.Mediocre },
-  { label: 'Wrong', result: TestWordResult.Wrong },
-  { label: 'To do', result: TestWordResult.NotDone },
+  { label: 'Correct', result: TestWordStatus.Correct },
+  { label: 'Ok', result: TestWordStatus.Ok },
+  { label: 'Mediocre', result: TestWordStatus.Mediocre },
+  { label: 'Wrong', result: TestWordStatus.Wrong },
+  { label: 'To do', result: TestWordStatus.NotDone },
 ];
 
 export const VocabularyResultsMini: Component<Props> = props => {
-  const getResultCount = (result: TestWordResult) => {
+  const getResultCount = (result: TestWordStatus) => {
     return props.result.words.filter(word => word.result === result).length;
   };
 
-  const getColorForStatus = (result: TestWordResult) => {
+  const getColorForStatus = (result: TestWordStatus) => {
     return RESULT_COLORS[result];
   };
 
