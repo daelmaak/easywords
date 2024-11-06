@@ -1,6 +1,8 @@
-import type { Component } from 'solid-js';
+import { Show, type Component } from 'solid-js';
 import { Checkbox } from '../../../components/ui/checkbox';
 import type { Word } from '../model/vocabulary-model';
+import { LifeLine } from '~/components/LifeLine';
+import { HiOutlineAcademicCap, HiOutlinePlus } from 'solid-icons/hi';
 
 interface Props {
   word: Word;
@@ -28,25 +30,44 @@ export const VocabularyWord: Component<Props> = props => {
 
   return (
     <div
-      class="flex cursor-pointer items-center gap-1 py-2"
+      class="flex cursor-pointer items-center gap-1 py-1 pr-2"
       onClick={() => props.onWordDetailToOpen(props.word)}
     >
       <Checkbox
+        class="mt-1 self-start"
         checked={props.selected}
         id={`word-selector-${props.word.id}`}
         onClick={(e: MouseEvent) => onSelected(e)}
         // Prevents text selection when shift clicking
         onMouseDown={(e: MouseEvent) => e.preventDefault()}
       />
-      <span>{props.word.original}</span>
-      <span class="mx-2 text-center">-</span>
-      <span>{props.word.translation}</span>
 
-      <span class="ml-auto inline-flex items-center gap-1 md:gap-2">
-        <span class="ml-2 text-right text-xs text-neutral-500">
-          {props.word.createdAt.toLocaleDateString(undefined, dateOptions)}
-        </span>
-      </span>
+      <div class="flex grow flex-col">
+        <div class="flex items-center gap-x-1">
+          <span>{props.word.original}</span>
+          <span class="mx-2 text-center">-</span>
+          <span>{props.word.translation}</span>
+        </div>
+        <div
+          class="flex gap-4 pr-4 text-xs text-neutral-400"
+          onClick={e => e.stopPropagation()}
+        >
+          <span class="inline-flex items-center gap-1">
+            <HiOutlinePlus size={14} />
+            {props.word.createdAt.toLocaleDateString(undefined, dateOptions)}
+          </span>
+          <Show when={props.word.latestTestDate}>
+            {latestTestDate => (
+              <span class="inline-flex items-center gap-1">
+                <HiOutlineAcademicCap size={14} />
+                {latestTestDate().toLocaleDateString(undefined, dateOptions)}
+              </span>
+            )}
+          </Show>
+        </div>
+      </div>
+
+      <LifeLine results={props.word.results} />
     </div>
   );
 };

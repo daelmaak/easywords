@@ -80,7 +80,7 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
   }
 
   return (
-    <ul>
+    <ul class="mb-24">
       <For each={sortedWords()}>
         {word => (
           <li class="border-b border-neutral-200">
