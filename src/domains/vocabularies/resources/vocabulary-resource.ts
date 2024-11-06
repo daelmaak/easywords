@@ -14,8 +14,13 @@ import {
 } from './vocabulary-transform';
 import { VOCABULARIES_QUERY_KEY } from './vocabularies-resource';
 import type { WordTranslation } from '~/model/word-translation';
+import type { VocabularyTestResultApi } from '~/domains/vocabulary-results/resources/vocabulary-test-result-api';
+import type { TestResultWord } from '~/domains/vocabulary-results/model/test-result-model';
 
-export type WordToCreate = RealOmit<Word, 'id' | 'createdAt' | 'notes'> &
+export type WordToCreate = RealOmit<
+  Word,
+  'id' | 'createdAt' | 'notes' | 'results' | 'latestTestDate' | 'oldestTestDate'
+> &
   Partial<Pick<Word, 'notes'>>;
 
 export type VocabularyToCreate = RealOmit<
@@ -26,15 +31,17 @@ export type VocabularyToCreate = RealOmit<
 export const VOCABULARY_QUERY_KEY = 'vocabulary';
 
 let api: VocabularyApi;
+let testResultApi: VocabularyTestResultApi;
 let queryClient: QueryClient;
 
 export const initVocabularyResource = (
   apis: {
     vocabularyApi: VocabularyApi;
+    testResultApi: VocabularyTestResultApi;
   },
   qClient: QueryClient
 ) => {
-  ({ vocabularyApi: api } = apis);
+  ({ vocabularyApi: api, testResultApi } = apis);
   queryClient = qClient;
 };
 
@@ -46,6 +53,50 @@ export const fetchVocabulary = async (id: number) => {
   }
 
   return transformToVocabulary(vocabulary);
+};
+
+export const fetchVocabularyWithResults = async (id: number) => {
+  const [vocabulary, testResults] = await Promise.all([
+    fetchVocabulary(id),
+    testResultApi.fetchTestResults(id, { upToDaysAgo: 30 }),
+  ]);
+
+  if (vocabulary == null) {
+    return;
+  }
+
+  const testResultsWordsDict = testResults
+    .toSorted(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    )
+    .flatMap(tr => tr.words)
+    .reduce(
+      (acc, wordResult) => {
+        if (acc[wordResult.word_id] == null) {
+          acc[wordResult.word_id] = [];
+        }
+        acc[wordResult.word_id].push(wordResult);
+        return acc;
+      },
+      {} as Record<number, TestResultWord[]>
+    );
+
+  return {
+    ...vocabulary,
+    words: vocabulary.words.map(w =>
+      testResultsWordsDict[w.id] == null
+        ? w
+        : {
+            ...w,
+            results: testResultsWordsDict[w.id],
+            latestTestDate: new Date(testResultsWordsDict[w.id][0].created_at),
+            oldestTestDate: new Date(
+              testResultsWordsDict[w.id].at(-1)!.created_at
+            ),
+          }
+    ),
+  };
 };
 
 export const createVocabulary = async (vocabulary: VocabularyToCreate) => {

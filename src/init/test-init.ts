@@ -34,6 +34,7 @@ export const initTestApp = () => {
       updateWords: vi.fn(),
     },
     vocabularyTestResultApi: {
+      fetchTestResults: vi.fn().mockResolvedValue([]),
       fetchWordResults: vi.fn(),
       fetchLastTestResult: vi.fn(),
       hasTestProgress: vi.fn(),

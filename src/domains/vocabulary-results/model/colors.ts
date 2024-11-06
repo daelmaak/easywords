@@ -1,11 +1,11 @@
-import { TestWordResult } from './test-result-model';
+import { TestWordStatus } from './test-result-model';
 
-export const RESULT_COLORS: Record<TestWordResult, string> = {
-  [TestWordResult.NotDone]: '#817777',
-  [TestWordResult.Correct]: '#158a66f2',
-  [TestWordResult.Ok]: '#acba5c',
-  [TestWordResult.Mediocre]: '#ff9037',
-  [TestWordResult.Wrong]: '#c64072',
+export const RESULT_COLORS: Record<TestWordStatus, string> = {
+  [TestWordStatus.NotDone]: '#817777',
+  [TestWordStatus.Correct]: '#158a66f2',
+  [TestWordStatus.Ok]: '#acba5c',
+  [TestWordStatus.Mediocre]: '#ff9037',
+  [TestWordStatus.Wrong]: '#c64072',
 };
 
 export type ResultColor = (typeof RESULT_COLORS)[keyof typeof RESULT_COLORS];

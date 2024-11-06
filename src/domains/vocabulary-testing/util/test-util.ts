@@ -3,7 +3,7 @@ import type {
   WordDB,
 } from '~/domains/vocabularies/resources/vocabulary-api';
 import {
-  TestWordResult,
+  TestWordStatus,
   type TestResult,
   type TestResultWord,
 } from '~/domains/vocabulary-results/model/test-result-model';
@@ -61,16 +61,16 @@ export function createMockTestProgress(
     const testResultWord: TestResultWord = {
       created_at: new Date().toISOString(),
       done: true,
-      result: TestWordResult.NotDone,
+      result: TestWordStatus.NotDone,
       word_id: vocabulary.words[i].id,
     };
 
     if (correct > 0) {
-      testResultWord.result = TestWordResult.Correct;
+      testResultWord.result = TestWordStatus.Correct;
       correct--;
     } else if (incorrect > 0) {
-      testResultWord.result = TestWordResult.Wrong;
-      testResultWord.attempts = [TestWordResult.Wrong];
+      testResultWord.result = TestWordStatus.Wrong;
+      testResultWord.attempts = [TestWordStatus.Wrong];
       incorrect--;
     } else if (skipped > 0) {
       skipped--;

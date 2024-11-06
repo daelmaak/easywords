@@ -43,7 +43,10 @@ export const initResources = ({
   vocabularyTestResultApi,
 }: ResourcesInit) => {
   initVocabulariesResource(vocabularyApi);
-  initVocabularyResource({ vocabularyApi }, queryClient);
+  initVocabularyResource(
+    { vocabularyApi, testResultApi: vocabularyTestResultApi },
+    queryClient
+  );
   initVocabularyTestResultResource(vocabularyTestResultApi, queryClient);
 };
 

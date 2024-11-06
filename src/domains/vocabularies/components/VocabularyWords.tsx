@@ -51,6 +51,11 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
           : bValue.getTime() - aValue.getTime();
       }
 
+      // if only one value is defined, prefer the defined one
+      if ((aValue == null || bValue == null) && aValue != bValue) {
+        return sortAsc ? (aValue ? 1 : -1) : aValue ? -1 : 1;
+      }
+
       return 0;
     });
   });

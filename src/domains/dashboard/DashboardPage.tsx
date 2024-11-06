@@ -2,7 +2,7 @@ import { A, useNavigate } from '@solidjs/router';
 import type { Component } from 'solid-js';
 import { For, Suspense } from 'solid-js';
 import { VocabularyCard } from '../vocabularies/components/VocabularyCard';
-import { navigateToVocabularyTest } from '../vocabularies/util/navigation';
+import { navigateToVocabularyTest } from '../vocabulary-testing/util/navigation';
 import { Button } from '~/components/ui/button';
 import { HiOutlinePlus } from 'solid-icons/hi';
 import {

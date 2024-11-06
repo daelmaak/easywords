@@ -68,6 +68,32 @@ async function fetchWordResults(wordId: number) {
   return result.data ?? undefined;
 }
 
+async function fetchTestResults(
+  vocabularyId: number,
+  options: { upToDaysAgo: number }
+) {
+  const result = await supabase
+    .from('vocabulary_test_results')
+    .select(
+      `
+        *,
+        words: vocabulary_test_result_words (
+          *
+        )
+      `
+    )
+    .eq('vocabulary_id', vocabularyId)
+    .eq('done', true)
+    .gte(
+      'created_at',
+      new Date(
+        Date.now() - options.upToDaysAgo * 24 * 60 * 60 * 1000
+      ).toISOString()
+    );
+
+  return result.data ?? [];
+}
+
 async function hasTestProgress(vocabularyId: number) {
   const result = await supabase
     .from('vocabulary_test_results')
@@ -109,6 +135,7 @@ async function saveTestResult(testResult: TestResultToCreateDB) {
 }
 
 export const vocabularyTestResultApi = {
+  fetchTestResults,
   fetchWordResults,
   fetchLastTestResult,
   hasTestProgress,
