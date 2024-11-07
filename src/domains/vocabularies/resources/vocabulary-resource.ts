@@ -65,22 +65,26 @@ export const fetchVocabularyWithResults = async (id: number) => {
     return;
   }
 
-  const testResultsWordsDict = testResults
-    .toSorted(
-      (a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    )
-    .flatMap(tr => tr.words)
-    .reduce(
-      (acc, wordResult) => {
-        if (acc[wordResult.word_id] == null) {
-          acc[wordResult.word_id] = [];
-        }
-        acc[wordResult.word_id].push(wordResult);
-        return acc;
-      },
-      {} as Record<number, TestResultWord[]>
-    );
+  let testResultsWordsDict: Record<number, TestResultWord[]> = {};
+
+  if (testResults.length > 1) {
+    testResultsWordsDict = testResults
+      .toSorted(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      )
+      .flatMap(tr => tr.words)
+      .reduce(
+        (acc, wordResult) => {
+          if (acc[wordResult.word_id] == null) {
+            acc[wordResult.word_id] = [];
+          }
+          acc[wordResult.word_id].push(wordResult);
+          return acc;
+        },
+        {} as Record<number, TestResultWord[]>
+      );
+  }
 
   return {
     ...vocabulary,
