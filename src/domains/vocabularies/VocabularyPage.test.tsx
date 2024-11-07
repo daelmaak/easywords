@@ -138,7 +138,8 @@ function setup() {
 
   const userInteraction = userEvent.setup();
 
-  const { queryClient, vocabularyApi, dispose } = initTestApp();
+  const { queryClient, vocabularyApi, vocabularyTestResultApi, dispose } =
+    initTestApp();
 
   vocabularyApi.fetchVocabulary.mockResolvedValue({
     id: 1,
@@ -164,6 +165,8 @@ function setup() {
       },
     ],
   });
+
+  vocabularyTestResultApi.fetchTestResults.mockResolvedValue([]);
 
   return {
     queryClient,
