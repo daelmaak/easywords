@@ -22,7 +22,7 @@ interface Props {
 
 export const VocabularyWordsToolbar: Component<Props> = props => {
   return (
-    <div class="flex flex-wrap items-center gap-1 border-b border-neutral-100 bg-white px-2 pb-2 pt-1 text-sm lg:gap-2">
+    <div class="flex flex-wrap items-center gap-1 border-b border-neutral-100 px-2 pb-2 pt-1 text-sm lg:gap-2">
       <Show when={props.selectedWords}>
         <Checkbox
           checked={props.selectedWords.length === (props.words?.length ?? 0)}
