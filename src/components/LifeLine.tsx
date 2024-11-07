@@ -1,7 +1,9 @@
+import { cx } from 'class-variance-authority';
 import { createMemo, type Component } from 'solid-js';
 import type { TestResultWord } from '~/domains/vocabulary-results/model/test-result-model';
 
 interface LifeLineProps {
+  class?: string;
   results?: TestResultWord[];
   days?: number;
 }
@@ -50,7 +52,12 @@ export const LifeLine: Component<LifeLineProps> = props => {
   });
 
   return (
-    <div class="relative h-6 w-32 after:absolute after:bottom-0 after:h-full after:w-full after:bg-gradient-to-t after:from-[#ffffffcc] after:to-transparent after:content-['']">
+    <div
+      class={cx(
+        props.class,
+        "relative after:absolute after:bottom-0 after:h-full after:w-full after:bg-gradient-to-t after:from-[#ffffffcc] after:to-transparent after:content-['']"
+      )}
+    >
       <svg
         viewBox="0 0 100 104"
         preserveAspectRatio="none"

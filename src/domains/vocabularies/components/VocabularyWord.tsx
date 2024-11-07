@@ -2,7 +2,11 @@ import { Show, type Component } from 'solid-js';
 import { Checkbox } from '../../../components/ui/checkbox';
 import type { Word } from '../model/vocabulary-model';
 import { LifeLine } from '~/components/LifeLine';
-import { HiOutlineAcademicCap, HiOutlinePlus } from 'solid-icons/hi';
+import {
+  HiOutlineAcademicCap,
+  HiOutlineChevronRight,
+  HiOutlinePlus,
+} from 'solid-icons/hi';
 
 interface Props {
   word: Word;
@@ -48,10 +52,7 @@ export const VocabularyWord: Component<Props> = props => {
           <span class="mx-2 text-center">-</span>
           <span>{props.word.translation}</span>
         </div>
-        <div
-          class="flex gap-4 pr-4 text-xs text-neutral-400"
-          onClick={e => e.stopPropagation()}
-        >
+        <div class="flex gap-4 pr-4 text-xs text-neutral-400">
           <span class="inline-flex items-center gap-1">
             <HiOutlinePlus size={14} />
             {props.word.createdAt.toLocaleDateString(undefined, dateOptions)}
@@ -67,7 +68,9 @@ export const VocabularyWord: Component<Props> = props => {
         </div>
       </div>
 
-      <LifeLine results={props.word.results} />
+      <LifeLine results={props.word.results} class="h-6 w-28" />
+
+      <HiOutlineChevronRight class="ml-4 text-neutral-500" />
     </div>
   );
 };

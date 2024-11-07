@@ -123,26 +123,6 @@ export const VocabularyPage: Component = () => {
           />
         </div>
 
-        <Show
-          when={displayFullWordDetail()}
-          fallback={
-            <WordEditorDialog
-              word={wordToShowDetail()}
-              open={wordToShowDetail() != null}
-              onClose={() => setWordToShowDetailId(undefined)}
-              onWordEdited={w => onWordsEdited(w, true)}
-            />
-          }
-        >
-          <div class="hidden h-full grow lg:block">
-            <Show when={wordToShowDetail()}>
-              {word => (
-                <WordDetail word={word()} onWordEdited={onWordsEdited} />
-              )}
-            </Show>
-          </div>
-        </Show>
-
         <div class="flex flex-grow flex-col rounded-lg bg-white shadow-md lg:flex-grow-0">
           <div class="sticky top-0 z-10 rounded-t-lg bg-background md:static md:z-0">
             <VocabularyWordsToolbar
@@ -171,6 +151,26 @@ export const VocabularyPage: Component = () => {
             </Suspense>
           </div>
         </div>
+
+        <Show
+          when={displayFullWordDetail()}
+          fallback={
+            <WordEditorDialog
+              word={wordToShowDetail()}
+              open={wordToShowDetail() != null}
+              onClose={() => setWordToShowDetailId(undefined)}
+              onWordEdited={w => onWordsEdited(w, true)}
+            />
+          }
+        >
+          <div class="hidden h-full grow lg:block">
+            <Show when={wordToShowDetail()}>
+              {word => (
+                <WordDetail word={word()} onWordEdited={onWordsEdited} />
+              )}
+            </Show>
+          </div>
+        </Show>
       </Suspense>
     </main>
   );
