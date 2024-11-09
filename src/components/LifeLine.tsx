@@ -51,8 +51,8 @@ export const LifeLine: Component<LifeLineProps> = props => {
     const length = results.length;
 
     results.forEach((dayTestCount, i) => {
-      const y = 100 - (dayTestCount / maxCount()) * 100; // Scale to 100%, invert for SVG
-      const x = (i / (days() - 1)) * 100; // Scale to 100%
+      const y = 100 - (dayTestCount / maxCount()) * 98; // I'm using 98% to make space for the stroke width
+      const x = (i / (days() - 1)) * 100;
 
       // This whole section is optimized for using just one L command to draw one horizontal line,
       // instead of using multiple L commands to draw multiple small horizontal lines with the same y value.
@@ -86,6 +86,7 @@ export const LifeLine: Component<LifeLineProps> = props => {
           d={path()}
           fill="none"
           stroke-width="2"
+          stroke-linejoin="round"
           vector-effect="non-scaling-stroke"
         />
       </svg>
