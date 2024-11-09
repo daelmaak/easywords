@@ -13,6 +13,7 @@ import { VocabularyWordsSorter } from './VocabularyWordsSorter';
 interface Props {
   words?: Word[];
   selectedWords: Word[];
+  sortState: SortState;
   onSearch: (words: Word[] | undefined) => void;
   onSelectAll: (selected: boolean) => void;
   onSort: (sortProps: Partial<SortState>) => void;
@@ -33,7 +34,7 @@ export const VocabularyWordsToolbar: Component<Props> = props => {
           onChange={() => props.onSelectAll(props.selectedWords.length === 0)}
         />
       </Show>
-      <VocabularyWordsSorter sort={props.onSort} />
+      <VocabularyWordsSorter sortState={props.sortState} sort={props.onSort} />
       <Show when={props.words}>
         {w => (
           <Search

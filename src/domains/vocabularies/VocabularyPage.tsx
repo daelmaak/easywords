@@ -128,6 +128,7 @@ export const VocabularyPage: Component = () => {
             <VocabularyWordsToolbar
               words={vocabularyQuery.data?.words}
               selectedWords={selectedWords()}
+              sortState={sortState()}
               onSearch={setSearchedWords}
               onSelectAll={onSelectAll}
               onSort={sort}
