@@ -43,11 +43,30 @@ export const LifeLine: Component<LifeLineProps> = props => {
 
   // Create SVG path from data points
   const path = createMemo(() => {
-    const points = resultsPerDay().map((dayTestCount, i) => {
-      const x = (i / (days() - 1)) * 100; // Scale to 100%
+    const points: string[] = [];
+    let secLastX: number | undefined;
+    let secLastY: number | undefined;
+
+    const results = resultsPerDay();
+    const length = results.length;
+
+    results.forEach((dayTestCount, i) => {
       const y = 100 - (dayTestCount / maxCount()) * 100; // Scale to 100%, invert for SVG
-      return `${x},${y}`;
+      const x = (i / (days() - 1)) * 100; // Scale to 100%
+
+      // This whole section is optimized for using just one L command to draw one horizontal line,
+      // instead of using multiple L commands to draw multiple small horizontal lines with the same y value.
+      if (secLastY !== y || i === length - 1) {
+        if (secLastX != null && secLastY != null) {
+          points.push(`${secLastX},${secLastY}`);
+        }
+        points.push(`${x},${y}`);
+        secLastY = y;
+      }
+
+      secLastX = x;
     });
+
     return `M ${points.join(' L ')}`;
   });
 
