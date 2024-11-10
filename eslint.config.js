@@ -25,11 +25,29 @@ export default tseslint.config(
           ignoreRestSiblings: true,
         },
       ],
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@kobalte/*'],
+              message:
+                'You should not import from @kobalte directly. Use our own ui components instead.',
+            },
+          ],
+        },
+      ],
     },
     languageOptions: {
       parserOptions: {
         project: 'tsconfig.json',
       },
+    },
+  },
+  {
+    files: ['src/components/ui/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': 'off',
     },
   }
 );
