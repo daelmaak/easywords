@@ -9,8 +9,7 @@ export interface Word {
   translation: string;
   notes: string | undefined;
   results?: TestResultWord[];
-  latestTestDate?: Date;
-  oldestTestDate?: Date;
+  lastTestDate?: Date;
 }
 
 export interface Vocabulary {

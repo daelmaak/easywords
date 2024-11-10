@@ -57,11 +57,11 @@ export const VocabularyWord: Component<Props> = props => {
             <HiOutlinePlus size={14} />
             {props.word.createdAt.toLocaleDateString(undefined, dateOptions)}
           </span>
-          <Show when={props.word.latestTestDate}>
-            {latestTestDate => (
+          <Show when={props.word.lastTestDate}>
+            {lastTestDate => (
               <span class="inline-flex items-center gap-1">
                 <HiOutlineAcademicCap size={14} />
-                {latestTestDate().toLocaleDateString(undefined, dateOptions)}
+                {lastTestDate().toLocaleDateString(undefined, dateOptions)}
               </span>
             )}
           </Show>

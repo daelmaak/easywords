@@ -17,9 +17,11 @@ import type { WordTranslation } from '~/model/word-translation';
 import type { VocabularyTestResultApi } from '~/domains/vocabulary-results/resources/vocabulary-test-result-api';
 import type { TestResultWord } from '~/domains/vocabulary-results/model/test-result-model';
 
+// TODO: This should use Pick instead of Omit since every added field
+// to Word breaks this typing in the codebase.
 export type WordToCreate = RealOmit<
   Word,
-  'id' | 'createdAt' | 'notes' | 'results' | 'latestTestDate' | 'oldestTestDate'
+  'id' | 'createdAt' | 'notes' | 'results' | 'lastTestDate'
 > &
   Partial<Pick<Word, 'notes'>>;
 
@@ -94,10 +96,7 @@ export const fetchVocabularyWithResults = async (id: number) => {
         : {
             ...w,
             results: testResultsWordsDict[w.id],
-            latestTestDate: new Date(testResultsWordsDict[w.id][0].created_at),
-            oldestTestDate: new Date(
-              testResultsWordsDict[w.id].at(-1)!.created_at
-            ),
+            lastTestDate: new Date(testResultsWordsDict[w.id][0].created_at),
           }
     ),
   };
