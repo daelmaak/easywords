@@ -8,6 +8,11 @@ import {
   HiOutlineChevronRight,
   HiOutlinePlus,
 } from 'solid-icons/hi';
+import {
+  TooltipTrigger,
+  TooltipContent,
+  Tooltip,
+} from '~/components/ui/tooltip';
 
 interface Props {
   word: Word;
@@ -75,7 +80,12 @@ export const VocabularyWord: Component<Props> = props => {
         </div>
       </div>
 
-      <LifeLine results={props.word.results} class="h-6 w-28" />
+      <Tooltip openDelay={300} closeDelay={0}>
+        <TooltipTrigger tabindex="-1">
+          <LifeLine results={props.word.results} class="h-6 w-28" />
+        </TooltipTrigger>
+        <TooltipContent>Testing frequency for the last 30 days</TooltipContent>
+      </Tooltip>
 
       <HiOutlineChevronRight class="ml-4 text-neutral-500" />
     </div>

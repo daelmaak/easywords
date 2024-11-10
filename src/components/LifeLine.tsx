@@ -74,7 +74,7 @@ export const LifeLine: Component<LifeLineProps> = props => {
     <div
       class={cx(
         props.class,
-        "relative after:absolute after:bottom-0 after:h-full after:w-full after:bg-gradient-to-t after:from-[#ffffffcc] after:to-transparent after:content-['']"
+        "relative after:absolute after:bottom-0 after:left-0 after:h-full after:w-full after:bg-gradient-to-t after:from-[#ffffffcc] after:to-transparent after:content-['']"
       )}
     >
       <svg
