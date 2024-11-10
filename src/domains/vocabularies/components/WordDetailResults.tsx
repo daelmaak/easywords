@@ -2,12 +2,28 @@ import { createEffect, createMemo, type Component } from 'solid-js';
 import Chart from 'chart.js/auto';
 import type { ChartData, ChartOptions } from 'chart.js';
 import type { Word } from '../model/vocabulary-model';
-import type { TestResultWord } from '~/domains/vocabulary-results/model/test-result-model';
+import type {
+  TestResultWord,
+  TestWordStatus,
+} from '~/domains/vocabulary-results/model/test-result-model';
 
 interface WordDetailResultsProps {
   word: Word;
   results?: TestResultWord[];
 }
+
+const getColorForResult = (result: TestWordStatus) => {
+  switch (result) {
+    case 1:
+      return 'rgb(34, 197, 94)';
+    case 2:
+      return 'rgb(172, 186, 92)';
+    case 3:
+      return 'rgb(234, 179, 8)';
+    case 4:
+      return 'rgb(239, 68, 68)';
+  }
+};
 
 export const WordDetailResults: Component<WordDetailResultsProps> = props => {
   let canvas!: HTMLCanvasElement;
@@ -27,22 +43,20 @@ export const WordDetailResults: Component<WordDetailResultsProps> = props => {
       datasets: [
         {
           data: results().map(r => r.result),
-          borderColor: '#888888',
-          backgroundColor: results().map(r => {
-            switch (r.result) {
-              case 1:
-                return 'rgb(34, 197, 94)';
-              case 2:
-                return '#acba5c';
-              case 3:
-                return 'rgb(234, 179, 8)';
-              case 4:
-                return 'rgb(239, 68, 68)';
-            }
-          }),
+          segment: {
+            borderColor: ctx => getColorForResult(ctx.p1.parsed.y),
+            backgroundColor: ctx => {
+              const color = getColorForResult(ctx.p1.parsed.y);
+              // Convert the color to rgba with opacity
+              return color!.replace('rgb', 'rgba').replace(')', ', 0.1)');
+            },
+          },
+          borderColor: results().map(r => getColorForResult(r.result)),
+          backgroundColor: results().map(r => getColorForResult(r.result)),
+          fill: 'start',
           pointRadius: 6,
           pointHoverRadius: 8,
-          borderWidth: 1,
+          borderWidth: 3,
         },
       ],
     };
@@ -56,6 +70,10 @@ export const WordDetailResults: Component<WordDetailResultsProps> = props => {
       scales: {
         y: {
           reverse: true,
+          border: {
+            display: true,
+            dash: [4, 4],
+          },
           ticks: {
             stepSize: 1,
             callback: (value: string | number) => {
@@ -71,12 +89,17 @@ export const WordDetailResults: Component<WordDetailResultsProps> = props => {
           },
         },
         x: {
+          border: {
+            display: false,
+          },
+          grid: {
+            display: false,
+          },
           ticks: {
             align: 'center',
           },
           title: {
-            display: true,
-            text: 'Test Date',
+            display: false,
           },
         },
       },
