@@ -4,7 +4,7 @@ import { createQuery } from '@tanstack/solid-query';
 import type { Word } from '../model/vocabulary-model';
 import { fetchWordResults } from '~/domains/vocabulary-results/resources/vocabulary-test-result-resource';
 import { wordResultsKey } from '~/domains/vocabulary-results/resources/cache-keys';
-import { WordDetailProgress } from './WordDetailProgress';
+import { WordDetailResults } from './WordDetailResults';
 import { Textarea } from '~/components/ui/textarea';
 import { Input } from '~/components/ui/input';
 
@@ -105,8 +105,8 @@ export const WordDetail: Component<WordDetailProps> = props => {
       </div>
 
       <div class="mb-6">
-        <span class="mb-4 font-semibold text-gray-700">Test History</span>
-        <div>
+        <span class="font-semibold text-gray-700">Test History</span>
+        <div class="mt-4 max-h-[30rem] max-w-[60rem]">
           <Suspense>
             <Show
               when={wordResultsQuery.data?.length}
@@ -116,7 +116,7 @@ export const WordDetail: Component<WordDetailProps> = props => {
                 </div>
               }
             >
-              <WordDetailProgress
+              <WordDetailResults
                 word={props.word}
                 results={wordResultsQuery.data}
               />

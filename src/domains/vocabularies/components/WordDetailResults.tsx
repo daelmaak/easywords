@@ -4,12 +4,12 @@ import type { ChartData, ChartOptions } from 'chart.js';
 import type { Word } from '../model/vocabulary-model';
 import type { TestResultWord } from '~/domains/vocabulary-results/model/test-result-model';
 
-interface WordDetailProgressProps {
+interface WordDetailResultsProps {
   word: Word;
   results?: TestResultWord[];
 }
 
-export const WordDetailProgress: Component<WordDetailProgressProps> = props => {
+export const WordDetailResults: Component<WordDetailResultsProps> = props => {
   let canvas!: HTMLCanvasElement;
   let chart: Chart<'line'> | undefined;
 
@@ -40,15 +40,14 @@ export const WordDetailProgress: Component<WordDetailProgressProps> = props => {
                 return 'rgb(239, 68, 68)';
             }
           }),
-          pointRadius: 8,
-          pointHoverRadius: 10,
+          pointRadius: 6,
+          pointHoverRadius: 8,
           borderWidth: 1,
         },
       ],
     };
 
     const chartOptions: ChartOptions<'line'> = {
-      responsive: true,
       plugins: {
         legend: {
           display: false,
