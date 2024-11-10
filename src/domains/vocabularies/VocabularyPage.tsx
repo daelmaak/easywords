@@ -143,7 +143,7 @@ export const VocabularyPage: Component = () => {
                   <VocabularyWords
                     words={searchedWords() ?? v().words}
                     selectedWords={selectedWords()}
-                    sort={sortState()}
+                    sortState={sortState()}
                     onWordDetail={w => setWordToShowDetailId(w.id)}
                     onWordsSelected={setSelectedWords}
                   />

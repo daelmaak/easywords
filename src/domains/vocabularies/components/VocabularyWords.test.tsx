@@ -25,7 +25,7 @@ it('should shift select all items in between', async () => {
     <VocabularyWords
       words={words}
       selectedWords={selectedWords()}
-      sort={{ by: 'original', asc: true }}
+      sortState={{ by: 'original', asc: true }}
       onWordDetail={onWordDetail}
       onWordsSelected={setSelectedWords}
     />
@@ -57,7 +57,7 @@ it('should shift deselect all items in between', async () => {
     <VocabularyWords
       words={words}
       selectedWords={selectedWords()}
-      sort={{ by: 'original', asc: true }}
+      sortState={{ by: 'original', asc: true }}
       onWordDetail={onWordDetail}
       onWordsSelected={setSelectedWords}
     />
@@ -93,7 +93,7 @@ it('should shift select all items in between when sorted by date added', async (
     <VocabularyWords
       words={words}
       selectedWords={selectedWords()}
-      sort={{ by: 'createdAt', asc: false }}
+      sortState={{ by: 'createdAt', asc: false }}
       onWordDetail={onWordDetail}
       onWordsSelected={setSelectedWords}
     />

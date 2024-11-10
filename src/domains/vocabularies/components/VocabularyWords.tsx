@@ -12,7 +12,7 @@ export interface SortState {
 interface VocabularyWordsProps {
   words: Word[];
   selectedWords: Word[];
-  sort: SortState;
+  sortState: SortState;
   onWordDetail: (word: Word) => void;
   onWordsSelected: (words: Word[]) => void;
 }
@@ -21,8 +21,8 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
   const selectWords = wordsSelector();
 
   const sortedWords = createMemo(() => {
-    const sortBy = props.sort.by;
-    const sortAsc = props.sort.asc;
+    const sortBy = props.sortState.by;
+    const sortAsc = props.sortState.asc;
 
     return props.words.slice().sort((a, b) => {
       const aValue = a[sortBy];
