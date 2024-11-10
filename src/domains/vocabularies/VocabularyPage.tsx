@@ -6,7 +6,7 @@ import { VocabularyWords } from './components/VocabularyWords';
 import type { Word } from './model/vocabulary-model';
 import {
   deleteWords,
-  fetchVocabularyWithResults,
+  fetchVocabulary,
   updateWords,
   VOCABULARY_QUERY_KEY,
 } from './resources/vocabulary-resource';
@@ -14,18 +14,21 @@ import { navigateToVocabularyTest } from '../vocabulary-testing/util/navigation'
 import {
   fetchLastTestResult,
   fetchTestProgress,
+  fetchTestResults,
   saveTestResult,
 } from '../vocabulary-results/resources/vocabulary-test-result-resource';
 import { createQuery } from '@tanstack/solid-query';
 import {
   lastTestResultKey,
   testProgressKey,
+  testResultsKey,
 } from '../vocabulary-results/resources/cache-keys';
 import { WordEditorDialog } from './components/WordEditorDialog';
 import { createMediaQuery } from '@solid-primitives/media';
 import { VocabularySummary } from './components/VocabularySummary';
 import { WordDetail } from './components/WordDetail';
 import { VocabularyWordsToolbar } from './components/VocabularyWordsToolbar';
+import { combineVocabularyWithTestResults } from '../vocabulary-results/util/results-util';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -43,8 +46,17 @@ export const VocabularyPage: Component = () => {
 
   const vocabularyQuery = createQuery(() => ({
     queryKey: [VOCABULARY_QUERY_KEY, vocabularyId],
-    queryFn: () => fetchVocabularyWithResults(vocabularyId),
+    queryFn: () => fetchVocabulary(vocabularyId),
   }));
+
+  const resultsQuery = createQuery(() => ({
+    queryKey: testResultsKey(vocabularyId),
+    queryFn: () => fetchTestResults(vocabularyId, { upToDaysAgo: 30 }),
+  }));
+
+  const vocabularyWithResults = createMemo(() =>
+    combineVocabularyWithTestResults(vocabularyQuery.data, resultsQuery.data)
+  );
 
   const testProgressQuery = createQuery(() => ({
     queryKey: testProgressKey(vocabularyId),
@@ -60,7 +72,7 @@ export const VocabularyPage: Component = () => {
 
   const wordToShowDetail = createMemo(() =>
     wordToShowDetailId()
-      ? vocabularyQuery.data?.words.find(w => w.id === wordToShowDetailId())
+      ? vocabularyWithResults()?.words.find(w => w.id === wordToShowDetailId())
       : undefined
   );
 
@@ -76,7 +88,7 @@ export const VocabularyPage: Component = () => {
 
   function onSelectAll(selected: boolean) {
     if (selected) {
-      setSelectedWords(vocabularyQuery.data?.words ?? []);
+      setSelectedWords(vocabularyWithResults()?.words ?? []);
     } else {
       setSelectedWords([]);
     }
@@ -92,6 +104,7 @@ export const VocabularyPage: Component = () => {
 
   function testVocabulary(config: { useSavedProgress: boolean }) {
     if (!config.useSavedProgress && testProgressQuery.data) {
+      // Finish the last test progress
       void saveTestResult({ ...testProgressQuery.data, done: true });
     }
     navigateToVocabularyTest(vocabularyId, navigate, config);
@@ -99,6 +112,7 @@ export const VocabularyPage: Component = () => {
 
   function testSelected() {
     if (testProgressQuery.data) {
+      // Finish the last test progress
       void saveTestResult({ ...testProgressQuery.data, done: true });
     }
     navigateToVocabularyTest(vocabularyId, navigate, {
@@ -116,7 +130,7 @@ export const VocabularyPage: Component = () => {
       <Suspense fallback={<div class="m-auto">Loading ...</div>}>
         <div class="min-w-56 rounded-lg bg-white px-6 py-4 shadow-md md:min-w-64 md:max-w-80">
           <VocabularySummary
-            vocabulary={vocabularyQuery.data}
+            vocabulary={vocabularyWithResults()}
             lastTestResult={lastTestResultQuery.data}
             testProgress={testProgressQuery.data}
             onTestVocabulary={testVocabulary}
@@ -126,7 +140,7 @@ export const VocabularyPage: Component = () => {
         <div class="flex flex-grow flex-col rounded-lg bg-white shadow-md lg:flex-grow-0">
           <div class="sticky top-0 z-10 rounded-t-lg bg-background md:static md:z-0">
             <VocabularyWordsToolbar
-              words={vocabularyQuery.data?.words}
+              words={vocabularyWithResults()?.words}
               selectedWords={selectedWords()}
               sortState={sortState()}
               onSearch={setSearchedWords}
@@ -138,7 +152,7 @@ export const VocabularyPage: Component = () => {
           </div>
           <div class="overflow-y-auto px-2">
             <Suspense fallback={<div class="m-auto">Loading ...</div>}>
-              <Show when={vocabularyQuery.data}>
+              <Show when={vocabularyWithResults()}>
                 {v => (
                   <VocabularyWords
                     words={searchedWords() ?? v().words}

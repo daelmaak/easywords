@@ -8,6 +8,7 @@ import {
   fetchVocabulary,
   updateVocabularyAsInteractedWith,
   updateWords,
+  VOCABULARY_QUERY_KEY,
 } from '../vocabularies/resources/vocabulary-resource';
 import {
   fetchTestProgress,
@@ -29,7 +30,7 @@ export const VocabularyTestPage = () => {
   const vocabularyId = +params.id;
 
   const vocabularyQuery = createQuery(() => ({
-    queryKey: ['vocabulary', vocabularyId],
+    queryKey: [VOCABULARY_QUERY_KEY, vocabularyId],
     queryFn: () => fetchVocabulary(vocabularyId),
   }));
 

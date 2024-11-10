@@ -59,11 +59,20 @@ async function fetchLastTestResult(
   return result.data;
 }
 
-async function fetchWordResults(wordId: number) {
+async function fetchWordResults(
+  wordId: number,
+  options: { upToDaysAgo: number }
+) {
   const result = await supabase
     .from('vocabulary_test_result_words')
     .select('*')
-    .eq('word_id', wordId);
+    .eq('word_id', wordId)
+    .gte(
+      'created_at',
+      new Date(
+        Date.now() - options.upToDaysAgo * 24 * 60 * 60 * 1000
+      ).toISOString()
+    );
 
   return result.data ?? undefined;
 }

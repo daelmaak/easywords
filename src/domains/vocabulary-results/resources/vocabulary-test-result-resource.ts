@@ -1,11 +1,17 @@
 import type { QueryClient } from '@tanstack/solid-query';
-import type {
-  TestResult,
-  TestResultToCreate,
-  TestResultWord,
+import {
+  type TestResult,
+  type TestResultToCreate,
+  type TestResultWord,
 } from '../model/test-result-model';
 import type { VocabularyTestResultApi } from './vocabulary-test-result-api';
-import { lastTestResultKey, testProgressKey } from './cache-keys';
+import {
+  lastTestResultKey,
+  testProgressKey,
+  testResultsKey,
+} from './cache-keys';
+
+export const VOCABULARY_WITH_RESULTS_QUERY_KEY = 'vocabularyWithResults';
 
 let api: VocabularyTestResultApi;
 let queryClient: QueryClient;
@@ -27,13 +33,20 @@ export async function fetchLastTestResult(
 export async function fetchWordResults(
   wordId: number
 ): Promise<TestResultWord[] | undefined> {
-  return api.fetchWordResults(wordId);
+  return api.fetchWordResults(wordId, { upToDaysAgo: 30 });
 }
 
 export async function fetchTestProgress(
   vocabularyId: number
 ): Promise<TestResult | undefined> {
   return api.fetchLastTestResult(vocabularyId, { done: false });
+}
+
+export async function fetchTestResults(
+  vocabularyId: number,
+  options: { upToDaysAgo: number }
+): Promise<TestResult[]> {
+  return api.fetchTestResults(vocabularyId, options);
 }
 
 export async function saveTestResult(testResult: TestResultToCreate) {
@@ -45,6 +58,9 @@ export async function saveTestResult(testResult: TestResultToCreate) {
       lastTestResultKey(testResult.vocabulary_id),
       savedResult
     );
+    void queryClient.invalidateQueries({
+      queryKey: testResultsKey(testResult.vocabulary_id),
+    });
   } else {
     queryClient.setQueryData(
       testProgressKey(testResult.vocabulary_id),
