@@ -4,6 +4,7 @@ import type { Word } from '../model/vocabulary-model';
 import { LifeLine } from '~/components/LifeLine';
 import {
   HiOutlineAcademicCap,
+  HiOutlineChartBar,
   HiOutlineChevronRight,
   HiOutlinePlus,
 } from 'solid-icons/hi';
@@ -64,6 +65,12 @@ export const VocabularyWord: Component<Props> = props => {
                 {lastTestDate().toLocaleDateString(undefined, dateOptions)}
               </span>
             )}
+          </Show>
+          <Show when={props.word.averageTestScore != null}>
+            <span class="inline-flex items-center gap-1">
+              <HiOutlineChartBar size={14} />
+              {props.word.averageTestScore!.toFixed(0)}%
+            </span>
           </Show>
         </div>
       </div>

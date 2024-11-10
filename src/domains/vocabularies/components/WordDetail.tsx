@@ -93,15 +93,43 @@ export const WordDetail: Component<WordDetailProps> = props => {
         />
       </div>
 
-      <div class="mb-6">
-        <label class="mb-2 block font-semibold text-gray-700" for="created">
-          Created
-        </label>
-        <div id="created" class="rounded-lg bg-gray-50 p-4">
-          <p class="text-gray-600">
-            {new Date(props.word.createdAt).toLocaleDateString()}
-          </p>
+      <div class="flex gap-4">
+        <div class="mb-6">
+          <label class="mb-2 block text-gray-700" for="created">
+            Created
+          </label>
+          <div id="created" class="rounded-lg bg-gray-50 p-4">
+            <p class="text-gray-600">
+              {new Date(props.word.createdAt).toLocaleDateString()}
+            </p>
+          </div>
         </div>
+        <Show when={props.word.lastTestDate}>
+          {lastTestDate => (
+            <div class="mb-6">
+              <label class="mb-2 block text-gray-700" for="lastTested">
+                Last tested
+              </label>
+              <div id="lastTested" class="rounded-lg bg-gray-50 p-4">
+                <p class="text-gray-600">
+                  {lastTestDate().toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+          )}
+        </Show>
+        <Show when={props.word.averageTestScore != null}>
+          <div class="mb-6">
+            <label class="mb-2 block text-gray-700" for="lastTested">
+              Average test score
+            </label>
+            <div id="lastTested" class="rounded-lg bg-gray-50 p-4">
+              <p class="text-gray-600">
+                {props.word.averageTestScore!.toFixed(0)}%
+              </p>
+            </div>
+          </div>
+        </Show>
       </div>
 
       <div class="mb-6">

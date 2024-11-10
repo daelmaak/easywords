@@ -14,6 +14,7 @@ const SortKeyCopy: Partial<Record<SortState['by'], string>> = {
   createdAt: 'Date added',
   lastTestDate: 'Last tested',
   testCount: 'Most tested',
+  averageTestScore: 'Average test score',
   original: 'Original',
   translation: 'Translation',
 };

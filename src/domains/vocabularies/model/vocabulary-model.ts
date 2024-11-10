@@ -11,6 +11,7 @@ export interface Word {
   results?: TestResultWord[];
   lastTestDate?: Date;
   testCount?: number;
+  averageTestScore?: number;
 }
 
 export interface Vocabulary {

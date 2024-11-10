@@ -15,7 +15,10 @@ import {
 import { VOCABULARIES_QUERY_KEY } from './vocabularies-resource';
 import type { WordTranslation } from '~/model/word-translation';
 import type { VocabularyTestResultApi } from '~/domains/vocabulary-results/resources/vocabulary-test-result-api';
-import type { TestResultWord } from '~/domains/vocabulary-results/model/test-result-model';
+import {
+  TestWordStatus,
+  type TestResultWord,
+} from '~/domains/vocabulary-results/model/test-result-model';
 
 export type WordToCreate = Pick<
   Word,
@@ -96,6 +99,16 @@ export const fetchVocabularyWithResults = async (id: number) => {
             results: testResultsWordsDict[w.id],
             lastTestDate: new Date(testResultsWordsDict[w.id][0].created_at),
             testCount: testResultsWordsDict[w.id].length,
+            averageTestScore:
+              (testResultsWordsDict[w.id].reduce(
+                (acc, curr) =>
+                  acc +
+                  (TestWordStatus.Wrong - curr.result) /
+                    (TestWordStatus.Wrong - 1),
+                0
+              ) /
+                testResultsWordsDict[w.id].length) *
+              100,
           }
     ),
   };
