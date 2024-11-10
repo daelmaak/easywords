@@ -84,6 +84,7 @@ async function fetchTestResults(
     )
     .eq('vocabulary_id', vocabularyId)
     .eq('done', true)
+    .eq('words.done', true)
     .gte(
       'created_at',
       new Date(
