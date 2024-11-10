@@ -352,7 +352,9 @@ export const VocabularyTester: Component<TesterProps> = (
                     size={20}
                   />
                 </PopoverTrigger>
-                <PopoverContent>{notes()}</PopoverContent>
+                <PopoverContent class="whitespace-pre-wrap">
+                  {notes()}
+                </PopoverContent>
               </Popover>
             )}
           </Show>
