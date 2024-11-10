@@ -82,7 +82,10 @@ export const VocabularyWord: Component<Props> = props => {
 
       <Tooltip openDelay={300} closeDelay={0}>
         <TooltipTrigger tabindex="-1">
-          <LifeLine results={props.word.results} class="h-6 w-28" />
+          <LifeLine
+            results={props.word.results}
+            class="hidden h-6 w-28 sm:block"
+          />
         </TooltipTrigger>
         <TooltipContent>Testing frequency for the last 30 days</TooltipContent>
       </Tooltip>
