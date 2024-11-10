@@ -56,9 +56,9 @@ const Button: Component<ButtonProps> = props => {
     <button
       class={cn(
         buttonVariants({ variant: props.variant, size: props.size }),
+        'relative',
         props.class,
-        classes.button,
-        'relative'
+        classes.button
       )}
       disabled={local.loading}
       {...rest}

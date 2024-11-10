@@ -7,9 +7,12 @@ import { wordResultsKey } from '~/domains/vocabulary-results/resources/cache-key
 import { WordDetailResults } from './WordDetailResults';
 import { Textarea } from '~/components/ui/textarea';
 import { Input } from '~/components/ui/input';
+import { HiOutlineXMark } from 'solid-icons/hi';
+import { Button } from '~/components/ui/button';
 
 interface WordDetailProps {
   word: Word;
+  onClose: () => void;
   onWordEdited: (word: Word) => void;
 }
 
@@ -38,7 +41,15 @@ export const WordDetail: Component<WordDetailProps> = props => {
     };
 
   return (
-    <div class="h-full w-full overflow-y-auto rounded-lg bg-white p-6 shadow-md">
+    <div class="relative h-full w-full overflow-y-auto rounded-lg bg-white p-6 shadow-md">
+      <Button
+        size="sm"
+        variant="ghost"
+        class="absolute right-2 top-4"
+        onClick={props.onClose}
+      >
+        <HiOutlineXMark size={16} />
+      </Button>
       {/* Header Section */}
       <div class="mb-6 border-b pb-4">
         <h2 class="text-2xl font-bold text-gray-800">{props.word.original}</h2>

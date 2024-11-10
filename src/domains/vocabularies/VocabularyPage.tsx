@@ -167,7 +167,11 @@ export const VocabularyPage: Component = () => {
           <div class="hidden h-full grow lg:block">
             <Show when={wordToShowDetail()}>
               {word => (
-                <WordDetail word={word()} onWordEdited={onWordsEdited} />
+                <WordDetail
+                  word={word()}
+                  onClose={() => setWordToShowDetailId(undefined)}
+                  onWordEdited={onWordsEdited}
+                />
               )}
             </Show>
           </div>
