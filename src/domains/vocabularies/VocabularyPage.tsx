@@ -36,7 +36,7 @@ export const VocabularyPage: Component = () => {
   const [searchedWords, setSearchedWords] = createSignal<Word[]>();
   const [selectedWords, setSelectedWords] = createSignal<Word[]>([]);
   const [sortState, setSortState] = createSignal<SortState>({
-    asc: searchParams['sortasc'] === 'false',
+    asc: searchParams['sortasc'] === 'true',
     by: (searchParams['sortby'] as SortState['by']) ?? 'createdAt',
   });
   const [wordToShowDetailId, setWordToShowDetailId] = createSignal<number>();
