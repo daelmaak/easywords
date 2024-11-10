@@ -95,6 +95,7 @@ export const fetchVocabularyWithResults = async (id: number) => {
             ...w,
             results: testResultsWordsDict[w.id],
             lastTestDate: new Date(testResultsWordsDict[w.id][0].created_at),
+            testCount: testResultsWordsDict[w.id].length,
           }
     ),
   };

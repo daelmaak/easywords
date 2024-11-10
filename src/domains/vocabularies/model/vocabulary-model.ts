@@ -10,6 +10,7 @@ export interface Word {
   notes: string | undefined;
   results?: TestResultWord[];
   lastTestDate?: Date;
+  testCount?: number;
 }
 
 export interface Vocabulary {

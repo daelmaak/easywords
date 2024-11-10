@@ -13,6 +13,7 @@ import { cx } from 'class-variance-authority';
 const SortKeyCopy: Partial<Record<SortState['by'], string>> = {
   createdAt: 'Date added',
   lastTestDate: 'Last tested',
+  testCount: 'Most tested',
   original: 'Original',
   translation: 'Translation',
 };
