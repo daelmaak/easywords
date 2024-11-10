@@ -48,13 +48,13 @@ export const GuessTester: Component<GuessTesterProps> = props => {
           </Button>
           <Button
             variant="defaultOutline"
-            onClick={() => onDone(TestWordStatus.Mediocre)}
+            onClick={() => onDone(TestWordStatus.Fair)}
           >
             So-So
           </Button>
           <Button
             variant="defaultOutline"
-            onClick={() => onDone(TestWordStatus.Ok)}
+            onClick={() => onDone(TestWordStatus.Good)}
           >
             OK
           </Button>

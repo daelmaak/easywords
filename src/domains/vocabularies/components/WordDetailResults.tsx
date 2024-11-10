@@ -6,31 +6,16 @@ import type {
   TestResultWord,
   TestWordStatus,
 } from '~/domains/vocabulary-results/model/test-result-model';
+import { TEST_RESULT_LABELS } from '../../vocabulary-results/model/labels';
+import { RESULT_COLORS } from '~/domains/vocabulary-results/model/colors';
 
 interface WordDetailResultsProps {
   word: Word;
   results?: TestResultWord[];
 }
 
-const TEST_RESULT_LABELS: Record<TestWordStatus, string> = {
-  0: 'Not done',
-  1: 'Perfect',
-  2: 'Good',
-  3: 'Fair',
-  4: 'Wrong',
-} as const;
-
 const getColorForResult = (result: TestWordStatus) => {
-  switch (result) {
-    case 1:
-      return 'rgb(34, 197, 94)';
-    case 2:
-      return 'rgb(172, 186, 92)';
-    case 3:
-      return 'rgb(234, 179, 8)';
-    case 4:
-      return 'rgb(239, 68, 68)';
-  }
+  return RESULT_COLORS[result];
 };
 
 export const WordDetailResults: Component<WordDetailResultsProps> = props => {
@@ -83,6 +68,8 @@ export const WordDetailResults: Component<WordDetailResultsProps> = props => {
           },
         },
       },
+      maintainAspectRatio: true,
+      aspectRatio: 3,
       scales: {
         y: {
           reverse: true,

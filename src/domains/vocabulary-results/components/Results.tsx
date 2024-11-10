@@ -42,9 +42,7 @@ export function Results(props: ResultsProps) {
 
   const invalidWords = () =>
     props.results.words
-      .filter(
-        word => word.result != null && word.result >= TestWordStatus.Mediocre
-      )
+      .filter(word => word.result != null && word.result >= TestWordStatus.Fair)
       .map(word => props.words.find(w => w.id === word.word_id)!);
 
   const feedbackText = () => {
@@ -60,7 +58,7 @@ export function Results(props: ResultsProps) {
       return 'Great job! You are so close to perfection! 🚀';
     }
 
-    if (averageResult <= TestWordStatus.Ok + 0.5) {
+    if (averageResult <= TestWordStatus.Good + 0.5) {
       return 'Good job! Keep practicing and you will be a ⭐!';
     }
 

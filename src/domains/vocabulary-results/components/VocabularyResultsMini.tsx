@@ -1,20 +1,19 @@
 import { Match, Show, Switch, type Component } from 'solid-js';
-import { TestWordStatus, type TestResult } from '../model/test-result-model';
+import type { TestWordStatus } from '../model/test-result-model';
+import { type TestResult } from '../model/test-result-model';
 import { Card, CardContent } from '~/components/ui/card';
 import { RESULT_COLORS } from '../model/colors';
 import { HiOutlineCheckCircle, HiOutlinePauseCircle } from 'solid-icons/hi';
+import { TEST_RESULT_LABELS } from '../model/labels';
 
 interface Props {
   result: TestResult;
 }
 
-const resultGroups = [
-  { label: 'Correct', result: TestWordStatus.Correct },
-  { label: 'Ok', result: TestWordStatus.Ok },
-  { label: 'Mediocre', result: TestWordStatus.Mediocre },
-  { label: 'Wrong', result: TestWordStatus.Wrong },
-  { label: 'To do', result: TestWordStatus.NotDone },
-];
+const resultGroups = Object.entries(TEST_RESULT_LABELS).map(([key, label]) => ({
+  label,
+  result: parseInt(key) as TestWordStatus,
+}));
 
 export const VocabularyResultsMini: Component<Props> = props => {
   const getResultCount = (result: TestWordStatus) => {

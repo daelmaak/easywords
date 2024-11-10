@@ -22,9 +22,9 @@ export interface Props {
 
 const ATTEMPT_TOOLTIP: Record<TestWordStatus, string> = {
   [TestWordStatus.NotDone]: 'Not done',
-  [TestWordStatus.Correct]: 'Correct attempt',
-  [TestWordStatus.Ok]: 'Ok attempt',
-  [TestWordStatus.Mediocre]: 'Mediocre attempt',
+  [TestWordStatus.Correct]: 'Perfect!',
+  [TestWordStatus.Good]: 'Good attempt',
+  [TestWordStatus.Fair]: 'Fair attempt',
   [TestWordStatus.Wrong]: 'Wrong attempt',
 };
 

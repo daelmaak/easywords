@@ -4,18 +4,11 @@ import { TestWordStatus } from '../model/test-result-model';
 import { Chart } from 'chart.js/auto';
 import { groupBy } from 'lodash-es';
 import { RESULT_COLORS } from '../model/colors';
+import { TEST_RESULT_LABELS } from '../model/labels';
 
 interface Props {
   result: TestResult;
 }
-
-const LABELS: Record<TestWordStatus, string> = {
-  [TestWordStatus.NotDone]: 'Skipped',
-  [TestWordStatus.Correct]: 'Correct',
-  [TestWordStatus.Ok]: 'Ok',
-  [TestWordStatus.Mediocre]: 'Mediocre',
-  [TestWordStatus.Wrong]: 'Wrong',
-};
 
 export const TestResultsVisualisation: Component<Props> = props => {
   let canvas!: HTMLCanvasElement;
@@ -30,7 +23,7 @@ export const TestResultsVisualisation: Component<Props> = props => {
     );
 
     const resultCategories = Array.from(resultsMap.keys());
-    const labels = resultCategories.map(k => LABELS[k]);
+    const labels = resultCategories.map(k => TEST_RESULT_LABELS[k]);
     const colors = resultCategories.map(k => RESULT_COLORS[k]);
     const data = Array.from(resultsMap.values()).map(v => v.length);
 

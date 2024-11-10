@@ -9,8 +9,8 @@ import type { PartialExcept } from '~/util/type';
 export enum TestWordStatus {
   NotDone = 0,
   Correct,
-  Ok,
-  Mediocre,
+  Good,
+  Fair,
   Wrong,
 }
 
