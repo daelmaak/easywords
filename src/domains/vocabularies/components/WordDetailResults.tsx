@@ -12,6 +12,14 @@ interface WordDetailResultsProps {
   results?: TestResultWord[];
 }
 
+const TEST_RESULT_LABELS: Record<TestWordStatus, string> = {
+  0: 'Not done',
+  1: 'Perfect',
+  2: 'Good',
+  3: 'Fair',
+  4: 'Wrong',
+} as const;
+
 const getColorForResult = (result: TestWordStatus) => {
   switch (result) {
     case 1:
@@ -66,6 +74,14 @@ export const WordDetailResults: Component<WordDetailResultsProps> = props => {
         legend: {
           display: false,
         },
+        tooltip: {
+          callbacks: {
+            label: context => {
+              const value = context.parsed.y as TestWordStatus;
+              return ` You tested ${TEST_RESULT_LABELS[value]} here.`;
+            },
+          },
+        },
       },
       scales: {
         y: {
@@ -77,14 +93,7 @@ export const WordDetailResults: Component<WordDetailResultsProps> = props => {
           ticks: {
             stepSize: 1,
             callback: (value: string | number) => {
-              return value
-                ? {
-                    1: 'Correct',
-                    2: 'Good',
-                    3: 'Fair',
-                    4: 'Wrong',
-                  }[value]
-                : ' ';
+              return value ? TEST_RESULT_LABELS[value as TestWordStatus] : ' ';
             },
           },
         },
