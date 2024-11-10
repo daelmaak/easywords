@@ -17,11 +17,9 @@ import type { WordTranslation } from '~/model/word-translation';
 import type { VocabularyTestResultApi } from '~/domains/vocabulary-results/resources/vocabulary-test-result-api';
 import type { TestResultWord } from '~/domains/vocabulary-results/model/test-result-model';
 
-// TODO: This should use Pick instead of Omit since every added field
-// to Word breaks this typing in the codebase.
-export type WordToCreate = RealOmit<
+export type WordToCreate = Pick<
   Word,
-  'id' | 'createdAt' | 'notes' | 'results' | 'lastTestDate'
+  'original' | 'translation' | 'vocabularyId'
 > &
   Partial<Pick<Word, 'notes'>>;
 
