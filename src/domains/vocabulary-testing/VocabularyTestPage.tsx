@@ -115,7 +115,7 @@ export const VocabularyTestPage = () => {
           That breaks the maintenance/restoration of focus on the write tester input. */}
       <Show when={!vocabularyQuery.isLoading}>
         <BackLink>Back to vocabulary</BackLink>
-        <div class="mx-auto flex items-center justify-center">
+        <div class="mx-auto mt-4 flex items-center justify-center">
           <span class={`fi mr-2 size-5 fi-${vocabularyQuery.data?.country}`} />
           <h1>{vocabularyQuery.data?.name}</h1>
         </div>
