@@ -1,4 +1,4 @@
-import { HiOutlineAcademicCap, HiOutlineTrash } from 'solid-icons/hi';
+import { HiOutlineAcademicCap } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
 import { For, Show } from 'solid-js';
 import { Button } from '~/components/ui/button';
@@ -32,20 +32,14 @@ export const VocabularyCard: Component<Props> = props => {
       onClick={() => props.onClick?.(props.vocabulary.id)}
     >
       <Card>
-        <CardHeader class="flex flex-row items-center justify-between gap-4 p-4">
+        <CardHeader class="flex flex-row flex-wrap items-center justify-between gap-x-2 px-4 py-3 sm:p-4">
           <CardTitle class="text-md">
             <span class={`fi mr-2 fi-${props.vocabulary.country}`}></span>
             {props.vocabulary.name}
           </CardTitle>
-          <div class="flex gap-4" onClick={e => e.stopPropagation()}>
-            <Show when={props.onDeleteVocabulary}>
-              <HiOutlineTrash
-                class="cursor-pointer"
-                size={16}
-                onClick={() => props.onDeleteVocabulary?.(props.vocabulary.id)}
-              />
-            </Show>
-          </div>
+          <span class="mt-0 text-xs text-neutral-500">
+            {props.vocabulary.words.length} words
+          </span>
         </CardHeader>
         <CardContent class="overflow-hidden px-4 pb-2 pt-0">
           <ul class="text-center">
@@ -59,7 +53,13 @@ export const VocabularyCard: Component<Props> = props => {
           </ul>
         </CardContent>
         <CardFooter class="mt-auto p-4 pt-0">
-          <div class="ml-auto flex gap-2" onClick={e => e.stopPropagation()}>
+          <div
+            class="flex w-full items-center gap-2"
+            onClick={e => e.stopPropagation()}
+          >
+            <span class="mr-auto text-left text-xs text-neutral-500">
+              Last change: {props.vocabulary.updatedAt?.toLocaleDateString()}
+            </span>
             <Show when={props.vocabulary.testInProgress}>
               <Button
                 size="sm"
@@ -74,16 +74,6 @@ export const VocabularyCard: Component<Props> = props => {
                 Continue Test
               </Button>
             </Show>
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={() => {
-                props.onTestVocabulary(props.vocabulary.id);
-              }}
-            >
-              <HiOutlineAcademicCap class="mr-1" />
-              Test
-            </Button>
           </div>
         </CardFooter>
       </Card>

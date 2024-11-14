@@ -18,9 +18,7 @@ const Card: Component<ComponentProps<'div'>> = props => {
 
 const CardHeader: Component<ComponentProps<'div'>> = props => {
   const [, rest] = splitProps(props, ['class']);
-  return (
-    <div class={cn('flex flex-col space-y-1.5 p-6', props.class)} {...rest} />
-  );
+  return <div class={cn('flex flex-col p-6', props.class)} {...rest} />;
 };
 
 const CardTitle: Component<ComponentProps<'h3'>> = props => {
