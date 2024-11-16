@@ -1,5 +1,9 @@
 import { A } from '@solidjs/router';
-import { HiOutlinePlus, HiOutlineAcademicCap } from 'solid-icons/hi';
+import {
+  HiOutlinePlus,
+  HiOutlineAcademicCap,
+  HiOutlineTrash,
+} from 'solid-icons/hi';
 import type { Component } from 'solid-js';
 import { createSignal, Show } from 'solid-js';
 import { BackLink } from '~/components/BackLink';
@@ -22,11 +26,13 @@ import {
 } from '~/components/ui/sheet';
 import { WordsAdder } from './WordsAdder';
 import type { WordTranslation } from '~/model/word-translation';
+import { ConfirmationDialog } from '~/components/ConfirmationDialog';
 
 interface Props {
   vocabulary: Vocabulary | undefined;
   testProgress?: TestResult | null;
   lastTestResult?: TestResult | null;
+  onDeleteVocabulary: (id: number) => void;
   onTestVocabulary: (options: { useSavedProgress: boolean }) => void;
 }
 
@@ -64,7 +70,7 @@ export const VocabularySummary: Component<Props> = props => {
   }
 
   return (
-    <>
+    <div class="flex h-full flex-col gap-4">
       <Sheet open={openedAddWords()} onOpenChange={setOpenedAddWords}>
         <SheetContent
           class="flex w-svw flex-col gap-4 sm:w-[30rem]"
@@ -112,7 +118,7 @@ export const VocabularySummary: Component<Props> = props => {
             onClick={() => props.onTestVocabulary({ useSavedProgress: false })}
           >
             <HiOutlineAcademicCap />
-            Test all ({props.vocabulary?.words?.length})
+            Test all
           </Button>
           <Show when={props.vocabulary?.testInProgress}>
             <Button
@@ -143,6 +149,18 @@ export const VocabularySummary: Component<Props> = props => {
           </A>
         )}
       </Show>
-    </>
+
+      <ConfirmationDialog
+        trigger={
+          <Button class="w-full" size="sm" variant="destructiveOutline">
+            <HiOutlineTrash />
+            Delete vocabulary
+          </Button>
+        }
+        triggerClass="mt-auto w-full"
+        confirmText="Delete vocabulary"
+        onConfirm={() => props.onDeleteVocabulary?.(props.vocabulary!.id)}
+      />
+    </div>
   );
 };

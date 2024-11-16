@@ -16,7 +16,6 @@ export type Props = {
   wordCount?: number;
   class?: string;
   onClick?: (id: number) => void;
-  onDeleteVocabulary?: (id: number) => void;
   onTestVocabulary: (
     id: number,
     config?: { useSavedProgress: boolean }

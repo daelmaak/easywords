@@ -5,6 +5,7 @@ import type { SortState } from './components/VocabularyWords';
 import { VocabularyWords } from './components/VocabularyWords';
 import type { Word } from './model/vocabulary-model';
 import {
+  deleteVocabulary,
   deleteWords,
   fetchVocabulary,
   updateWords,
@@ -86,6 +87,11 @@ export const VocabularyPage: Component = () => {
     setSelectedWords([]);
   }
 
+  async function onDeleteVocabulary() {
+    await deleteVocabulary(vocabularyId);
+    navigate('/vocabulary');
+  }
+
   function onSelectAll(selected: boolean) {
     if (selected) {
       setSelectedWords(vocabularyWithResults()?.words ?? []);
@@ -133,6 +139,7 @@ export const VocabularyPage: Component = () => {
             vocabulary={vocabularyWithResults()}
             lastTestResult={lastTestResultQuery.data}
             testProgress={testProgressQuery.data}
+            onDeleteVocabulary={onDeleteVocabulary}
             onTestVocabulary={testVocabulary}
           />
         </div>

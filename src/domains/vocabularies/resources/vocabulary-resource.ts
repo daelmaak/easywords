@@ -80,10 +80,7 @@ export const deleteVocabulary = async (id: number) => {
   const success = await api.deleteVocabulary(id);
 
   if (success) {
-    queryClient.setQueryData<Vocabulary[]>([VOCABULARIES_QUERY_KEY], l =>
-      l!.filter(list => list.id !== id)
-    );
-    await queryClient.invalidateQueries({
+    void queryClient.invalidateQueries({
       queryKey: [VOCABULARIES_QUERY_KEY],
     });
   }

@@ -1,7 +1,6 @@
 import { useNavigate, useSearchParams } from '@solidjs/router';
 import { HiOutlinePlus } from 'solid-icons/hi';
 import { createSignal, For, Show, Suspense } from 'solid-js';
-import { ConfirmationDialog } from '~/components/ConfirmationDialog';
 import { Button } from '~/components/ui/button';
 import {
   Sheet,
@@ -12,10 +11,7 @@ import {
 import { VocabularyCard } from './components/VocabularyCard';
 import { VocabularyCreator } from './components/VocabularyCreator';
 import type { VocabularyToCreate } from './resources/vocabulary-resource';
-import {
-  createVocabulary,
-  deleteVocabulary,
-} from './resources/vocabulary-resource';
+import { createVocabulary } from './resources/vocabulary-resource';
 import { navigateToVocabularyTest } from '../vocabulary-testing/util/navigation';
 import { createQuery } from '@tanstack/solid-query';
 import {
@@ -34,7 +30,6 @@ export const VocabulariesPage = () => {
   const [createVocabularyOpen, setCreateVocabularyOpen] = createSignal(
     searchParams.openVocabCreator != null
   );
-  const [confirmDeletionOf, setConfirmDeletionOf] = createSignal<number>();
 
   const anyVocabularies = () => vocabulariesQuery.data?.length ?? 0 > 0;
   const vocabulariesByRecency = () =>
@@ -44,10 +39,6 @@ export const VocabulariesPage = () => {
         (a, b) => (b.updatedAt?.getTime() ?? 0) - (a.updatedAt?.getTime() ?? 0)
       );
 
-  function onCloseDeletionDialog() {
-    setConfirmDeletionOf(undefined);
-  }
-
   async function onCreateVocabulary(vocabulary: VocabularyToCreate) {
     const success = await createVocabulary(vocabulary);
 
@@ -56,17 +47,6 @@ export const VocabulariesPage = () => {
     }
 
     return success;
-  }
-
-  async function onDeleteVocabulary() {
-    const vocabularyId = confirmDeletionOf();
-    setConfirmDeletionOf(undefined);
-
-    if (vocabularyId == null) {
-      return;
-    }
-
-    await deleteVocabulary(vocabularyId);
   }
 
   function onGoToVocabulary(id: number) {
@@ -130,21 +110,12 @@ export const VocabulariesPage = () => {
                   wordCount={5}
                   vocabulary={vocabulary}
                   onClick={onGoToVocabulary}
-                  onDeleteVocabulary={setConfirmDeletionOf}
                   onTestVocabulary={onTestVocabulary}
                 />
               )}
             </For>
           </div>
         </Show>
-
-        <ConfirmationDialog
-          open={confirmDeletionOf() != null}
-          confirmText="Delete"
-          onClose={onCloseDeletionDialog}
-          onCancel={onCloseDeletionDialog}
-          onConfirm={onDeleteVocabulary}
-        />
       </Suspense>
     </main>
   );
