@@ -1,8 +1,28 @@
+import { createMediaQuery } from '@solid-primitives/media';
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
+import { createQuery } from '@tanstack/solid-query';
 import type { Component } from 'solid-js';
-import { Show, Suspense, createMemo, createSignal } from 'solid-js';
+import { createMemo, Show, Suspense } from 'solid-js';
+import { createStore } from 'solid-js/store';
+import {
+  lastTestResultKey,
+  testProgressKey,
+  testResultsKey,
+} from '../vocabulary-results/resources/cache-keys';
+import {
+  fetchLastTestResult,
+  fetchTestProgress,
+  fetchTestResults,
+  saveTestResult,
+} from '../vocabulary-results/resources/vocabulary-test-result-resource';
+import { combineVocabularyWithTestResults } from '../vocabulary-results/util/results-util';
+import { navigateToVocabularyTest } from '../vocabulary-testing/util/navigation';
+import { VocabularySummary } from './components/VocabularySummary';
 import type { SortState } from './components/VocabularyWords';
 import { VocabularyWords } from './components/VocabularyWords';
+import { VocabularyWordsToolbar } from './components/VocabularyWordsToolbar';
+import { WordDetail } from './components/WordDetail';
+import { WordEditorDialog } from './components/WordEditorDialog';
 import type { Word } from './model/vocabulary-model';
 import {
   deleteVocabulary,
@@ -11,25 +31,6 @@ import {
   updateWords,
   VOCABULARY_QUERY_KEY,
 } from './resources/vocabulary-resource';
-import { navigateToVocabularyTest } from '../vocabulary-testing/util/navigation';
-import {
-  fetchLastTestResult,
-  fetchTestProgress,
-  fetchTestResults,
-  saveTestResult,
-} from '../vocabulary-results/resources/vocabulary-test-result-resource';
-import { createQuery } from '@tanstack/solid-query';
-import {
-  lastTestResultKey,
-  testProgressKey,
-  testResultsKey,
-} from '../vocabulary-results/resources/cache-keys';
-import { WordEditorDialog } from './components/WordEditorDialog';
-import { createMediaQuery } from '@solid-primitives/media';
-import { VocabularySummary } from './components/VocabularySummary';
-import { WordDetail } from './components/WordDetail';
-import { VocabularyWordsToolbar } from './components/VocabularyWordsToolbar';
-import { combineVocabularyWithTestResults } from '../vocabulary-results/util/results-util';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -37,13 +38,15 @@ export const VocabularyPage: Component = () => {
   const navigate = useNavigate();
   const vocabularyId = +params.id;
 
-  const [searchedWords, setSearchedWords] = createSignal<Word[]>();
-  const [selectedWords, setSelectedWords] = createSignal<Word[]>([]);
-  const [sortState, setSortState] = createSignal<SortState>({
-    asc: searchParams['sortasc'] === 'true',
-    by: (searchParams['sortby'] as SortState['by']) ?? 'createdAt',
+  const [store, setStore] = createStore({
+    searchedWords: [] as Word[],
+    selectedWords: [] as Word[],
+    sortState: {
+      asc: searchParams['sortasc'] === 'true',
+      by: (searchParams['sortby'] as SortState['by']) ?? 'createdAt',
+    },
+    wordToShowDetailId: undefined as number | undefined,
   });
-  const [wordToShowDetailId, setWordToShowDetailId] = createSignal<number>();
 
   const vocabularyQuery = createQuery(() => ({
     queryKey: [VOCABULARY_QUERY_KEY, vocabularyId],
@@ -72,19 +75,24 @@ export const VocabularyPage: Component = () => {
   const displayFullWordDetail = createMediaQuery('(min-width: 1024px)');
 
   const wordToShowDetail = createMemo(() =>
-    wordToShowDetailId()
-      ? vocabularyWithResults()?.words.find(w => w.id === wordToShowDetailId())
+    store.wordToShowDetailId
+      ? vocabularyWithResults()?.words.find(
+          w => w.id === store.wordToShowDetailId
+        )
       : undefined
   );
 
   async function deleteSelectedWords() {
-    const words = selectedWords();
+    const words = store.selectedWords;
     if (!words.length) {
       return;
     }
 
-    await deleteWords(vocabularyId, ...selectedWords().map(word => word.id));
-    setSelectedWords([]);
+    await deleteWords(
+      vocabularyId,
+      ...store.selectedWords.map(word => word.id)
+    );
+    setStore({ selectedWords: [] });
   }
 
   async function onDeleteVocabulary() {
@@ -94,9 +102,9 @@ export const VocabularyPage: Component = () => {
 
   function onSelectAll(selected: boolean) {
     if (selected) {
-      setSelectedWords(vocabularyWithResults()?.words ?? []);
+      setStore({ selectedWords: vocabularyWithResults()?.words ?? [] });
     } else {
-      setSelectedWords([]);
+      setStore({ selectedWords: [] });
     }
   }
 
@@ -104,7 +112,7 @@ export const VocabularyPage: Component = () => {
     await updateWords(updatedWord);
 
     if (resetWordToShow) {
-      setWordToShowDetailId(undefined);
+      setStore({ wordToShowDetailId: undefined });
     }
   }
 
@@ -122,12 +130,12 @@ export const VocabularyPage: Component = () => {
       void saveTestResult({ ...testProgressQuery.data, done: true });
     }
     navigateToVocabularyTest(vocabularyId, navigate, {
-      wordIds: selectedWords().map(w => w.id),
+      wordIds: store.selectedWords.map(w => w.id),
     });
   }
 
   function sort(sortProps: Partial<SortState>) {
-    setSortState(s => ({ ...s, ...sortProps }));
+    setStore({ sortState: { ...store.sortState, ...sortProps } });
     setSearchParams({ sortby: sortProps.by, sortasc: sortProps.asc });
   }
 
@@ -148,9 +156,9 @@ export const VocabularyPage: Component = () => {
           <div class="sticky top-0 z-10 rounded-t-lg bg-background md:static md:z-0">
             <VocabularyWordsToolbar
               words={vocabularyWithResults()?.words}
-              selectedWords={selectedWords()}
-              sortState={sortState()}
-              onSearch={setSearchedWords}
+              selectedWords={store.selectedWords}
+              sortState={store.sortState}
+              onSearch={words => setStore({ searchedWords: words })}
               onSelectAll={onSelectAll}
               onSort={sort}
               onTestSelected={testSelected}
@@ -162,11 +170,13 @@ export const VocabularyPage: Component = () => {
               <Show when={vocabularyWithResults()}>
                 {v => (
                   <VocabularyWords
-                    words={searchedWords() ?? v().words}
-                    selectedWords={selectedWords()}
-                    sortState={sortState()}
-                    onWordDetail={w => setWordToShowDetailId(w.id)}
-                    onWordsSelected={setSelectedWords}
+                    words={store.searchedWords ?? v().words}
+                    selectedWords={store.selectedWords}
+                    sortState={store.sortState}
+                    onWordDetail={w => setStore({ wordToShowDetailId: w.id })}
+                    onWordsSelected={words =>
+                      setStore({ selectedWords: words })
+                    }
                   />
                 )}
               </Show>
@@ -180,7 +190,7 @@ export const VocabularyPage: Component = () => {
             <WordEditorDialog
               word={wordToShowDetail()}
               open={wordToShowDetail() != null}
-              onClose={() => setWordToShowDetailId(undefined)}
+              onClose={() => setStore({ wordToShowDetailId: undefined })}
               onWordEdited={w => onWordsEdited(w, true)}
             />
           }
@@ -190,7 +200,7 @@ export const VocabularyPage: Component = () => {
               {word => (
                 <WordDetail
                   word={word()}
-                  onClose={() => setWordToShowDetailId(undefined)}
+                  onClose={() => setStore({ wordToShowDetailId: undefined })}
                   onWordEdited={onWordsEdited}
                 />
               )}
