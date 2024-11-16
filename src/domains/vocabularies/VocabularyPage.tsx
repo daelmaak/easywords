@@ -31,6 +31,7 @@ import {
   updateWords,
   VOCABULARY_QUERY_KEY,
 } from './resources/vocabulary-resource';
+import { Routes } from '~/routes/routes';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -97,7 +98,7 @@ export const VocabularyPage: Component = () => {
 
   async function onDeleteVocabulary() {
     await deleteVocabulary(vocabularyId);
-    navigate('/vocabulary');
+    navigate(Routes.Vocabularies);
   }
 
   function onSelectAll(selected: boolean) {

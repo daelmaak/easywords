@@ -1,11 +1,12 @@
 import type { Navigator } from '@solidjs/router';
+import { Routes } from '~/routes/routes';
 
 export function navigateToVocabularyTest(
   vocabularyId: number,
   navigate: Navigator,
   config?: { wordIds?: number[]; useSavedProgress?: boolean }
 ) {
-  let url = `/vocabulary/${vocabularyId}/test`;
+  let url = `${Routes.Vocabularies}/${vocabularyId}/test`;
 
   if (config) {
     url += '?';

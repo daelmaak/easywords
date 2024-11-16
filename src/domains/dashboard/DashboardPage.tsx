@@ -1,15 +1,16 @@
 import { A, useNavigate } from '@solidjs/router';
+import { createQuery } from '@tanstack/solid-query';
+import { HiOutlinePlus } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
 import { For, Suspense } from 'solid-js';
-import { VocabularyCard } from '../vocabularies/components/VocabularyCard';
-import { navigateToVocabularyTest } from '../vocabulary-testing/util/navigation';
 import { Button } from '~/components/ui/button';
-import { HiOutlinePlus } from 'solid-icons/hi';
+import { Routes } from '~/routes/routes';
+import { VocabularyCard } from '../vocabularies/components/VocabularyCard';
 import {
   fetchRecentVocabularies,
   VOCABULARIES_QUERY_KEY,
 } from '../vocabularies/resources/vocabularies-resource';
-import { createQuery } from '@tanstack/solid-query';
+import { navigateToVocabularyTest } from '../vocabulary-testing/util/navigation';
 
 export const DashboardPage: Component = () => {
   const navigate = useNavigate();
@@ -20,11 +21,11 @@ export const DashboardPage: Component = () => {
   }));
 
   function onGoToVocabulary(id: number) {
-    navigate(`/vocabulary/${id}`);
+    navigate(`${Routes.Vocabularies}/${id}`);
   }
 
   function onCreateVocabulary() {
-    navigate('/vocabulary?openVocabCreator=true');
+    navigate(`${Routes.Vocabularies}?openVocabCreator=true`);
   }
 
   function onTestVocabulary(

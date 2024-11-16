@@ -11,6 +11,7 @@ import './index.css';
 import { VocabularyTestResultsPage } from './domains/vocabulary-results/VocabularyTestResultsPage';
 import { QueryClientProvider } from '@tanstack/solid-query';
 import { initApp } from './init/app-init';
+import { Routes } from './routes/routes';
 
 const root = document.getElementById('root');
 
@@ -35,8 +36,8 @@ render(() => {
     <QueryClientProvider client={queryClient}>
       <Router root={AuthRouteGuard}>
         <Route path="/" component={App}>
-          <Route path="/dashboard" component={DashboardPage} />
-          <Route path="/vocabulary">
+          <Route path={Routes.Dashboard} component={DashboardPage} />
+          <Route path={Routes.Vocabularies}>
             <Route path="/" component={VocabulariesPage} />
             <Route path="/:id" component={VocabularyPage} />
             <Route path="/:id/test" component={VocabularyTestPage} />
@@ -47,20 +48,20 @@ render(() => {
           </Route>
           <Route
             path={[
-              '/conjugations',
-              '/conjugations/:lang',
-              '/conjugations/:lang/:verb',
+              Routes.Conjugations,
+              `${Routes.Conjugations}/:lang`,
+              `${Routes.Conjugations}/:lang/:verb`,
             ]}
             component={ConjugationsPage}
           />
           <Route path="/" component={() => <Navigate href="/dashboard" />} />
         </Route>
         <Route
-          path="/login"
+          path={Routes.Login}
           component={lazy(() => import('./domains/auth/AuthPage'))}
         />
         <Route
-          path="/signup"
+          path={Routes.Signup}
           component={lazy(() => import('./domains/auth/AuthPage'))}
         />
         <Route path="*" component={() => <Navigate href="/" />} />{' '}

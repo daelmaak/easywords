@@ -14,15 +14,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import { Routes } from '~/routes/routes';
 
 interface Props {
   children?: JSX.Element;
 }
 
 const links = [
-  { label: 'Dashboard', href: '/dashboard' },
-  { label: 'Vocabulary', href: '/vocabulary' },
-  { label: 'Conjugations', href: '/conjugations' },
+  { label: 'Dashboard', href: Routes.Dashboard },
+  { label: 'Vocabularies', href: Routes.Vocabularies },
+  { label: 'Conjugations', href: Routes.Conjugations },
 ];
 
 const App: Component<Props> = props => {

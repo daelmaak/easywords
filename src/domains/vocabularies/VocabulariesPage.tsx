@@ -18,6 +18,7 @@ import {
   fetchVocabularies,
   VOCABULARIES_QUERY_KEY,
 } from './resources/vocabularies-resource';
+import { Routes } from '~/routes/routes';
 
 export const VocabulariesPage = () => {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ export const VocabulariesPage = () => {
   }
 
   function onGoToVocabulary(id: number) {
-    navigate(`/vocabulary/${id}`);
+    navigate(`${Routes.Vocabularies}/${id}`);
   }
 
   function onTestVocabulary(
