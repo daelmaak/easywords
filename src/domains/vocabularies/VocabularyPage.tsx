@@ -153,35 +153,44 @@ export const VocabularyPage: Component = () => {
         </div>
 
         <div class="flex flex-grow flex-col rounded-lg bg-white shadow-md lg:flex-grow-0">
-          <div class="sticky top-0 z-10 rounded-t-lg bg-background md:static md:z-0">
-            <VocabularyWordsToolbar
-              words={vocabularyWithResults()?.words}
-              selectedWords={store.selectedWords}
-              sortState={store.sortState}
-              onSearch={words => setStore({ searchedWords: words })}
-              onSelectAll={onSelectAll}
-              onSort={sort}
-              onTestSelected={testSelected}
-              onDeleteSelected={deleteSelectedWords}
-            />
-          </div>
-          <div class="overflow-y-auto px-2">
-            <Suspense fallback={<div class="m-auto">Loading ...</div>}>
-              <Show when={vocabularyWithResults()}>
-                {v => (
-                  <VocabularyWords
-                    words={store.searchedWords ?? v().words}
+          <Show when={vocabularyWithResults()}>
+            {v => (
+              <>
+                <div class="sticky top-0 z-10 rounded-t-lg bg-background md:static md:z-0">
+                  <VocabularyWordsToolbar
+                    words={v().words}
                     selectedWords={store.selectedWords}
                     sortState={store.sortState}
-                    onWordDetail={w => setStore({ wordToShowDetailId: w.id })}
-                    onWordsSelected={words =>
-                      setStore({ selectedWords: words })
-                    }
+                    onSearch={words => setStore({ searchedWords: words })}
+                    onSelectAll={onSelectAll}
+                    onSort={sort}
+                    onTestSelected={testSelected}
+                    onDeleteSelected={deleteSelectedWords}
                   />
-                )}
-              </Show>
-            </Suspense>
-          </div>
+                </div>
+                <div class="h-full overflow-y-auto px-2">
+                  <Show
+                    when={v().words.length > 0}
+                    fallback={
+                      <div class="flex h-full w-full items-center justify-center text-neutral-600">
+                        Add some words first!
+                      </div>
+                    }
+                  >
+                    <VocabularyWords
+                      words={store.searchedWords ?? v().words}
+                      selectedWords={store.selectedWords}
+                      sortState={store.sortState}
+                      onWordDetail={w => setStore({ wordToShowDetailId: w.id })}
+                      onWordsSelected={words =>
+                        setStore({ selectedWords: words })
+                      }
+                    />
+                  </Show>
+                </div>
+              </>
+            )}
+          </Show>
         </div>
 
         <Show
