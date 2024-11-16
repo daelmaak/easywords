@@ -58,14 +58,18 @@ export const VocabularyWordsToolbar: Component<Props> = props => {
       </Button>
       <ConfirmationDialog
         confirmText="Delete"
-        trigger={
-          <Button class="px-2" size="sm" variant="ghost">
+        trigger={p => (
+          <Button
+            {...p}
+            class={cx('px-2', {
+              'hidden lg:invisible lg:inline': props.selectedWords.length === 0,
+            })}
+            size="sm"
+            variant="ghost"
+          >
             <HiOutlineTrash size={18} class="text-destructive" />
           </Button>
-        }
-        triggerClass={cx({
-          'hidden lg:inline lg:invisible': props.selectedWords.length === 0,
-        })}
+        )}
         onConfirm={props.onDeleteSelected}
       />
     </div>

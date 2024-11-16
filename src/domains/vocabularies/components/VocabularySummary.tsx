@@ -151,15 +151,19 @@ export const VocabularySummary: Component<Props> = props => {
       </Show>
 
       <ConfirmationDialog
-        trigger={
-          <Button class="w-full" size="sm" variant="destructiveOutline">
+        confirmText="Delete vocabulary"
+        onConfirm={() => props.onDeleteVocabulary?.(props.vocabulary!.id)}
+        trigger={p => (
+          <Button
+            {...p}
+            class="mt-auto w-full"
+            size="sm"
+            variant="destructiveOutline"
+          >
             <HiOutlineTrash />
             Delete vocabulary
           </Button>
-        }
-        triggerClass="mt-auto w-full"
-        confirmText="Delete vocabulary"
-        onConfirm={() => props.onDeleteVocabulary?.(props.vocabulary!.id)}
+        )}
       />
     </div>
   );

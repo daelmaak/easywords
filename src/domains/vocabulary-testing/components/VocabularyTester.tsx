@@ -290,8 +290,9 @@ export const VocabularyTester: Component<TesterProps> = (
       >
         <div class="flex items-center justify-end">
           <ConfirmationDialog
-            trigger={
+            trigger={p => (
               <Button
+                {...p}
                 aria-label="Delete word from vocabulary"
                 class="translate-y-[1px] opacity-60"
                 title="Delete word from vocabulary"
@@ -301,7 +302,7 @@ export const VocabularyTester: Component<TesterProps> = (
               >
                 <HiOutlineTrash size={20} />
               </Button>
-            }
+            )}
             confirmText="Delete word"
             onConfirm={removeWord}
           />
