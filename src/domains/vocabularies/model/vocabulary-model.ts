@@ -20,5 +20,4 @@ export interface Vocabulary {
   name: string;
   updatedAt?: Date;
   words: Word[];
-  testInProgress?: boolean;
 }

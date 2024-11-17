@@ -1,5 +1,5 @@
-export function testProgressKey(vocabularyId: number) {
-  return ['vocabulary', vocabularyId, 'progress'];
+export function testResultKey(testId: number) {
+  return ['vocabulary-test-result', testId];
 }
 
 export function testResultsKey(vocabularyId: number) {

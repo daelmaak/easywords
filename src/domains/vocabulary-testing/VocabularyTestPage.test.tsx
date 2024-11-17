@@ -13,6 +13,8 @@ import {
 import { VocabularyTestPage } from './VocabularyTestPage';
 import { VocabularyTestResultsPage } from '../vocabulary-results/VocabularyTestResultsPage';
 import { QueryClientProvider } from '@tanstack/solid-query';
+import { Routes, testRoute } from '~/routes/routes';
+import type { TestResultToCreate } from '../vocabulary-results/model/test-result-model';
 
 afterEach(() => cleanup());
 
@@ -22,7 +24,7 @@ it('should switch between tested vocabularies without the tester breaking', asyn
   render(() => (
     <QueryClientProvider client={queryClient}>
       <MemoryRouter>
-        <Route path="/vocabulary/:id/test" component={VocabularyTestPage} />
+        <Route path={Routes.VocabularyTest} component={VocabularyTestPage} />
         <Route path="*" component={DummyPage} />
       </MemoryRouter>
     </QueryClientProvider>
@@ -55,15 +57,12 @@ it('should show the test results after finishing test based on user performance'
   render(() => (
     <QueryClientProvider client={queryClient}>
       <MemoryRouter>
-        <Route path="/vocabulary/:id/test" component={VocabularyTestPage} />
+        <Route path={Routes.VocabularyTest} component={VocabularyTestPage} />
         <Route
-          path="/vocabulary/:id/test/results"
+          path={Routes.VocabularyTestResults}
           component={VocabularyTestResultsPage}
         />
-        <Route
-          path="*"
-          component={() => <Navigate href="/vocabulary/1/test" />}
-        />
+        <Route path="*" component={() => <Navigate href={testRoute(1)} />} />
       </MemoryRouter>
     </QueryClientProvider>
   ));
@@ -131,12 +130,9 @@ it('should save the test progress upon pausing it and pick it up again when resu
   render(() => (
     <QueryClientProvider client={queryClient}>
       <MemoryRouter>
-        <Route path="/vocabulary/:id/test" component={VocabularyTestPage} />
-        <Route path="/vocabulary/:id" component={DummyPage} />
-        <Route
-          path="*"
-          component={() => <Navigate href="/vocabulary/1/test" />}
-        />
+        <Route path={Routes.VocabularyTest} component={VocabularyTestPage} />
+        <Route path={Routes.Vocabulary} component={DummyPage} />
+        <Route path="*" component={() => <Navigate href={testRoute(1)} />} />
       </MemoryRouter>
     </QueryClientProvider>
   ));
@@ -162,6 +158,7 @@ it('should save the test progress upon pausing it and pick it up again when resu
 
   const progressBar = screen.getByRole('progressbar');
   expect(progressBar).toBeInTheDocument();
+  // TODO: the latest progress doesn't get loaded
   expect(progressBar.textContent).toContain('1 out of 2 done');
 
   dispose();
@@ -172,20 +169,15 @@ it('should pick up the saved progress of a partial test when resuming', async ()
     setup();
   const vocabularyDB = createMockVocabularyDB({ wordAmount: 3 });
   vocabularyApi.fetchVocabulary.mockResolvedValue(vocabularyDB);
-  vocabularyTestResultApi.fetchLastTestResult.mockResolvedValue(
+  vocabularyTestResultApi.fetchTestResult.mockResolvedValue(
     createMockTestProgress(vocabularyDB, { correct: 1, total: 2 })
   );
 
   render(() => (
     <QueryClientProvider client={queryClient}>
       <MemoryRouter>
-        <Route path="/vocabulary/:id/test" component={VocabularyTestPage} />
-        <Route
-          path="*"
-          component={() => (
-            <Navigate href="/vocabulary/1/test?useSavedProgress=true" />
-          )}
-        />
+        <Route path={Routes.VocabularyTest} component={VocabularyTestPage} />
+        <Route path="*" component={() => <Navigate href={testRoute(1, 1)} />} />
       </MemoryRouter>
     </QueryClientProvider>
   ));
@@ -205,14 +197,22 @@ function setup() {
   const initResult = initTestApp();
   const userAction = userEvent.setup();
 
+  initResult.vocabularyTestResultApi.saveTestResult.mockImplementation(
+    (result: TestResultToCreate) =>
+      Promise.resolve({
+        ...result,
+        id: result.vocabulary_id,
+      })
+  );
+
   return { ...initResult, userAction };
 }
 
 export const DummyPage = () => (
   <div>
-    <a href="/vocabulary/1/test">Test vocab 1</a>
-    <a href="/vocabulary/2/test">Test vocab 2</a>
-    <a href="/vocabulary/1/test?useSavedProgress=true">Continue vocab 1 test</a>
+    <a href={testRoute(1)}>Test vocab 1</a>
+    <a href={testRoute(2)}>Test vocab 2</a>
+    <a href={testRoute(1, 1)}>Continue vocab 1 test</a>
   </div>
 );
 

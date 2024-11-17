@@ -40,7 +40,7 @@ const testResultsQuery = () =>
 async function fetchLastTestResult(
   vocabularyId: number,
   options?: { done: boolean }
-): Promise<TestResultDB | undefined> {
+): Promise<TestResultDB | null> {
   let query = testResultsQuery().eq('vocabulary_id', vocabularyId);
 
   if (options) {
@@ -51,10 +51,6 @@ async function fetchLastTestResult(
     .order('updated_at', { ascending: false })
     .limit(1)
     .maybeSingle();
-
-  if (!result.data) {
-    return undefined;
-  }
 
   return result.data;
 }
@@ -75,6 +71,23 @@ async function fetchWordResults(
     );
 
   return result.data ?? undefined;
+}
+
+async function fetchTestResult(testId: number) {
+  const result = await supabase
+    .from('vocabulary_test_results')
+    .select(
+      `
+        *,
+        words: vocabulary_test_result_words (
+          *
+        )
+     `
+    )
+    .eq('id', testId)
+    .single();
+
+  return result.data;
 }
 
 async function fetchTestResults(
@@ -130,13 +143,15 @@ async function saveTestResult(testResult: TestResultToCreateDB) {
     throw new Error('Results not saved');
   }
 
-  await supabase.from('vocabulary_test_result_words').upsert(
-    testResult.words.map(w => ({
-      ...w,
-      results_id: result.data.id,
-      word_id: w.word_id,
-    }))
-  );
+  if (testResult.words.length > 0) {
+    await supabase.from('vocabulary_test_result_words').upsert(
+      testResult.words.map(w => ({
+        ...w,
+        results_id: result.data.id,
+        word_id: w.word_id,
+      }))
+    );
+  }
 
   return {
     ...testResult,
@@ -145,6 +160,7 @@ async function saveTestResult(testResult: TestResultToCreateDB) {
 }
 
 export const vocabularyTestResultApi = {
+  fetchTestResult,
   fetchTestResults,
   fetchWordResults,
   fetchLastTestResult,

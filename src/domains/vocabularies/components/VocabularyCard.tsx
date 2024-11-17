@@ -1,7 +1,5 @@
-import { HiOutlineAcademicCap } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
-import { For, Show } from 'solid-js';
-import { Button } from '~/components/ui/button';
+import { For } from 'solid-js';
 import {
   Card,
   CardContent,
@@ -16,10 +14,7 @@ export type Props = {
   wordCount?: number;
   class?: string;
   onClick?: (id: number) => void;
-  onTestVocabulary: (
-    id: number,
-    config?: { useSavedProgress: boolean }
-  ) => void;
+  onTestVocabulary: (vocabulary: Vocabulary, testId?: number) => void;
 };
 
 export const VocabularyCard: Component<Props> = props => {
@@ -59,20 +54,21 @@ export const VocabularyCard: Component<Props> = props => {
             <span class="mr-auto text-left text-xs text-neutral-500">
               Last change: {props.vocabulary.updatedAt?.toLocaleDateString()}
             </span>
-            <Show when={props.vocabulary.testInProgress}>
+            {/* <Show when={props.vocabulary.testInProgressId}>
               <Button
                 size="sm"
                 variant="secondary"
                 onClick={() =>
-                  props.onTestVocabulary(props.vocabulary.id, {
-                    useSavedProgress: true,
-                  })
+                  props.onTestVocabulary(
+                    props.vocabulary,
+                    props.vocabulary.testInProgressId
+                  )
                 }
               >
                 <HiOutlineAcademicCap class="mr-1" />
                 Continue Test
               </Button>
-            </Show>
+            </Show> */}
           </div>
         </CardFooter>
       </Card>

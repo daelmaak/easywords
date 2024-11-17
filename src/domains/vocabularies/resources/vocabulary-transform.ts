@@ -8,7 +8,6 @@ export const transformToVocabulary = (
   const vocabulary: Vocabulary = {
     id: vocabularyDB.id,
     country: vocabularyDB.country as CountryCode,
-    testInProgress: vocabularyDB.test_in_progress,
     name: vocabularyDB.name,
     words: vocabularyDB.words.map(transformToWord),
   };

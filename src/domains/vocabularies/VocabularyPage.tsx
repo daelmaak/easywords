@@ -6,14 +6,13 @@ import { createMemo, Show, Suspense } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import {
   lastTestResultKey,
-  testProgressKey,
+  testResultKey,
   testResultsKey,
 } from '../vocabulary-results/resources/cache-keys';
 import {
+  fetchLastTestProgress,
   fetchLastTestResult,
-  fetchTestProgress,
   fetchTestResults,
-  saveTestResult,
 } from '../vocabulary-results/resources/vocabulary-test-result-resource';
 import { combineVocabularyWithTestResults } from '../vocabulary-results/util/results-util';
 import { navigateToVocabularyTest } from '../vocabulary-testing/util/navigation';
@@ -64,13 +63,13 @@ export const VocabularyPage: Component = () => {
   );
 
   const testProgressQuery = createQuery(() => ({
-    queryKey: testProgressKey(vocabularyId),
-    queryFn: () => fetchTestProgress(vocabularyId).then(r => r ?? null),
+    queryKey: testResultKey(vocabularyId),
+    queryFn: () => fetchLastTestProgress(vocabularyId),
   }));
 
   const lastTestResultQuery = createQuery(() => ({
     queryKey: lastTestResultKey(vocabularyId),
-    queryFn: () => fetchLastTestResult(vocabularyId).then(r => r ?? null),
+    queryFn: () => fetchLastTestResult(vocabularyId),
   }));
 
   const displayFullWordDetail = createMediaQuery('(min-width: 1024px)');
@@ -117,19 +116,13 @@ export const VocabularyPage: Component = () => {
     }
   }
 
-  function testVocabulary(config: { useSavedProgress: boolean }) {
-    if (!config.useSavedProgress && testProgressQuery.data) {
-      // Finish the last test progress
-      void saveTestResult({ ...testProgressQuery.data, done: true });
-    }
-    navigateToVocabularyTest(vocabularyId, navigate, config);
+  function testVocabulary(testId?: number) {
+    navigateToVocabularyTest(vocabularyId, navigate, {
+      testId,
+    });
   }
 
   function testSelected() {
-    if (testProgressQuery.data) {
-      // Finish the last test progress
-      void saveTestResult({ ...testProgressQuery.data, done: true });
-    }
     navigateToVocabularyTest(vocabularyId, navigate, {
       wordIds: store.selectedWords.map(w => w.id),
     });
@@ -144,13 +137,17 @@ export const VocabularyPage: Component = () => {
     <main class="page-container flex h-full flex-col gap-4 bg-neutral-100 p-2 sm:max-h-[calc(100vh-57px)] sm:flex-row">
       <Suspense fallback={<div class="m-auto">Loading ...</div>}>
         <div class="min-w-56 rounded-lg bg-white px-6 py-4 shadow-md md:min-w-64 md:max-w-80">
-          <VocabularySummary
-            vocabulary={vocabularyWithResults()}
-            lastTestResult={lastTestResultQuery.data}
-            testProgress={testProgressQuery.data}
-            onDeleteVocabulary={onDeleteVocabulary}
-            onTestVocabulary={testVocabulary}
-          />
+          <Show when={vocabularyWithResults()}>
+            {v => (
+              <VocabularySummary
+                vocabulary={v()}
+                lastTestResult={lastTestResultQuery.data}
+                testProgress={testProgressQuery.data}
+                onDeleteVocabulary={onDeleteVocabulary}
+                onTestVocabulary={testVocabulary}
+              />
+            )}
+          </Show>
         </div>
 
         <div class="flex flex-grow flex-col rounded-lg bg-white shadow-md lg:flex-grow-0">

@@ -6,9 +6,10 @@ import type { QueryData } from '@supabase/supabase-js';
 export type WordToCreateDB = RealOmit<WordDB, 'id' | 'created_at' | 'notes'> &
   Partial<Pick<WordDB, 'notes'>>;
 
+// TODO: Use Pick
 export type VocabularyToCreateDB = RealOmit<
   VocabularyDB,
-  'id' | 'updated_at' | 'words' | 'test_in_progress'
+  'id' | 'updated_at' | 'words' | 'test_in_progress_id'
 > & {
   words: RealOmit<WordToCreateDB, 'vocabulary_id'>[];
 };
@@ -35,7 +36,7 @@ const vocabulariesFetchQuery = () =>
 
 export type VocabularyDB = QueryData<
   ReturnType<typeof vocabulariesFetchQuery>
->[number] & { test_in_progress?: boolean };
+>[number];
 
 export type WordDB = VocabularyDB['words'][number];
 
@@ -47,26 +48,9 @@ const fetchVocabulary = async (id: number) => {
 const fetchVocabularies = async () => {
   const result = await supabase
     .from('vocabularies')
-    .select(
-      `
-    ${VOCABULARY_FETCH_FIELDS},
-    test_in_progress: vocabulary_test_results!left(
-      id
-    )
-  `
-    )
-    .eq('vocabulary_test_results.done', false);
+    .select(VOCABULARY_FETCH_FIELDS);
 
-  const vocabularies = result.data;
-
-  if (vocabularies == null) {
-    return;
-  }
-
-  return vocabularies.map(v => ({
-    ...v,
-    test_in_progress: Boolean(v.test_in_progress?.length),
-  }));
+  return result.data;
 };
 
 const fetchRecentVocabularies = async (count: number) => {

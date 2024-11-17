@@ -11,6 +11,7 @@ import { navigateToVocabularyTest } from '../vocabulary-testing/util/navigation'
 import { BackLink } from '~/components/BackLink';
 import { createQuery } from '@tanstack/solid-query';
 import { lastTestResultKey } from './resources/cache-keys';
+import { vocabularyRoute } from '~/routes/routes';
 
 export const VocabularyTestResultsPage: Component = () => {
   const params = useParams();
@@ -43,7 +44,9 @@ export const VocabularyTestResultsPage: Component = () => {
 
   return (
     <main class="page-container">
-      <BackLink href="../..">Back to vocabulary</BackLink>
+      <BackLink href={vocabularyRoute(vocabularyId)}>
+        Back to vocabulary
+      </BackLink>
       <Suspense fallback={<div>Loading...</div>}>
         <h1 class="mb-4 flex items-center justify-center">
           <span class="text-2xl">Test results</span>

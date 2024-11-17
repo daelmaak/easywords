@@ -10,6 +10,7 @@ import {
 import { ResultWordGuessesVisualisation } from './ResultWordGuessesVisualisation';
 import { RESULT_COLORS } from '../model/colors';
 import { groupBy } from 'lodash-es';
+import { vocabularyRoute } from '~/routes/routes';
 
 interface ResultsProps {
   results: TestResult;
@@ -135,7 +136,10 @@ export function Results(props: ResultsProps) {
             Test selected ({selectedWords().length})
           </Button>
         </Show>
-        <A class="text-sm text-primary" href="../..">
+        <A
+          class="text-sm text-primary"
+          href={vocabularyRoute(props.results.vocabulary_id)}
+        >
           Back to Vocabulary
         </A>
       </div>

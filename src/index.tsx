@@ -37,15 +37,13 @@ render(() => {
       <Router root={AuthRouteGuard}>
         <Route path="/" component={App}>
           <Route path={Routes.Dashboard} component={DashboardPage} />
-          <Route path={Routes.Vocabularies}>
-            <Route path="/" component={VocabulariesPage} />
-            <Route path="/:id" component={VocabularyPage} />
-            <Route path="/:id/test" component={VocabularyTestPage} />
-            <Route
-              path="/:id/test/results"
-              component={VocabularyTestResultsPage}
-            />
-          </Route>
+          <Route
+            path={Routes.VocabularyTestResults}
+            component={VocabularyTestResultsPage}
+          />
+          <Route path={Routes.VocabularyTest} component={VocabularyTestPage} />
+          <Route path={Routes.Vocabulary} component={VocabularyPage} />
+          <Route path={Routes.Vocabularies} component={VocabulariesPage} />
           <Route
             path={[
               Routes.Conjugations,

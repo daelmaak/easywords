@@ -19,6 +19,7 @@ import {
   VOCABULARIES_QUERY_KEY,
 } from './resources/vocabularies-resource';
 import { Routes } from '~/routes/routes';
+import type { Vocabulary } from './model/vocabulary-model';
 
 export const VocabulariesPage = () => {
   const navigate = useNavigate();
@@ -54,11 +55,10 @@ export const VocabulariesPage = () => {
     navigate(`${Routes.Vocabularies}/${id}`);
   }
 
-  function onTestVocabulary(
-    id: number,
-    config?: { useSavedProgress: boolean }
-  ) {
-    navigateToVocabularyTest(id, navigate, config);
+  function onTestVocabulary(vocabulary: Vocabulary, testId?: number) {
+    navigateToVocabularyTest(vocabulary.id, navigate, {
+      testId,
+    });
   }
 
   return (
@@ -82,7 +82,7 @@ export const VocabulariesPage = () => {
               <SheetHeader>
                 <SheetTitle>Create new vocabulary</SheetTitle>
               </SheetHeader>
-              <VocabularyCreator onListCreate={onCreateVocabulary} />
+              <VocabularyCreator onVocabularyCreate={onCreateVocabulary} />
             </SheetContent>
           </Sheet>
         </div>

@@ -27,13 +27,14 @@ import {
 import { WordsAdder } from './WordsAdder';
 import type { WordTranslation } from '~/model/word-translation';
 import { ConfirmationDialog } from '~/components/ConfirmationDialog';
+import { testResultsRoute, testRoute } from '~/routes/routes';
 
 interface Props {
-  vocabulary: Vocabulary | undefined;
+  vocabulary: Vocabulary;
   testProgress?: TestResult | null;
   lastTestResult?: TestResult | null;
   onDeleteVocabulary: (id: number) => void;
-  onTestVocabulary: (options: { useSavedProgress: boolean }) => void;
+  onTestVocabulary: (testId?: number) => void;
 }
 
 export const VocabularySummary: Component<Props> = props => {
@@ -42,7 +43,7 @@ export const VocabularySummary: Component<Props> = props => {
 
   async function onCreateWords(words: WordTranslation[]) {
     setCreatingWords(true);
-    await createWords(props.vocabulary!.id, ...words);
+    await createWords(props.vocabulary.id, ...words);
     setOpenedAddWords(false);
     setCreatingWords(false);
   }
@@ -54,7 +55,7 @@ export const VocabularySummary: Component<Props> = props => {
 
     const vocabulary = props.vocabulary;
 
-    if (!vocabulary || !name || !country) {
+    if (!name || !country) {
       return;
     }
 
@@ -112,31 +113,31 @@ export const VocabularySummary: Component<Props> = props => {
           <Button
             class="grow"
             size="sm"
-            variant={
-              props.vocabulary?.testInProgress ? 'secondary' : 'defaultOutline'
-            }
-            onClick={() => props.onTestVocabulary({ useSavedProgress: false })}
+            variant={props.testProgress ? 'secondary' : 'defaultOutline'}
+            onClick={() => props.onTestVocabulary()}
           >
             <HiOutlineAcademicCap />
             Test all
           </Button>
-          <Show when={props.vocabulary?.testInProgress}>
-            <Button
-              class="grow"
-              size="sm"
-              variant="defaultOutline"
-              onClick={() => props.onTestVocabulary({ useSavedProgress: true })}
-            >
-              <HiOutlineAcademicCap />
-              Continue test
-            </Button>
+          <Show when={props.testProgress}>
+            {testProgress => (
+              <Button
+                class="grow"
+                size="sm"
+                variant="defaultOutline"
+                onClick={() => props.onTestVocabulary(testProgress().id)}
+              >
+                <HiOutlineAcademicCap />
+                Continue test
+              </Button>
+            )}
           </Show>
         </div>
       </div>
 
       <Show when={props.testProgress}>
         {progress => (
-          <A href="test?useSavedProgress=true">
+          <A href={testRoute(props.vocabulary.id, progress().id)}>
             <VocabularyResultsMini result={progress()} />
           </A>
         )}
@@ -144,7 +145,7 @@ export const VocabularySummary: Component<Props> = props => {
 
       <Show when={props.lastTestResult}>
         {result => (
-          <A href="test/results">
+          <A href={testResultsRoute(props.vocabulary.id, result().id)}>
             <VocabularyResultsMini result={result()} />
           </A>
         )}
@@ -152,7 +153,7 @@ export const VocabularySummary: Component<Props> = props => {
 
       <ConfirmationDialog
         confirmText="Delete vocabulary"
-        onConfirm={() => props.onDeleteVocabulary?.(props.vocabulary!.id)}
+        onConfirm={() => props.onDeleteVocabulary?.(props.vocabulary.id)}
         trigger={p => (
           <Button
             {...p}

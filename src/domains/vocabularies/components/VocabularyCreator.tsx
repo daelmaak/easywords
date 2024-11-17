@@ -19,7 +19,7 @@ import type { Word } from '../model/vocabulary-model';
 import type { VocabularyToCreate } from '../resources/vocabulary-resource';
 
 interface Props {
-  onListCreate: (vocabulary: VocabularyToCreate) => void;
+  onVocabularyCreate: (vocabulary: VocabularyToCreate) => void;
 }
 
 const l10n: { mode: Record<WordsInputMode, string> } = {
@@ -39,7 +39,7 @@ export const VocabularyCreator: Component<Props> = props => {
 
     const formData = new FormData(event.target as HTMLFormElement);
 
-    props.onListCreate({
+    props.onVocabularyCreate({
       name: formData.get('vocabularyName') as string,
       country: formData.get('country') as CountryCode,
       words: words(),

@@ -11,7 +11,8 @@ import {
   VOCABULARY_QUERY_KEY,
 } from '../vocabularies/resources/vocabulary-resource';
 import {
-  fetchTestProgress,
+  createTestResult,
+  fetchTestResult,
   saveTestResult,
 } from '../vocabulary-results/resources/vocabulary-test-result-resource';
 import type { VocabularyTesterSettings } from './components/VocabularySettings';
@@ -19,15 +20,19 @@ import { VocabularySettings } from './components/VocabularySettings';
 import { VocabularyTester } from './components/VocabularyTester';
 import { createQuery } from '@tanstack/solid-query';
 import type {
+  TestResult,
   TestResultToCreate,
   TestResultWord,
 } from '../vocabulary-results/model/test-result-model';
+import { testResultKey } from '../vocabulary-results/resources/cache-keys';
+import { testResultsRoute, testRoute, vocabularyRoute } from '~/routes/routes';
 
 export const VocabularyTestPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const params = useParams();
   const vocabularyId = +params.id;
+  const testId = () => +params.testId || undefined;
 
   const vocabularyQuery = createQuery(() => ({
     queryKey: [VOCABULARY_QUERY_KEY, vocabularyId],
@@ -35,8 +40,9 @@ export const VocabularyTestPage = () => {
   }));
 
   const testProgressQuery = createQuery(() => ({
-    queryKey: ['vocabulary', vocabularyId, 'progress'],
-    queryFn: () => fetchTestProgress(vocabularyId).then(r => r ?? null),
+    queryKey: testResultKey(testId()!),
+    queryFn: () => fetchTestResult(testId()!),
+    enabled: () => testId() != null,
   }));
 
   const [vocabularySettings, setVocabularySettings] =
@@ -54,13 +60,7 @@ export const VocabularyTestPage = () => {
       return;
     }
 
-    if (searchParams.wordIds) {
-      const wordIds = searchParams.wordIds.split(',').map(Number);
-      const words = vocabulary.words.filter(w => wordIds.includes(w.id));
-      return words;
-    }
-
-    if (searchParams.useSavedProgress && testProgressQuery.data) {
+    if (testProgressQuery.data) {
       // This dict is a performance optimization to avoid having to filter the words
       // by iterating over the saved progress words.
       const savedProgressDict = testProgressQuery.data.words.reduce(
@@ -77,6 +77,28 @@ export const VocabularyTestPage = () => {
     return vocabulary.words;
   };
 
+  createEffect(async () => {
+    if (testId() != null) {
+      return;
+    }
+
+    const vocabulary = vocabularyQuery.data;
+
+    if (vocabulary == null) {
+      return;
+    }
+
+    let words: Word[] | undefined;
+
+    if (searchParams.wordIds) {
+      const wordIds = searchParams.wordIds.split(',').map(Number);
+      words = vocabulary.words.filter(w => wordIds.includes(w.id));
+    }
+
+    const result = await createTestResult(vocabulary, words);
+    navigate(testRoute(vocabularyId, result.id), { replace: true });
+  });
+
   createEffect(prevVocabularyId => {
     const vocabulary = vocabularyQuery.data;
 
@@ -88,9 +110,9 @@ export const VocabularyTestPage = () => {
     return vocabulary.id;
   });
 
-  async function onDone(result: TestResultToCreate) {
+  async function onDone(result: TestResult) {
     await saveTestResult(result);
-    navigate('results');
+    navigate(testResultsRoute(vocabularyId, result.id));
   }
 
   function onEditWord(word: Word) {
@@ -98,7 +120,7 @@ export const VocabularyTestPage = () => {
   }
 
   function goToVocabulary() {
-    navigate('..');
+    navigate(vocabularyRoute(vocabularyId));
   }
 
   async function deleteWord(word: Word) {
@@ -114,7 +136,9 @@ export const VocabularyTestPage = () => {
       {/* TODO don't use Suspense here since it causes rerender after navigating to the test page and pressing "Next word" button. 
           That breaks the maintenance/restoration of focus on the write tester input. */}
       <Show when={!vocabularyQuery.isLoading}>
-        <BackLink>Back to vocabulary</BackLink>
+        <BackLink href={vocabularyRoute(vocabularyId)}>
+          Back to vocabulary
+        </BackLink>
         <div class="mx-auto mt-4 flex items-center justify-center">
           <span class={`fi mr-2 size-5 fi-${vocabularyQuery.data?.country}`} />
           <h1>{vocabularyQuery.data?.name}</h1>
@@ -131,18 +155,21 @@ export const VocabularyTestPage = () => {
                   />
                 </aside>
                 <main class="m-auto mb-4 w-full">
-                  <VocabularyTester
-                    testSettings={vocabularySettings}
-                    applySavedProgress={searchParams.useSavedProgress != null}
-                    savedProgress={testProgressQuery.data}
-                    vocabularyId={vocabularyId}
-                    words={w()}
-                    onDone={onDone}
-                    onEditWord={onEditWord}
-                    onProgress={saveProgress}
-                    onRemoveWord={deleteWord}
-                    onStop={goToVocabulary}
-                  />
+                  <Show when={testProgressQuery.data}>
+                    {testProgress => (
+                      <VocabularyTester
+                        testSettings={vocabularySettings}
+                        testProgress={testProgress()}
+                        vocabularyId={vocabularyId}
+                        words={w()}
+                        onDone={onDone}
+                        onEditWord={onEditWord}
+                        onProgress={saveProgress}
+                        onRemoveWord={deleteWord}
+                        onStop={goToVocabulary}
+                      />
+                    )}
+                  </Show>
                 </main>
               </div>
             )}

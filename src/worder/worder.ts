@@ -1,6 +1,6 @@
-import type { Word } from '~/domains/vocabularies/model/vocabulary-model';
+import type { TestResultWord } from '~/domains/vocabulary-results/model/test-result-model';
 
-export function nextWord(words: Word[]): Word | undefined {
+export function nextWord(words: TestResultWord[]): TestResultWord | undefined {
   if (!words.length) {
     return undefined;
   }

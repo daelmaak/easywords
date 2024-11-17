@@ -5,6 +5,8 @@ import type { VocabularyTesterSettings } from './VocabularySettings';
 import userEvent from '@testing-library/user-event';
 import { createSignal } from 'solid-js';
 import type { Word } from '../../vocabularies/model/vocabulary-model';
+import type { TestResult } from '~/domains/vocabulary-results/model/test-result-model';
+import { TestWordStatus } from '~/domains/vocabulary-results/model/test-result-model';
 
 const TEST_WORDS: Word[] = [
   {
@@ -31,10 +33,14 @@ afterEach(() => {
 
 it('should complete the test when last word invalid when in non-repeat mode', async () => {
   const { defaultTestSettings, onDone, userAction } = setup();
+  const words = TEST_WORDS.slice(0, 1);
+  const testProgress = createTestProgress(words, false);
+
   render(() => (
     <VocabularyTester
       vocabularyId={1}
-      words={TEST_WORDS.slice(0, 1)}
+      words={words}
+      testProgress={testProgress}
       testSettings={{ ...defaultTestSettings, repeatInvalid: false }}
       onDone={onDone}
       onEditWord={vi.fn()}
@@ -56,10 +62,14 @@ it('should complete the test when last word invalid when in non-repeat mode', as
 
 it("shouldn't pass with empty input", async () => {
   const { defaultTestSettings, userAction } = setup();
+  const words = TEST_WORDS.slice(0, 1);
+  const testProgress = createTestProgress(words, false);
+
   render(() => (
     <VocabularyTester
       vocabularyId={1}
-      words={TEST_WORDS.slice(0, 1)}
+      words={words}
+      testProgress={testProgress}
       testSettings={{ ...defaultTestSettings, repeatInvalid: false }}
       onDone={vi.fn()}
       onEditWord={vi.fn()}
@@ -76,10 +86,14 @@ it("shouldn't pass with empty input", async () => {
 
 it("should still be able to validate with enter even though previous word's validation was unsuccessful", async () => {
   const { defaultTestSettings, onDone, userAction } = setup();
+  const words = TEST_WORDS.slice(0, 2);
+  const testProgress = createTestProgress(words, false);
+
   render(() => (
     <VocabularyTester
       vocabularyId={1}
-      words={TEST_WORDS.slice(0, 2)}
+      words={words}
+      testProgress={testProgress}
       testSettings={{ ...defaultTestSettings, repeatInvalid: false }}
       onDone={onDone}
       onEditWord={vi.fn()}
@@ -103,15 +117,19 @@ it("should still be able to validate with enter even though previous word's vali
 // Because especially mobile devices like to enter text with spaces at the end
 it('should trim words during validaton', async () => {
   const { defaultTestSettings, onDone, userAction } = setup();
+  const words = [
+    {
+      ...TEST_WORDS[0],
+      translation: 'ahoj ',
+    },
+  ];
+  const testProgress = createTestProgress(words, false);
+
   render(() => (
     <VocabularyTester
       vocabularyId={1}
-      words={[
-        {
-          ...TEST_WORDS[0],
-          translation: 'ahoj ',
-        },
-      ]}
+      words={words}
+      testProgress={testProgress}
       testSettings={{ ...defaultTestSettings, repeatInvalid: false }}
       onDone={onDone}
       onEditWord={vi.fn()}
@@ -132,15 +150,19 @@ it('should trim words during validaton', async () => {
 
 it(`shouldn't pass with incorrect diacritics in strict mode`, async () => {
   const { defaultTestSettings, userAction } = setup();
+  const words = [
+    {
+      ...TEST_WORDS[0],
+      translation: 'dạo này',
+    },
+  ];
+  const testProgress = createTestProgress(words, false);
+
   render(() => (
     <VocabularyTester
       vocabularyId={1}
-      words={[
-        {
-          ...TEST_WORDS[0],
-          translation: 'dạo này',
-        },
-      ]}
+      words={words}
+      testProgress={testProgress}
       testSettings={{ ...defaultTestSettings, strictMatch: true }}
       onDone={vi.fn()}
       onEditWord={vi.fn()}
@@ -158,13 +180,15 @@ it(`shouldn't pass with incorrect diacritics in strict mode`, async () => {
 });
 
 it('should keep its validation state after changing the word', async () => {
-  const [words, setWords] = createSignal(TEST_WORDS.slice(0, 1));
   const { defaultTestSettings, onDone, userAction } = setup();
+  const [words, setWords] = createSignal(TEST_WORDS.slice(0, 1));
+  const testProgress = createTestProgress(words(), false);
 
   render(() => (
     <VocabularyTester
       vocabularyId={1}
       words={words()}
+      testProgress={testProgress}
       testSettings={{ ...defaultTestSettings, repeatInvalid: false }}
       onDone={onDone}
       onEditWord={vi.fn()}
@@ -178,13 +202,7 @@ it('should keep its validation state after changing the word', async () => {
   await userAction.type(input, TEST_WORDS[0].translation);
   await userAction.click(checkWordBtn);
 
-  setWords([
-    {
-      ...TEST_WORDS[1],
-      translation: 'ahojik',
-    },
-    ...TEST_WORDS,
-  ]);
+  setWords(words().map(w => ({ ...w, translation: 'ahojik' })));
 
   const validIcon = screen.getByLabelText('Word guess is valid');
   expect(validIcon).not.toBeNull();
@@ -197,11 +215,14 @@ it('should keep its validation state after changing the word', async () => {
 
 it('should peek after invalid guess', async () => {
   const { defaultTestSettings, userAction } = setup();
+  const words = TEST_WORDS.slice(0, 1);
+  const testProgress = createTestProgress(words, false);
 
   render(() => (
     <VocabularyTester
       vocabularyId={1}
-      words={TEST_WORDS.slice(0, 1)}
+      words={words}
+      testProgress={testProgress}
       testSettings={defaultTestSettings}
       onDone={vi.fn()}
       onEditWord={vi.fn()}
@@ -222,7 +243,6 @@ it('should peek after invalid guess', async () => {
   expect(peekedResult.innerHTML).toContain(TEST_WORDS[0].translation);
   expect(peekedResult.className).not.toContain('invisible');
 });
-
 function setup() {
   const onDone = vi.fn();
   const defaultTestSettings = {
@@ -235,4 +255,21 @@ function setup() {
   const userAction = userEvent.setup();
 
   return { defaultTestSettings, onDone, userAction };
+}
+
+function createTestProgress(words: Word[], done: boolean) {
+  return {
+    id: 1,
+    words: words.map(w => ({
+      attempts: [],
+      word_id: w.id,
+      result: TestWordStatus.NotDone,
+      created_at: new Date().toISOString(),
+      done: false,
+    })),
+    created_at: new Date().toISOString(),
+    done,
+    updated_at: new Date().toISOString(),
+    vocabulary_id: 1,
+  } satisfies TestResult;
 }

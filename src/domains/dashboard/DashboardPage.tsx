@@ -11,6 +11,7 @@ import {
   VOCABULARIES_QUERY_KEY,
 } from '../vocabularies/resources/vocabularies-resource';
 import { navigateToVocabularyTest } from '../vocabulary-testing/util/navigation';
+import type { Vocabulary } from '../vocabularies/model/vocabulary-model';
 
 export const DashboardPage: Component = () => {
   const navigate = useNavigate();
@@ -28,11 +29,10 @@ export const DashboardPage: Component = () => {
     navigate(`${Routes.Vocabularies}?openVocabCreator=true`);
   }
 
-  function onTestVocabulary(
-    id: number,
-    config?: { useSavedProgress: boolean }
-  ) {
-    navigateToVocabularyTest(id, navigate, config);
+  function onTestVocabulary(vocabulary: Vocabulary, testId?: number) {
+    navigateToVocabularyTest(vocabulary.id, navigate, {
+      testId,
+    });
   }
 
   return (
