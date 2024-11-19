@@ -2,7 +2,7 @@ import { A, useNavigate } from '@solidjs/router';
 import { createQuery } from '@tanstack/solid-query';
 import { HiOutlinePlus } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
-import { For, Suspense } from 'solid-js';
+import { For, Show, Suspense } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import { Routes } from '~/routes/routes';
 import { VocabularyCard } from '../vocabularies/components/VocabularyCard';
@@ -12,6 +12,9 @@ import {
 } from '../vocabularies/resources/vocabularies-resource';
 import { navigateToVocabularyTest } from '../vocabulary-testing/util/navigation';
 import type { Vocabulary } from '../vocabularies/model/vocabulary-model';
+import { fetchRecentTestResults } from '../vocabulary-results/resources/vocabulary-test-result-resource';
+import { testResultsKey } from '../vocabulary-results/resources/cache-keys';
+import { VocabularyResultsMini } from '../vocabulary-results/components/VocabularyResultsMini';
 
 export const DashboardPage: Component = () => {
   const navigate = useNavigate();
@@ -19,6 +22,11 @@ export const DashboardPage: Component = () => {
   const recentVocabulariesQuery = createQuery(() => ({
     queryKey: [VOCABULARIES_QUERY_KEY, { type: 'recent' }],
     queryFn: () => fetchRecentVocabularies(6),
+  }));
+
+  const recentTestsQuery = createQuery(() => ({
+    queryKey: [...testResultsKey(), { type: 'recent' }],
+    queryFn: () => fetchRecentTestResults(6),
   }));
 
   function onGoToVocabulary(id: number) {
@@ -38,8 +46,8 @@ export const DashboardPage: Component = () => {
   return (
     <>
       <h1 class="sr-only">Dashboard</h1>
-      <div>
-        <section class="rounded-b-xl bg-gray-100 p-6">
+      <div class="flex flex-col gap-4 bg-neutral-50 p-2">
+        <section class="rounded-lg border border-neutral-200 bg-neutral-100 p-6">
           <div class="mb-4 flex items-center gap-4">
             <h2 class="text-lg font-semibold">Recent vocabularies</h2>
             <A href="/vocabulary" class="text-primary">
@@ -80,7 +88,25 @@ export const DashboardPage: Component = () => {
             </Suspense>
           </div>
         </section>
-        <section class="mx-auto max-w-[40rem] p-6">
+
+        <Show when={recentTestsQuery.data}>
+          {tests => (
+            <Show when={tests().length}>
+              <section class="rounded-lg border border-neutral-200 bg-neutral-100 p-6">
+                <div class="mb-4 flex items-center gap-4">
+                  <h2 class="text-lg font-semibold">Recent tests</h2>
+                </div>
+                <div class="flex flex-col gap-4 sm:flex-row sm:overflow-x-auto">
+                  <For each={tests()}>
+                    {test => <VocabularyResultsMini result={test} />}
+                  </For>
+                </div>
+              </section>
+            </Show>
+          )}
+        </Show>
+
+        <section class="mx-auto w-full max-w-[40rem] p-6">
           <h2 class="mb-4 text-lg font-semibold">How to</h2>
           <div style="padding-bottom:56.25%; position:relative; display:block; width: 100%">
             <iframe

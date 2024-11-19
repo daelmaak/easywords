@@ -2,8 +2,10 @@ export function testResultKey(testId: number) {
   return ['vocabulary-test-result', testId];
 }
 
-export function testResultsKey(vocabularyId: number) {
-  return ['vocabulary', vocabularyId, 'results'];
+export function testResultsKey(vocabularyId?: number) {
+  return vocabularyId
+    ? ['vocabulary', vocabularyId, 'results']
+    : ['vocabulary-test-results'];
 }
 
 export function lastTestResultKey(vocabularyId: number) {

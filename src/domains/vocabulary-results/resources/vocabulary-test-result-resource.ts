@@ -31,6 +31,12 @@ export async function fetchLastTestResult(
   return await api.fetchLastTestResult(vocabularyId, { done: true });
 }
 
+export async function fetchRecentTestResults(
+  amount: number
+): Promise<TestResult[]> {
+  return await api.fetchRecentTestResults(amount);
+}
+
 export async function fetchLastTestProgress(
   vocabularyId: number
 ): Promise<TestResult | null> {

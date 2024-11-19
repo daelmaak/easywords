@@ -55,6 +55,14 @@ async function fetchLastTestResult(
   return result.data;
 }
 
+async function fetchRecentTestResults(amount: number) {
+  const result = await testResultsQuery()
+    .order('updated_at', { ascending: false })
+    .limit(amount);
+
+  return result.data ?? [];
+}
+
 async function fetchWordResults(
   wordId: number,
   options: { upToDaysAgo: number }
@@ -164,6 +172,7 @@ export const vocabularyTestResultApi = {
   fetchTestResults,
   fetchWordResults,
   fetchLastTestResult,
+  fetchRecentTestResults,
   hasTestProgress,
   saveTestResult,
 };
