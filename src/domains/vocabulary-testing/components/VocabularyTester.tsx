@@ -1,13 +1,12 @@
 import {
+  HiOutlineArchiveBox,
   HiOutlineEye,
   HiOutlinePencil,
-  HiOutlineTrash,
   HiSolidInformationCircle,
 } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
 import { Match, Show, Switch } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { ConfirmationDialog } from '~/components/ConfirmationDialog';
 import { Button } from '~/components/ui/button';
 import {
   Popover,
@@ -38,7 +37,7 @@ interface TesterProps {
   onDone: (result: TestResult) => void;
   onEditWord: (word: Word) => void;
   onProgress?: (results: TestResultToCreate) => void;
-  onRemoveWord: (word: Word) => void;
+  onArchiveWord: (word: Word) => void;
   onStop?: () => void;
 }
 
@@ -196,14 +195,14 @@ export const VocabularyTester: Component<TesterProps> = (
     }
   }
 
-  function removeWord() {
+  function archiveWord() {
     const word = currentWord();
 
     if (!word) {
       return;
     }
 
-    props.onRemoveWord(word);
+    props.onArchiveWord(word);
 
     setStore('resultWords', rw => rw.filter(w => w.word_id !== word.id));
 
@@ -232,23 +231,19 @@ export const VocabularyTester: Component<TesterProps> = (
         classList={{ invisible: !currentWord() }}
       >
         <div class="flex items-center justify-end">
-          <ConfirmationDialog
-            trigger={p => (
-              <Button
-                {...p}
-                aria-label="Delete word from vocabulary"
-                class="translate-y-[1px] opacity-60"
-                title="Delete word from vocabulary"
-                size="icon"
-                variant="ghost"
-                type="button"
-              >
-                <HiOutlineTrash size={20} />
-              </Button>
-            )}
-            confirmText="Delete word"
-            onConfirm={removeWord}
-          />
+          <Show when={!currentWord()?.archived}>
+            <Button
+              aria-label="Archive word"
+              class="translate-y-[1px] opacity-60"
+              title="Archive word"
+              size="icon"
+              variant="ghost"
+              type="button"
+              onClick={archiveWord}
+            >
+              <HiOutlineArchiveBox size={20} />
+            </Button>
+          </Show>
           <Button
             aria-label="Edit word"
             class="translate-y-[1px] opacity-60"

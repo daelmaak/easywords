@@ -28,6 +28,10 @@ export const VocabularyTestResultsPage: Component = () => {
     queryFn: () => fetchLastTestResult(vocabularyId),
   }));
 
+  async function onArchive(words: Word[]) {
+    await updateWords(...words.map(w => ({ ...w, archived: true })));
+  }
+
   function onRepeatAll() {
     navigate('..');
   }
@@ -61,6 +65,7 @@ export const VocabularyTestResultsPage: Component = () => {
                   results={results()}
                   words={words()}
                   editWord={onWordsEdited}
+                  onArchive={onArchive}
                   onRepeatAll={onRepeatAll}
                   onRepeat={onRepeat}
                 />

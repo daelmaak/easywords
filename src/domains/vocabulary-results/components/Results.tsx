@@ -16,6 +16,7 @@ interface ResultsProps {
   results: TestResult;
   words: Word[];
   editWord: (word: Word) => void;
+  onArchive: (words: Word[]) => void;
   onRepeatAll: () => void;
   onRepeat: (words: Word[]) => void;
 }
@@ -79,6 +80,10 @@ export function Results(props: ResultsProps) {
     props.onRepeat(selectedWords());
   }
 
+  function onArchiveSelected() {
+    props.onArchive(selectedWords());
+  }
+
   return (
     <div class="mx-auto flex flex-col">
       <WordEditorDialog
@@ -133,7 +138,10 @@ export function Results(props: ResultsProps) {
             variant="defaultOutline"
             onClick={onRepeatSelected}
           >
-            Test selected ({selectedWords().length})
+            Test ({selectedWords().length})
+          </Button>
+          <Button type="button" variant="outline" onClick={onArchiveSelected}>
+            Archive ({selectedWords().length})
           </Button>
         </Show>
         <A

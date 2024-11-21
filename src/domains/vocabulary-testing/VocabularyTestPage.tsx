@@ -4,7 +4,6 @@ import { createStore } from 'solid-js/store';
 import { BackLink } from '~/components/BackLink';
 import type { Word } from '../vocabularies/model/vocabulary-model';
 import {
-  deleteWords,
   fetchVocabulary,
   updateVocabularyAsInteractedWith,
   updateWords,
@@ -123,8 +122,8 @@ export const VocabularyTestPage = () => {
     navigate(vocabularyRoute(vocabularyId));
   }
 
-  async function deleteWord(word: Word) {
-    await deleteWords(vocabularyId, word.id);
+  async function archiveWord(word: Word) {
+    await updateWords({ ...word, archived: true });
   }
 
   function saveProgress(result: TestResultToCreate) {
@@ -165,7 +164,7 @@ export const VocabularyTestPage = () => {
                         onDone={onDone}
                         onEditWord={onEditWord}
                         onProgress={saveProgress}
-                        onRemoveWord={deleteWord}
+                        onArchiveWord={archiveWord}
                         onStop={goToVocabulary}
                       />
                     )}
