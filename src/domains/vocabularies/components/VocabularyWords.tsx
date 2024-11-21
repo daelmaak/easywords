@@ -45,6 +45,10 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
         return sortAsc ? aValue - bValue : bValue - aValue;
       }
 
+      if (typeof aValue === 'boolean' && typeof bValue === 'boolean') {
+        return sortAsc ? (aValue ? 1 : -1) : bValue ? 1 : -1;
+      }
+
       if (aValue instanceof Date && bValue instanceof Date) {
         return sortAsc
           ? aValue.getTime() - bValue.getTime()

@@ -13,6 +13,7 @@ import {
   TooltipContent,
   Tooltip,
 } from '~/components/ui/tooltip';
+import { cx } from 'class-variance-authority';
 
 interface Props {
   word: Word;
@@ -53,7 +54,14 @@ export const VocabularyWord: Component<Props> = props => {
       />
 
       <div class="flex grow flex-col">
-        <div class="flex items-center gap-x-1">
+        <div
+          class={cx('flex items-center gap-x-1', {
+            'text-neutral-600': props.word.archived,
+          })}
+        >
+          <Show when={props.word.archived}>
+            <span class="text-sm">(Archived)</span>
+          </Show>
           <span>{props.word.original}</span>
           <span class="mx-2 text-center">-</span>
           <span>{props.word.translation}</span>

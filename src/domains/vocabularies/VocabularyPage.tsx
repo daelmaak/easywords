@@ -45,6 +45,7 @@ export const VocabularyPage: Component = () => {
       asc: searchParams['sortasc'] === 'true',
       by: (searchParams['sortby'] as SortState['by']) ?? 'createdAt',
     },
+    showArchivedWords: false,
     wordToShowDetailId: undefined as number | undefined,
   });
 
@@ -72,13 +73,16 @@ export const VocabularyPage: Component = () => {
     queryFn: () => fetchLastTestResult(vocabularyId),
   }));
 
+  const words = () =>
+    store.showArchivedWords
+      ? vocabularyWithResults()?.words
+      : vocabularyWithResults()?.words.filter(w => !w.archived);
+
   const displayFullWordDetail = createMediaQuery('(min-width: 1024px)');
 
   const wordToShowDetail = createMemo(() =>
     store.wordToShowDetailId
-      ? vocabularyWithResults()?.words.find(
-          w => w.id === store.wordToShowDetailId
-        )
+      ? words()?.find(w => w.id === store.wordToShowDetailId)
       : undefined
   );
 
@@ -100,9 +104,13 @@ export const VocabularyPage: Component = () => {
     navigate(Routes.Vocabularies);
   }
 
+  async function onDeleteWord(word: Word) {
+    await deleteWords(vocabularyId, word.id);
+  }
+
   function onSelectAll(selected: boolean) {
     if (selected) {
-      setStore({ selectedWords: vocabularyWithResults()?.words ?? [] });
+      setStore({ selectedWords: words() ?? [] });
     } else {
       setStore({ selectedWords: [] });
     }
@@ -151,12 +159,13 @@ export const VocabularyPage: Component = () => {
         </div>
 
         <div class="flex flex-grow flex-col rounded-lg bg-white shadow-md lg:flex-grow-0">
-          <Show when={vocabularyWithResults()}>
-            {v => (
+          <Show when={words()}>
+            {words => (
               <>
                 <div class="sticky top-0 z-10 rounded-t-lg bg-background md:static md:z-0">
                   <VocabularyWordsToolbar
-                    words={v().words}
+                    displayArchived={store.showArchivedWords}
+                    words={words()}
                     selectedWords={store.selectedWords}
                     sortState={store.sortState}
                     onSearch={words => setStore({ searchedWords: words })}
@@ -164,11 +173,14 @@ export const VocabularyPage: Component = () => {
                     onSort={sort}
                     onTestSelected={testSelected}
                     onDeleteSelected={deleteSelectedWords}
+                    onToggleDisplayArchived={() =>
+                      setStore({ showArchivedWords: !store.showArchivedWords })
+                    }
                   />
                 </div>
                 <div class="h-full overflow-y-auto px-2">
                   <Show
-                    when={v().words.length > 0}
+                    when={words().length > 0}
                     fallback={
                       <div class="flex h-full w-full items-center justify-center text-neutral-600">
                         Add some words first!
@@ -176,7 +188,7 @@ export const VocabularyPage: Component = () => {
                     }
                   >
                     <VocabularyWords
-                      words={store.searchedWords ?? v().words}
+                      words={store.searchedWords ?? words()}
                       selectedWords={store.selectedWords}
                       sortState={store.sortState}
                       onWordDetail={w => setStore({ wordToShowDetailId: w.id })}
@@ -208,6 +220,7 @@ export const VocabularyPage: Component = () => {
                 <WordDetail
                   word={word()}
                   onClose={() => setStore({ wordToShowDetailId: undefined })}
+                  onWordDelete={() => onDeleteWord(word())}
                   onWordEdited={onWordsEdited}
                 />
               )}

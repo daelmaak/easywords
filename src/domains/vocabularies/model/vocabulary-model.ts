@@ -3,6 +3,7 @@ import type { TestResultWord } from '~/domains/vocabulary-results/model/test-res
 
 export interface Word {
   id: number;
+  archived: boolean;
   createdAt: Date;
   vocabularyId: number;
   original: string;

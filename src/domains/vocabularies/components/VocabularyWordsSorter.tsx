@@ -17,10 +17,12 @@ const SortKeyCopy: Partial<Record<SortState['by'], string>> = {
   averageTestScore: 'Average test score',
   original: 'Original',
   translation: 'Translation',
+  archived: 'Archived',
 };
 
 export type VocabularyWordsSorterProps = {
   sortState: SortState;
+  displayArchived: boolean;
   sort: (sortProps: Partial<SortState>) => void;
 };
 
@@ -31,6 +33,13 @@ export const VocabularyWordsSorter: Component<
   const [stagedSortState, setStagedSortState] = createSignal<SortState>();
 
   const currentKey = () => stagedSortState()?.by ?? props.sortState.by;
+
+  const sortKeys = () =>
+    props.displayArchived
+      ? Object.keys(SortKeyCopy)
+      : Object.keys(SortKeyCopy).filter(
+          k => (k as keyof typeof SortKeyCopy) !== 'archived'
+        );
 
   const handleSort = (sortProps: Partial<SortState>) => {
     setStagedSortState({
@@ -84,7 +93,7 @@ export const VocabularyWordsSorter: Component<
           />
         </div>
         <div class="mt-2 flex flex-col gap-1">
-          <For each={Object.keys(SortKeyCopy)}>
+          <For each={sortKeys()}>
             {key => (
               <SortItem
                 sortKey={key as SortState['by']}

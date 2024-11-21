@@ -161,6 +161,7 @@ export type Database = {
           original: string;
           translation: string;
           vocabulary_id: number;
+          archived?: boolean;
         };
         Insert: {
           created_at?: Date | string;
@@ -169,6 +170,7 @@ export type Database = {
           original: string;
           translation: string;
           vocabulary_id: number;
+          archived?: boolean;
         };
         Update: {
           created_at?: Date | string;
@@ -177,6 +179,7 @@ export type Database = {
           original?: string;
           translation?: string;
           vocabulary_id?: number;
+          archived?: boolean;
         };
         Relationships: [
           {

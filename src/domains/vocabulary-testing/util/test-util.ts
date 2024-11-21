@@ -20,6 +20,7 @@ export function createMockVocabularyDB(config: {
       original: `original${index}`,
       translation: `translation${index}`,
       notes: '',
+      archived: false,
     })
   );
 

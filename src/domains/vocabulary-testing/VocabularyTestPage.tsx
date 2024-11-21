@@ -74,7 +74,7 @@ export const VocabularyTestPage = () => {
       return vocabulary.words.filter(w => savedProgressDict[w.id] != null);
     }
 
-    return vocabulary.words;
+    return vocabulary.words.filter(w => !w.archived);
   };
 
   createEffect(async () => {

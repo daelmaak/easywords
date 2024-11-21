@@ -16,6 +16,7 @@ const TEST_WORDS: Word[] = [
     original: 'hello',
     translation: 'ahoj',
     notes: undefined,
+    archived: false,
   },
   {
     id: 2,
@@ -24,6 +25,7 @@ const TEST_WORDS: Word[] = [
     original: 'hi',
     translation: 'ahoj',
     notes: undefined,
+    archived: false,
   },
 ];
 

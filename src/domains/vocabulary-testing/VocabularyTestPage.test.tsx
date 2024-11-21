@@ -229,6 +229,7 @@ const vocabulary1: VocabularyDB = {
       original: 'orig 1',
       translation: 'trans 1',
       notes: undefined,
+      archived: false,
     },
   ],
 };
@@ -246,6 +247,7 @@ const vocabulary2: VocabularyDB = {
       original: 'orig 2',
       translation: 'trans 2',
       notes: undefined,
+      archived: false,
     },
   ],
 };

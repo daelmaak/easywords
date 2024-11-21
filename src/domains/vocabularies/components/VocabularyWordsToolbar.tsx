@@ -1,17 +1,26 @@
 import { cx } from 'class-variance-authority';
-import { HiOutlineAcademicCap, HiOutlineTrash } from 'solid-icons/hi';
+import {
+  HiOutlineAcademicCap,
+  HiOutlineEllipsisVertical,
+} from 'solid-icons/hi';
 import type { Component } from 'solid-js';
 import { Show } from 'solid-js';
-import { ConfirmationDialog } from '~/components/ConfirmationDialog';
 import { Search } from '~/components/search/Search';
 import { Button } from '~/components/ui/button';
 import { Checkbox } from '~/components/ui/checkbox';
 import type { Word } from '../model/vocabulary-model';
 import type { SortState } from './VocabularyWords';
 import { VocabularyWordsSorter } from './VocabularyWordsSorter';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '~/components/ui/dropdown-menu';
 
 interface Props {
   words?: Word[];
+  displayArchived: boolean;
   selectedWords: Word[];
   sortState: SortState;
   onSearch: (words: Word[] | undefined) => void;
@@ -19,6 +28,7 @@ interface Props {
   onSort: (sortProps: Partial<SortState>) => void;
   onTestSelected: () => void;
   onDeleteSelected: () => void;
+  onToggleDisplayArchived: () => void;
 }
 
 export const VocabularyWordsToolbar: Component<Props> = props => {
@@ -34,7 +44,11 @@ export const VocabularyWordsToolbar: Component<Props> = props => {
           onChange={() => props.onSelectAll(props.selectedWords.length === 0)}
         />
       </Show>
-      <VocabularyWordsSorter sortState={props.sortState} sort={props.onSort} />
+      <VocabularyWordsSorter
+        displayArchived={props.displayArchived}
+        sortState={props.sortState}
+        sort={props.onSort}
+      />
       <Show when={props.words}>
         {w => (
           <Search
@@ -56,22 +70,25 @@ export const VocabularyWordsToolbar: Component<Props> = props => {
       >
         <HiOutlineAcademicCap /> Test
       </Button>
-      <ConfirmationDialog
-        confirmText="Delete"
-        trigger={p => (
-          <Button
-            {...p}
-            class={cx('px-2', {
-              'hidden lg:invisible lg:inline': props.selectedWords.length === 0,
-            })}
-            size="sm"
-            variant="ghost"
-          >
-            <HiOutlineTrash size={18} class="text-destructive" />
-          </Button>
-        )}
-        onConfirm={props.onDeleteSelected}
-      />
+
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          as={(p: object) => (
+            <Button {...p} class="ml-auto" size="icon" variant="ghost">
+              <HiOutlineEllipsisVertical size={20} />
+            </Button>
+          )}
+        ></DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem>
+            <Checkbox
+              checked={props.displayArchived}
+              label="Show archived"
+              onChange={() => props.onToggleDisplayArchived()}
+            />
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 };

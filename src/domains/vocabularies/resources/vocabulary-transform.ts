@@ -31,6 +31,7 @@ export const transformToVocabularyDB = (
 
 export const transformToWord = (word: WordDB): Word => ({
   id: word.id,
+  archived: word.archived ?? false,
   createdAt: new Date(word.created_at),
   vocabularyId: word.vocabulary_id,
   notes: word.notes,
@@ -40,6 +41,7 @@ export const transformToWord = (word: WordDB): Word => ({
 
 export const transformToWordDB = (word: Word): WordDB => ({
   id: word.id,
+  archived: word.archived,
   created_at: word.createdAt.toISOString(),
   vocabulary_id: word.vocabularyId,
   notes: word.notes,

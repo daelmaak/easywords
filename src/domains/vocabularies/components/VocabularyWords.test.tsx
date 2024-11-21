@@ -126,6 +126,7 @@ function generateWords(
     original: 'hello_' + i,
     translation: 'ahoj' + i,
     notes: 'note' + i,
+    archived: false,
   })).map(factoryFn ?? (item => item));
 }
 

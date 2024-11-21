@@ -7,13 +7,15 @@ import { wordResultsKey } from '~/domains/vocabulary-results/resources/cache-key
 import { WordDetailResults } from './WordDetailResults';
 import { Textarea } from '~/components/ui/textarea';
 import { Input } from '~/components/ui/input';
-import { HiOutlineXMark } from 'solid-icons/hi';
+import { HiOutlineTrash, HiOutlineXMark } from 'solid-icons/hi';
 import { Button } from '~/components/ui/button';
+import { ConfirmationDialog } from '~/components/ConfirmationDialog';
 
 interface WordDetailProps {
   word: Word;
   onClose: () => void;
   onWordEdited: (word: Word) => void;
+  onWordDelete: () => void;
 }
 
 export const WordDetail: Component<WordDetailProps> = props => {
@@ -52,6 +54,21 @@ export const WordDetail: Component<WordDetailProps> = props => {
       </Button>
       {/* Header Section */}
       <div class="mb-6 border-b pb-4">
+        <Show when={props.word.archived}>
+          <div class="flex items-center gap-2">
+            <span>(Archived)</span>
+            <Button
+              class="ml-auto mr-8"
+              size="sm"
+              variant="defaultOutline"
+              onClick={() =>
+                props.onWordEdited({ ...props.word, archived: false })
+              }
+            >
+              Unarchive
+            </Button>
+          </div>
+        </Show>
         <h2 class="text-2xl font-bold text-gray-800">{props.word.original}</h2>
         <p class="text-xl text-gray-600">{props.word.translation}</p>
       </div>
@@ -143,8 +160,8 @@ export const WordDetail: Component<WordDetailProps> = props => {
         </Show>
       </div>
 
-      <div class="mb-6">
-        <span class="font-semibold text-gray-700">Test History</span>
+      <section class="mb-6">
+        <h3 class="font-semibold text-gray-700">Test History</h3>
         <div class="mt-4 max-h-[30rem] max-w-[60rem]">
           <Suspense>
             <Show
@@ -162,6 +179,31 @@ export const WordDetail: Component<WordDetailProps> = props => {
             </Show>
           </Suspense>
         </div>
+      </section>
+
+      <div class="mt-8 flex justify-end gap-4">
+        <Show when={!props.word.archived}>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() =>
+              props.onWordEdited({ ...props.word, archived: true })
+            }
+          >
+            Archive word
+          </Button>
+        </Show>
+
+        <ConfirmationDialog
+          onConfirm={props.onWordDelete}
+          confirmText="Delete"
+          trigger={p => (
+            <Button {...p} size="sm" variant="destructiveOutline">
+              <HiOutlineTrash size={16} />
+              Delete word
+            </Button>
+          )}
+        />
       </div>
     </div>
   );

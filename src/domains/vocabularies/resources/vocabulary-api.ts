@@ -3,7 +3,10 @@ import type { RealOmit } from '~/util/object';
 import { omit } from '~/util/object';
 import type { QueryData } from '@supabase/supabase-js';
 
-export type WordToCreateDB = RealOmit<WordDB, 'id' | 'created_at' | 'notes'> &
+export type WordToCreateDB = Pick<
+  WordDB,
+  'original' | 'translation' | 'vocabulary_id'
+> &
   Partial<Pick<WordDB, 'notes'>>;
 
 // TODO: Use Pick
@@ -20,7 +23,8 @@ const WORD_FETCH_FIELDS = `
   vocabulary_id,
   original,
   translation,
-  notes
+  notes,
+  archived
 `;
 
 const VOCABULARY_FETCH_FIELDS = `
@@ -42,6 +46,7 @@ export type WordDB = VocabularyDB['words'][number];
 
 const fetchVocabulary = async (id: number) => {
   const result = await vocabulariesFetchQuery().eq('id', id);
+
   return result.data?.[0];
 };
 
@@ -55,6 +60,7 @@ const fetchVocabularies = async () => {
 
 const fetchRecentVocabularies = async (count: number) => {
   const result = await vocabulariesFetchQuery()
+    .not('words.archived', 'is', true)
     .order('updated_at', { ascending: false })
     .range(0, count - 1);
 
