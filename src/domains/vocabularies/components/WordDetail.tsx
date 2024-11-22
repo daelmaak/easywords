@@ -81,7 +81,7 @@ export const WordDetail: Component<WordDetailProps> = props => {
           </label>
           <Input
             id="original"
-            class="rounded-lg border-none bg-gray-50 p-4 text-gray-600"
+            class="rounded-lg border-none bg-gray-50 px-4 py-2 text-gray-600"
             name="original"
             value={props.word.original}
             onBlur={handleBlur('original')}
@@ -97,7 +97,7 @@ export const WordDetail: Component<WordDetailProps> = props => {
           </label>
           <Input
             id="translation"
-            class="rounded-lg border-none bg-gray-50 p-4 text-gray-600"
+            class="rounded-lg border-none bg-gray-50 px-4 py-2 text-gray-600"
             name="translation"
             value={props.word.translation}
             onBlur={handleBlur('translation')}
@@ -112,7 +112,7 @@ export const WordDetail: Component<WordDetailProps> = props => {
         </label>
         <Textarea
           id="notes"
-          class="rounded-lg border-none bg-gray-50 p-4 text-base text-gray-600"
+          class="rounded-lg border-none bg-gray-50 px-4 py-2 text-base text-gray-600"
           name="notes"
           placeholder="Notes"
           rows="2"
@@ -126,7 +126,7 @@ export const WordDetail: Component<WordDetailProps> = props => {
           <label class="mb-2 block text-gray-700" for="created">
             Created
           </label>
-          <div id="created" class="rounded-lg bg-gray-50 p-4">
+          <div id="created" class="rounded-lg bg-gray-50 px-4 py-2">
             <p class="text-gray-600">
               {new Date(props.word.createdAt).toLocaleDateString()}
             </p>
@@ -138,7 +138,7 @@ export const WordDetail: Component<WordDetailProps> = props => {
               <label class="mb-2 block text-gray-700" for="lastTested">
                 Last tested
               </label>
-              <div id="lastTested" class="rounded-lg bg-gray-50 p-4">
+              <div id="lastTested" class="rounded-lg bg-gray-50 px-4 py-2">
                 <p class="text-gray-600">
                   {lastTestDate().toLocaleDateString()}
                 </p>
@@ -151,7 +151,7 @@ export const WordDetail: Component<WordDetailProps> = props => {
             <label class="mb-2 block text-gray-700" for="lastTested">
               Average test score
             </label>
-            <div id="lastTested" class="rounded-lg bg-gray-50 p-4">
+            <div id="lastTested" class="rounded-lg bg-gray-50 px-4 py-2">
               <p class="text-gray-600">
                 {props.word.averageTestScore!.toFixed(0)}%
               </p>

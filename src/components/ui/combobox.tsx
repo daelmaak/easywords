@@ -94,7 +94,10 @@ const ComboboxControl = <T, U extends ValidComponent = 'div'>(
   ]);
   return (
     <ComboboxPrimitive.Control
-      class={cn('flex items-center rounded-md border px-3', local.class)}
+      class={cn(
+        'flex items-center rounded-md border border-input px-3',
+        local.class
+      )}
       {...others}
     />
   );

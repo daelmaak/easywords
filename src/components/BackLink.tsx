@@ -13,7 +13,7 @@ export const BackLink: Component<ComponentProps<'a'>> = props => {
       href=".."
       {...rest}
     >
-      <HiOutlineArrowLeft class="mr-2" size={20} />
+      <HiOutlineArrowLeft class="mr-2" size={16} />
       {local.children}
     </A>
   );

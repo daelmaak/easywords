@@ -14,8 +14,6 @@ import {
   createWords,
   updateVocabulary,
 } from '../resources/vocabulary-resource';
-import { Label } from '~/components/ui/label';
-import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
 import type { TestResult } from '~/domains/vocabulary-results/model/test-result-model';
 import {
@@ -50,7 +48,7 @@ export const VocabularySummary: Component<Props> = props => {
 
   async function onVocabularyDataChange(event: Event) {
     const form = (event.target as Element).closest('form') as HTMLFormElement;
-    const name = form.vocabularyName.value;
+    const name = form.querySelector('#vocabulary-name')?.textContent;
     const country = form.country.value;
 
     const vocabulary = props.vocabulary;
@@ -71,7 +69,7 @@ export const VocabularySummary: Component<Props> = props => {
   }
 
   return (
-    <div class="flex h-full flex-col gap-4">
+    <div class="flex h-full flex-col gap-2">
       <Sheet open={openedAddWords()} onOpenChange={setOpenedAddWords}>
         <SheetContent
           class="flex w-svw flex-col gap-4 sm:w-[30rem]"
@@ -91,21 +89,25 @@ export const VocabularySummary: Component<Props> = props => {
       <BackLink class="mb-2 sm:mb-4">Back to vocabularies</BackLink>
       <Show when={props.vocabulary}>
         {v => (
-          <form onFocusOut={onVocabularyDataChange} autocomplete="off">
-            <Label for="vocabulary-name">Vocabulary name</Label>
-            <Input
+          <form
+            class="flex flex-col gap-2"
+            onFocusOut={onVocabularyDataChange}
+            autocomplete="off"
+          >
+            <span
               id="vocabulary-name"
-              name="vocabularyName"
-              value={v().name}
-            />
-            <div class="mt-4"></div>
-            <Label for="country">Language</Label>
+              class="border-none px-1 text-lg font-semibold"
+              contentEditable
+              role="textbox"
+            >
+              {v().name}
+            </span>
             <CountrySelect id="country" defaultValue={v().country} />
           </form>
         )}
       </Show>
 
-      <div class="mt-4 flex flex-col gap-2 sm:mt-8 sm:gap-4">
+      <div class="mb-4 mt-4 flex flex-col gap-2 sm:gap-4">
         <Button class="grow" size="sm" onClick={() => setOpenedAddWords(true)}>
           <HiOutlinePlus size={16} /> Add words
         </Button>
@@ -113,7 +115,7 @@ export const VocabularySummary: Component<Props> = props => {
           <Button
             class="grow"
             size="sm"
-            variant={props.testProgress ? 'secondary' : 'defaultOutline'}
+            variant="defaultOutline"
             onClick={() => props.onTestVocabulary()}
           >
             <HiOutlineAcademicCap />
