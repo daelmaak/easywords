@@ -45,7 +45,7 @@ export const VocabularyWord: Component<Props> = props => {
       onClick={() => props.onWordDetailToOpen(props.word)}
     >
       <Checkbox
-        class="mt-1 self-start"
+        class="h-8 -translate-y-1 self-start"
         checked={props.selected}
         id={`word-selector-${props.word.id}`}
         onClick={(e: MouseEvent) => onSelected(e)}
