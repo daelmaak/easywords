@@ -25,7 +25,7 @@ export const VocabularyResultsMini: Component<Props> = props => {
   };
 
   return (
-    <Card class="mt-8">
+    <Card>
       <CardContent class="p-4">
         <div class="flex items-center justify-between">
           <span class="inline-flex items-center gap-1">

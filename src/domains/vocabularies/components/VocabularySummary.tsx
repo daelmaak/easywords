@@ -88,7 +88,7 @@ export const VocabularySummary: Component<Props> = props => {
         </SheetContent>
       </Sheet>
 
-      <BackLink class="mb-4">Back to vocabularies</BackLink>
+      <BackLink class="mb-2 sm:mb-4">Back to vocabularies</BackLink>
       <Show when={props.vocabulary}>
         {v => (
           <form onFocusOut={onVocabularyDataChange} autocomplete="off">
@@ -105,7 +105,7 @@ export const VocabularySummary: Component<Props> = props => {
         )}
       </Show>
 
-      <div class="mt-8 flex flex-col gap-4">
+      <div class="mt-4 flex flex-col gap-2 sm:mt-8 sm:gap-4">
         <Button class="grow" size="sm" onClick={() => setOpenedAddWords(true)}>
           <HiOutlinePlus size={16} /> Add words
         </Button>
