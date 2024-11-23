@@ -78,12 +78,12 @@ export const WordDetail: Component<WordDetailProps> = props => {
       {/* Word Section */}
       <div class="mb-6 flex w-full gap-4">
         <div class="flex-grow">
-          <label class="mb-2 block font-semibold text-gray-700" for="original">
+          <label class="block font-semibold text-gray-700" for="original">
             Original
           </label>
           <Input
             id="original"
-            class="rounded-lg border-none bg-gray-50 px-4 py-2 text-gray-600"
+            class="rounded-lg border-input bg-gray-50 px-3 py-2 text-gray-600"
             name="original"
             value={props.word.original}
             onBlur={handleBlur('original')}
@@ -91,15 +91,12 @@ export const WordDetail: Component<WordDetailProps> = props => {
         </div>
 
         <div class="flex-grow">
-          <label
-            class="mb-2 block font-semibold text-gray-700"
-            for="translation"
-          >
+          <label class="block font-semibold text-gray-700" for="translation">
             Translation
           </label>
           <Input
             id="translation"
-            class="rounded-lg border-none bg-gray-50 px-4 py-2 text-gray-600"
+            class="rounded-lg border-input bg-gray-50 px-3 py-2 text-gray-600"
             name="translation"
             value={props.word.translation}
             onBlur={handleBlur('translation')}
@@ -109,12 +106,12 @@ export const WordDetail: Component<WordDetailProps> = props => {
 
       {/* Notes Section */}
       <div class="mb-6">
-        <label class="mb-2 block font-semibold text-gray-700" for="notes">
+        <label class="block font-semibold text-gray-700" for="notes">
           Notes
         </label>
         <Textarea
           id="notes"
-          class="rounded-lg border-none bg-gray-50 px-4 py-2 text-base text-gray-600"
+          class="rounded-lg border-input bg-gray-50 px-3 py-2 text-base text-gray-600"
           name="notes"
           placeholder="Notes"
           rows="2"
@@ -123,12 +120,15 @@ export const WordDetail: Component<WordDetailProps> = props => {
         />
       </div>
 
-      <div class="flex gap-4">
-        <div class="mb-6">
-          <label class="mb-2 block text-gray-700" for="created">
+      <div class="flex flex-wrap gap-4">
+        <div class="mb-2">
+          <label class="block text-gray-700" for="created">
             Created
           </label>
-          <div id="created" class="rounded-lg bg-gray-50 px-4 py-2">
+          <div
+            id="created"
+            class="rounded-lg border border-input bg-gray-50 px-3 py-2"
+          >
             <p class="text-gray-600">
               {new Date(props.word.createdAt).toLocaleDateString()}
             </p>
@@ -136,11 +136,14 @@ export const WordDetail: Component<WordDetailProps> = props => {
         </div>
         <Show when={props.word.lastTestDate}>
           {lastTestDate => (
-            <div class="mb-6">
-              <label class="mb-2 block text-gray-700" for="lastTested">
+            <div class="mb-2">
+              <label class="block text-gray-700" for="lastTested">
                 Last tested
               </label>
-              <div id="lastTested" class="rounded-lg bg-gray-50 px-4 py-2">
+              <div
+                id="lastTested"
+                class="rounded-lg border border-input bg-gray-50 px-3 py-2"
+              >
                 <p class="text-gray-600">
                   {lastTestDate().toLocaleDateString()}
                 </p>
@@ -149,11 +152,14 @@ export const WordDetail: Component<WordDetailProps> = props => {
           )}
         </Show>
         <Show when={props.word.averageTestScore != null}>
-          <div class="mb-6">
-            <label class="mb-2 block text-gray-700" for="lastTested">
+          <div class="mb-2">
+            <label class="block text-gray-700" for="lastTested">
               Average test score
             </label>
-            <div id="lastTested" class="rounded-lg bg-gray-50 px-4 py-2">
+            <div
+              id="lastTested"
+              class="rounded-lg border border-input bg-gray-50 px-3 py-2"
+            >
               <p class="text-gray-600">
                 {props.word.averageTestScore!.toFixed(0)}%
               </p>
@@ -162,7 +168,7 @@ export const WordDetail: Component<WordDetailProps> = props => {
         </Show>
       </div>
 
-      <section class="mb-6">
+      <section class="mb-6 mt-4">
         <h3 class="font-semibold text-gray-700">Test History</h3>
         <div class="mt-4 max-h-[30rem] max-w-[60rem]">
           <Suspense>

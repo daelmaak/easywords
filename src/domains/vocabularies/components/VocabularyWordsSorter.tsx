@@ -77,9 +77,11 @@ export const VocabularyWordsSorter: Component<
             >
               <HiOutlineArrowsUpDown size={17} />{' '}
             </span>
-            {SortKeyCopy[props.sortState.by]
-              ? `by: ${SortKeyCopy[props.sortState.by]}`
-              : 'Sort'}
+            <span class="hidden sm:inline md:hidden xl:inline">
+              {SortKeyCopy[props.sortState.by]
+                ? `by: ${SortKeyCopy[props.sortState.by]}`
+                : 'Sort'}
+            </span>
           </Button>
         )}
       ></DropdownMenuTrigger>
