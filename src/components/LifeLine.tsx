@@ -80,7 +80,7 @@ export const LifeLine: Component<LifeLineProps> = props => {
       <svg
         viewBox="0 0 100 104"
         preserveAspectRatio="none"
-        class="h-full w-full stroke-green-600"
+        class="h-full w-full stroke-primary"
       >
         <path
           d={path()}
