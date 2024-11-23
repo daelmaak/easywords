@@ -13,7 +13,7 @@ import { ConfirmationDialog } from '~/components/ConfirmationDialog';
 
 interface WordDetailProps {
   word: Word;
-  onClose: () => void;
+  onClose?: () => void;
   onWordEdited: (word: Word) => void;
   onWordDelete: () => void;
 }
@@ -44,15 +44,17 @@ export const WordDetail: Component<WordDetailProps> = props => {
 
   return (
     <div class="relative h-full w-full overflow-y-auto rounded-lg bg-white p-6 shadow-md">
-      <Button
-        size="sm"
-        variant="ghost"
-        class="absolute right-2 top-4"
-        onClick={props.onClose}
-      >
-        <HiOutlineXMark size={16} />
-      </Button>
-      {/* Header Section */}
+      <Show when={props.onClose}>
+        <Button
+          size="sm"
+          variant="ghost"
+          class="absolute right-2 top-4"
+          onClick={props.onClose}
+        >
+          <HiOutlineXMark size={16} />
+        </Button>
+      </Show>
+
       <div class="mb-6 border-b pb-4">
         <Show when={props.word.archived}>
           <div class="flex items-center gap-2">

@@ -4,6 +4,8 @@ import { createQuery } from '@tanstack/solid-query';
 import type { Component } from 'solid-js';
 import { createMemo, Show, Suspense } from 'solid-js';
 import { createStore } from 'solid-js/store';
+import { Sheet, SheetContent } from '~/components/ui/sheet';
+import { Routes } from '~/routes/routes';
 import {
   lastTestResultKey,
   testResultKey,
@@ -21,7 +23,6 @@ import type { SortState } from './components/VocabularyWords';
 import { VocabularyWords } from './components/VocabularyWords';
 import { VocabularyWordsToolbar } from './components/VocabularyWordsToolbar';
 import { WordDetail } from './components/WordDetail';
-import { WordEditorDialog } from './components/WordEditorDialog';
 import type { Word } from './model/vocabulary-model';
 import {
   deleteVocabulary,
@@ -30,7 +31,6 @@ import {
   updateWords,
   VOCABULARY_QUERY_KEY,
 } from './resources/vocabulary-resource';
-import { Routes } from '~/routes/routes';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -78,7 +78,7 @@ export const VocabularyPage: Component = () => {
       ? vocabularyWithResults()?.words
       : vocabularyWithResults()?.words.filter(w => !w.archived);
 
-  const displayFullWordDetail = createMediaQuery('(min-width: 1024px)');
+  const isGteMdScreen = createMediaQuery('(min-width: 1024px)');
 
   const wordToShowDetail = createMemo(() =>
     store.wordToShowDetailId
@@ -204,14 +204,29 @@ export const VocabularyPage: Component = () => {
         </div>
 
         <Show
-          when={displayFullWordDetail()}
+          when={isGteMdScreen()}
           fallback={
-            <WordEditorDialog
-              word={wordToShowDetail()}
-              open={wordToShowDetail() != null}
-              onClose={() => setStore({ wordToShowDetailId: undefined })}
-              onWordEdited={w => onWordsEdited(w, true)}
-            />
+            <Show when={wordToShowDetail()}>
+              {word => (
+                <Sheet
+                  open={true}
+                  onOpenChange={() =>
+                    setStore({ wordToShowDetailId: undefined })
+                  }
+                >
+                  <SheetContent
+                    class="w-full p-0 sm:w-auto"
+                    onOpenAutoFocus={e => e.preventDefault()}
+                  >
+                    <WordDetail
+                      word={word()}
+                      onWordDelete={() => onDeleteWord(word())}
+                      onWordEdited={onWordsEdited}
+                    />
+                  </SheetContent>
+                </Sheet>
+              )}
+            </Show>
           }
         >
           <div class="hidden h-full grow lg:block">

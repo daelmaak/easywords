@@ -79,9 +79,7 @@ export const WordDetailResults: Component<WordDetailResultsProps> = props => {
           },
           ticks: {
             stepSize: 1,
-            callback: (value: string | number) => {
-              return value ? TEST_RESULT_LABELS[value as TestWordStatus] : ' ';
-            },
+            display: false,
           },
         },
         x: {
