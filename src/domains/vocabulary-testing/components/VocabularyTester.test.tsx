@@ -8,13 +8,15 @@ import type { Word } from '../../vocabularies/model/vocabulary-model';
 import type { TestResult } from '~/domains/vocabulary-results/model/test-result-model';
 import { TestWordStatus } from '~/domains/vocabulary-results/model/test-result-model';
 
+import * as nextWord from '../util/next-word';
+
 const TEST_WORDS: Word[] = [
   {
     id: 1,
     createdAt: new Date(),
     vocabularyId: 1,
-    original: 'hello',
-    translation: 'ahoj',
+    original: 'original 1',
+    translation: 'translation 1',
     notes: undefined,
     archived: false,
   },
@@ -22,8 +24,8 @@ const TEST_WORDS: Word[] = [
     id: 2,
     createdAt: new Date(),
     vocabularyId: 1,
-    original: 'hi',
-    translation: 'ahoj',
+    original: 'original 2',
+    translation: 'translation 2',
     notes: undefined,
     archived: false,
   },
@@ -245,6 +247,42 @@ it('should peek after invalid guess', async () => {
   expect(peekedResult.innerHTML).toContain(TEST_WORDS[0].translation);
   expect(peekedResult.className).not.toContain('invisible');
 });
+
+it(`shouldn't repeat the current word right after`, async () => {
+  const { defaultTestSettings, userAction } = setup();
+  const words = TEST_WORDS.slice(0, 2);
+  const testProgress = createTestProgress(words, false);
+
+  vi.spyOn(nextWord, 'nextWord').mockImplementation(words => words[0]);
+
+  render(() => (
+    <VocabularyTester
+      vocabularyId={1}
+      words={words}
+      testProgress={testProgress}
+      testSettings={{
+        ...defaultTestSettings,
+        mode: 'guess',
+        repeatInvalid: true,
+      }}
+      onDone={vi.fn()}
+      onEditWord={vi.fn()}
+      onArchiveWord={vi.fn()}
+    />
+  ));
+
+  const wordToTranslate = screen.getByTestId('original-to-translate');
+  expect(wordToTranslate.textContent).toContain(words[0].original);
+
+  const showSolutionBtn = screen.getByText('Show solution');
+  await userAction.click(showSolutionBtn);
+
+  const wrongBtn = screen.getByText('Wrong');
+  await userAction.click(wrongBtn);
+
+  expect(wordToTranslate.textContent).not.toContain(words[0].original);
+});
+
 function setup() {
   const onDone = vi.fn();
   const defaultTestSettings = {

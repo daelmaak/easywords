@@ -22,7 +22,7 @@ import type {
   TestResultWord,
 } from '~/domains/vocabulary-results/model/test-result-model';
 import { TestWordStatus } from '~/domains/vocabulary-results/model/test-result-model';
-import { nextWord } from '../../../worder/worder';
+import { nextWord } from '../util/next-word';
 import { GuessTester } from './GuessTester';
 import type { VocabularyTesterSettings } from './VocabularySettings';
 import { WriteTester } from './WriteTester';
@@ -109,7 +109,12 @@ export const VocabularyTester: Component<TesterProps> = (
 
   function setNextWord() {
     const current = currentWord();
-    const wsLeft = wordsLeft();
+    let wsLeft = wordsLeft();
+
+    // Prevent the current word from being repeated right after
+    if (current) {
+      wsLeft = wsLeft.filter(w => w.word_id !== current.id);
+    }
 
     const next = nextWord(wsLeft);
 
