@@ -1,4 +1,3 @@
-import { A } from '@solidjs/router';
 import { createSignal, For, lazy, Show } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import { WordEditorDialog } from '~/domains/vocabularies/components/WordEditorDialog';
@@ -10,7 +9,7 @@ import {
 import { ResultWordGuessesVisualisation } from './ResultWordGuessesVisualisation';
 import { RESULT_COLORS } from '../model/colors';
 import { groupBy } from 'lodash-es';
-import { vocabularyRoute } from '~/routes/routes';
+import { Card, CardContent } from '~/components/ui/card';
 
 interface ResultsProps {
   results: TestResult;
@@ -93,73 +92,62 @@ export function Results(props: ResultsProps) {
         onWordEdited={onWordEdited}
       />
 
-      <figure class="mx-auto">
-        <div class="mx-auto w-40 lg:w-48">
-          <TestResultsVisualisation result={props.results} />
-          <div class="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm">
-            <For each={Array.from(resultsMap().entries())}>
-              {([result, words]) => (
-                <div class="flex items-center gap-2">
-                  <div
-                    class="size-4 rounded-sm"
-                    style={`background-color: ${RESULT_COLORS[result]};`}
-                  ></div>
-                  <span>
-                    {words.length} {TestWordStatus[result]}
-                  </span>
-                </div>
-              )}
-            </For>
-          </div>
+      <p class="mx-auto my-4 text-lg">{feedbackText()}</p>
+
+      <div class="mx-auto grid max-w-6xl gap-4 md:grid-cols-[1fr_1fr] md:p-4 lg:grid-cols-[6fr_9fr_auto]">
+        <div>
+          <Card>
+            <CardContent class="p-4">
+              <div class="mx-auto w-full max-w-64">
+                <TestResultsVisualisation result={props.results} />
+              </div>
+              <ul class="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm">
+                <For each={Array.from(resultsMap().entries())}>
+                  {([result, words]) => (
+                    <li class="flex items-center gap-2">
+                      <div
+                        class="size-4 rounded-sm"
+                        style={`background-color: ${RESULT_COLORS[result]};`}
+                      ></div>
+                      <span>
+                        {words.length} {TestWordStatus[result]}
+                      </span>
+                    </li>
+                  )}
+                </For>
+              </ul>
+            </CardContent>
+          </Card>
         </div>
-        <figcaption class="mt-8 text-lg">{feedbackText()}</figcaption>
-      </figure>
 
-      <div class="mx-auto mt-8 flex flex-wrap items-center justify-center gap-4 sm:mt-12">
-        <Show when={invalidWords().length}>
-          <Button
-            class="btn-link"
-            type="button"
-            onClick={() => props.onRepeat(invalidWords())}
-          >
-            Practice incorrect
+        <Card>
+          <CardContent>
+            <ResultWordGuessesVisualisation
+              results={props.results}
+              words={props.words}
+              onSelectionChange={onWordSelectionChange}
+            />
+          </CardContent>
+        </Card>
+
+        <div class="mx-auto flex flex-wrap items-stretch gap-4 lg:flex-col lg:flex-nowrap">
+          <Button type="button" variant="default" onClick={props.onRepeatAll}>
+            Test all again
           </Button>
-        </Show>
-        <Button
-          type="button"
-          variant={invalidWords().length > 0 ? 'secondary' : 'default'}
-          onClick={props.onRepeatAll}
-        >
-          Test all again
-        </Button>
-        <Show when={selectedWords().length > 0}>
-          <Button
-            type="button"
-            variant="defaultOutline"
-            onClick={onRepeatSelected}
-          >
-            Test ({selectedWords().length})
-          </Button>
-          <Button type="button" variant="outline" onClick={onArchiveSelected}>
-            Archive ({selectedWords().length})
-          </Button>
-        </Show>
-        <A
-          class="text-sm text-primary"
-          href={vocabularyRoute(props.results.vocabulary_id)}
-        >
-          Back to Vocabulary
-        </A>
+          <Show when={selectedWords().length > 0}>
+            <Button
+              type="button"
+              variant="defaultOutline"
+              onClick={onRepeatSelected}
+            >
+              Test ({selectedWords().length})
+            </Button>
+            <Button type="button" variant="outline" onClick={onArchiveSelected}>
+              Archive ({selectedWords().length})
+            </Button>
+          </Show>
+        </div>
       </div>
-
-      <section class="mx-auto mt-8" data-testid="results-word-breakdown">
-        <h2 class="sr-only text-center">Word by word results breakdown</h2>
-        <ResultWordGuessesVisualisation
-          results={props.results}
-          words={props.words}
-          onSelectionChange={onWordSelectionChange}
-        />
-      </section>
     </div>
   );
 }

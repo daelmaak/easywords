@@ -47,7 +47,7 @@ export const VocabularyTestResultsPage: Component = () => {
   }
 
   return (
-    <main class="page-container">
+    <main class="page-container min-h-full bg-gray-50">
       <BackLink href={vocabularyRoute(vocabularyId)}>
         Back to vocabulary
       </BackLink>
