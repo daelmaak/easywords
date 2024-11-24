@@ -91,16 +91,14 @@ export const ResultWordGuessesVisualisation: Component<Props> = props => {
       <thead>
         <tr class="text-left">
           <th class="font-normal">
-            <Show when={selectedWords().length > 0}>
-              <Checkbox
-                checked={selectedWords().length === props.words.length}
-                indeterminate={
-                  selectedWords().length > 0 &&
-                  selectedWords().length < props.words.length
-                }
-                onChange={() => onSelectAll(selectedWords().length === 0)}
-              />
-            </Show>
+            <Checkbox
+              checked={selectedWords().length === props.words.length}
+              indeterminate={
+                selectedWords().length > 0 &&
+                selectedWords().length < props.words.length
+              }
+              onChange={() => onSelectAll(selectedWords().length === 0)}
+            />
           </th>
           {/* Added header for checkbox */}
           <th class="font-normal">Words</th>
