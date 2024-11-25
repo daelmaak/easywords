@@ -114,7 +114,7 @@ export const ResultWordGuessesSummary: Component<Props> = props => {
             <AccordionItem value={result.toString()}>
               <AccordionHeader class="flex">
                 <Checkbox
-                  class="mr-2"
+                  class="mr-1"
                   onChange={checked => onCategorySelected(words, checked)}
                 />
                 <AccordionTrigger>
