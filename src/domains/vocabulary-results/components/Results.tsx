@@ -94,7 +94,7 @@ export function Results(props: ResultsProps) {
 
       <p class="mx-auto my-4 text-lg">{feedbackText()}</p>
 
-      <div class="mx-auto grid max-w-6xl gap-4 md:grid-cols-[1fr_1fr] md:p-4 lg:grid-cols-[6fr_9fr_auto]">
+      <div class="mx-auto grid w-full max-w-6xl gap-4 md:grid-cols-[1fr_1fr] md:p-4 lg:grid-cols-[6fr_9fr_auto]">
         <div>
           <Card>
             <CardContent class="p-4">
@@ -120,7 +120,7 @@ export function Results(props: ResultsProps) {
           </Card>
         </div>
 
-        <Card>
+        <Card class="order-last md:order-none">
           <CardContent>
             <ResultWordGuessesSummary
               results={props.results}
