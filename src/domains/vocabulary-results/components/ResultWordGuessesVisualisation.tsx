@@ -41,7 +41,7 @@ const ATTEMPT_TOOLTIP: Record<TestWordStatus, string> = {
   [TestWordStatus.Wrong]: 'Wrong attempt',
 };
 
-export const ResultWordGuessesVisualisation: Component<Props> = props => {
+export const ResultWordGuessesSummary: Component<Props> = props => {
   const [selectedWords, setSelectedWords] = createSignal<Word[]>([]);
   const selectWords = wordsSelector();
 

@@ -6,7 +6,7 @@ import {
   TestWordStatus,
   type TestResult,
 } from '~/domains/vocabulary-results/model/test-result-model';
-import { ResultWordGuessesVisualisation } from './ResultWordGuessesVisualisation';
+import { ResultWordGuessesSummary } from './ResultWordGuessesVisualisation';
 import { RESULT_COLORS } from '../model/colors';
 import { groupBy } from 'lodash-es';
 import { Card, CardContent } from '~/components/ui/card';
@@ -122,7 +122,7 @@ export function Results(props: ResultsProps) {
 
         <Card>
           <CardContent>
-            <ResultWordGuessesVisualisation
+            <ResultWordGuessesSummary
               results={props.results}
               words={props.words}
               onSelectionChange={onWordSelectionChange}
