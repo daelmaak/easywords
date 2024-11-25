@@ -22,6 +22,7 @@ import {
 } from '~/components/ui/accordion';
 import differenceBy from 'lodash-es/differenceBy';
 import unionBy from 'lodash-es/unionBy';
+import { TEST_RESULT_LABELS } from '../model/labels';
 
 export interface Props {
   results: TestResult;
@@ -113,11 +114,12 @@ export const ResultWordGuessesSummary: Component<Props> = props => {
             <AccordionItem value={result.toString()}>
               <AccordionHeader class="flex">
                 <Checkbox
+                  class="mr-2"
                   onChange={checked => onCategorySelected(words, checked)}
                 />
                 <AccordionTrigger>
                   <span class="inline-flex items-center gap-2">
-                    <span>{ATTEMPT_TOOLTIP[result]}</span>
+                    <span>{TEST_RESULT_LABELS[result]}</span>
                     <span
                       class="text-sm font-bold"
                       style={{ color: RESULT_COLORS[result] }}

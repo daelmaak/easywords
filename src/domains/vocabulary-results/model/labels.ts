@@ -1,9 +1,9 @@
 import { TestWordStatus } from '~/domains/vocabulary-results/model/test-result-model';
 
 export const TEST_RESULT_LABELS: Record<TestWordStatus, string> = {
-  [TestWordStatus.NotDone]: 'Not done',
+  [TestWordStatus.NotDone]: 'Skipped',
   [TestWordStatus.Correct]: 'Perfect',
-  [TestWordStatus.Good]: 'Good',
-  [TestWordStatus.Fair]: 'Fair',
-  [TestWordStatus.Wrong]: 'Wrong',
+  [TestWordStatus.Good]: 'Almost',
+  [TestWordStatus.Fair]: 'Meh',
+  [TestWordStatus.Wrong]: 'Nope',
 } as const;

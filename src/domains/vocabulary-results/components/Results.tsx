@@ -10,6 +10,7 @@ import { ResultWordGuessesSummary } from './ResultWordGuessesVisualisation';
 import { RESULT_COLORS } from '../model/colors';
 import { groupBy } from 'lodash-es';
 import { Card, CardContent } from '~/components/ui/card';
+import { TEST_RESULT_LABELS } from '../model/labels';
 
 interface ResultsProps {
   results: TestResult;
@@ -101,16 +102,16 @@ export function Results(props: ResultsProps) {
               <div class="mx-auto w-full max-w-64">
                 <TestResultsVisualisation result={props.results} />
               </div>
-              <ul class="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm">
+              <ul class="mt-4 flex flex-wrap justify-center gap-x-3 gap-y-2 text-sm">
                 <For each={Array.from(resultsMap().entries())}>
                   {([result, words]) => (
-                    <li class="flex items-center gap-2">
+                    <li class="flex items-center gap-1">
                       <div
                         class="size-4 rounded-sm"
                         style={`background-color: ${RESULT_COLORS[result]};`}
                       ></div>
                       <span>
-                        {words.length} {TestWordStatus[result]}
+                        {words.length}x {TEST_RESULT_LABELS[result]}
                       </span>
                     </li>
                   )}
