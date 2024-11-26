@@ -42,7 +42,7 @@ export const DashboardPage: Component = () => {
         <section class="rounded-b-xl bg-gray-100 p-6">
           <div class="mb-4 flex items-center gap-4">
             <h2 class="text-lg font-semibold">Recent vocabularies</h2>
-            <A href="/vocabulary" class="text-primary">
+            <A href={Routes.Vocabularies} class="text-primary">
               See all
             </A>
           </div>
