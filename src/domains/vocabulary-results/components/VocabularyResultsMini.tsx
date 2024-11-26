@@ -57,7 +57,7 @@ export const VocabularyResultsMini: Component<Props> = props => {
                       {getResultCount(group.result)}x
                     </dd>
                     <dt
-                      class="rounded-sm px-1.5 py-0.5 text-xs text-white"
+                      class="rounded-sm px-1.5 py-0.5 text-xs tracking-wide text-white shadow-black/60 text-shadow-sm"
                       style={{
                         'background-color': getColorForStatus(group.result),
                       }}

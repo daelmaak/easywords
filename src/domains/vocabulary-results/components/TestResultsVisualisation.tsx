@@ -1,6 +1,6 @@
 import { onMount, type Component } from 'solid-js';
 import type { TestResult } from '../model/test-result-model';
-import { TestWordStatus } from '../model/test-result-model';
+import type { TestWordStatus } from '../model/test-result-model';
 import { Chart } from 'chart.js/auto';
 import { groupBy } from 'lodash-es';
 import { RESULT_COLORS } from '../model/colors';
@@ -26,16 +26,6 @@ export const TestResultsVisualisation: Component<Props> = props => {
     const labels = resultCategories.map(k => TEST_RESULT_LABELS[k]);
     const colors = resultCategories.map(k => RESULT_COLORS[k]);
     const data = Array.from(resultsMap.values()).map(v => v.length);
-
-    const skipped = props.result.words.filter(
-      w => w.result == TestWordStatus.NotDone
-    );
-
-    if (skipped.length > 0) {
-      labels.push('Skipped');
-      colors.push('#879292');
-      data.push(skipped.length);
-    }
 
     new Chart(canvas, {
       type: 'doughnut',
