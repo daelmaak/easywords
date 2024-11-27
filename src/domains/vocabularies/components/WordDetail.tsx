@@ -14,6 +14,7 @@ import { ConfirmationDialog } from '~/components/ConfirmationDialog';
 interface WordDetailProps {
   word: Word;
   onClose?: () => void;
+  // TODO: handle inside the component
   onWordEdited: (word: Word) => void;
   onWordDelete: () => void;
 }

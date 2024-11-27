@@ -138,7 +138,7 @@ export const ResultWordGuessesSummary: Component<Props> = props => {
                 <ul>
                   <For each={words}>
                     {word => (
-                      <li class="flex justify-between rounded-md p-1.5 text-base even:bg-purple-50">
+                      <li class="flex items-center justify-between rounded-md p-1.5 text-base even:bg-purple-50">
                         <Checkbox
                           checked={wordSelected(word.word)}
                           onChange={checked =>
