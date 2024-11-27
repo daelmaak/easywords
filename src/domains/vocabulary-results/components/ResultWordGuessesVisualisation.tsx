@@ -108,7 +108,12 @@ export const ResultWordGuessesSummary: Component<Props> = props => {
 
   return (
     <>
-      <Accordion collapsible multiple class="mx-auto w-full max-w-[32rem]">
+      <Accordion
+        collapsible
+        data-testid="results-word-breakdown"
+        multiple
+        class="mx-auto w-full max-w-[32rem]"
+      >
         <For each={enrichedWordsDict()}>
           {([result, words]) => (
             <AccordionItem value={result.toString()}>
