@@ -72,7 +72,7 @@ export const WordDetail: Component<WordDetailProps> = props => {
           </div>
         </Show>
         <h2 class="text-2xl font-bold text-gray-800">{props.word.original}</h2>
-        <p class="text-xl text-gray-600">{props.word.translation}</p>
+        <p class="text-xl text-gray-800">{props.word.translation}</p>
       </div>
 
       {/* Word Section */}
@@ -83,7 +83,7 @@ export const WordDetail: Component<WordDetailProps> = props => {
           </label>
           <Input
             id="original"
-            class="rounded-lg border-input bg-gray-50 px-3 py-2 text-gray-600"
+            class="rounded-lg border-input bg-gray-50 px-3 py-2 text-gray-800"
             name="original"
             value={props.word.original}
             onBlur={handleBlur('original')}
@@ -96,7 +96,7 @@ export const WordDetail: Component<WordDetailProps> = props => {
           </label>
           <Input
             id="translation"
-            class="rounded-lg border-input bg-gray-50 px-3 py-2 text-gray-600"
+            class="rounded-lg border-input bg-gray-50 px-3 py-2 text-gray-800"
             name="translation"
             value={props.word.translation}
             onBlur={handleBlur('translation')}
@@ -111,7 +111,7 @@ export const WordDetail: Component<WordDetailProps> = props => {
         </label>
         <Textarea
           id="notes"
-          class="rounded-lg border-input bg-gray-50 px-3 py-2 text-base text-gray-600"
+          class="rounded-lg border-input bg-gray-50 px-3 py-2 text-base text-gray-800"
           name="notes"
           placeholder="Notes"
           rows="2"
@@ -129,7 +129,7 @@ export const WordDetail: Component<WordDetailProps> = props => {
             id="created"
             class="rounded-lg border border-input bg-gray-50 px-3 py-2"
           >
-            <p class="text-gray-600">
+            <p class="text-gray-800">
               {new Date(props.word.createdAt).toLocaleDateString()}
             </p>
           </div>
@@ -144,7 +144,7 @@ export const WordDetail: Component<WordDetailProps> = props => {
                 id="lastTested"
                 class="rounded-lg border border-input bg-gray-50 px-3 py-2"
               >
-                <p class="text-gray-600">
+                <p class="text-gray-800">
                   {lastTestDate().toLocaleDateString()}
                 </p>
               </div>
@@ -160,7 +160,7 @@ export const WordDetail: Component<WordDetailProps> = props => {
               id="lastTested"
               class="rounded-lg border border-input bg-gray-50 px-3 py-2"
             >
-              <p class="text-gray-600">
+              <p class="text-gray-800">
                 {props.word.averageTestScore!.toFixed(0)}%
               </p>
             </div>
