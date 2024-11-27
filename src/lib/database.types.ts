@@ -17,6 +17,7 @@ export type Database = {
           name: string;
           updated_at?: string | undefined;
           user_id: string | undefined;
+          archived?: boolean;
         };
         Insert: {
           country: string;
@@ -25,6 +26,7 @@ export type Database = {
           name: string;
           updated_at?: Date | string | undefined;
           user_id?: string | undefined;
+          archived?: boolean;
         };
         Update: {
           country?: string;
@@ -33,6 +35,7 @@ export type Database = {
           name?: string;
           updated_at?: Date | string | undefined;
           user_id?: string | undefined;
+          archived?: boolean;
         };
         Relationships: [
           {

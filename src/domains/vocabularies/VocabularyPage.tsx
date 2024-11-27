@@ -28,6 +28,7 @@ import {
   deleteVocabulary,
   deleteWords,
   fetchVocabulary,
+  updateVocabulary,
   updateWords,
   VOCABULARY_QUERY_KEY,
 } from './resources/vocabulary-resource';
@@ -86,17 +87,8 @@ export const VocabularyPage: Component = () => {
       : undefined
   );
 
-  async function deleteSelectedWords() {
-    const words = store.selectedWords;
-    if (!words.length) {
-      return;
-    }
-
-    await deleteWords(
-      vocabularyId,
-      ...store.selectedWords.map(word => word.id)
-    );
-    setStore({ selectedWords: [] });
+  async function onArchiveVocabulary(archive: boolean) {
+    await updateVocabulary({ id: vocabularyId, archived: archive });
   }
 
   async function onDeleteVocabulary() {
@@ -151,6 +143,7 @@ export const VocabularyPage: Component = () => {
                 vocabulary={v()}
                 lastTestResult={lastTestResultQuery.data}
                 testProgress={testProgressQuery.data}
+                onArchiveVocabulary={onArchiveVocabulary}
                 onDeleteVocabulary={onDeleteVocabulary}
                 onTestVocabulary={testVocabulary}
               />
@@ -172,7 +165,6 @@ export const VocabularyPage: Component = () => {
                     onSelectAll={onSelectAll}
                     onSort={sort}
                     onTestSelected={testSelected}
-                    onDeleteSelected={deleteSelectedWords}
                     onToggleDisplayArchived={() =>
                       setStore({ showArchivedWords: !store.showArchivedWords })
                     }

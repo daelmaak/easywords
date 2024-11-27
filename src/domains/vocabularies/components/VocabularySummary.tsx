@@ -2,7 +2,7 @@ import { A } from '@solidjs/router';
 import {
   HiOutlinePlus,
   HiOutlineAcademicCap,
-  HiOutlineTrash,
+  HiOutlineArchiveBox,
 } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
 import { createSignal, Show } from 'solid-js';
@@ -31,6 +31,7 @@ interface Props {
   vocabulary: Vocabulary;
   testProgress?: TestResult | null;
   lastTestResult?: TestResult | null;
+  onArchiveVocabulary: (archive: boolean) => void;
   onDeleteVocabulary: (id: number) => void;
   onTestVocabulary: (testId?: number) => void;
 }
@@ -94,6 +95,9 @@ export const VocabularySummary: Component<Props> = props => {
             onFocusOut={onVocabularyDataChange}
             autocomplete="off"
           >
+            <Show when={v().archived}>
+              <span class="text-sm text-muted-foreground">(Archived)</span>
+            </Show>
             <span
               id="vocabulary-name"
               class="border-none px-1 text-lg font-semibold"
@@ -153,21 +157,59 @@ export const VocabularySummary: Component<Props> = props => {
         )}
       </Show>
 
-      <ConfirmationDialog
-        confirmText="Delete vocabulary"
-        onConfirm={() => props.onDeleteVocabulary?.(props.vocabulary.id)}
-        trigger={p => (
+      <div class="mt-auto flex flex-col gap-4">
+        <Show when={!props.vocabulary.archived}>
+          <ConfirmationDialog
+            headingText="Archive vocabulary"
+            confirmText="Archive"
+            content={
+              <p>
+                You can safely archive and later unarchive the vocabulary. It
+                won't be deleted by this operation.
+              </p>
+            }
+            onConfirm={() => props.onArchiveVocabulary?.(true)}
+            trigger={p => (
+              <Button {...p} size="sm" variant="destructiveOutline">
+                <HiOutlineArchiveBox />
+                Archive vocabulary
+              </Button>
+            )}
+          />
+        </Show>
+
+        <Show when={props.vocabulary.archived}>
           <Button
-            {...p}
-            class="mt-auto w-full"
             size="sm"
-            variant="destructiveOutline"
+            variant="outline"
+            onClick={() => props.onArchiveVocabulary?.(false)}
           >
-            <HiOutlineTrash />
-            Delete vocabulary
+            Unarchive vocabulary
           </Button>
-        )}
-      />
+
+          <ConfirmationDialog
+            content={
+              <p>
+                Are you sure you want to delete this vocabulary? This operation
+                cannot be undone.
+              </p>
+            }
+            confirmText="Delete vocabulary"
+            onConfirm={() => props.onDeleteVocabulary?.(props.vocabulary.id)}
+            trigger={p => (
+              <Button
+                {...p}
+                class="mt-auto w-full"
+                size="sm"
+                variant="destructive"
+              >
+                <HiOutlineArchiveBox />
+                Delete vocabulary
+              </Button>
+            )}
+          />
+        </Show>
+      </div>
     </div>
   );
 };

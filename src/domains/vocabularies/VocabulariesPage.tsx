@@ -20,26 +20,30 @@ import {
 } from './resources/vocabularies-resource';
 import { Routes } from '~/routes/routes';
 import type { Vocabulary } from './model/vocabulary-model';
+import { Checkbox } from '~/components/ui/checkbox';
 
 export const VocabulariesPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const vocabulariesQuery = createQuery(() => ({
-    queryKey: [VOCABULARIES_QUERY_KEY],
-    queryFn: () => fetchVocabularies(),
-  }));
   const [createVocabularyOpen, setCreateVocabularyOpen] = createSignal(
     searchParams.openVocabCreator != null
   );
+  const [showArchived, setShowArchived] = createSignal(false);
+
+  const vocabulariesQuery = createQuery(() => ({
+    queryKey: [VOCABULARIES_QUERY_KEY, { includeArchived: showArchived() }],
+    queryFn: () => fetchVocabularies(showArchived()),
+  }));
 
   const anyVocabularies = () => vocabulariesQuery.data?.length ?? 0 > 0;
   const vocabulariesByRecency = () =>
-    vocabulariesQuery.data
-      ?.slice()
-      .sort(
-        (a, b) => (b.updatedAt?.getTime() ?? 0) - (a.updatedAt?.getTime() ?? 0)
-      );
+    vocabulariesQuery.data?.slice().sort((a, b) => {
+      if (a.archived !== b.archived) {
+        return a.archived ? -1 : 1;
+      }
+      return (b.updatedAt?.getTime() ?? 0) - (a.updatedAt?.getTime() ?? 0);
+    });
 
   async function onCreateVocabulary(vocabulary: VocabularyToCreate) {
     const success = await createVocabulary(vocabulary);
@@ -63,30 +67,33 @@ export const VocabulariesPage = () => {
 
   return (
     <main class="min-h-full bg-gray-100">
-      <Suspense fallback={<div>Loading...</div>}>
-        <div class="page-container flex flex-wrap justify-between gap-x-4">
-          <h1 class="text-lg font-semibold">Your vocabularies</h1>
-          <Show when={anyVocabularies()}>
-            <Button size="sm" onClick={() => setCreateVocabularyOpen(true)}>
-              <HiOutlinePlus size={16} /> Add vocabulary
-            </Button>
-          </Show>
-          <Sheet
-            open={createVocabularyOpen()}
-            onOpenChange={open => setCreateVocabularyOpen(open)}
+      <div class="page-container flex flex-wrap justify-between gap-x-4">
+        <h1 class="text-lg font-semibold">Your vocabularies</h1>
+        <Checkbox
+          label="Show archived"
+          checked={showArchived()}
+          onChange={setShowArchived}
+        />
+        <Button size="sm" onClick={() => setCreateVocabularyOpen(true)}>
+          <HiOutlinePlus size={16} /> Add vocabulary
+        </Button>
+        <Sheet
+          open={createVocabularyOpen()}
+          onOpenChange={open => setCreateVocabularyOpen(open)}
+        >
+          <SheetContent
+            class="w-svw sm:w-[30rem]"
+            onPointerDownOutside={e => e.preventDefault()}
           >
-            <SheetContent
-              class="w-svw sm:w-[30rem]"
-              onPointerDownOutside={e => e.preventDefault()}
-            >
-              <SheetHeader>
-                <SheetTitle>Create new vocabulary</SheetTitle>
-              </SheetHeader>
-              <VocabularyCreator onVocabularyCreate={onCreateVocabulary} />
-            </SheetContent>
-          </Sheet>
-        </div>
+            <SheetHeader>
+              <SheetTitle>Create new vocabulary</SheetTitle>
+            </SheetHeader>
+            <VocabularyCreator onVocabularyCreate={onCreateVocabulary} />
+          </SheetContent>
+        </Sheet>
+      </div>
 
+      <Suspense fallback={<div class="w-full text-center">Loading...</div>}>
         <Show
           when={anyVocabularies()}
           fallback={

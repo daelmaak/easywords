@@ -21,11 +21,9 @@ export type WordToCreate = Pick<
 > &
   Partial<Pick<Word, 'notes'>>;
 
-// TODO: Use Pick
-export type VocabularyToCreate = RealOmit<
-  Vocabulary,
-  'id' | 'savedProgress' | 'updatedAt' | 'words' | 'testInProgressId'
-> & { words: WordToCreate[] };
+export type VocabularyToCreate = Pick<Vocabulary, 'country' | 'name'> & {
+  words: WordToCreate[];
+};
 
 export const VOCABULARY_QUERY_KEY = 'vocabulary';
 

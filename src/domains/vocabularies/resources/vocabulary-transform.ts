@@ -10,6 +10,7 @@ export const transformToVocabulary = (
     country: vocabularyDB.country as CountryCode,
     name: vocabularyDB.name,
     words: vocabularyDB.words.map(transformToWord),
+    archived: vocabularyDB.archived ?? false,
   };
 
   if (vocabularyDB.updated_at) {
@@ -18,16 +19,6 @@ export const transformToVocabulary = (
 
   return vocabulary;
 };
-
-export const transformToVocabularyDB = (
-  vocabulary: Vocabulary
-): VocabularyDB => ({
-  id: vocabulary.id,
-  country: vocabulary.country,
-  name: vocabulary.name,
-  updated_at: vocabulary.updatedAt?.toISOString(),
-  words: vocabulary.words.map(transformToWordDB),
-});
 
 export const transformToWord = (word: WordDB): Word => ({
   id: word.id,

@@ -1,7 +1,7 @@
 import { supabase } from '~/lib/supabase-client';
 import type { RealOmit } from '~/util/object';
 import { omit } from '~/util/object';
-import type { QueryData } from '@supabase/supabase-js';
+import type { Database } from '~/lib/database.types';
 
 export type WordToCreateDB = Pick<
   WordDB,
@@ -9,11 +9,7 @@ export type WordToCreateDB = Pick<
 > &
   Partial<Pick<WordDB, 'notes'>>;
 
-// TODO: Use Pick
-export type VocabularyToCreateDB = RealOmit<
-  VocabularyDB,
-  'id' | 'updated_at' | 'words' | 'test_in_progress_id'
-> & {
+export type VocabularyToCreateDB = Pick<VocabularyDB, 'country' | 'name'> & {
   words: RealOmit<WordToCreateDB, 'vocabulary_id'>[];
 };
 
@@ -32,17 +28,20 @@ const VOCABULARY_FETCH_FIELDS = `
   country,
   name,
   updated_at,
+  archived,
   words (${WORD_FETCH_FIELDS})
 `;
 
 const vocabulariesFetchQuery = () =>
   supabase.from('vocabularies').select(VOCABULARY_FETCH_FIELDS);
 
-export type VocabularyDB = QueryData<
-  ReturnType<typeof vocabulariesFetchQuery>
->[number];
-
-export type WordDB = VocabularyDB['words'][number];
+export type VocabularyDB = Omit<
+  Database['public']['Tables']['vocabularies']['Row'],
+  'created_at' | 'user_id'
+> & {
+  words: WordDB[];
+};
+export type WordDB = Database['public']['Tables']['words']['Row'];
 
 const fetchVocabulary = async (id: number) => {
   const result = await vocabulariesFetchQuery().eq('id', id);
@@ -50,12 +49,14 @@ const fetchVocabulary = async (id: number) => {
   return result.data?.[0];
 };
 
-const fetchVocabularies = async () => {
-  const result = await supabase
-    .from('vocabularies')
-    .select(VOCABULARY_FETCH_FIELDS);
+const fetchVocabularies = async (includeArchived = false) => {
+  const query = supabase.from('vocabularies').select(VOCABULARY_FETCH_FIELDS);
 
-  return result.data;
+  if (!includeArchived) {
+    query.not('archived', 'is', true);
+  }
+
+  return (await query).data;
 };
 
 const fetchRecentVocabularies = async (count: number) => {
@@ -121,7 +122,7 @@ const updateVocabulary = async (
   return !result.error;
 };
 
-const updateWords = async (items: RealOmit<WordDB, 'created_at'>[]) => {
+const updateWords = async (items: Omit<WordDB, 'created_at'>[]) => {
   const result = await supabase.from('words').upsert(items);
   const vocabularyId = items[0].vocabulary_id;
 

@@ -27,7 +27,6 @@ interface Props {
   onSelectAll: (selected: boolean) => void;
   onSort: (sortProps: Partial<SortState>) => void;
   onTestSelected: () => void;
-  onDeleteSelected: () => void;
   onToggleDisplayArchived: () => void;
 }
 

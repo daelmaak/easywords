@@ -13,7 +13,7 @@ export interface ConfirmationDialogProps {
   headingText?: string;
   cancelText?: string;
   confirmText: string;
-  children?: JSX.Element;
+  content?: JSX.Element;
   trigger: (props: object) => JSX.Element;
   onClose?: () => void;
   onCancel?: () => void;
@@ -32,7 +32,7 @@ export const ConfirmationDialog: Component<ConfirmationDialogProps> = props => {
           <h2 class="text-lg font-bold">{props.headingText ?? 'You sure?'}</h2>
         </DialogHeader>
 
-        {props.children}
+        {props.content}
 
         <DialogFooter>
           <DialogTrigger

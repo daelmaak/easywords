@@ -9,8 +9,8 @@ export const initVocabulariesResource = (vocabularyApi: VocabularyApi) => {
   api = vocabularyApi;
 };
 
-export const fetchVocabularies = async () => {
-  const vocabulariesDB = await api.fetchVocabularies();
+export const fetchVocabularies = async (includeArchived = false) => {
+  const vocabulariesDB = await api.fetchVocabularies(includeArchived);
   return transformToVocabularies(vocabulariesDB ?? []);
 };
 

@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { For } from 'solid-js';
+import { For, Show } from 'solid-js';
 import {
   Card,
   CardContent,
@@ -29,6 +29,9 @@ export const VocabularyCard: Component<Props> = props => {
         <CardHeader class="flex flex-row flex-wrap items-center justify-between gap-x-2 px-4 py-3 sm:p-4">
           <CardTitle class="text-md">
             <span class={`fi mr-2 fi-${props.vocabulary.country}`}></span>
+            <Show when={props.vocabulary.archived}>
+              <span class="mr-1 font-light text-neutral-600">(Archived)</span>
+            </Show>
             {props.vocabulary.name}
           </CardTitle>
           <span class="mt-0 text-xs text-neutral-500">
@@ -54,21 +57,6 @@ export const VocabularyCard: Component<Props> = props => {
             <span class="mr-auto text-left text-xs text-neutral-500">
               Last change: {props.vocabulary.updatedAt?.toLocaleDateString()}
             </span>
-            {/* <Show when={props.vocabulary.testInProgressId}>
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() =>
-                  props.onTestVocabulary(
-                    props.vocabulary,
-                    props.vocabulary.testInProgressId
-                  )
-                }
-              >
-                <HiOutlineAcademicCap class="mr-1" />
-                Continue Test
-              </Button>
-            </Show> */}
           </div>
         </CardFooter>
       </Card>

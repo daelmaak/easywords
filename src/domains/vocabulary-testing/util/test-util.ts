@@ -30,6 +30,7 @@ export function createMockVocabularyDB(config: {
     country: 'cz',
     words,
     updated_at: new Date().toISOString(),
+    archived: false,
   };
 }
 
