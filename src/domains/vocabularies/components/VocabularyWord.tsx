@@ -53,52 +53,53 @@ export const VocabularyWord: Component<Props> = props => {
         onMouseDown={(e: MouseEvent) => e.preventDefault()}
       />
 
-      <div class="flex grow flex-col">
-        <div
-          class={cx('flex items-center gap-x-1', {
-            'text-neutral-600': props.word.archived,
-          })}
-        >
-          <Show when={props.word.archived}>
-            <span class="text-sm">(Archived)</span>
-          </Show>
-          <span>{props.word.original}</span>
-          <span class="mx-2 text-center">-</span>
-          <span>{props.word.translation}</span>
-        </div>
-        <div class="flex gap-4 pr-4 text-xs text-neutral-400">
-          <span class="inline-flex items-center gap-1">
-            <HiOutlinePlus size={14} />
-            {props.word.createdAt.toLocaleDateString(undefined, dateOptions)}
-          </span>
-          <Show when={props.word.lastTestDate}>
-            {lastTestDate => (
-              <span class="inline-flex items-center gap-1">
-                <HiOutlineAcademicCap size={14} />
-                {lastTestDate().toLocaleDateString(undefined, dateOptions)}
-              </span>
-            )}
-          </Show>
-          <Show when={props.word.averageTestScore != null}>
+      <div class="flex grow flex-wrap justify-between">
+        <div class="flex flex-col">
+          <div
+            class={cx('flex gap-x-1', {
+              'text-neutral-600': props.word.archived,
+            })}
+          >
+            <Show when={props.word.archived}>
+              <span class="text-sm">(Archived)</span>
+            </Show>
+            <span>{props.word.original}</span>
+            <span class="mx-2 text-center">-</span>
+            <span>{props.word.translation}</span>
+          </div>
+          <div class="flex gap-4 pr-4 text-xs text-neutral-400">
             <span class="inline-flex items-center gap-1">
-              <HiOutlineChartBar size={14} />
-              {props.word.averageTestScore!.toFixed(0)}%
+              <HiOutlinePlus size={14} />
+              {props.word.createdAt.toLocaleDateString(undefined, dateOptions)}
             </span>
-          </Show>
+            <Show when={props.word.lastTestDate}>
+              {lastTestDate => (
+                <span class="inline-flex items-center gap-1">
+                  <HiOutlineAcademicCap size={14} />
+                  {lastTestDate().toLocaleDateString(undefined, dateOptions)}
+                </span>
+              )}
+            </Show>
+            <Show when={props.word.averageTestScore != null}>
+              <span class="inline-flex items-center gap-1">
+                <HiOutlineChartBar size={14} />
+                {props.word.averageTestScore!.toFixed(0)}%
+              </span>
+            </Show>
+          </div>
         </div>
+
+        <Tooltip openDelay={300} closeDelay={0}>
+          <TooltipTrigger class="ml-auto" tabindex="-1">
+            <LifeLine results={props.word.results} class="h-6 w-28" />
+          </TooltipTrigger>
+          <TooltipContent>
+            Testing frequency for the last 30 days
+          </TooltipContent>
+        </Tooltip>
       </div>
 
-      <Tooltip openDelay={300} closeDelay={0}>
-        <TooltipTrigger tabindex="-1">
-          <LifeLine
-            results={props.word.results}
-            class="hidden h-6 w-28 sm:block"
-          />
-        </TooltipTrigger>
-        <TooltipContent>Testing frequency for the last 30 days</TooltipContent>
-      </Tooltip>
-
-      <HiOutlineChevronRight class="ml-4 text-neutral-500" />
+      <HiOutlineChevronRight class="ml-2 text-neutral-500 md:ml-4" />
     </div>
   );
 };

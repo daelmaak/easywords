@@ -69,7 +69,7 @@ export const VocabularySummary: Component<Props> = props => {
   }
 
   return (
-    <div class="flex h-full flex-col gap-2">
+    <div class="flex min-h-full flex-col gap-2">
       <Sheet open={openedAddWords()} onOpenChange={setOpenedAddWords}>
         <SheetContent
           class="flex w-svw flex-col gap-4 sm:w-[30rem]"

@@ -142,9 +142,9 @@ export const VocabularyPage: Component = () => {
   }
 
   return (
-    <main class="page-container flex h-full flex-col gap-4 bg-neutral-100 p-2 sm:max-h-[calc(100vh-57px)] sm:flex-row">
+    <main class="grid gap-4 bg-neutral-100 p-2 sm:grid-cols-[14rem_1fr] sm:grid-rows-[calc(100vh-57px-1rem)] md:grid-cols-[18rem_1fr] lg:grid-cols-[auto_4fr_3fr] xl:grid-cols-[auto_1fr_1fr]">
       <Suspense fallback={<div class="m-auto">Loading ...</div>}>
-        <div class="min-w-56 rounded-lg bg-white px-6 py-4 shadow-md md:max-w-72">
+        <div class="h-full max-h-full overflow-y-auto rounded-lg bg-white px-3 py-4 shadow-md md:max-w-72 md:px-6">
           <Show when={vocabularyWithResults()}>
             {v => (
               <VocabularySummary
