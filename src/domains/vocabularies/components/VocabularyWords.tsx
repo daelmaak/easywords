@@ -1,8 +1,9 @@
 import type { Component } from 'solid-js';
-import { For, createMemo } from 'solid-js';
+import { For, createMemo, onCleanup, onMount } from 'solid-js';
 import type { Word } from '../model/vocabulary-model';
 import { VocabularyWord } from './VocabularyWord';
 import { wordsSelector } from '~/util/selection';
+import { observeFirstIntersection } from '~/util/scroll';
 
 export interface SortState {
   by: keyof Word;
@@ -18,6 +19,10 @@ interface VocabularyWordsProps {
 }
 
 export const VocabularyWords: Component<VocabularyWordsProps> = props => {
+  let scrollNextElement!: HTMLDivElement;
+  const [showAllWords, watchAllWordsReached, cleanupAllWordsReached] =
+    observeFirstIntersection();
+
   const selectWords = wordsSelector();
 
   const sortedWords = createMemo(() => {
@@ -64,8 +69,19 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
     });
   });
 
+  const sortedPagedWords = () =>
+    showAllWords() ? sortedWords() : sortedWords().slice(0, 25);
+
   const wordSelected = (word: Word) =>
     !!props.selectedWords.find(sw => word.id === sw.id);
+
+  onMount(() => {
+    watchAllWordsReached(scrollNextElement);
+  });
+
+  onCleanup(() => {
+    cleanupAllWordsReached();
+  });
 
   function onWordSelected(
     word: Word,
@@ -75,7 +91,7 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
     const selectedWords = selectWords(
       word,
       selected,
-      sortedWords(),
+      sortedPagedWords(),
       props.selectedWords,
       meta
     );
@@ -84,19 +100,22 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
   }
 
   return (
-    <ul class="mb-24">
-      <For each={sortedWords()}>
-        {word => (
-          <li class="border-b border-neutral-200">
-            <VocabularyWord
-              selected={wordSelected(word)}
-              word={word}
-              onWordSelected={onWordSelected}
-              onWordDetailToOpen={props.onWordDetail}
-            />
-          </li>
-        )}
-      </For>
-    </ul>
+    <>
+      <ul class="mb-24">
+        <For each={sortedPagedWords()}>
+          {word => (
+            <li class="border-b border-neutral-200">
+              <VocabularyWord
+                selected={wordSelected(word)}
+                word={word}
+                onWordSelected={onWordSelected}
+                onWordDetailToOpen={props.onWordDetail}
+              />
+            </li>
+          )}
+        </For>
+      </ul>
+      <div ref={scrollNextElement}></div>
+    </>
   );
 };
