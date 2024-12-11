@@ -6,6 +6,10 @@ export function testResultsKey(vocabularyId: number) {
   return ['vocabulary', vocabularyId, 'results'];
 }
 
+export function lastTestProgressKey(vocabularyId: number) {
+  return ['vocabulary', vocabularyId, 'lastProgress'];
+}
+
 export function lastTestResultKey(vocabularyId: number) {
   return ['vocabulary', vocabularyId, 'lastResult'];
 }

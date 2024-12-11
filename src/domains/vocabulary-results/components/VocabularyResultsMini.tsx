@@ -44,7 +44,9 @@ export const VocabularyResultsMini: Component<Props> = props => {
             </h2>
           </span>
           <span class="text-xs">
-            {new Date(props.result.updated_at).toLocaleDateString()}
+            {props.result.updated_at
+              ? new Date(props.result.updated_at).toLocaleDateString()
+              : 'Just now'}
           </span>
         </div>
         <figure class="mt-3">

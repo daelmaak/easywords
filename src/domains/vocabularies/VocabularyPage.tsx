@@ -7,8 +7,8 @@ import { createStore } from 'solid-js/store';
 import { Sheet, SheetContent } from '~/components/ui/sheet';
 import { Routes } from '~/routes/routes';
 import {
+  lastTestProgressKey,
   lastTestResultKey,
-  testResultKey,
   testResultsKey,
 } from '../vocabulary-results/resources/cache-keys';
 import {
@@ -65,7 +65,7 @@ export const VocabularyPage: Component = () => {
   );
 
   const testProgressQuery = createQuery(() => ({
-    queryKey: testResultKey(vocabularyId),
+    queryKey: lastTestProgressKey(vocabularyId),
     queryFn: () => fetchLastTestProgress(vocabularyId),
   }));
 

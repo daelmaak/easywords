@@ -2,7 +2,7 @@ import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
 import { Show, createEffect } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { BackLink } from '~/components/BackLink';
-import type { Word } from '../vocabularies/model/vocabulary-model';
+import type { Vocabulary, Word } from '../vocabularies/model/vocabulary-model';
 import {
   fetchVocabulary,
   updateVocabularyAsInteractedWith,
@@ -17,16 +17,24 @@ import {
 import type { VocabularyTesterSettings } from './components/VocabularySettings';
 import { VocabularySettings } from './components/VocabularySettings';
 import { VocabularyTester } from './components/VocabularyTester';
-import { createQuery } from '@tanstack/solid-query';
+import {
+  createMutation,
+  createQuery,
+  useQueryClient,
+} from '@tanstack/solid-query';
 import type {
   TestResult,
   TestResultToCreate,
   TestResultWord,
 } from '../vocabulary-results/model/test-result-model';
-import { testResultKey } from '../vocabulary-results/resources/cache-keys';
+import {
+  lastTestProgressKey,
+  testResultKey,
+} from '../vocabulary-results/resources/cache-keys';
 import { testResultsRoute, testRoute, vocabularyRoute } from '~/routes/routes';
 
 export const VocabularyTestPage = () => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const params = useParams();
@@ -42,6 +50,13 @@ export const VocabularyTestPage = () => {
     queryKey: testResultKey(testId()!),
     queryFn: () => fetchTestResult(testId()!),
     enabled: () => testId() != null,
+  }));
+
+  const createResultMutation = createMutation(() => ({
+    mutationFn: (params: { vocabulary: Vocabulary; words?: Word[] }) =>
+      createTestResult(params.vocabulary, params.words),
+    onSuccess: result =>
+      queryClient.setQueryData(lastTestProgressKey(vocabularyId), result),
   }));
 
   const [vocabularySettings, setVocabularySettings] =
@@ -94,7 +109,11 @@ export const VocabularyTestPage = () => {
       words = vocabulary.words.filter(w => wordIds.includes(w.id));
     }
 
-    const result = await createTestResult(vocabulary, words);
+    const result = await createResultMutation.mutateAsync({
+      vocabulary,
+      words,
+    });
+
     navigate(testRoute(vocabularyId, result.id), { replace: true });
   });
 
