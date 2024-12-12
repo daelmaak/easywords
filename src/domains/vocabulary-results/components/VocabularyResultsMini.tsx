@@ -5,6 +5,10 @@ import { Card, CardContent } from '~/components/ui/card';
 import { RESULT_COLORS } from '../model/colors';
 import { HiOutlineCheckCircle, HiOutlinePauseCircle } from 'solid-icons/hi';
 import { TEST_RESULT_LABELS } from '../model/labels';
+import {
+  formatDate,
+  THREE_LETTER_MONTH_WITH_YEAR_OPTIONS,
+} from '~/util/format-date';
 
 interface Props {
   result: TestResult;
@@ -45,7 +49,10 @@ export const VocabularyResultsMini: Component<Props> = props => {
           </span>
           <span class="text-xs">
             {props.result.updated_at
-              ? new Date(props.result.updated_at).toLocaleDateString()
+              ? formatDate(
+                  new Date(props.result.updated_at),
+                  THREE_LETTER_MONTH_WITH_YEAR_OPTIONS
+                )
               : 'Just now'}
           </span>
         </div>

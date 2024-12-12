@@ -10,6 +10,10 @@ import { Input } from '~/components/ui/input';
 import { HiOutlineTrash, HiOutlineXMark } from 'solid-icons/hi';
 import { Button } from '~/components/ui/button';
 import { ConfirmationDialog } from '~/components/ConfirmationDialog';
+import {
+  formatDate,
+  THREE_LETTER_MONTH_WITH_YEAR_OPTIONS,
+} from '~/util/format-date';
 
 interface WordDetailProps {
   word: Word;
@@ -131,7 +135,10 @@ export const WordDetail: Component<WordDetailProps> = props => {
             class="rounded-lg border border-input bg-gray-50 px-3 py-2"
           >
             <p class="text-gray-800">
-              {new Date(props.word.createdAt).toLocaleDateString()}
+              {formatDate(
+                new Date(props.word.createdAt),
+                THREE_LETTER_MONTH_WITH_YEAR_OPTIONS
+              )}
             </p>
           </div>
         </div>
@@ -146,7 +153,10 @@ export const WordDetail: Component<WordDetailProps> = props => {
                 class="rounded-lg border border-input bg-gray-50 px-3 py-2"
               >
                 <p class="text-gray-800">
-                  {lastTestDate().toLocaleDateString()}
+                  {formatDate(
+                    lastTestDate(),
+                    THREE_LETTER_MONTH_WITH_YEAR_OPTIONS
+                  )}
                 </p>
               </div>
             </div>

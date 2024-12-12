@@ -31,8 +31,15 @@ export const WordDetailResults: Component<WordDetailResultsProps> = props => {
       chart.destroy();
     }
 
+    const dateLabelOptions: Intl.DateTimeFormatOptions = {
+      month: 'short',
+      day: 'numeric',
+    };
+
     const chartData: ChartData<'line'> = {
-      labels: results().map(r => new Date(r.created_at).toLocaleDateString()),
+      labels: results().map(r =>
+        new Date(r.created_at).toLocaleDateString(undefined, dateLabelOptions)
+      ),
       datasets: [
         {
           data: results().map(r => r.result),

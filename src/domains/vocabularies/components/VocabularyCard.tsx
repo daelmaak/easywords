@@ -8,6 +8,10 @@ import {
   CardTitle,
 } from '~/components/ui/card';
 import type { Vocabulary } from '../model/vocabulary-model';
+import {
+  formatDate,
+  THREE_LETTER_MONTH_WITH_YEAR_OPTIONS,
+} from '~/util/format-date';
 
 export type Props = {
   vocabulary: Vocabulary;
@@ -55,7 +59,19 @@ export const VocabularyCard: Component<Props> = props => {
             onClick={e => e.stopPropagation()}
           >
             <span class="mr-auto text-left text-xs text-neutral-500">
-              Last change: {props.vocabulary.updatedAt?.toLocaleDateString()}
+              <Show when={props.vocabulary.updatedAt}>
+                {updatedAt => (
+                  <>
+                    <span>Last change: </span>
+                    <span>
+                      {formatDate(
+                        updatedAt(),
+                        THREE_LETTER_MONTH_WITH_YEAR_OPTIONS
+                      )}
+                    </span>
+                  </>
+                )}
+              </Show>
             </span>
           </div>
         </CardFooter>
