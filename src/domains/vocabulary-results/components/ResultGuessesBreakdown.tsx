@@ -1,4 +1,4 @@
-import { createMemo, createSignal, For, type Component } from 'solid-js';
+import { createMemo, For, type Component } from 'solid-js';
 import type { Word } from '~/domains/vocabularies/model/vocabulary-model';
 import type { TestResultWord } from '~/domains/vocabulary-results/model/test-result-model';
 import {
@@ -26,6 +26,7 @@ import { TEST_RESULT_LABELS } from '../model/labels';
 
 export interface Props {
   results: TestResult;
+  selectedWords: Word[];
   words: Word[];
   onSelectionChange: (selectedWords: Word[]) => void;
 }
@@ -42,8 +43,7 @@ const ATTEMPT_TOOLTIP: Record<TestWordStatus, string> = {
   [TestWordStatus.Wrong]: 'Wrong attempt',
 };
 
-export const ResultWordGuessesSummary: Component<Props> = props => {
-  const [selectedWords, setSelectedWords] = createSignal<Word[]>([]);
+export const ResultGuessesBreakdown: Component<Props> = props => {
   const selectWords = wordsSelector();
 
   const enrichedWordsDict = createMemo(() => {
@@ -74,21 +74,15 @@ export const ResultWordGuessesSummary: Component<Props> = props => {
   );
 
   const wordSelected = (word: Word) =>
-    selectedWords().find(sw => word.id === sw.id) != null;
+    props.selectedWords.find(sw => word.id === sw.id) != null;
 
-  function onWordSelected(
-    word: Word,
-    selected: boolean,
-    meta?: { shiftSelection: boolean }
-  ) {
+  function onWordSelected(word: Word, selected: boolean) {
     const newSelectedWords = selectWords(
       word,
       selected,
       enrichedWords().map(w => w.word),
-      selectedWords(),
-      meta
+      props.selectedWords
     );
-    setSelectedWords(newSelectedWords);
     props.onSelectionChange(newSelectedWords);
   }
 
@@ -99,11 +93,10 @@ export const ResultWordGuessesSummary: Component<Props> = props => {
     const words = enrichedWords.map(w => w.word);
 
     if (selected) {
-      setSelectedWords(ws => unionBy(ws, words, 'id'));
+      props.onSelectionChange(unionBy(props.selectedWords, words, 'id'));
     } else {
-      setSelectedWords(ws => differenceBy(ws, words, 'id'));
+      props.onSelectionChange(differenceBy(props.selectedWords, words, 'id'));
     }
-    props.onSelectionChange(selectedWords());
   }
 
   return (

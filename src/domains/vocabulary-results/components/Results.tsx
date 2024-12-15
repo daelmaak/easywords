@@ -7,12 +7,13 @@ import {
   TestWordStatus,
   type TestResult,
 } from '~/domains/vocabulary-results/model/test-result-model';
-import { ResultWordGuessesSummary } from './ResultWordGuessesVisualisation';
+import { ResultGuessesBreakdown } from './ResultGuessesBreakdown';
 import { RESULT_COLORS } from '../model/colors';
 import { groupBy } from 'lodash-es';
 import { Card, CardContent } from '~/components/ui/card';
 import { TEST_RESULT_LABELS } from '../model/labels';
 import { ResultsComparisonScore } from './ResultsComparisonScore';
+import { ResultsComparisonBreakdown } from './ResultsComparisonBreakdown';
 
 interface ResultsProps {
   results: TestResult;
@@ -126,8 +127,9 @@ export function Results(props: ResultsProps) {
 
         <Card class="order-last md:order-none">
           <CardContent>
-            <ResultWordGuessesSummary
+            <ResultGuessesBreakdown
               results={props.results}
+              selectedWords={selectedWords()}
               words={props.words}
               onSelectionChange={onWordSelectionChange}
             />
@@ -142,6 +144,17 @@ export function Results(props: ResultsProps) {
                   <ResultsComparisonScore
                     testResult={props.results}
                     previousWordResults={previousResults()}
+                  />
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent>
+                  <ResultsComparisonBreakdown
+                    testResult={props.results}
+                    previousWordResults={previousResults()}
+                    selectedWords={selectedWords()}
+                    words={props.words}
+                    onSelectionChange={onWordSelectionChange}
                   />
                 </CardContent>
               </Card>
