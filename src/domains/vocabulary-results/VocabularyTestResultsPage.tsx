@@ -5,18 +5,22 @@ import {
   fetchVocabulary,
   updateWords,
 } from '../vocabularies/resources/vocabulary-resource';
-import { fetchLastTestResult } from './resources/vocabulary-test-result-resource';
+import {
+  fetchPreviousWordResults,
+  fetchTestResult,
+} from './resources/vocabulary-test-result-resource';
 import type { Word } from '../vocabularies/model/vocabulary-model';
 import { navigateToVocabularyTest } from '../vocabulary-testing/util/navigation';
 import { BackLink } from '~/components/BackLink';
 import { createQuery } from '@tanstack/solid-query';
-import { lastTestResultKey } from './resources/cache-keys';
+import { previousWordResults, testResultKey } from './resources/cache-keys';
 import { vocabularyRoute } from '~/routes/routes';
 
 export const VocabularyTestResultsPage: Component = () => {
   const params = useParams();
   const navigate = useNavigate();
   const vocabularyId = +params.id;
+  const testId = +params.testId;
 
   const vocabularyQuery = createQuery(() => ({
     queryKey: ['vocabulary', vocabularyId],
@@ -24,8 +28,13 @@ export const VocabularyTestResultsPage: Component = () => {
   }));
 
   const lastTestResultQuery = createQuery(() => ({
-    queryKey: lastTestResultKey(vocabularyId),
-    queryFn: () => fetchLastTestResult(vocabularyId),
+    queryKey: testResultKey(testId),
+    queryFn: () => fetchTestResult(testId),
+  }));
+
+  const previousWordResultsQuery = createQuery(() => ({
+    queryKey: previousWordResults(testId),
+    queryFn: () => fetchPreviousWordResults(testId),
   }));
 
   async function onArchive(words: Word[]) {
@@ -63,6 +72,9 @@ export const VocabularyTestResultsPage: Component = () => {
               {results => (
                 <Results
                   results={results()}
+                  previousWordResults={
+                    previousWordResultsQuery.data ?? undefined
+                  }
                   words={words()}
                   editWord={onWordsEdited}
                   onArchive={onArchive}

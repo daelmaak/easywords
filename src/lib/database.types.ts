@@ -199,7 +199,15 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      get_previous_word_results: {
+        Args: {
+          base_test_result_id: number;
+        };
+        Returns: {
+          word_id: number;
+          result: number;
+        }[];
+      };
     };
     Enums: {
       [_ in never]: never;

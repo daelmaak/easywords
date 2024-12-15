@@ -1,4 +1,5 @@
 import type {
+  PreviousWordResultDB,
   TestResultDB,
   TestResultToCreateDB,
   TestResultWordDB,
@@ -31,3 +32,7 @@ export type TestResultWordToCreate = PartialExcept<
   TestResultWordToCreateDB,
   'done' | 'result' | 'word_id'
 >;
+
+export type PreviousWordResult = Omit<PreviousWordResultDB, 'result'> & {
+  result: TestWordStatus;
+};

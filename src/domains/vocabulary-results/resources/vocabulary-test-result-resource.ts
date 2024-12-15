@@ -1,4 +1,5 @@
 import type { QueryClient } from '@tanstack/solid-query';
+import type { PreviousWordResult } from '../model/test-result-model';
 import {
   TestWordStatus,
   type TestResult,
@@ -56,6 +57,12 @@ export async function fetchTestResults(
   return api.fetchTestResults(vocabularyId, options);
 }
 
+export async function fetchPreviousWordResults(
+  testResultId: number
+): Promise<PreviousWordResult[] | null> {
+  return api.fetchPreviousWordResults(testResultId);
+}
+
 export async function createTestResult(vocabulary: Vocabulary, words?: Word[]) {
   return await saveTestResult({
     vocabulary_id: vocabulary.id,
@@ -72,17 +79,16 @@ export async function createTestResult(vocabulary: Vocabulary, words?: Word[]) {
 export async function saveTestResult(testResult: TestResultToCreate) {
   const savedResult = await api.saveTestResult(testResult);
 
+  queryClient.setQueryData(testResultKey(savedResult.id), savedResult);
+
   if (testResult.done) {
-    queryClient.setQueryData(testResultKey(testResult.vocabulary_id), null);
     queryClient.setQueryData(
-      lastTestResultKey(testResult.vocabulary_id),
+      lastTestResultKey(savedResult.vocabulary_id),
       savedResult
     );
     void queryClient.invalidateQueries({
-      queryKey: testResultsKey(testResult.vocabulary_id),
+      queryKey: testResultsKey(savedResult.vocabulary_id),
     });
-  } else {
-    queryClient.setQueryData(testResultKey(savedResult.id), savedResult);
   }
 
   return savedResult;

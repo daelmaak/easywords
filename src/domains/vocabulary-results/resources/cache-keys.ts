@@ -14,6 +14,10 @@ export function lastTestResultKey(vocabularyId: number) {
   return ['vocabulary', vocabularyId, 'lastResult'];
 }
 
+export function previousWordResults(testId: number) {
+  return ['previous-word-results', testId];
+}
+
 export function wordResultsKey(wordId: number) {
-  return ['wordResults', wordId];
+  return ['word-results', wordId];
 }

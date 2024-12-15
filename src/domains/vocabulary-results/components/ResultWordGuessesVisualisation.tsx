@@ -107,78 +107,74 @@ export const ResultWordGuessesSummary: Component<Props> = props => {
   }
 
   return (
-    <>
-      <Accordion
-        collapsible
-        data-testid="results-word-breakdown"
-        multiple
-        class="mx-auto w-full max-w-[32rem]"
-      >
-        <For each={enrichedWordsDict()}>
-          {([result, words]) => (
-            <AccordionItem value={result.toString()}>
-              <AccordionHeader class="flex">
-                <Checkbox
-                  class="mr-2"
-                  onChange={checked => onCategorySelected(words, checked)}
-                />
-                <AccordionTrigger class="outline-none">
-                  <span class="inline-flex items-center gap-2">
-                    <span>{TEST_RESULT_LABELS[result]}</span>
-                    <span
-                      class="text-sm font-bold"
-                      style={{ color: RESULT_COLORS[result] }}
-                    >
-                      {words.length} x
-                    </span>
+    <Accordion
+      collapsible
+      data-testid="results-word-breakdown"
+      multiple
+      class="mx-auto w-full max-w-[32rem]"
+    >
+      <For each={enrichedWordsDict()}>
+        {([result, words]) => (
+          <AccordionItem value={result.toString()}>
+            <AccordionHeader class="flex">
+              <Checkbox
+                class="mr-2"
+                onChange={checked => onCategorySelected(words, checked)}
+              />
+              <AccordionTrigger class="outline-none">
+                <span class="inline-flex items-center gap-2">
+                  <span>{TEST_RESULT_LABELS[result]}</span>
+                  <span
+                    class="text-sm font-bold"
+                    style={{ color: RESULT_COLORS[result] }}
+                  >
+                    {words.length} x
                   </span>
-                </AccordionTrigger>
-              </AccordionHeader>
-              <AccordionContent>
-                <ul>
-                  <For each={words}>
-                    {word => (
-                      <li class="flex items-center justify-between rounded-md p-1.5 text-base even:bg-purple-50">
-                        <Checkbox
-                          checked={wordSelected(word.word)}
-                          onChange={checked =>
-                            onWordSelected(word.word, checked)
-                          }
-                        />
-                        <span>
-                          {word.word.original} - {word.word.translation}
-                        </span>
-                        <span>
-                          <For each={word.attempts}>
-                            {attempt => (
-                              <Tooltip openDelay={100}>
-                                <TooltipTrigger
-                                  class="ml-1 size-4 rounded-sm"
-                                  tabindex="-1"
-                                  style={{
-                                    'background-color': RESULT_COLORS[attempt],
-                                  }}
-                                >
-                                  <span class="sr-only">
-                                    Open attempt tooltip
-                                  </span>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  {ATTEMPT_TOOLTIP[attempt]}
-                                </TooltipContent>
-                              </Tooltip>
-                            )}
-                          </For>
-                        </span>
-                      </li>
-                    )}
-                  </For>
-                </ul>
-              </AccordionContent>
-            </AccordionItem>
-          )}
-        </For>
-      </Accordion>
-    </>
+                </span>
+              </AccordionTrigger>
+            </AccordionHeader>
+            <AccordionContent>
+              <ul>
+                <For each={words}>
+                  {word => (
+                    <li class="flex items-center justify-between rounded-md p-1.5 text-base even:bg-purple-50">
+                      <Checkbox
+                        checked={wordSelected(word.word)}
+                        onChange={checked => onWordSelected(word.word, checked)}
+                      />
+                      <span>
+                        {word.word.original} - {word.word.translation}
+                      </span>
+                      <span>
+                        <For each={word.attempts}>
+                          {attempt => (
+                            <Tooltip openDelay={100}>
+                              <TooltipTrigger
+                                class="ml-1 size-4 rounded-sm"
+                                tabindex="-1"
+                                style={{
+                                  'background-color': RESULT_COLORS[attempt],
+                                }}
+                              >
+                                <span class="sr-only">
+                                  Open attempt tooltip
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                {ATTEMPT_TOOLTIP[attempt]}
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                        </For>
+                      </span>
+                    </li>
+                  )}
+                </For>
+              </ul>
+            </AccordionContent>
+          </AccordionItem>
+        )}
+      </For>
+    </Accordion>
   );
 };

@@ -55,6 +55,22 @@ async function fetchLastTestResult(
   return result.data;
 }
 
+export type PreviousWordResultDB =
+  Database['public']['Functions']['get_previous_word_results']['Returns'][number];
+
+/**
+ * Fetches for each word ID the one before the last result, if there is any.
+ */
+async function fetchPreviousWordResults(
+  testResultId: number
+): Promise<PreviousWordResultDB[] | null> {
+  const { data } = await supabase.rpc('get_previous_word_results', {
+    base_test_result_id: testResultId,
+  });
+
+  return data;
+}
+
 async function fetchWordResults(
   wordId: number,
   options: { upToDaysAgo: number }
@@ -164,6 +180,7 @@ export const vocabularyTestResultApi = {
   fetchTestResults,
   fetchWordResults,
   fetchLastTestResult,
+  fetchPreviousWordResults,
   hasTestProgress,
   saveTestResult,
 };

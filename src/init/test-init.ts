@@ -38,6 +38,7 @@ export const initTestApp = () => {
       fetchTestResults: vi.fn(),
       fetchWordResults: vi.fn(),
       fetchLastTestResult: vi.fn().mockResolvedValue(null),
+      fetchPreviousWordResults: vi.fn().mockResolvedValue(null),
       hasTestProgress: vi.fn(),
       saveTestResult: vi
         .fn()

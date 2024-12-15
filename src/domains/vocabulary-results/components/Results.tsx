@@ -2,6 +2,7 @@ import { createSignal, For, lazy, Show } from 'solid-js';
 import { Button } from '~/components/ui/button';
 import { WordEditorDialog } from '~/domains/vocabularies/components/WordEditorDialog';
 import type { Word } from '~/domains/vocabularies/model/vocabulary-model';
+import type { PreviousWordResult } from '~/domains/vocabulary-results/model/test-result-model';
 import {
   TestWordStatus,
   type TestResult,
@@ -11,9 +12,11 @@ import { RESULT_COLORS } from '../model/colors';
 import { groupBy } from 'lodash-es';
 import { Card, CardContent } from '~/components/ui/card';
 import { TEST_RESULT_LABELS } from '../model/labels';
+import { ResultsComparisonScore } from './ResultsComparisonScore';
 
 interface ResultsProps {
   results: TestResult;
+  previousWordResults?: PreviousWordResult[];
   words: Word[];
   editWord: (word: Word) => void;
   onArchive: (words: Word[]) => void;
@@ -130,6 +133,21 @@ export function Results(props: ResultsProps) {
             />
           </CardContent>
         </Card>
+
+        <Show when={props.previousWordResults}>
+          {previousResults => (
+            <Show when={previousResults().length > 0}>
+              <Card>
+                <CardContent class="flex justify-center">
+                  <ResultsComparisonScore
+                    testResult={props.results}
+                    previousWordResults={previousResults()}
+                  />
+                </CardContent>
+              </Card>
+            </Show>
+          )}
+        </Show>
 
         <div class="mx-auto flex flex-wrap items-stretch gap-4 lg:flex-col lg:flex-nowrap">
           <Button type="button" variant="default" onClick={props.onRepeatAll}>
