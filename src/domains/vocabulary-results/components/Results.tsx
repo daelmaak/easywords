@@ -10,7 +10,7 @@ import {
 import { ResultGuessesBreakdown } from './ResultGuessesBreakdown';
 import { RESULT_COLORS } from '../model/colors';
 import { groupBy } from 'lodash-es';
-import { Card, CardContent } from '~/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { TEST_RESULT_LABELS } from '../model/labels';
 import { ResultsComparisonScore } from './ResultsComparisonScore';
 import { ResultsComparisonBreakdown } from './ResultsComparisonBreakdown';
@@ -100,7 +100,7 @@ export function Results(props: ResultsProps) {
       <p class="mx-auto my-4 text-lg">{feedbackText()}</p>
 
       <div class="mx-auto grid w-full max-w-6xl gap-4 md:grid-cols-[1fr_1fr] md:p-4 lg:grid-cols-[6fr_9fr_auto]">
-        <div>
+        <div class="flex flex-col gap-4">
           <Card>
             <CardContent class="p-4">
               <div class="mx-auto w-full max-w-64">
@@ -123,44 +123,61 @@ export function Results(props: ResultsProps) {
               </ul>
             </CardContent>
           </Card>
+
+          <Show when={props.previousWordResults}>
+            {previousResults => (
+              <Show when={previousResults().length > 0}>
+                <Card>
+                  <CardContent class="flex justify-center">
+                    <ResultsComparisonScore
+                      testResult={props.results}
+                      previousWordResults={previousResults()}
+                    />
+                  </CardContent>
+                </Card>
+              </Show>
+            )}
+          </Show>
         </div>
 
-        <Card class="order-last md:order-none">
-          <CardContent>
-            <ResultGuessesBreakdown
-              results={props.results}
-              selectedWords={selectedWords()}
-              words={props.words}
-              onSelectionChange={onWordSelectionChange}
-            />
-          </CardContent>
-        </Card>
+        <div class="flex flex-col gap-4">
+          <Card class="order-last md:order-none">
+            <CardHeader class="pb-2">
+              <h3 class="text-lg font-semibold">Results Breakdown</h3>
+            </CardHeader>
+            <CardContent>
+              <ResultGuessesBreakdown
+                results={props.results}
+                selectedWords={selectedWords()}
+                words={props.words}
+                onSelectionChange={onWordSelectionChange}
+              />
+            </CardContent>
+          </Card>
 
-        <Show when={props.previousWordResults}>
-          {previousResults => (
-            <Show when={previousResults().length > 0}>
-              <Card>
-                <CardContent class="flex justify-center">
-                  <ResultsComparisonScore
-                    testResult={props.results}
-                    previousWordResults={previousResults()}
-                  />
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent>
-                  <ResultsComparisonBreakdown
-                    testResult={props.results}
-                    previousWordResults={previousResults()}
-                    selectedWords={selectedWords()}
-                    words={props.words}
-                    onSelectionChange={onWordSelectionChange}
-                  />
-                </CardContent>
-              </Card>
-            </Show>
-          )}
-        </Show>
+          <Show when={props.previousWordResults}>
+            {previousResults => (
+              <Show when={previousResults().length > 0}>
+                <Card>
+                  <CardHeader class="pb-2">
+                    <h3 class="text-lg font-semibold">
+                      Comparison to Last Tests
+                    </h3>
+                  </CardHeader>
+                  <CardContent>
+                    <ResultsComparisonBreakdown
+                      testResult={props.results}
+                      previousWordResults={previousResults()}
+                      selectedWords={selectedWords()}
+                      words={props.words}
+                      onSelectionChange={onWordSelectionChange}
+                    />
+                  </CardContent>
+                </Card>
+              </Show>
+            )}
+          </Show>
+        </div>
 
         <div class="mx-auto flex flex-wrap items-stretch gap-4 lg:flex-col lg:flex-nowrap">
           <Button type="button" variant="default" onClick={props.onRepeatAll}>

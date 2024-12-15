@@ -31,7 +31,11 @@ interface Props {
   onSelectionChange: (selectedWords: Word[]) => void;
 }
 
-type ComparisonStatus = 'improved' | 'worsened' | 'unchanged';
+enum ComparisonStatus {
+  Improved = 1,
+  Unchanged = 0,
+  Worsened = -1,
+}
 
 interface WordWithComparison {
   word: Word;
@@ -40,15 +44,15 @@ interface WordWithComparison {
 }
 
 const STATUS_LABELS: Record<ComparisonStatus, string> = {
-  improved: 'Improved',
-  worsened: 'Worsened',
-  unchanged: 'Unchanged',
+  [ComparisonStatus.Improved]: 'Improved',
+  [ComparisonStatus.Unchanged]: 'Unchanged',
+  [ComparisonStatus.Worsened]: 'Worsened',
 };
 
 const STATUS_COLORS: Record<ComparisonStatus, string> = {
-  improved: '#22c55e', // text-green-500
-  worsened: '#ef4444', // text-red-500
-  unchanged: '#6b7280', // text-gray-500
+  [ComparisonStatus.Improved]: '#22c55e', // text-green-500
+  [ComparisonStatus.Worsened]: '#ef4444', // text-red-500
+  [ComparisonStatus.Unchanged]: '#6b7280', // text-gray-500
 };
 
 export const ResultsComparisonBreakdown: Component<Props> = props => {
@@ -88,11 +92,11 @@ export const ResultsComparisonBreakdown: Component<Props> = props => {
 
   const groupedWords = createMemo(() => {
     const words = comparedWords();
-    return groupBy(words, (word): ComparisonStatus => {
-      if (word.currentResult < word.previousResult) return 'improved';
-      if (word.currentResult > word.previousResult) return 'worsened';
-      return 'unchanged';
-    });
+    return groupBy(
+      words,
+      (word): ComparisonStatus =>
+        Math.sign(word.previousResult - word.currentResult)
+    );
   });
 
   return (
@@ -102,7 +106,9 @@ export const ResultsComparisonBreakdown: Component<Props> = props => {
       multiple
       class="mx-auto w-full max-w-[32rem]"
     >
-      <For each={Object.entries(groupedWords())}>
+      <For
+        each={Object.entries(groupedWords()).toSorted(([a], [b]) => +b - +a)}
+      >
         {([status, words]) => {
           const unwrappedWords = words.map(w => w.word);
           const categorySelectionStatus = createMemo(() =>
@@ -126,11 +132,11 @@ export const ResultsComparisonBreakdown: Component<Props> = props => {
                 />
                 <AccordionTrigger class="outline-none">
                   <span class="inline-flex items-center gap-2">
-                    <span>{STATUS_LABELS[status as ComparisonStatus]}</span>
+                    <span>{STATUS_LABELS[+status as ComparisonStatus]}</span>
                     <span
                       class="text-sm font-bold"
                       style={{
-                        color: STATUS_COLORS[status as ComparisonStatus],
+                        color: STATUS_COLORS[+status as ComparisonStatus],
                       }}
                     >
                       {words.length} x
