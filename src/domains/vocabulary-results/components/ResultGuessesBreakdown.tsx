@@ -12,7 +12,6 @@ import {
   TooltipContent,
 } from '~/components/ui/tooltip';
 import { Checkbox } from '~/components/ui/checkbox';
-import { wordsSelector } from '~/util/selection';
 import {
   Accordion,
   AccordionContent,
@@ -20,9 +19,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '~/components/ui/accordion';
-import differenceBy from 'lodash-es/differenceBy';
-import unionBy from 'lodash-es/unionBy';
 import { TEST_RESULT_LABELS } from '../model/labels';
+import { categorySelection } from '../util/category-selection';
 
 export interface Props {
   results: TestResult;
@@ -44,7 +42,12 @@ const ATTEMPT_TOOLTIP: Record<TestWordStatus, string> = {
 };
 
 export const ResultGuessesBreakdown: Component<Props> = props => {
-  const selectWords = wordsSelector();
+  const {
+    getCategorySelectionStatus,
+    isWordSelected,
+    onWordSelected,
+    onCategorySelected,
+  } = categorySelection(props.words, props.onSelectionChange);
 
   const enrichedWordsDict = createMemo(() => {
     const wordMap = props.results.words
@@ -69,36 +72,6 @@ export const ResultGuessesBreakdown: Component<Props> = props => {
     );
   });
 
-  const enrichedWords = createMemo(() =>
-    enrichedWordsDict().flatMap(([_, words]) => words)
-  );
-
-  const wordSelected = (word: Word) =>
-    props.selectedWords.find(sw => word.id === sw.id) != null;
-
-  function onWordSelected(word: Word, selected: boolean) {
-    const newSelectedWords = selectWords(
-      word,
-      selected,
-      enrichedWords().map(w => w.word),
-      props.selectedWords
-    );
-    props.onSelectionChange(newSelectedWords);
-  }
-
-  function onCategorySelected(
-    enrichedWords: EnrichedWord[],
-    selected: boolean
-  ) {
-    const words = enrichedWords.map(w => w.word);
-
-    if (selected) {
-      props.onSelectionChange(unionBy(props.selectedWords, words, 'id'));
-    } else {
-      props.onSelectionChange(differenceBy(props.selectedWords, words, 'id'));
-    }
-  }
-
   return (
     <Accordion
       collapsible
@@ -107,66 +80,90 @@ export const ResultGuessesBreakdown: Component<Props> = props => {
       class="mx-auto w-full max-w-[32rem]"
     >
       <For each={enrichedWordsDict()}>
-        {([result, words]) => (
-          <AccordionItem value={result.toString()}>
-            <AccordionHeader class="flex">
-              <Checkbox
-                class="mr-2"
-                onChange={checked => onCategorySelected(words, checked)}
-              />
-              <AccordionTrigger class="outline-none">
-                <span class="inline-flex items-center gap-2">
-                  <span>{TEST_RESULT_LABELS[result]}</span>
-                  <span
-                    class="text-sm font-bold"
-                    style={{ color: RESULT_COLORS[result] }}
-                  >
-                    {words.length} x
+        {([result, words]) => {
+          const unwrappedWords = words.map(w => w.word);
+          const categorySelectionStatus = createMemo(() =>
+            getCategorySelectionStatus(unwrappedWords, props.selectedWords)
+          );
+
+          return (
+            <AccordionItem value={result.toString()}>
+              <AccordionHeader class="flex">
+                <Checkbox
+                  class="mr-2"
+                  checked={categorySelectionStatus() === 'full'}
+                  indeterminate={categorySelectionStatus() === 'partial'}
+                  onChange={checked =>
+                    onCategorySelected(
+                      unwrappedWords,
+                      props.selectedWords,
+                      checked
+                    )
+                  }
+                />
+                <AccordionTrigger class="outline-none">
+                  <span class="inline-flex items-center gap-2">
+                    <span>{TEST_RESULT_LABELS[result]}</span>
+                    <span
+                      class="text-sm font-bold"
+                      style={{ color: RESULT_COLORS[result] }}
+                    >
+                      {words.length} x
+                    </span>
                   </span>
-                </span>
-              </AccordionTrigger>
-            </AccordionHeader>
-            <AccordionContent>
-              <ul>
-                <For each={words}>
-                  {word => (
-                    <li class="flex items-center justify-between rounded-md p-1.5 text-base even:bg-purple-50">
-                      <Checkbox
-                        checked={wordSelected(word.word)}
-                        onChange={checked => onWordSelected(word.word, checked)}
-                      />
-                      <span>
-                        {word.word.original} - {word.word.translation}
-                      </span>
-                      <span>
-                        <For each={word.attempts}>
-                          {attempt => (
-                            <Tooltip openDelay={100}>
-                              <TooltipTrigger
-                                class="ml-1 size-4 rounded-sm"
-                                tabindex="-1"
-                                style={{
-                                  'background-color': RESULT_COLORS[attempt],
-                                }}
-                              >
-                                <span class="sr-only">
-                                  Open attempt tooltip
-                                </span>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                {ATTEMPT_TOOLTIP[attempt]}
-                              </TooltipContent>
-                            </Tooltip>
+                </AccordionTrigger>
+              </AccordionHeader>
+              <AccordionContent>
+                <ul>
+                  <For each={words}>
+                    {word => (
+                      <li class="flex items-center justify-between rounded-md p-1.5 text-base even:bg-purple-50">
+                        <Checkbox
+                          checked={isWordSelected(
+                            word.word,
+                            props.selectedWords
                           )}
-                        </For>
-                      </span>
-                    </li>
-                  )}
-                </For>
-              </ul>
-            </AccordionContent>
-          </AccordionItem>
-        )}
+                          onChange={checked =>
+                            onWordSelected(
+                              word.word,
+                              props.selectedWords,
+                              checked
+                            )
+                          }
+                        />
+                        <span>
+                          {word.word.original} - {word.word.translation}
+                        </span>
+                        <span>
+                          <For each={word.attempts}>
+                            {attempt => (
+                              <Tooltip openDelay={100}>
+                                <TooltipTrigger
+                                  class="ml-1 size-4 rounded-sm"
+                                  tabindex="-1"
+                                  style={{
+                                    'background-color': RESULT_COLORS[attempt],
+                                  }}
+                                >
+                                  <span class="sr-only">
+                                    Open attempt tooltip
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  {ATTEMPT_TOOLTIP[attempt]}
+                                </TooltipContent>
+                              </Tooltip>
+                            )}
+                          </For>
+                        </span>
+                      </li>
+                    )}
+                  </For>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+          );
+        }}
       </For>
     </Accordion>
   );
