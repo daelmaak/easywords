@@ -7,7 +7,12 @@ import {
   type TestResultWord,
 } from '../model/test-result-model';
 import type { VocabularyTestResultApi } from './vocabulary-test-result-api';
-import { lastTestResultKey, testResultKey, testResultsKey } from './cache-keys';
+import {
+  lastTestProgressKey,
+  lastTestResultKey,
+  testResultKey,
+  testResultsKey,
+} from './cache-keys';
 import type {
   Vocabulary,
   Word,
@@ -86,6 +91,9 @@ export async function saveTestResult(testResult: TestResultToCreate) {
       lastTestResultKey(savedResult.vocabulary_id),
       savedResult
     );
+    void queryClient.invalidateQueries({
+      queryKey: lastTestProgressKey(savedResult.vocabulary_id),
+    });
     void queryClient.invalidateQueries({
       queryKey: testResultsKey(savedResult.vocabulary_id),
     });
