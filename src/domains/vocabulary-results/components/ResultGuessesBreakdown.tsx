@@ -27,6 +27,7 @@ export interface Props {
   selectedWords: Word[];
   words: Word[];
   onSelectionChange: (selectedWords: Word[]) => void;
+  onWordClick: (word: Word) => void;
 }
 
 type EnrichedWord = TestResultWord & {
@@ -131,7 +132,7 @@ export const ResultGuessesBreakdown: Component<Props> = props => {
                             )
                           }
                         />
-                        <span>
+                        <span onClick={() => props.onWordClick(word.word)}>
                           {word.word.original} - {word.word.translation}
                         </span>
                         <span>

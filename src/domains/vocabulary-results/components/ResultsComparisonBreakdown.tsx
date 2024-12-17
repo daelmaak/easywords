@@ -29,6 +29,7 @@ interface Props {
   selectedWords: Word[];
   words: Word[];
   onSelectionChange: (selectedWords: Word[]) => void;
+  onWordClick: (word: Word) => void;
 }
 
 enum ComparisonStatus {
@@ -162,7 +163,7 @@ export const ResultsComparisonBreakdown: Component<Props> = props => {
                             )
                           }
                         />
-                        <span>
+                        <span onClick={() => props.onWordClick(word.word)}>
                           {word.word.original} - {word.word.translation}
                         </span>
                         <span class="flex items-center gap-1">

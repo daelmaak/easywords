@@ -1,6 +1,5 @@
 import { createSignal, For, lazy, Show } from 'solid-js';
 import { Button } from '~/components/ui/button';
-import { WordEditorDialog } from '~/domains/vocabularies/components/WordEditorDialog';
 import type { Word } from '~/domains/vocabularies/model/vocabulary-model';
 import type { PreviousWordResult } from '~/domains/vocabulary-results/model/test-result-model';
 import {
@@ -10,7 +9,7 @@ import {
 import { ResultGuessesBreakdown } from './ResultGuessesBreakdown';
 import { RESULT_COLORS } from '../model/colors';
 import { groupBy } from 'lodash-es';
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
+import { Card, CardContent, CardHeader } from '~/components/ui/card';
 import { TEST_RESULT_LABELS } from '../model/labels';
 import { ResultsComparisonScore } from './ResultsComparisonScore';
 import { ResultsComparisonBreakdown } from './ResultsComparisonBreakdown';
@@ -19,7 +18,7 @@ interface ResultsProps {
   results: TestResult;
   previousWordResults?: PreviousWordResult[];
   words: Word[];
-  editWord: (word: Word) => void;
+  onWordClick: (word: Word) => void;
   onArchive: (words: Word[]) => void;
   onRepeatAll: () => void;
   onRepeat: (words: Word[]) => void;
@@ -31,7 +30,6 @@ const TestResultsVisualisation = lazy(
 );
 
 export function Results(props: ResultsProps) {
-  const [wordToEdit, setWordToEdit] = createSignal<Word>();
   const [selectedWords, setSelectedWords] = createSignal<Word[]>([]);
 
   const resultsMap = () =>
@@ -71,11 +69,6 @@ export function Results(props: ResultsProps) {
     return "Not bad! Next time it's going to be better for sure! 💗";
   };
 
-  function onWordEdited(word: Word) {
-    props.editWord(word);
-    setWordToEdit(undefined);
-  }
-
   function onWordSelectionChange(newSelectedWords: Word[]) {
     setSelectedWords(newSelectedWords);
   }
@@ -90,13 +83,6 @@ export function Results(props: ResultsProps) {
 
   return (
     <div class="mx-auto flex flex-col">
-      <WordEditorDialog
-        word={wordToEdit()}
-        open={wordToEdit() != null}
-        onClose={() => setWordToEdit(undefined)}
-        onWordEdited={onWordEdited}
-      />
-
       <p class="mx-auto my-4 text-lg">{feedbackText()}</p>
 
       <div class="mx-auto grid w-full max-w-6xl gap-4 md:grid-cols-[1fr_1fr] md:p-4 lg:grid-cols-[6fr_9fr_auto]">
@@ -151,6 +137,7 @@ export function Results(props: ResultsProps) {
                 selectedWords={selectedWords()}
                 words={props.words}
                 onSelectionChange={onWordSelectionChange}
+                onWordClick={props.onWordClick}
               />
             </CardContent>
           </Card>
@@ -171,6 +158,7 @@ export function Results(props: ResultsProps) {
                       selectedWords={selectedWords()}
                       words={props.words}
                       onSelectionChange={onWordSelectionChange}
+                      onWordClick={props.onWordClick}
                     />
                   </CardContent>
                 </Card>

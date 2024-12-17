@@ -1,7 +1,8 @@
-import { Show, Suspense, type Component } from 'solid-js';
+import { createSignal, Show, Suspense, type Component } from 'solid-js';
 import { Results } from './components/Results';
 import { useNavigate, useParams } from '@solidjs/router';
 import {
+  deleteWords,
   fetchVocabulary,
   updateWords,
 } from '../vocabularies/resources/vocabulary-resource';
@@ -15,12 +16,16 @@ import { BackLink } from '~/components/BackLink';
 import { createQuery } from '@tanstack/solid-query';
 import { previousWordResults, testResultKey } from './resources/cache-keys';
 import { vocabularyRoute } from '~/routes/routes';
+import { Sheet, SheetContent } from '~/components/ui/sheet';
+import { WordDetail } from '../vocabularies/components/WordDetail';
 
 export const VocabularyTestResultsPage: Component = () => {
   const params = useParams();
   const navigate = useNavigate();
   const vocabularyId = +params.id;
   const testId = +params.testId;
+
+  const [wordToShowDetail, setWordToShowDetail] = createSignal<Word>();
 
   const vocabularyQuery = createQuery(() => ({
     queryKey: ['vocabulary', vocabularyId],
@@ -39,6 +44,10 @@ export const VocabularyTestResultsPage: Component = () => {
 
   async function onArchive(words: Word[]) {
     await updateWords(...words.map(w => ({ ...w, archived: true })));
+  }
+
+  function onDeleteWord(word: Word) {
+    void deleteWords(vocabularyId, word.id);
   }
 
   function onRepeatAll() {
@@ -68,21 +77,42 @@ export const VocabularyTestResultsPage: Component = () => {
         </h1>
         <Show when={vocabularyQuery.data?.words}>
           {words => (
-            <Show when={lastTestResultQuery.data}>
-              {results => (
-                <Results
-                  results={results()}
-                  previousWordResults={
-                    previousWordResultsQuery.data ?? undefined
-                  }
-                  words={words()}
-                  editWord={onWordsEdited}
-                  onArchive={onArchive}
-                  onRepeatAll={onRepeatAll}
-                  onRepeat={onRepeat}
-                />
-              )}
-            </Show>
+            <>
+              <Show when={lastTestResultQuery.data}>
+                {results => (
+                  <Results
+                    results={results()}
+                    previousWordResults={
+                      previousWordResultsQuery.data ?? undefined
+                    }
+                    words={words()}
+                    onWordClick={setWordToShowDetail}
+                    onArchive={onArchive}
+                    onRepeatAll={onRepeatAll}
+                    onRepeat={onRepeat}
+                  />
+                )}
+              </Show>
+              <Sheet
+                open={wordToShowDetail() != null}
+                onOpenChange={() => setWordToShowDetail(undefined)}
+              >
+                <SheetContent
+                  class="w-full p-0 sm:w-auto"
+                  onOpenAutoFocus={e => e.preventDefault()}
+                >
+                  <Show when={wordToShowDetail()}>
+                    {word => (
+                      <WordDetail
+                        word={word()}
+                        onWordDelete={() => onDeleteWord(word())}
+                        onWordEdited={onWordsEdited}
+                      />
+                    )}
+                  </Show>
+                </SheetContent>
+              </Sheet>
+            </>
           )}
         </Show>
       </Suspense>
