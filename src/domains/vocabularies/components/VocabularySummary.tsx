@@ -90,24 +90,29 @@ export const VocabularySummary: Component<Props> = props => {
       <BackLink class="mb-2 sm:mb-4">Back to vocabularies</BackLink>
       <Show when={props.vocabulary}>
         {v => (
-          <form
-            class="flex flex-col gap-2"
-            onFocusOut={onVocabularyDataChange}
-            autocomplete="off"
-          >
-            <Show when={v().archived}>
-              <span class="text-sm text-muted-foreground">(Archived)</span>
-            </Show>
-            <span
-              id="vocabulary-name"
-              class="border-none px-1 text-lg font-semibold"
-              contentEditable
-              role="textbox"
+          <>
+            <form
+              class="flex flex-col gap-2"
+              onFocusOut={onVocabularyDataChange}
+              autocomplete="off"
             >
-              {v().name}
+              <Show when={v().archived}>
+                <span class="text-sm text-muted-foreground">(Archived)</span>
+              </Show>
+              <span
+                id="vocabulary-name"
+                class="border-none px-1 text-lg font-semibold"
+                contentEditable
+                role="textbox"
+              >
+                {v().name}
+              </span>
+              <CountrySelect id="country" defaultValue={v().country} />
+            </form>
+            <span class="ml-1 mt-1 text-sm">
+              <strong>{v().words.length}</strong> words
             </span>
-            <CountrySelect id="country" defaultValue={v().country} />
-          </form>
+          </>
         )}
       </Show>
 
