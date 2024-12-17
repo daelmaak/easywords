@@ -4,6 +4,7 @@ import type { Word } from '../model/vocabulary-model';
 import { VocabularyWord } from './VocabularyWord';
 import { wordsSelector } from '~/util/selection';
 import { observeFirstIntersection } from '~/util/scroll';
+import type { VocabularyWordsBlurState } from '../model/vocabulary-state';
 
 export interface SortState {
   by: keyof Word;
@@ -13,6 +14,7 @@ export interface SortState {
 interface VocabularyWordsProps {
   words: Word[];
   selectedWords: Word[];
+  blurState?: VocabularyWordsBlurState;
   sortState: SortState;
   onWordDetail: (word: Word) => void;
   onWordsSelected: (words: Word[]) => void;
@@ -108,6 +110,7 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
               <VocabularyWord
                 selected={wordSelected(word)}
                 word={word}
+                blurState={props.blurState}
                 onWordSelected={onWordSelected}
                 onWordDetailToOpen={props.onWordDetail}
               />

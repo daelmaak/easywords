@@ -14,10 +14,12 @@ import {
   Tooltip,
 } from '~/components/ui/tooltip';
 import { cx } from 'class-variance-authority';
+import type { VocabularyWordsBlurState } from '../model/vocabulary-state';
 
 interface Props {
   word: Word;
   selected?: boolean;
+  blurState?: VocabularyWordsBlurState;
   onWordSelected: (
     word: Word,
     selected: boolean,
@@ -63,9 +65,13 @@ export const VocabularyWord: Component<Props> = props => {
             <Show when={props.word.archived}>
               <span class="text-sm">(Archived)</span>
             </Show>
-            <span>{props.word.original}</span>
+            <span class={cx({ 'blur-sm': props.blurState?.original })}>
+              {props.word.original}
+            </span>
             <span class="mx-2 text-center">-</span>
-            <span>{props.word.translation}</span>
+            <span class={cx({ 'blur-sm': props.blurState?.translation })}>
+              {props.word.translation}
+            </span>
           </div>
           <div class="flex gap-4 pr-4 text-xs text-neutral-400">
             <span class="inline-flex items-center gap-1">

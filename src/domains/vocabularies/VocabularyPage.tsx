@@ -32,6 +32,7 @@ import {
   updateWords,
   VOCABULARY_QUERY_KEY,
 } from './resources/vocabulary-resource';
+import type { VocabularyWordsBlurState } from './model/vocabulary-state';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -42,6 +43,10 @@ export const VocabularyPage: Component = () => {
   const [store, setStore] = createStore({
     searchedWords: [] as Word[],
     selectedWords: [] as Word[],
+    blurState: {
+      original: false,
+      translation: false,
+    } as VocabularyWordsBlurState,
     sortState: {
       asc: searchParams['sortasc'] === 'true',
       by: (searchParams['sortby'] as SortState['by']) ?? 'createdAt',
@@ -160,6 +165,7 @@ export const VocabularyPage: Component = () => {
                     displayArchived={store.showArchivedWords}
                     words={words()}
                     selectedWords={store.selectedWords}
+                    blurState={store.blurState}
                     sortState={store.sortState}
                     onSearch={words => setStore({ searchedWords: words })}
                     onSelectAll={onSelectAll}
@@ -168,6 +174,7 @@ export const VocabularyPage: Component = () => {
                     onToggleDisplayArchived={() =>
                       setStore({ showArchivedWords: !store.showArchivedWords })
                     }
+                    onBlurStateChange={blurState => setStore({ blurState })}
                   />
                 </div>
                 <div class="h-full overflow-y-auto px-2">
@@ -182,6 +189,7 @@ export const VocabularyPage: Component = () => {
                     <VocabularyWords
                       words={store.searchedWords ?? words()}
                       selectedWords={store.selectedWords}
+                      blurState={store.blurState}
                       sortState={store.sortState}
                       onWordDetail={w => setStore({ wordToShowDetailId: w.id })}
                       onWordsSelected={words =>
