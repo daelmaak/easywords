@@ -6,6 +6,7 @@ import { TestWordStatus } from '~/domains/vocabulary-results/model/test-result-m
 export interface GuessTesterProps {
   translation: string;
   onDone: (correctness: TestWordStatus) => void;
+  onShowDown: () => void;
 }
 
 export const GuessTester: Component<GuessTesterProps> = props => {
@@ -26,6 +27,11 @@ export const GuessTester: Component<GuessTesterProps> = props => {
     props.onDone(correctness);
   }
 
+  function onShowDown() {
+    setShowSolution(true);
+    props.onShowDown();
+  }
+
   return (
     <div>
       <div class="text-center">
@@ -34,7 +40,7 @@ export const GuessTester: Component<GuessTesterProps> = props => {
       </div>
       <div class="mt-4 flex gap-2">
         <Show when={!showSolution()}>
-          <Button onClick={() => setShowSolution(true)}>
+          <Button onClick={onShowDown}>
             <HiOutlineEye class="!my-0" size={20} />
             Show solution
           </Button>

@@ -16,6 +16,7 @@ import {
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import type { Word } from '~/domains/vocabularies/model/vocabulary-model';
+import { tokenizeWord } from '../util/word';
 
 export interface WriteTesterInstance {
   input: HTMLInputElement;
@@ -44,7 +45,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
   const [freshlyInvalid, setFreshlyInvalid] = createSignal(false);
 
   const tokenizedTranslation = createMemo(() =>
-    tokenize(props.word.translation.toLocaleLowerCase())
+    tokenizeWord(props.word.translation.toLocaleLowerCase())
   );
 
   const isPrimaryBtnSubmitter = () => !valid() && !freshlyInvalid();
@@ -99,7 +100,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
       return false;
     }
 
-    const tokenizedText = tokenize(text);
+    const tokenizedText = tokenizeWord(text);
     const valid = tokenizedText.every(t =>
       // TODO: when the accents don't match, I should produce a warning
       tokenizedTranslation().some(tt =>
@@ -144,10 +145,6 @@ export const WriteTester: Component<WriteTesterProps> = props => {
     if (goNext) {
       props.onDone?.();
     }
-  }
-
-  function tokenize(text: string) {
-    return text.split(/[\s,/]+/);
   }
 
   function deaccent(word: string) {

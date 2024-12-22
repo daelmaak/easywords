@@ -5,7 +5,7 @@ import {
   HiSolidInformationCircle,
 } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
-import { Match, Show, Switch } from 'solid-js';
+import { For, Match, Show, Switch } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { Button } from '~/components/ui/button';
 import {
@@ -26,6 +26,7 @@ import { nextWord } from '../util/next-word';
 import { GuessTester } from './GuessTester';
 import type { VocabularyTesterSettings } from './VocabularySettings';
 import { WriteTester } from './WriteTester';
+import { tokenizeWord } from '../util/word';
 
 export type VocabularyTestMode = 'guess' | 'write';
 
@@ -80,6 +81,30 @@ export const VocabularyTester: Component<TesterProps> = (
         ? currWord.original
         : currWord.translation,
     };
+  };
+
+  const secretiveNotes = (notes: string, peek: boolean) => {
+    const wordToTranslate = translatedWord();
+
+    if (peek || wordToTranslate == null) {
+      return notes;
+    }
+    const tokens = tokenizeWord(wordToTranslate.translation);
+
+    const presentTokens = tokens.filter(t => notes.includes(t));
+    const splitNotes = notes.split(new RegExp(`(${tokens.join('|')})`));
+
+    return (
+      <For each={splitNotes}>
+        {part =>
+          presentTokens.includes(part) ? (
+            <span class="blur-sm">{part}</span>
+          ) : (
+            <span>{part}</span>
+          )
+        }
+      </For>
+    );
   };
 
   const percentageDone = () =>
@@ -297,7 +322,7 @@ export const VocabularyTester: Component<TesterProps> = (
                   />
                 </PopoverTrigger>
                 <PopoverContent class="whitespace-pre-wrap">
-                  {notes()}
+                  {secretiveNotes(notes(), store.peek)}
                 </PopoverContent>
               </Popover>
             )}
@@ -322,6 +347,7 @@ export const VocabularyTester: Component<TesterProps> = (
                 <GuessTester
                   translation={word().translation}
                   onDone={onGuessResult}
+                  onShowDown={() => setStore('peek', true)}
                 />
               </Match>
             </Switch>
