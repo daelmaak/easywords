@@ -132,6 +132,15 @@ export const VocabularyTester: Component<TesterProps> = (
     });
   }
 
+  function markWordUpdated(wordId: number) {
+    setStore(
+      'resultWords',
+      rw => rw.word_id === wordId,
+      'updated_at',
+      new Date().toISOString()
+    );
+  }
+
   function setNextWord() {
     const current = currentWord();
     let wsLeft = wordsLeft();
@@ -139,6 +148,7 @@ export const VocabularyTester: Component<TesterProps> = (
     // Prevent the current word from being repeated right after
     if (current) {
       wsLeft = wsLeft.filter(w => w.word_id !== current.id);
+      markWordUpdated(current.id);
     }
 
     const next = nextWord(wsLeft);

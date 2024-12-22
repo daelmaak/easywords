@@ -51,6 +51,7 @@ export type Database = {
         Row: {
           attempts?: number[];
           created_at: string;
+          updated_at?: string;
           done: boolean;
           result: number;
           results_id: number;
@@ -59,6 +60,7 @@ export type Database = {
         Insert: {
           attempts?: number[];
           created_at?: Date | string;
+          updated_at?: Date | string;
           done: boolean;
           result: number;
           results_id: number;
@@ -67,6 +69,7 @@ export type Database = {
         Update: {
           attempts?: number[] | undefined;
           created_at?: Date | string;
+          updated_at?: Date | string;
           done: boolean;
           result: number;
           results_id?: number;
