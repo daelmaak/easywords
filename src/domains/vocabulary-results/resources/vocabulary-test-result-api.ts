@@ -73,7 +73,7 @@ async function fetchPreviousWordResults(
 
 async function fetchWordResults(
   wordId: number,
-  options: { upToDaysAgo: number }
+  options: { limit: number; upToDaysAgo: number }
 ) {
   const result = await supabase
     .from('vocabulary_test_result_words')
@@ -84,7 +84,8 @@ async function fetchWordResults(
       new Date(
         Date.now() - options.upToDaysAgo * 24 * 60 * 60 * 1000
       ).toISOString()
-    );
+    )
+    .limit(options.limit);
 
   return result.data ?? undefined;
 }

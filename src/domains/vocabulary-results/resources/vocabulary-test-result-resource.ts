@@ -44,9 +44,10 @@ export async function fetchLastTestProgress(
 }
 
 export async function fetchWordResults(
-  wordId: number
+  wordId: number,
+  options: { limit: number; upToDaysAgo: number }
 ): Promise<TestResultWord[] | undefined> {
-  return api.fetchWordResults(wordId, { upToDaysAgo: 30 });
+  return api.fetchWordResults(wordId, options);
 }
 
 export async function fetchTestResult(

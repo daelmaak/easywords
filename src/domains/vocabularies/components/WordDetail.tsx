@@ -26,7 +26,8 @@ interface WordDetailProps {
 export const WordDetail: Component<WordDetailProps> = props => {
   const wordResultsQuery = createQuery(() => ({
     queryKey: wordResultsKey(props.word.id),
-    queryFn: () => fetchWordResults(props.word.id),
+    queryFn: () =>
+      fetchWordResults(props.word.id, { limit: 15, upToDaysAgo: 90 }),
   }));
 
   const handleBlur =
