@@ -56,7 +56,7 @@ export const VocabularyWordsToolbar: Component<Props> = props => {
             <DropdownMenuTrigger
               as={(p: object) => (
                 <Button
-                  class="h-8 w-6 md:hidden"
+                  class="size-8 md:hidden"
                   size="icon"
                   variant="ghost"
                   {...p}

@@ -65,7 +65,8 @@ export const VocabularyWordsSorter: Component<
         as={(p: object) => (
           <Button
             {...p}
-            class="pl-0 pr-2 font-normal"
+            class="size-8 px-2 font-normal"
+            size="icon"
             variant="ghost"
             onClick={() => setOpen(true)}
           >
