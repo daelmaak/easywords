@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { For, createMemo, onCleanup, onMount } from 'solid-js';
+import { For, onCleanup, onMount } from 'solid-js';
 import type { Word } from '../model/vocabulary-model';
 import { VocabularyWord } from './VocabularyWord';
 import { wordsSelector } from '~/util/selection';
@@ -12,7 +12,7 @@ export interface SortState {
 }
 
 interface VocabularyWordsProps {
-  words: Word[];
+  sortedWords: Word[];
   selectedWords: Word[];
   blurState?: VocabularyWordsBlurState;
   sortState: SortState;
@@ -27,52 +27,8 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
 
   const selectWords = wordsSelector();
 
-  const sortedWords = createMemo(() => {
-    const sortBy = props.sortState.by;
-    const sortAsc = props.sortState.asc;
-
-    return props.words.slice().sort((a, b) => {
-      const aValue = a[sortBy];
-      const bValue = b[sortBy];
-
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
-        const aNum = parseInt(aValue);
-        const bNum = parseInt(bValue);
-
-        if (!isNaN(aNum) && !isNaN(bNum)) {
-          return sortAsc ? aNum - bNum : bNum - aNum;
-        } else {
-          return sortAsc
-            ? aValue.localeCompare(bValue)
-            : bValue.localeCompare(aValue);
-        }
-      }
-
-      if (typeof aValue === 'number' && typeof bValue === 'number') {
-        return sortAsc ? aValue - bValue : bValue - aValue;
-      }
-
-      if (typeof aValue === 'boolean' && typeof bValue === 'boolean') {
-        return sortAsc ? (aValue ? 1 : -1) : bValue ? 1 : -1;
-      }
-
-      if (aValue instanceof Date && bValue instanceof Date) {
-        return sortAsc
-          ? aValue.getTime() - bValue.getTime()
-          : bValue.getTime() - aValue.getTime();
-      }
-
-      // if only one value is defined, prefer the defined one
-      if ((aValue == null || bValue == null) && aValue != bValue) {
-        return sortAsc ? (aValue ? 1 : -1) : aValue ? -1 : 1;
-      }
-
-      return 0;
-    });
-  });
-
   const sortedPagedWords = () =>
-    showAllWords() ? sortedWords() : sortedWords().slice(0, 25);
+    showAllWords() ? props.sortedWords : props.sortedWords.slice(0, 25);
 
   const wordSelected = (word: Word) =>
     !!props.selectedWords.find(sw => word.id === sw.id);

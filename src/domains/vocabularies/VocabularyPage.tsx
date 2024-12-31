@@ -33,6 +33,7 @@ import {
   VOCABULARY_QUERY_KEY,
 } from './resources/vocabulary-resource';
 import type { VocabularyWordsBlurState } from './model/vocabulary-state';
+import { toSortedWords } from './util/word-sorting';
 
 export const VocabularyPage: Component = () => {
   const params = useParams();
@@ -84,6 +85,11 @@ export const VocabularyPage: Component = () => {
       ? vocabularyWithResults()?.words
       : vocabularyWithResults()?.words.filter(w => !w.archived);
 
+  const sortedWords = createMemo(() => {
+    const w = words();
+    return w && toSortedWords(w, store.sortState);
+  });
+
   const isGteMdScreen = createMediaQuery('(min-width: 1024px)');
 
   const wordToShowDetail = createMemo(() =>
@@ -111,6 +117,19 @@ export const VocabularyPage: Component = () => {
     } else {
       setStore({ selectedWords: [] });
     }
+  }
+
+  function onSelectNext(amount: number) {
+    const alreadySelectedLength = store.selectedWords.length;
+
+    setStore('selectedWords', ws =>
+      ws.concat(
+        sortedWords()!.slice(
+          alreadySelectedLength,
+          alreadySelectedLength + amount
+        )
+      )
+    );
   }
 
   async function onWordsEdited(updatedWord: Word, resetWordToShow = false) {
@@ -163,12 +182,13 @@ export const VocabularyPage: Component = () => {
                 <div class="sticky top-0 z-10 rounded-t-lg bg-background md:static md:z-0">
                   <VocabularyWordsToolbar
                     displayArchived={store.showArchivedWords}
-                    words={words()}
+                    words={sortedWords()}
                     selectedWords={store.selectedWords}
                     blurState={store.blurState}
                     sortState={store.sortState}
                     onSearch={words => setStore({ searchedWords: words })}
                     onSelectAll={onSelectAll}
+                    onSelectNext={onSelectNext}
                     onSort={sort}
                     onTestSelected={testSelected}
                     onToggleDisplayArchived={() =>
@@ -177,7 +197,7 @@ export const VocabularyPage: Component = () => {
                     onBlurStateChange={blurState => setStore({ blurState })}
                   />
                 </div>
-                <div class="h-full overflow-y-auto px-2">
+                <div class="h-full overflow-y-auto px-1 md:px-2">
                   <Show
                     when={words().length > 0}
                     fallback={
@@ -187,7 +207,7 @@ export const VocabularyPage: Component = () => {
                     }
                   >
                     <VocabularyWords
-                      words={store.searchedWords ?? words()}
+                      sortedWords={store.searchedWords ?? words()}
                       selectedWords={store.selectedWords}
                       blurState={store.blurState}
                       sortState={store.sortState}

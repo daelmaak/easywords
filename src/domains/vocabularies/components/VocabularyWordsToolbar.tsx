@@ -1,8 +1,5 @@
 import { cx } from 'class-variance-authority';
-import {
-  HiOutlineAcademicCap,
-  HiOutlineEllipsisVertical,
-} from 'solid-icons/hi';
+import { HiOutlineAcademicCap, HiOutlineChevronDown } from 'solid-icons/hi';
 import type { Component } from 'solid-js';
 import { Show } from 'solid-js';
 import { Search } from '~/components/search/Search';
@@ -11,15 +8,14 @@ import { Checkbox } from '~/components/ui/checkbox';
 import type { Word } from '../model/vocabulary-model';
 import type { SortState } from './VocabularyWords';
 import { VocabularyWordsSorter } from './VocabularyWordsSorter';
+import type { VocabularyWordsBlurState } from '../model/vocabulary-state';
+import { VocabularyWordsToolbarOptions } from './VocabularyWordsToolbarOptions';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuGroupLabel,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
-import type { VocabularyWordsBlurState } from '../model/vocabulary-state';
 
 interface Props {
   words?: Word[];
@@ -29,6 +25,7 @@ interface Props {
   sortState: SortState;
   onSearch: (words: Word[] | undefined) => void;
   onSelectAll: (selected: boolean) => void;
+  onSelectNext: (amount: number) => void;
   onSort: (sortProps: Partial<SortState>) => void;
   onTestSelected: () => void;
   onToggleDisplayArchived: () => void;
@@ -44,16 +41,37 @@ export const VocabularyWordsToolbar: Component<Props> = props => {
   }
 
   return (
-    <div class="flex flex-wrap items-center gap-1 border-b border-neutral-100 px-2 pb-2 pt-1 text-sm lg:gap-2">
+    <div class="flex flex-wrap items-center gap-1 border-b border-neutral-100 px-1 pb-2 pt-1 text-sm md:px-2 lg:gap-2">
       <Show when={props.selectedWords}>
-        <Checkbox
-          checked={props.selectedWords.length === (props.words?.length ?? 0)}
-          indeterminate={
-            props.selectedWords.length > 0 &&
-            props.selectedWords.length < (props.words?.length ?? 0)
-          }
-          onChange={() => props.onSelectAll(props.selectedWords.length === 0)}
-        />
+        <span class="inline-flex items-center">
+          <Checkbox
+            checked={props.selectedWords.length === (props.words?.length ?? 0)}
+            indeterminate={
+              props.selectedWords.length > 0 &&
+              props.selectedWords.length < (props.words?.length ?? 0)
+            }
+            onChange={() => props.onSelectAll(props.selectedWords.length === 0)}
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              as={(p: object) => (
+                <Button
+                  class="h-8 w-6 md:hidden"
+                  size="icon"
+                  variant="ghost"
+                  {...p}
+                >
+                  <HiOutlineChevronDown />
+                </Button>
+              )}
+            />
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => props.onSelectNext(10)}>
+                Select next 10 words
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </span>
       </Show>
       <VocabularyWordsSorter
         displayArchived={props.displayArchived}
@@ -63,7 +81,7 @@ export const VocabularyWordsToolbar: Component<Props> = props => {
       <Show when={props.words}>
         {w => (
           <Search
-            class="h-8 w-40 py-0"
+            class="h-8 w-36 py-0"
             placeholder="Search words..."
             terms={w()}
             searchKeys={['original', 'translation']}
@@ -72,51 +90,23 @@ export const VocabularyWordsToolbar: Component<Props> = props => {
         )}
       </Show>
       <Button
-        class={cx({
+        class={cx('px-2', {
           'hidden lg:invisible lg:inline': props.selectedWords.length === 0,
         })}
         size="sm"
         variant="default"
         onClick={props.onTestSelected}
       >
-        <HiOutlineAcademicCap /> Test
+        <HiOutlineAcademicCap /> Test{' '}
+        <span class="self-center text-xs">({props.selectedWords.length})</span>
       </Button>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          as={(p: object) => (
-            <Button {...p} class="ml-auto" size="icon" variant="ghost">
-              <HiOutlineEllipsisVertical size={20} />
-            </Button>
-          )}
-        ></DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuItem>
-            <Checkbox
-              checked={props.displayArchived}
-              label="Show archived"
-              onChange={() => props.onToggleDisplayArchived()}
-            />
-          </DropdownMenuItem>
-          <DropdownMenuGroup>
-            <DropdownMenuGroupLabel>Blur</DropdownMenuGroupLabel>
-            <DropdownMenuItem>
-              <Checkbox
-                checked={props.blurState.original}
-                label="Original"
-                onChange={() => onToggleBlur('original')}
-              />
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Checkbox
-                checked={props.blurState.translation}
-                label="Translation"
-                onChange={() => onToggleBlur('translation')}
-              />
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <VocabularyWordsToolbarOptions
+        displayArchived={props.displayArchived}
+        blurState={props.blurState}
+        onToggleDisplayArchived={props.onToggleDisplayArchived}
+        onToggleBlur={onToggleBlur}
+      />
     </div>
   );
 };
