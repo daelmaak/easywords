@@ -21,7 +21,7 @@ import { navigateToVocabularyTest } from '../vocabulary-testing/util/navigation'
 import { VocabularySummary } from './components/VocabularySummary';
 import type { SortState } from './components/VocabularyWords';
 import { VocabularyWords } from './components/VocabularyWords';
-import { VocabularyWordsToolbar } from './components/VocabularyWordsToolbar';
+import { VocabularyWordsToolbar } from './components/toolbar/VocabularyWordsToolbar';
 import { WordDetail } from './components/WordDetail';
 import type { Word } from './model/vocabulary-model';
 import {

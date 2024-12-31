@@ -5,10 +5,10 @@ import { Show } from 'solid-js';
 import { Search } from '~/components/search/Search';
 import { Button } from '~/components/ui/button';
 import { Checkbox } from '~/components/ui/checkbox';
-import type { Word } from '../model/vocabulary-model';
-import type { SortState } from './VocabularyWords';
-import { VocabularyWordsSorter } from './VocabularyWordsSorter';
-import type { VocabularyWordsBlurState } from '../model/vocabulary-state';
+import type { Word } from '../../model/vocabulary-model';
+import type { SortState } from '../VocabularyWords';
+import { VocabularyWordsSorter } from '../VocabularyWordsSorter';
+import type { VocabularyWordsBlurState } from '../../model/vocabulary-state';
 import { VocabularyWordsToolbarOptions } from './VocabularyWordsToolbarOptions';
 import {
   DropdownMenu,
