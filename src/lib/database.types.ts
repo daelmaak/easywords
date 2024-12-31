@@ -208,7 +208,7 @@ export type Database = {
         };
         Returns: {
           word_id: number;
-          result: number;
+          average_result: number;
         }[];
       };
     };

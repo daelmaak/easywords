@@ -33,6 +33,9 @@ export type TestResultWordToCreate = PartialExcept<
   'done' | 'result' | 'word_id'
 >;
 
-export type PreviousWordResult = Omit<PreviousWordResultDB, 'result'> & {
-  result: TestWordStatus;
+export type PreviousWordResult = Omit<
+  PreviousWordResultDB,
+  'average_result'
+> & {
+  average_result: TestWordStatus;
 };

@@ -5,12 +5,6 @@ import type {
   TestResult,
 } from '~/domains/vocabulary-results/model/test-result-model';
 import { TestWordStatus } from '~/domains/vocabulary-results/model/test-result-model';
-import { RESULT_COLORS } from '../model/colors';
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from '~/components/ui/tooltip';
 import {
   Accordion,
   AccordionContent,
@@ -19,9 +13,13 @@ import {
   AccordionTrigger,
 } from '~/components/ui/accordion';
 import { groupBy } from 'lodash-es';
-import { TEST_RESULT_LABELS } from '../model/labels';
 import { Checkbox } from '~/components/ui/checkbox';
 import { categorySelection } from '../util/category-selection';
+import {
+  HiOutlineArrowTrendingUp,
+  HiOutlineArrowTrendingDown,
+} from 'solid-icons/hi';
+import { cx } from 'class-variance-authority';
 
 interface Props {
   testResult: TestResult;
@@ -41,7 +39,8 @@ enum ComparisonStatus {
 interface WordWithComparison {
   word: Word;
   currentResult: TestWordStatus;
-  previousResult: TestWordStatus;
+  previousAvgResult: TestWordStatus;
+  resultDeltaPercent: number;
 }
 
 const STATUS_LABELS: Record<ComparisonStatus, string> = {
@@ -84,8 +83,21 @@ export const ResultsComparisonBreakdown: Component<Props> = props => {
       result.push({
         word,
         currentResult: currentWord.result,
-        previousResult: previousResult.result,
+        previousAvgResult: previousResult.average_result,
+        resultDeltaPercent:
+          ((previousResult.average_result - currentWord.result) /
+            (TestWordStatus.Wrong - TestWordStatus.Correct)) *
+          100,
       });
+    });
+
+    // This sorts the best results first but when there is a worsened result,
+    // the worst gets shown first to point out what needs improvement.
+    result.sort((a, b) => {
+      if (b.resultDeltaPercent >= 0) {
+        return b.resultDeltaPercent - a.resultDeltaPercent;
+      }
+      return Math.abs(b.resultDeltaPercent) - Math.abs(a.resultDeltaPercent);
     });
 
     return result;
@@ -96,7 +108,7 @@ export const ResultsComparisonBreakdown: Component<Props> = props => {
     return groupBy(
       words,
       (word): ComparisonStatus =>
-        Math.sign(word.previousResult - word.currentResult)
+        Math.sign(word.previousAvgResult - word.currentResult)
     );
   });
 
@@ -148,65 +160,49 @@ export const ResultsComparisonBreakdown: Component<Props> = props => {
               <AccordionContent>
                 <ul>
                   <For each={words}>
-                    {word => (
-                      <li class="flex items-center justify-between rounded-md p-1.5 text-base even:bg-purple-50">
-                        <Checkbox
-                          checked={isWordSelected(
-                            word.word,
-                            props.selectedWords
-                          )}
-                          onChange={checked =>
-                            onWordSelected(
+                    {word => {
+                      return (
+                        <li class="flex items-center justify-between rounded-md p-1.5 text-base even:bg-purple-50">
+                          <Checkbox
+                            checked={isWordSelected(
                               word.word,
-                              props.selectedWords,
-                              checked
-                            )
-                          }
-                        />
-                        <span onClick={() => props.onWordClick(word.word)}>
-                          {word.word.original} - {word.word.translation}
-                        </span>
-                        <span class="flex items-center gap-1">
-                          <Tooltip openDelay={100}>
-                            <TooltipTrigger
-                              class="size-4 rounded-sm"
-                              tabindex="-1"
-                              style={{
-                                'background-color':
-                                  RESULT_COLORS[word.previousResult],
-                              }}
-                            >
-                              <span class="sr-only">Previous result</span>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              Previous:{' '}
-                              <span>
-                                {TEST_RESULT_LABELS[word.previousResult]}
-                              </span>
-                            </TooltipContent>
-                          </Tooltip>
-                          <span class="text-gray-400">→</span>
-                          <Tooltip openDelay={100}>
-                            <TooltipTrigger
-                              class="size-4 rounded-sm"
-                              tabindex="-1"
-                              style={{
-                                'background-color':
-                                  RESULT_COLORS[word.currentResult],
-                              }}
-                            >
-                              <span class="sr-only">Current result</span>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              Current:{' '}
-                              <span>
-                                {TEST_RESULT_LABELS[word.currentResult]}
-                              </span>
-                            </TooltipContent>
-                          </Tooltip>
-                        </span>
-                      </li>
-                    )}
+                              props.selectedWords
+                            )}
+                            onChange={checked =>
+                              onWordSelected(
+                                word.word,
+                                props.selectedWords,
+                                checked
+                              )
+                            }
+                          />
+                          <span
+                            class="cursor-pointer hover:underline"
+                            onClick={() => props.onWordClick(word.word)}
+                          >
+                            {word.word.original} - {word.word.translation}
+                          </span>
+                          <span
+                            class={cx(
+                              'flex cursor-pointer items-center gap-2 hover:underline',
+                              word.resultDeltaPercent >= 0
+                                ? 'text-green-700'
+                                : 'text-red-700'
+                            )}
+                            onClick={() => props.onWordClick(word.word)}
+                          >
+                            {word.resultDeltaPercent >= 0 ? (
+                              <HiOutlineArrowTrendingUp />
+                            ) : (
+                              <HiOutlineArrowTrendingDown />
+                            )}
+                            <span class="text-sm">
+                              {word.resultDeltaPercent.toFixed(0)}%
+                            </span>
+                          </span>
+                        </li>
+                      );
+                    }}
                   </For>
                 </ul>
               </AccordionContent>

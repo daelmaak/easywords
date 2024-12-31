@@ -39,7 +39,7 @@ const calculateComparisonScore = (
     }
 
     totalComparisons++;
-    improvementScore += previousResult.result - currentWord.result;
+    improvementScore += previousResult.average_result - currentWord.result;
   });
 
   return improvementScore / totalComparisons;
@@ -69,7 +69,7 @@ export function ResultsComparisonScore(props: ResultsComparisonProps) {
         </span>
         <span class="text-4xl">{scorePercent()}%</span>
         <span>{score() >= 0 ? 'Improvement' : 'Decrease'}</span>
-        <span class="text-xs text-gray-500">Compared to last tests</span>
+        <span class="text-xs text-gray-500">Compared to the last 3 tests</span>
       </div>
     </div>
   );
