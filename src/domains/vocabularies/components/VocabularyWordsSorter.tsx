@@ -65,7 +65,7 @@ export const VocabularyWordsSorter: Component<
         as={(p: object) => (
           <Button
             {...p}
-            class="size-8 px-2 font-normal"
+            class="size-8 px-2 font-normal sm:size-auto lg:size-8 xl:size-auto"
             size="icon"
             variant="ghost"
             onClick={() => setOpen(true)}
@@ -78,7 +78,7 @@ export const VocabularyWordsSorter: Component<
             >
               <HiOutlineArrowsUpDown size={17} />{' '}
             </span>
-            <span class="hidden sm:inline md:hidden xl:inline">
+            <span class="hidden sm:inline lg:hidden xl:inline">
               {SortKeyCopy[props.sortState.by]
                 ? `by: ${SortKeyCopy[props.sortState.by]}`
                 : 'Sort'}
