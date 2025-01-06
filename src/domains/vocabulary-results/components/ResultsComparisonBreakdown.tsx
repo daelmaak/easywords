@@ -91,14 +91,7 @@ export const ResultsComparisonBreakdown: Component<Props> = props => {
       });
     });
 
-    // This sorts the best results first but when there is a worsened result,
-    // the worst gets shown first to point out what needs improvement.
-    result.sort((a, b) => {
-      if (b.resultDeltaPercent >= 0) {
-        return b.resultDeltaPercent - a.resultDeltaPercent;
-      }
-      return Math.abs(b.resultDeltaPercent) - Math.abs(a.resultDeltaPercent);
-    });
+    result.sort((a, b) => b.resultDeltaPercent - a.resultDeltaPercent);
 
     return result;
   });
