@@ -32,7 +32,7 @@ export const VocabularyTestResultsPage: Component = () => {
     queryFn: () => fetchVocabulary(vocabularyId),
   }));
 
-  const lastTestResultQuery = createQuery(() => ({
+  const testResultQuery = createQuery(() => ({
     queryKey: testResultKey(testId),
     queryFn: () => fetchTestResult(testId),
   }));
@@ -51,7 +51,9 @@ export const VocabularyTestResultsPage: Component = () => {
   }
 
   function onRepeatAll() {
-    navigate('..');
+    navigateToVocabularyTest(vocabularyId, navigate, {
+      wordIds: testResultQuery.data!.words.map(w => w.word_id),
+    });
   }
 
   function onRepeat(words: Word[]) {
@@ -78,7 +80,7 @@ export const VocabularyTestResultsPage: Component = () => {
         <Show when={vocabularyQuery.data?.words}>
           {words => (
             <>
-              <Show when={lastTestResultQuery.data}>
+              <Show when={testResultQuery.data}>
                 {results => (
                   <Results
                     results={results()}
