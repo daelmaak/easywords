@@ -33,11 +33,19 @@ interface Props {
 }
 
 export const VocabularyWordsToolbar: Component<Props> = props => {
-  function onToggleBlur(field: keyof Pick<Word, 'original' | 'translation'>) {
-    props.onBlurStateChange({
-      ...props.blurState,
-      [field]: !props.blurState[field],
-    });
+  function onToggleBlur(field?: keyof Pick<Word, 'original' | 'translation'>) {
+    if (field) {
+      props.onBlurStateChange({
+        ...props.blurState,
+        [field]: !props.blurState[field],
+      });
+    } else {
+      const blur = !props.blurState.original && !props.blurState.translation;
+      props.onBlurStateChange({
+        original: blur,
+        translation: blur,
+      });
+    }
   }
 
   return (
