@@ -88,43 +88,45 @@ export const ConjugationsView: Component = () => {
   };
 
   return (
-    <div class="page-container flex flex-col items-center">
-      <h1 class="mb-4 text-xl">Insert verb to conjugate</h1>
-      <div class="flex flex-col items-center gap-2">
+    <div class="flex min-h-full flex-col items-center bg-neutral-100 p-2 md:p-4">
+      <h1 class="mb-4 text-xl">Verb conjugations</h1>
+      <div class="flex flex-col items-center gap-2 rounded-lg bg-white p-4 shadow-md">
+        <VerbInput
+          onApplyVerb={applyVerb}
+          ref={verbInputEl}
+          verbLoading={state.verbLoading}
+        />
         <span class="text-sm">
           Using{' '}
           <a href="https://www.verbix.com/" target="_blank">
             verbix.com
           </a>
         </span>
-        <VerbInput
-          onApplyVerb={applyVerb}
-          ref={verbInputEl}
-          verbLoading={state.verbLoading}
-        />
       </div>
-      <div class="mt-8"></div>
       <Show when={!state.testingDone}>
-        <Show when={!state.practiceIncorrect}>
-          <Show when={state.verbConjugations}>
-            {verbConjugations => (
-              <TenseFilter
-                tenses={verbConjugations().tenses}
-                selectedTenses={state.selectedTenses}
-                onSelectedTenses={selectTenses}
-              />
-            )}
+        <div class="mt-4 grid items-start gap-4 md:grid-cols-[1fr_2fr]">
+          <Show when={!state.practiceIncorrect}>
+            <Show when={state.verbConjugations}>
+              {verbConjugations => (
+                <div class="rounded-lg bg-white p-4 shadow-md">
+                  <TenseFilter
+                    tenses={verbConjugations().tenses}
+                    selectedTenses={state.selectedTenses}
+                    onSelectedTenses={selectTenses}
+                  />
+                </div>
+              )}
+            </Show>
           </Show>
-        </Show>
-        <div class="mt-8"></div>
-        <Show when={selectedTenses()}>
-          {selectedTenses => (
-            <ConjugationsTester
-              selectedTenses={selectedTenses()}
-              onDone={onTestingDone}
-            />
-          )}
-        </Show>
+          <Show when={selectedTenses()?.length}>
+            <div class="rounded-lg bg-white p-4 shadow-md">
+              <ConjugationsTester
+                selectedTenses={selectedTenses()!}
+                onDone={onTestingDone}
+              />
+            </div>
+          </Show>
+        </div>
       </Show>
       <Show when={state.testingDone}>
         <ConjugationsResults

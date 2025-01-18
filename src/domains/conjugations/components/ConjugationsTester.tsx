@@ -80,34 +80,35 @@ export const ConjugationsTester: Component<Props> = props => {
       {tense => (
         <div>
           <h2 class="text-lg">{tense().name}</h2>
-          <table class="border-separate border-spacing-y-8">
-            <tbody>
-              <For each={tense().forms}>
-                {(form, i) => (
-                  <tr>
-                    <th class="text-right font-normal">
-                      <span class="mr-2">{form.pronoun}</span>
-                    </th>
-                    <td>
-                      <WriteTester
-                        word={{ translation: form.form }}
-                        mode="inline"
-                        peek={conjugationInvalid(tense(), form)}
-                        onReady={onTesterReady(i())}
-                        strict={true}
-                        validateOnBlur={true}
-                        onValidated={(valid, answer) =>
-                          onValidated(tense(), form, valid, answer)
-                        }
-                      />
-                    </td>
-                  </tr>
-                )}
-              </For>
-            </tbody>
-          </table>
-
-          <Button class="ml-auto block" type="button" onClick={nextOrFinish}>
+          <div class="mt-6 grid items-center justify-start gap-x-4 gap-y-6 lg:grid-flow-col lg:grid-rows-3">
+            <For each={tense().forms}>
+              {(form, i) => (
+                <div class="flex items-center gap-4">
+                  <span class="w-12 break-words text-right sm:w-16">
+                    {form.pronoun}
+                  </span>
+                  <div class="w-64">
+                    <WriteTester
+                      word={{ translation: form.form }}
+                      mode="inline"
+                      peek={conjugationInvalid(tense(), form)}
+                      onReady={onTesterReady(i())}
+                      strict={true}
+                      validateOnBlur={true}
+                      onValidated={(valid, answer) =>
+                        onValidated(tense(), form, valid, answer)
+                      }
+                    />
+                  </div>
+                </div>
+              )}
+            </For>
+          </div>
+          <Button
+            class="ml-auto mt-4 block"
+            type="button"
+            onClick={nextOrFinish}
+          >
             {isLastConjugation() ? 'Finish' : 'Next'}
           </Button>
         </div>
