@@ -1,113 +1,62 @@
-import { useNavigate, useParams } from '@solidjs/router';
-import { get, set } from 'idb-keyval';
 import type { Component } from 'solid-js';
-import { Show, onMount } from 'solid-js';
+import { Show } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import type { ConjugationLang } from '~/model/lang';
-import type { Conjugation } from '../conjugation';
-import {
-  groupConjugationsByMood,
-  groupConjugationsByTense,
-} from '../conjugation';
-import { fetchConjugationsByTense } from '../conjugations-api';
+import type { ConjugationLanguageCode } from '~/model/lang';
 import { ConjugationsResults } from './ConjugationsResults';
-import type { ConjugationValidations } from './ConjugationsTester';
+import type { TensesValidations } from './ConjugationsTester';
 import { ConjugationsTester } from './ConjugationsTester';
 import { VerbInput } from './VerbInput';
 import { TenseFilter } from './tense-filter/TenseFilter';
+import type { Tense, VerbConjugations } from '../resources/conjugations-api';
+import { fetchVerbixConjugations } from '../resources/conjugations-api';
 
 interface ConjugationsViewState {
-  conjugations: Conjugation[];
-  selectedMoods: string[];
-  selectedTenses: string[];
-  conjugationsResults: ConjugationValidations;
+  verbConjugations?: VerbConjugations;
+  selectedTenses: Tense[];
+  tensesResults: TensesValidations;
   practiceIncorrect: boolean;
   testingDone: boolean;
   verbLoading: boolean;
 }
 
 const getInitialState: () => ConjugationsViewState = () => ({
-  conjugations: [],
+  verbConjugations: undefined,
   selectedMoods: [],
   selectedTenses: [],
-  conjugationsResults: {},
+  tensesResults: {},
   practiceIncorrect: false,
   testingDone: false,
   verbLoading: false,
 });
 
 export const ConjugationsView: Component = () => {
-  const params = useParams();
-  const navigate = useNavigate();
   let verbInputEl: HTMLInputElement | undefined;
 
   const [state, setState] =
     createStore<ConjugationsViewState>(getInitialState());
 
-  const language = () => params.lang as ConjugationLang | undefined;
-
-  const incorrectConjugations = () =>
-    Object.values(state.conjugationsResults)
-      .flat()
-      .filter(c => !c.valid)
-      .map(c => c.conjugation);
-
-  const conjugationsByMood = () => groupConjugationsByMood(state.conjugations);
-
-  const selectedConjugations = () => {
-    const conjugationsByTense = groupConjugationsByTense(
-      state.practiceIncorrect ? incorrectConjugations() : state.conjugations
+  const incorrectTenses = () =>
+    state.verbConjugations?.tenses.filter(t =>
+      state.tensesResults[t.name]?.some(v => v.valid === false)
     );
 
-    return (
-      state.selectedTenses
-        .map(tense => ({
-          tense,
-          conjugations: conjugationsByTense[tense],
-        }))
-        // Filter out tenses that have no conjugations. This can happen only when
-        // practicing incorrect conjugations.
-        .filter(c => c.conjugations?.length > 0)
-    );
-  };
+  const selectedTenses = () =>
+    state.practiceIncorrect ? incorrectTenses() : state.selectedTenses;
 
-  onMount(async () => {
-    const verb = params.verb;
-    const lang = language() ?? (await get('conjugationsLang'));
-
-    if (verb && lang) {
-      verbInputEl!.value = verb;
-      await applyVerb(verb, lang, false);
-    } else if (lang) {
-      navigate(`/conjugations/${lang}`);
-    }
-  });
-
-  const applyVerb = async (
-    verb: string,
-    lang: ConjugationLang,
-    follow = true
-  ) => {
+  const applyVerb = async (verb: string, lang: ConjugationLanguageCode) => {
     reset();
-    void set('conjugationsLang', lang);
-
-    if (follow) {
-      navigate(`/conjugations/${lang}/${verb}`);
-    }
-
     setState('verbLoading', true);
 
-    const conjugations = await fetchConjugationsByTense(verb, lang);
-
+    const verbConjugations = await fetchVerbixConjugations(lang, verb);
     setState({
-      conjugations,
+      verbConjugations,
       verbLoading: false,
     });
   };
 
   const reset = () => setState(getInitialState());
 
-  const selectTenses = (selectedTenses: string[]) => {
+  const selectTenses = (selectedTenses: Tense[]) => {
     setState({ selectedTenses });
 
     if (state.testingDone) {
@@ -115,13 +64,13 @@ export const ConjugationsView: Component = () => {
     }
   };
 
-  const onTestingDone = (validationResults: ConjugationValidations) => {
-    setState({ testingDone: true, conjugationsResults: validationResults });
+  const onTestingDone = (validationResults: TensesValidations) => {
+    setState({ testingDone: true, tensesResults: validationResults });
   };
 
   const onTryAgain = () => {
     setState({
-      conjugationsResults: {},
+      tensesResults: {},
       testingDone: false,
       practiceIncorrect: false,
     });
@@ -130,7 +79,7 @@ export const ConjugationsView: Component = () => {
   const onTryDifferent = () => {
     setState({
       ...getInitialState(),
-      conjugations: state.conjugations,
+      verbConjugations: state.verbConjugations,
     });
   };
 
@@ -141,9 +90,14 @@ export const ConjugationsView: Component = () => {
   return (
     <div class="page-container flex flex-col items-center">
       <h1 class="mb-4 text-xl">Insert verb to conjugate</h1>
-      <div class="flex gap-2">
+      <div class="flex flex-col items-center gap-2">
+        <span class="text-sm">
+          Using{' '}
+          <a href="https://www.verbix.com/" target="_blank">
+            verbix.com
+          </a>
+        </span>
         <VerbInput
-          lang={language()}
           onApplyVerb={applyVerb}
           ref={verbInputEl}
           verbLoading={state.verbLoading}
@@ -152,30 +106,33 @@ export const ConjugationsView: Component = () => {
       <div class="mt-8"></div>
       <Show when={!state.testingDone}>
         <Show when={!state.practiceIncorrect}>
-          <TenseFilter
-            conjugationsByMood={conjugationsByMood()}
-            lang={language() as ConjugationLang}
-            selectedMoods={state.selectedMoods}
-            selectedTenses={state.selectedTenses}
-            onSelectedMoods={m => setState({ selectedMoods: m })}
-            onSelectedTenses={selectTenses}
-          />
+          <Show when={state.verbConjugations}>
+            {verbConjugations => (
+              <TenseFilter
+                tenses={verbConjugations().tenses}
+                selectedTenses={state.selectedTenses}
+                onSelectedTenses={selectTenses}
+              />
+            )}
+          </Show>
         </Show>
         <div class="mt-8"></div>
-        <ConjugationsTester
-          conjugations={selectedConjugations()}
-          onDone={onTestingDone}
-        />
+        <Show when={selectedTenses()}>
+          {selectedTenses => (
+            <ConjugationsTester
+              selectedTenses={selectedTenses()}
+              onDone={onTestingDone}
+            />
+          )}
+        </Show>
       </Show>
       <Show when={state.testingDone}>
-        <>
-          <ConjugationsResults
-            conjugationsResults={state.conjugationsResults}
-            onTryAgain={onTryAgain}
-            onTryDifferent={onTryDifferent}
-            onPracticeIncorrect={onPracticeIncorrect}
-          />
-        </>
+        <ConjugationsResults
+          tensesValidations={state.tensesResults}
+          onTryAgain={onTryAgain}
+          onTryDifferent={onTryDifferent}
+          onPracticeIncorrect={onPracticeIncorrect}
+        />
       </Show>
     </div>
   );

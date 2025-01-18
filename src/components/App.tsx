@@ -23,6 +23,7 @@ interface Props {
 const links = [
   { label: 'Dashboard', href: Routes.Dashboard },
   { label: 'Vocabularies', href: Routes.Vocabularies },
+  { label: 'Conjugations', href: Routes.Conjugations },
 ];
 
 const App: Component<Props> = props => {

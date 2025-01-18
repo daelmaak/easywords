@@ -156,7 +156,7 @@ export const WriteTester: Component<WriteTesterProps> = props => {
       <i
         class={cx('mx-auto mb-2 block text-center text-lg', {
           invisible: !props.peek,
-          'absolute top-0 translate-y-[-75%]': props.mode === 'inline',
+          'absolute top-0 translate-y-[-100%]': props.mode === 'inline',
         })}
         role="alert"
         aria-label={'The correct answer is: ' + props.word.translation}

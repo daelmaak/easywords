@@ -10,14 +10,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '~/components/ui/select';
-import type { ConjugationLang } from '~/model/lang';
-import { CONJUGATION_LANGS } from '~/model/lang';
+import type { ConjugationLanguageCode } from '~/model/lang';
+import { CONJUGATION_LANGUAGES } from '~/model/lang';
 
 interface Props {
-  lang?: ConjugationLang;
+  lang?: ConjugationLanguageCode;
   ref?: HTMLInputElement;
   verbLoading: boolean;
-  onApplyVerb(verb: string, lang: ConjugationLang): void;
+  onApplyVerb(verb: string, lang: ConjugationLanguageCode): void;
 }
 
 export const VerbInput: Component<Props> = props => {
@@ -37,7 +37,7 @@ export const VerbInput: Component<Props> = props => {
       return;
     }
 
-    props.onApplyVerb(verb as string, lang as ConjugationLang);
+    props.onApplyVerb(verb as string, lang as ConjugationLanguageCode);
   };
 
   return (
@@ -45,15 +45,23 @@ export const VerbInput: Component<Props> = props => {
       <div class="flex gap-2">
         <Select
           name="lang"
-          options={CONJUGATION_LANGS}
+          options={Object.keys(CONJUGATION_LANGUAGES)}
           placeholder="Language"
-          value={props.lang}
+          defaultValue={props.lang}
           itemComponent={props => (
-            <SelectItem item={props.item}>{props.item.rawValue}</SelectItem>
+            <SelectItem item={props.item}>
+              {CONJUGATION_LANGUAGES[props.item.rawValue]}
+            </SelectItem>
           )}
         >
           <SelectTrigger class="gap-2">
-            <SelectValue<string>>{s => s.selectedOption()}</SelectValue>
+            <SelectValue<string>>
+              {s =>
+                CONJUGATION_LANGUAGES[
+                  s.selectedOption() as ConjugationLanguageCode
+                ]
+              }
+            </SelectValue>
           </SelectTrigger>
           <SelectHiddenSelect />
           <SelectContent />

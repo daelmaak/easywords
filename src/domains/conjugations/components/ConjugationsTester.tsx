@@ -1,19 +1,19 @@
 import type { Component } from 'solid-js';
 import { createSignal, For, Show } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import type { Conjugation, ConjugationByTense } from '../conjugation';
 import type { WriteTesterInstance } from '~/domains/vocabulary-testing/components/WriteTester';
 import { WriteTester } from '~/domains/vocabulary-testing/components/WriteTester';
 import { Button } from '~/components/ui/button';
+import type { Tense, TenseForm } from '../resources/conjugations-api';
 
 interface Props {
-  conjugations: ConjugationByTense[];
-  onDone(validationResults: ConjugationValidations): void;
+  selectedTenses: Tense[];
+  onDone(validationResults: TensesValidations): void;
 }
 
-export interface ConjugationValidations {
+export interface TensesValidations {
   [tense: string]: {
-    conjugation: Conjugation;
+    form: TenseForm;
     answer: string;
     valid: boolean;
   }[];
@@ -21,8 +21,8 @@ export interface ConjugationValidations {
 
 export const ConjugationsTester: Component<Props> = props => {
   const [currentConjugationIndex, setCurrentConjugationIndex] = createSignal(0);
-  const [conjugationValidations, setConjugationValidations] =
-    createStore<ConjugationValidations>({});
+  const [tenseValidations, setConjugationValidations] =
+    createStore<TensesValidations>({});
   let validators: Array<() => boolean> = [];
 
   const onTesterReady = (index: number) => (tester: WriteTesterInstance) => {
@@ -32,37 +32,35 @@ export const ConjugationsTester: Component<Props> = props => {
     validators.push(tester.validate);
   };
 
-  const currentConjugation = () =>
-    props.conjugations.at(currentConjugationIndex());
+  const currentTense = () => props.selectedTenses.at(currentConjugationIndex());
 
   const isLastConjugation = () =>
-    currentConjugationIndex() === props.conjugations.length - 1;
+    currentConjugationIndex() === props.selectedTenses.length - 1;
 
-  const conjugationInvalid = (c: Conjugation) =>
-    conjugationValidations[c.tense]?.some(
-      cc => cc.conjugation.person === c.person && cc.valid === false
+  const conjugationInvalid = (tense: Tense, form: TenseForm) =>
+    tenseValidations[tense.name]?.some(
+      v => v.form.pronoun === form.pronoun && v.valid === false
     );
 
   const onValidated = (
-    conjugation: Conjugation,
+    tense: Tense,
+    form: TenseForm,
     valid: boolean,
     answer: string
   ) => {
-    const currentTense = conjugation.tense;
-
-    if (!conjugationValidations[currentTense]) {
-      setConjugationValidations(currentTense, []);
+    if (!tenseValidations[tense.name]) {
+      setConjugationValidations(tense.name, []);
     }
 
-    const alreadyValidated = conjugationValidations[currentTense]?.some(
-      c => c.conjugation.person === conjugation.person
+    const alreadyValidated = tenseValidations[tense.name]?.some(
+      v => v.form.pronoun === form.pronoun
     );
 
     // Only first try is taken into account. That's because I want the user to practice
     // the conjugations he/she got wrong.
     if (!alreadyValidated) {
-      setConjugationValidations(currentTense, cjs =>
-        cjs!.concat([{ conjugation, valid, answer }])
+      setConjugationValidations(tense.name, cjs =>
+        cjs!.concat([{ form, valid, answer }])
       );
     }
   };
@@ -72,34 +70,34 @@ export const ConjugationsTester: Component<Props> = props => {
     validators = []; // Validators need to be reset for the next conjugations
 
     if (isLastConjugation()) {
-      return props.onDone(conjugationValidations);
+      return props.onDone(tenseValidations);
     }
     setCurrentConjugationIndex(i => i + 1);
   };
 
   return (
-    <Show when={currentConjugation()}>
-      {conjugation => (
+    <Show when={currentTense()}>
+      {tense => (
         <div>
-          <h2 class="text-lg">{conjugation().tense}</h2>
+          <h2 class="text-lg">{tense().name}</h2>
           <table class="border-separate border-spacing-y-8">
             <tbody>
-              <For each={conjugation().conjugations}>
-                {(c, i) => (
+              <For each={tense().forms}>
+                {(form, i) => (
                   <tr>
                     <th class="text-right font-normal">
-                      <span class="mr-2">{c.person}</span>
+                      <span class="mr-2">{form.pronoun}</span>
                     </th>
                     <td>
                       <WriteTester
-                        word={{ translation: c.conjugatedVerb }}
+                        word={{ translation: form.form }}
                         mode="inline"
-                        peek={conjugationInvalid(c)}
+                        peek={conjugationInvalid(tense(), form)}
                         onReady={onTesterReady(i())}
                         strict={true}
                         validateOnBlur={true}
                         onValidated={(valid, answer) =>
-                          onValidated(c, valid, answer)
+                          onValidated(tense(), form, valid, answer)
                         }
                       />
                     </td>

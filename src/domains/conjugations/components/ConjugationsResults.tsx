@@ -1,10 +1,10 @@
 import { For, Show } from 'solid-js';
 import type { Component } from 'solid-js';
-import type { ConjugationValidations } from './ConjugationsTester';
+import type { TensesValidations } from './ConjugationsTester';
 import { Button } from '~/components/ui/button';
 
 interface Props {
-  conjugationsResults: ConjugationValidations;
+  tensesValidations: TensesValidations;
   onPracticeIncorrect: () => void;
   onTryAgain: () => void;
   onTryDifferent: () => void;
@@ -12,7 +12,7 @@ interface Props {
 
 export const ConjugationsResults: Component<Props> = props => {
   const someInvalid = () =>
-    Object.values(props.conjugationsResults)
+    Object.values(props.tensesValidations)
       .flat()
       .some(cr => cr.valid === false);
 
@@ -20,7 +20,7 @@ export const ConjugationsResults: Component<Props> = props => {
     <div>
       <h2 class="text-center text-2xl font-semibold">Results</h2>
       <div class="flex flex-wrap gap-8">
-        <For each={Object.keys(props.conjugationsResults)}>
+        <For each={Object.keys(props.tensesValidations)}>
           {tense => (
             <div class="mx-auto mt-6">
               <h3 class="text-center text-lg">{tense}</h3>
@@ -33,23 +33,23 @@ export const ConjugationsResults: Component<Props> = props => {
                   </tr>
                 </thead>
                 <tbody>
-                  <For each={props.conjugationsResults[tense]}>
-                    {conjugationResult => (
+                  <For each={props.tensesValidations[tense]}>
+                    {tenseValidation => (
                       <tr>
                         <td class="border-r border-r-zinc-500 pr-8 text-right">
-                          {conjugationResult.conjugation.person}
+                          {tenseValidation.form.pronoun}
                         </td>
                         <td class="border-r border-r-zinc-500 pr-8 text-right">
-                          {conjugationResult.conjugation.conjugatedVerb}
+                          {tenseValidation.form.form}
                         </td>
                         <td
                           class="pr-8"
                           classList={{
-                            'text-green-600': conjugationResult.valid,
-                            'text-red-500': !conjugationResult.valid,
+                            'text-green-600': tenseValidation.valid,
+                            'text-red-500': !tenseValidation.valid,
                           }}
                         >
-                          {conjugationResult.answer || '-'}
+                          {tenseValidation.answer || '-'}
                         </td>
                       </tr>
                     )}
