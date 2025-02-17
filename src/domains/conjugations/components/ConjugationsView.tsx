@@ -95,8 +95,7 @@ export const ConjugationsView: Component = () => {
 
   return (
     <div class="flex min-h-full flex-col items-center bg-neutral-100 p-2 md:p-4">
-      <h1 class="mb-4 text-xl">Verb conjugations</h1>
-      <div class="flex flex-col items-center gap-2 rounded-lg bg-white p-4 shadow-md">
+      <div class="flex flex-col items-center gap-2 rounded-lg p-4">
         <VerbInput
           onApplyVerb={applyVerb}
           onLangChange={onLangChange}
