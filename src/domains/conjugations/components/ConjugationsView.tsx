@@ -19,6 +19,8 @@ interface ConjugationsViewState {
   verbLoading: boolean;
 }
 
+const LANG_STORAGE_KEY = 'conjugations-lang-storage-key';
+
 const getInitialState: () => ConjugationsViewState = () => ({
   verbConjugations: undefined,
   selectedMoods: [],
@@ -64,6 +66,10 @@ export const ConjugationsView: Component = () => {
     }
   };
 
+  const onLangChange = (lang: ConjugationLanguageCode) => {
+    localStorage.setItem(LANG_STORAGE_KEY, lang);
+  };
+
   const onTestingDone = (validationResults: TensesValidations) => {
     setState({ testingDone: true, tensesResults: validationResults });
   };
@@ -93,7 +99,13 @@ export const ConjugationsView: Component = () => {
       <div class="flex flex-col items-center gap-2 rounded-lg bg-white p-4 shadow-md">
         <VerbInput
           onApplyVerb={applyVerb}
+          onLangChange={onLangChange}
           ref={verbInputEl}
+          defaultLang={
+            localStorage.getItem(LANG_STORAGE_KEY) as
+              | ConjugationLanguageCode
+              | undefined
+          }
           verbLoading={state.verbLoading}
         />
         <span class="text-sm">

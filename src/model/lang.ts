@@ -1,4 +1,4 @@
-export const CONJUGATION_LANGUAGES: { [key: string]: string } = {
+export const CONJUGATION_LANGUAGES = {
   spa: 'Spanish',
   por: 'Portuguese',
   fra: 'French',
@@ -38,7 +38,6 @@ export const CONJUGATION_LANGUAGES: { [key: string]: string } = {
   kor: 'Korean',
   mkd: 'Macedonian',
   tha: 'Thai',
-};
+} as const;
 
-export type ConjugationLanguageCode =
-  (typeof CONJUGATION_LANGUAGES)[keyof typeof CONJUGATION_LANGUAGES];
+export type ConjugationLanguageCode = keyof typeof CONJUGATION_LANGUAGES;

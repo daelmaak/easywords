@@ -14,10 +14,11 @@ import type { ConjugationLanguageCode } from '~/model/lang';
 import { CONJUGATION_LANGUAGES } from '~/model/lang';
 
 interface Props {
-  lang?: ConjugationLanguageCode;
+  defaultLang?: ConjugationLanguageCode;
   ref?: HTMLInputElement;
   verbLoading: boolean;
   onApplyVerb(verb: string, lang: ConjugationLanguageCode): void;
+  onLangChange(lang: ConjugationLanguageCode): void;
 }
 
 export const VerbInput: Component<Props> = props => {
@@ -44,17 +45,19 @@ export const VerbInput: Component<Props> = props => {
     <form onSubmit={applyVerb}>
       <div class="flex gap-2">
         <Select
+          class="bg-white"
           name="lang"
           options={Object.keys(CONJUGATION_LANGUAGES)}
           placeholder="Language"
-          defaultValue={props.lang}
+          defaultValue={props.defaultLang}
           itemComponent={props => (
             <SelectItem item={props.item}>
               {CONJUGATION_LANGUAGES[props.item.rawValue]}
             </SelectItem>
           )}
+          onChange={lang => props.onLangChange(lang as ConjugationLanguageCode)}
         >
-          <SelectTrigger class="gap-2">
+          <SelectTrigger class="gap-2 border-primary">
             <SelectValue<string>>
               {s =>
                 CONJUGATION_LANGUAGES[
@@ -68,11 +71,11 @@ export const VerbInput: Component<Props> = props => {
         </Select>
         <Input
           name="verb"
-          class="input"
-          placeholder="Verb in infinitive"
+          class="input border-primary bg-white placeholder:text-sm"
+          placeholder="Infinitive"
           ref={props.ref}
         />
-        <Button loading={props.verbLoading}>Search</Button>
+        <Button loading={props.verbLoading}>Conjugate</Button>
       </div>
       <Show when={invalid()}>
         <p class="mt-2 text-center text-sm text-red-600">
