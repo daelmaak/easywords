@@ -3,6 +3,7 @@ import { createSignal, For, Show } from 'solid-js';
 import { Checkbox } from '~/components/ui/checkbox';
 import type { Tense } from '../../resources/conjugations-api';
 import { Button } from '~/components/ui/button';
+import { groupedTenses } from '../../util/tenses-grouping-util';
 
 interface Props {
   selectedTenses: Tense[];
@@ -26,21 +27,8 @@ export const TenseFilter: Component<Props> = props => {
     }
   };
 
-  // Groups tenses by the first word in their name
-  const groupedTenses = () => {
-    const acc = new Map<string, Tense[]>();
-    props.tenses.forEach(tense => {
-      const firstWord = tense.name.split(' ')[0];
-      if (!acc.has(firstWord)) {
-        acc.set(firstWord, []);
-      }
-      acc.get(firstWord)?.push(tense);
-    });
-    return acc;
-  };
-
   const currentTenses = () => {
-    const grouped = groupedTenses().entries();
+    const grouped = groupedTenses(props.tenses).entries();
     return expanded() ? grouped.toArray() : grouped.take(4).toArray();
   };
 
