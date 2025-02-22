@@ -26,7 +26,7 @@ const VocabularyPage = lazy(
 );
 
 const ConjugationsPage = lazy(
-  () => import('./domains/conjugations/components/ConjugationsView')
+  () => import('./domains/conjugations/components/ConjugationsPage')
 );
 
 render(() => {
