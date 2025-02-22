@@ -45,6 +45,10 @@ render(() => {
           <Route path={Routes.Vocabulary} component={VocabularyPage} />
           <Route path={Routes.Vocabularies} component={VocabulariesPage} />
           <Route path={Routes.Conjugations} component={ConjugationsPage} />
+          <Route
+            path={`${Routes.Conjugations}/:lang/:verb`}
+            component={ConjugationsPage}
+          />
           <Route path="/" component={() => <Navigate href="/dashboard" />} />
         </Route>
         <Route

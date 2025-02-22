@@ -7,7 +7,7 @@ interface Props {
   tensesValidations: TensesValidations;
   onPracticeIncorrect: () => void;
   onTryAgain: () => void;
-  onTryDifferent: () => void;
+  onExit: () => void;
 }
 
 export const ConjugationsResults: Component<Props> = props => {
@@ -69,7 +69,7 @@ export const ConjugationsResults: Component<Props> = props => {
             Practice incorrect
           </Button>{' '}
         </Show>
-        <Button onClick={props.onTryDifferent}>Try next</Button>
+        <Button onClick={props.onExit}>Leave</Button>
       </div>
     </div>
   );
