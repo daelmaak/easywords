@@ -78,8 +78,8 @@ export const ConjugationsTester: Component<Props> = props => {
   return (
     <Show when={currentTense()}>
       {tense => (
-        <div>
-          <h2 class="text-lg">{tense().name}</h2>
+        <div class="mt-4">
+          <h2 class="text-lg font-extrabold text-pink-600">{tense().name}</h2>
           <div class="mt-6 grid items-center justify-start gap-x-4 gap-y-6 lg:grid-flow-col lg:grid-rows-3">
             <For each={tense().forms}>
               {(form, i) => (

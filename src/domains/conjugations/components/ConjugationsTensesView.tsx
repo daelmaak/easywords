@@ -1,10 +1,16 @@
-import { For, type Component } from 'solid-js';
+import { For, Show, type Component } from 'solid-js';
 import type { Tense, VerbConjugations } from '../resources/conjugations-api';
 import { groupedTenses } from '../util/tenses-grouping-util';
+import { Checkbox } from '~/components/ui/checkbox';
+import { Button } from '~/components/ui/button';
+import { HiOutlineAcademicCap } from 'solid-icons/hi';
 
 type Props = {
   verb: string;
   verbConjugations: VerbConjugations;
+  selectedTenses: Tense[];
+  onTenseSelected: (tenses: Tense, selected: boolean) => void;
+  onTest: () => void;
 };
 
 export const ConjugationsTensesView: Component<Props> = props => {
@@ -15,7 +21,15 @@ export const ConjugationsTensesView: Component<Props> = props => {
     tense.name.split(' ').slice(1).join(' ') || tense.name;
 
   return (
-    <main class="flex w-full max-w-6xl flex-col gap-8 px-8">
+    <div class="mx-auto flex w-full max-w-6xl flex-col gap-8">
+      <div class="flex items-center gap-8">
+        <h1 class="text-3xl font-bold text-pink-600">{props.verb}</h1>
+        <Show when={props.selectedTenses.length > 0}>
+          <Button onClick={props.onTest} size="sm">
+            <HiOutlineAcademicCap /> Test
+          </Button>
+        </Show>
+      </div>
       <For each={tenses()}>
         {([tenseGroupName, tenses]) => (
           <div class="mb-4 flex w-full flex-col gap-4">
@@ -24,9 +38,17 @@ export const ConjugationsTensesView: Component<Props> = props => {
               <For each={tenses}>
                 {tense => (
                   <div>
-                    <h3 class="text-lg font-extrabold text-pink-600">
-                      {tenseName(tense)}
-                    </h3>
+                    <div class="flex items-center">
+                      <h3 class="text-lg font-extrabold text-pink-600">
+                        {tenseName(tense)}
+                      </h3>
+                      <Checkbox
+                        class="ml-4"
+                        onChange={checked =>
+                          props.onTenseSelected(tense, checked)
+                        }
+                      />
+                    </div>
                     <dl class="grid grid-cols-[auto_1fr] gap-x-4 text-sm">
                       <For each={tense.forms}>
                         {form => (
@@ -44,6 +66,6 @@ export const ConjugationsTensesView: Component<Props> = props => {
           </div>
         )}
       </For>
-    </main>
+    </div>
   );
 };

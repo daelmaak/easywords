@@ -2,48 +2,71 @@ import { Match, Show, Switch, type Component } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import type { ConjugationLanguageCode } from '~/model/lang';
 import { VerbInput } from './VerbInput';
-import type { VerbConjugations } from '../resources/conjugations-api';
+import type { Tense } from '../resources/conjugations-api';
 import { fetchVerbixConjugations } from '../resources/conjugations-api';
 import { ConjugationsTestView } from './ConjugationsTestView';
 import { ConjugationsTensesView } from './ConjugationsTensesView';
+import { useNavigate, useParams } from '@solidjs/router';
+import { createQuery } from '@tanstack/solid-query';
 
 const LANG_STORAGE_KEY = 'conjugations-lang-storage-key';
 
 type State = {
   mode: 'search' | 'test';
-  verb: string;
-  verbLoading: boolean;
-  verbConjugations: VerbConjugations | undefined;
+  selectedTenses: Tense[];
 };
 
 export const ConjugationsPage: Component = () => {
+  const params = useParams<{ verb: string; lang: ConjugationLanguageCode }>();
+  const navigate = useNavigate();
+
   let verbInputEl: HTMLInputElement | undefined;
   const [state, setState] = createStore<State>({
     mode: 'search',
-    verb: '',
-    verbLoading: false,
-    verbConjugations: undefined as VerbConjugations | undefined,
+    selectedTenses: [],
   });
 
-  const applyVerb = async (verb: string, lang: ConjugationLanguageCode) => {
-    setState({
-      verb,
-      verbLoading: true,
-    });
+  const conjugationsQuery = createQuery(() => ({
+    enabled: params.lang != null && params.verb != null,
+    queryKey: ['conjugations', params.lang, params.verb],
+    queryFn: () => fetchVerbixConjugations(params.lang, params.verb),
+  }));
 
-    const verbConjugations = await fetchVerbixConjugations(lang, verb);
+  const applyVerb = (verb: string, lang: ConjugationLanguageCode) => {
     setState({
-      verbConjugations,
-      verbLoading: false,
+      mode: 'search',
+      selectedTenses: [],
     });
+    navigate(`/conjugations/${lang}/${verb}`);
   };
 
   const onLangChange = (lang: ConjugationLanguageCode) => {
     localStorage.setItem(LANG_STORAGE_KEY, lang);
   };
 
+  const onTenseSelected = (tense: Tense, selected: boolean) => {
+    if (selected) {
+      setState('selectedTenses', state.selectedTenses.length, tense);
+    } else {
+      setState('selectedTenses', ts => ts.filter(t => t.name !== tense.name));
+    }
+  };
+
+  const onTest = () => {
+    setState({
+      mode: 'test',
+    });
+  };
+
+  const onTestExit = () => {
+    setState({
+      mode: 'search',
+      selectedTenses: [],
+    });
+  };
+
   return (
-    <div class="flex min-h-full flex-col items-center p-2 md:p-4">
+    <div class="w-full p-2 md:p-4">
       <div class="flex flex-col items-center gap-2 rounded-lg p-4">
         <VerbInput
           onApplyVerb={applyVerb}
@@ -54,7 +77,7 @@ export const ConjugationsPage: Component = () => {
               | ConjugationLanguageCode
               | undefined
           }
-          verbLoading={state.verbLoading}
+          verbLoading={conjugationsQuery.isFetching}
         />
         <span class="text-sm">
           Using{' '}
@@ -63,24 +86,32 @@ export const ConjugationsPage: Component = () => {
           </a>
         </span>
       </div>
-      <Show when={state.verbConjugations}>
-        {conjugations => (
-          <Switch>
-            <Match when={state.mode === 'test'}>
-              <ConjugationsTestView
-                verb={state.verb}
-                verbConjugations={conjugations()}
-              />
-            </Match>
-            <Match when={state.mode === 'search'}>
-              <ConjugationsTensesView
-                verb={state.verb}
-                verbConjugations={conjugations()}
-              />
-            </Match>
-          </Switch>
-        )}
-      </Show>
+
+      <main class="mx-auto px-8">
+        <Show when={conjugationsQuery.data}>
+          {conjugations => (
+            <Switch>
+              <Match when={state.mode === 'search'}>
+                <ConjugationsTensesView
+                  verb={params.verb}
+                  verbConjugations={conjugations()}
+                  selectedTenses={state.selectedTenses}
+                  onTenseSelected={onTenseSelected}
+                  onTest={onTest}
+                />
+              </Match>
+              <Match when={state.mode === 'test'}>
+                <ConjugationsTestView
+                  selectedTenses={state.selectedTenses}
+                  verb={params.verb}
+                  verbConjugations={conjugations()}
+                  onExit={onTestExit}
+                />
+              </Match>
+            </Switch>
+          )}
+        </Show>
+      </main>
     </div>
   );
 };
