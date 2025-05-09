@@ -80,10 +80,14 @@ export const VocabularyPage: Component = () => {
     queryFn: () => fetchLastTestResult(vocabularyId),
   }));
 
-  const words = () =>
-    store.showArchivedWords
-      ? vocabularyWithResults()?.words
-      : vocabularyWithResults()?.words.filter(w => !w.archived);
+  const words = () => {
+    const vocab = vocabularyWithResults();
+    return vocab == null
+      ? []
+      : store.showArchivedWords
+        ? vocab.words
+        : vocab.words.filter(w => !w.archived);
+  };
 
   const sortedWords = createMemo(() => {
     const w = words();
@@ -165,6 +169,7 @@ export const VocabularyPage: Component = () => {
             {v => (
               <VocabularySummary
                 vocabulary={v()}
+                wordCount={words()?.length}
                 lastTestResult={lastTestResultQuery.data}
                 testProgress={testProgressQuery.data}
                 onArchiveVocabulary={onArchiveVocabulary}

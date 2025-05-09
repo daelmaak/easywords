@@ -29,6 +29,7 @@ import { testResultsRoute, testRoute } from '~/routes/routes';
 
 interface Props {
   vocabulary: Vocabulary;
+  wordCount?: number;
   testProgress?: TestResult | null;
   lastTestResult?: TestResult | null;
   onArchiveVocabulary: (archive: boolean) => void;
@@ -110,7 +111,7 @@ export const VocabularySummary: Component<Props> = props => {
               <CountrySelect id="country" defaultValue={v().country} />
             </form>
             <span class="ml-1 mt-1 text-sm">
-              <strong>{v().words.length}</strong> words
+              <strong>{props.wordCount}</strong> words
             </span>
           </>
         )}
