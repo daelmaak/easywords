@@ -197,7 +197,10 @@ export const VocabularyPage: Component = () => {
                     onSort={sort}
                     onTestSelected={testSelected}
                     onToggleDisplayArchived={() =>
-                      setStore({ showArchivedWords: !store.showArchivedWords })
+                      setStore({
+                        sortState: { asc: false, by: 'archived' },
+                        showArchivedWords: !store.showArchivedWords,
+                      })
                     }
                     onBlurStateChange={blurState => setStore({ blurState })}
                   />
