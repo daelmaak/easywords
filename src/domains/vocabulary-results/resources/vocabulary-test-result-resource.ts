@@ -102,3 +102,7 @@ export async function saveTestResult(testResult: TestResultToCreate) {
 
   return savedResult;
 }
+
+export async function deleteTestResult(testResultId: number) {
+  await api.deleteTestResult(testResultId);
+}

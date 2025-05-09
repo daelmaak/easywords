@@ -34,6 +34,7 @@ export const initTestApp = () => {
       updateWords: vi.fn(),
     },
     vocabularyTestResultApi: {
+      deleteTestResult: vi.fn(),
       fetchTestResult: vi.fn(),
       fetchTestResults: vi.fn(),
       fetchWordResults: vi.fn(),

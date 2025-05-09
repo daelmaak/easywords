@@ -176,7 +176,15 @@ async function saveTestResult(testResult: TestResultToCreateDB) {
   };
 }
 
+async function deleteTestResult(testResultId: number) {
+  await supabase
+    .from('vocabulary_test_results')
+    .delete()
+    .eq('id', testResultId);
+}
+
 export const vocabularyTestResultApi = {
+  deleteTestResult,
   fetchTestResult,
   fetchTestResults,
   fetchWordResults,

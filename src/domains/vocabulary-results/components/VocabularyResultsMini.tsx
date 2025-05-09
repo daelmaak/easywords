@@ -3,15 +3,21 @@ import type { TestWordStatus } from '../model/test-result-model';
 import { type TestResult } from '../model/test-result-model';
 import { Card, CardContent } from '~/components/ui/card';
 import { RESULT_COLORS } from '../model/colors';
-import { HiOutlineCheckCircle, HiOutlinePauseCircle } from 'solid-icons/hi';
+import {
+  HiOutlineCheckCircle,
+  HiOutlinePauseCircle,
+  HiOutlineTrash,
+} from 'solid-icons/hi';
 import { TEST_RESULT_LABELS } from '../model/labels';
 import {
   formatDate,
   THREE_LETTER_MONTH_WITH_YEAR_OPTIONS,
 } from '~/util/format-date';
+import { Button } from '~/components/ui/button';
 
 interface Props {
   result: TestResult;
+  onDelete: () => void;
 }
 
 const resultGroups = Object.entries(TEST_RESULT_LABELS).map(([key, label]) => ({
@@ -30,7 +36,7 @@ export const VocabularyResultsMini: Component<Props> = props => {
 
   return (
     <Card>
-      <CardContent class="p-4">
+      <CardContent class="p-4 pb-1">
         <div class="flex items-center justify-between">
           <span class="inline-flex items-center gap-1">
             <span class="text-xl">
@@ -56,7 +62,7 @@ export const VocabularyResultsMini: Component<Props> = props => {
               : 'Just now'}
           </span>
         </div>
-        <figure class="mt-3">
+        <figure class="mb-1 mt-3">
           <figcaption>
             <dl class="flex flex-wrap gap-x-2 text-sm">
               {resultGroups.map(group => (
@@ -92,6 +98,18 @@ export const VocabularyResultsMini: Component<Props> = props => {
             ))}
           </div>
         </figure>
+        <Button
+          class="ml-auto block size-9"
+          size="icon"
+          variant="ghost"
+          onClick={e => {
+            e.preventDefault();
+            e.stopPropagation();
+            props.onDelete();
+          }}
+        >
+          <HiOutlineTrash class="text-red-500" />
+        </Button>
       </CardContent>
     </Card>
   );

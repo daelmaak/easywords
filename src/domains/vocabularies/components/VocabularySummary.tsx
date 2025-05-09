@@ -33,6 +33,7 @@ interface Props {
   testProgress?: TestResult | null;
   lastTestResult?: TestResult | null;
   onArchiveVocabulary: (archive: boolean) => void;
+  onDeleteResult: (id: number) => void;
   onDeleteVocabulary: (id: number) => void;
   onTestVocabulary: (testId?: number) => void;
 }
@@ -150,7 +151,10 @@ export const VocabularySummary: Component<Props> = props => {
       <Show when={props.testProgress}>
         {progress => (
           <A href={testRoute(props.vocabulary.id, progress().id)}>
-            <VocabularyResultsMini result={progress()} />
+            <VocabularyResultsMini
+              result={progress()}
+              onDelete={() => props.onDeleteResult(progress().id)}
+            />
           </A>
         )}
       </Show>
@@ -158,7 +162,10 @@ export const VocabularySummary: Component<Props> = props => {
       <Show when={props.lastTestResult}>
         {result => (
           <A href={testResultsRoute(props.vocabulary.id, result().id)}>
-            <VocabularyResultsMini result={result()} />
+            <VocabularyResultsMini
+              result={result()}
+              onDelete={() => props.onDeleteResult(result().id)}
+            />
           </A>
         )}
       </Show>

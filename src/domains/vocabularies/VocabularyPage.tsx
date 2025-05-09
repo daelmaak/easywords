@@ -12,6 +12,7 @@ import {
   testResultsKey,
 } from '../vocabulary-results/resources/cache-keys';
 import {
+  deleteTestResult,
   fetchLastTestProgress,
   fetchLastTestResult,
   fetchTestResults,
@@ -115,6 +116,13 @@ export const VocabularyPage: Component = () => {
     await deleteWords(vocabularyId, word.id);
   }
 
+  async function onDeleteResult(testResultId: number) {
+    await deleteTestResult(testResultId);
+
+    void testProgressQuery.refetch();
+    void lastTestResultQuery.refetch();
+  }
+
   function onSelectAll(selected: boolean) {
     if (selected) {
       setStore({ selectedWords: words() ?? [] });
@@ -173,6 +181,7 @@ export const VocabularyPage: Component = () => {
                 lastTestResult={lastTestResultQuery.data}
                 testProgress={testProgressQuery.data}
                 onArchiveVocabulary={onArchiveVocabulary}
+                onDeleteResult={onDeleteResult}
                 onDeleteVocabulary={onDeleteVocabulary}
                 onTestVocabulary={testVocabulary}
               />
