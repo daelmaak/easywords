@@ -62,9 +62,6 @@ export const VocabularyWord: Component<Props> = props => {
               'text-neutral-600': props.word.archived,
             })}
           >
-            <Show when={props.word.archived}>
-              <span class="text-sm">(Archived)</span>
-            </Show>
             <span class={cx({ 'blur-sm': props.blurState?.original })}>
               {props.word.original}
             </span>
@@ -72,6 +69,9 @@ export const VocabularyWord: Component<Props> = props => {
             <span class={cx({ 'blur-sm': props.blurState?.translation })}>
               {props.word.translation}
             </span>
+            <Show when={props.word.archived}>
+              <span class="ml-2 text-sm">(archived)</span>
+            </Show>
           </div>
           <div class="flex gap-4 pr-4 text-xs text-neutral-400">
             <span class="inline-flex items-center gap-1">
