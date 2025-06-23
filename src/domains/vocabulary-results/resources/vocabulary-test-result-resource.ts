@@ -69,10 +69,10 @@ export async function fetchPreviousWordResults(
   return api.fetchPreviousWordResults(testResultId);
 }
 
-export async function createTestResult(vocabulary: Vocabulary, words?: Word[]) {
+export async function createTestResult(vocabulary: Vocabulary, words: Word[]) {
   return await saveTestResult({
     vocabulary_id: vocabulary.id,
-    words: (words ?? vocabulary.words).map(w => ({
+    words: words.map(w => ({
       attempts: [],
       word_id: w.id,
       result: TestWordStatus.NotDone,

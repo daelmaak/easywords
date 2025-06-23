@@ -53,7 +53,7 @@ export const VocabularyTestPage = () => {
   }));
 
   const createResultMutation = createMutation(() => ({
-    mutationFn: (params: { vocabulary: Vocabulary; words?: Word[] }) =>
+    mutationFn: (params: { vocabulary: Vocabulary; words: Word[] }) =>
       createTestResult(params.vocabulary, params.words),
     onSuccess: result =>
       queryClient.setQueryData(lastTestProgressKey(vocabularyId), result),
@@ -107,6 +107,8 @@ export const VocabularyTestPage = () => {
     if (searchParams.wordIds) {
       const wordIds = searchParams.wordIds.split(',').map(Number);
       words = vocabulary.words.filter(w => wordIds.includes(w.id));
+    } else {
+      words = vocabulary.words.filter(w => !w.archived);
     }
 
     const result = await createResultMutation.mutateAsync({
