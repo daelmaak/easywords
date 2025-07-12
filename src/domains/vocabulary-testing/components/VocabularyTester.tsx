@@ -319,7 +319,9 @@ export const VocabularyTester: Component<TesterProps> = (
 
         {/* mb-[-0.5rem] is here to bypass the vertical flex gap */}
         <div class="mb-[-0.5rem] flex items-center">
-          <span data-testid="original-to-translate">{toTranslate()}</span>
+          <span data-testid="original-to-translate" class="text-center">
+            {toTranslate()}
+          </span>
           <Show when={currentWord()?.notes}>
             {notes => (
               <Popover>
