@@ -1,3 +1,4 @@
+import { Show } from 'solid-js';
 import {
   Combobox,
   ComboboxContent,
@@ -19,7 +20,7 @@ interface Props {
   placeholder?: string;
   required?: boolean;
   defaultValue?: CountryCode;
-  onSelect?: (countryCode: CountryCode) => void;
+  onSelect?: (countryCode: CountryCode | null) => void;
   availableCountries?: CountryCode[];
 }
 
@@ -28,6 +29,7 @@ export const CountrySelect = (props: Props) => {
 
   return (
     <Combobox
+      triggerMode="focus"
       closeOnSelection={true}
       options={countryOptions()}
       optionLabel={code => COUNTRIES[code]}
@@ -46,9 +48,11 @@ export const CountrySelect = (props: Props) => {
       <ComboboxControl>
         {state => (
           <>
-            <span
-              class={`fi mr-2 h-5 w-5 shrink-0 fi-${state.selectedOptions()[0]}`}
-            />
+            <Show when={state.selectedOptions().length > 0}>
+              <span
+                class={`fi mr-2 h-5 w-5 shrink-0 fi-${state.selectedOptions()[0]}`}
+              />
+            </Show>
             <ComboboxInput
               placeholder={props.placeholder}
               // For some reason, required on the HiddenSelect doesn't have an effect,
