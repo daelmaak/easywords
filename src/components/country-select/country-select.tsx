@@ -20,19 +20,22 @@ interface Props {
   required?: boolean;
   defaultValue?: CountryCode;
   onSelect?: (countryCode: CountryCode) => void;
+  availableCountries?: CountryCode[];
 }
 
 export const CountrySelect = (props: Props) => {
+  const countryOptions = () => props.availableCountries ?? COUNTRY_CODES;
+
   return (
     <Combobox
       closeOnSelection={true}
-      options={COUNTRY_CODES}
+      options={countryOptions()}
       optionLabel={code => COUNTRIES[code]}
       optionValue={code => code}
       itemComponent={props => (
         <ComboboxItem item={props.item}>
           <ComboboxItemLabel class="flex items-center gap-2">
-            <span class={`fi h-5 w-5 fi-${props.item.rawValue}`} />
+            <span class={`fi h-5 w-5 shrink-0 fi-${props.item.rawValue}`} />
             {COUNTRIES[props.item.rawValue]}
           </ComboboxItemLabel>
         </ComboboxItem>
@@ -43,7 +46,9 @@ export const CountrySelect = (props: Props) => {
       <ComboboxControl>
         {state => (
           <>
-            <span class={`fi mr-2 h-5 w-5 fi-${state.selectedOptions()[0]}`} />
+            <span
+              class={`fi mr-2 h-5 w-5 shrink-0 fi-${state.selectedOptions()[0]}`}
+            />
             <ComboboxInput
               placeholder={props.placeholder}
               // For some reason, required on the HiddenSelect doesn't have an effect,

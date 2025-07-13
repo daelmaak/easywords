@@ -21,6 +21,8 @@ import {
 import { Routes } from '~/routes/routes';
 import type { Vocabulary } from './model/vocabulary-model';
 import { Checkbox } from '~/components/ui/checkbox';
+import { CountrySelect } from '~/components/country-select/country-select';
+import type { CountryCode } from '~/components/country-select/countries';
 
 export const VocabulariesPage = () => {
   const navigate = useNavigate();
@@ -30,20 +32,40 @@ export const VocabulariesPage = () => {
     searchParams.openVocabCreator != null
   );
   const [showArchived, setShowArchived] = createSignal(false);
+  const [selectedCountry, setSelectedCountry] = createSignal<
+    CountryCode | undefined
+  >(undefined);
 
   const vocabulariesQuery = createQuery(() => ({
     queryKey: [VOCABULARIES_QUERY_KEY, { includeArchived: showArchived() }],
     queryFn: () => fetchVocabularies(showArchived()),
   }));
 
+  const availableCountries = () => {
+    const countries = new Set<CountryCode>();
+    vocabulariesQuery.data?.forEach(vocab => {
+      if (vocab.country) {
+        countries.add(vocab.country);
+      }
+    });
+    return Array.from(countries).sort();
+  };
+
+  const filteredVocabularies = () =>
+    vocabulariesQuery.data?.filter(
+      vocab => selectedCountry() == null || vocab.country === selectedCountry()
+    ) ?? [];
+
   const anyVocabularies = () => vocabulariesQuery.data?.length ?? 0 > 0;
-  const vocabulariesByRecency = () =>
-    vocabulariesQuery.data?.slice().sort((a, b) => {
+
+  const vocabulariesByRecency = () => {
+    return filteredVocabularies().toSorted((a, b) => {
       if (a.archived !== b.archived) {
         return a.archived ? -1 : 1;
       }
       return (b.updatedAt?.getTime() ?? 0) - (a.updatedAt?.getTime() ?? 0);
     });
+  };
 
   async function onCreateVocabulary(vocabulary: VocabularyToCreate) {
     const success = await createVocabulary(vocabulary);
@@ -67,16 +89,26 @@ export const VocabulariesPage = () => {
 
   return (
     <main class="min-h-full bg-gray-100">
-      <div class="page-container flex flex-wrap justify-between gap-x-4">
+      <div class="page-container flex flex-wrap items-center justify-between gap-x-4">
         <h1 class="text-lg font-semibold">Your vocabularies</h1>
-        <Checkbox
-          label="Show archived"
-          checked={showArchived()}
-          onChange={setShowArchived}
-        />
-        <Button size="sm" onClick={() => setCreateVocabularyOpen(true)}>
-          <HiOutlinePlus size={16} /> Add vocabulary
-        </Button>
+        <div class="flex flex-wrap items-center gap-4">
+          <Checkbox
+            class="text-sm"
+            label="Show archived"
+            checked={showArchived()}
+            onChange={setShowArchived}
+          />
+          <div class="w-16 sm:w-48">
+            <CountrySelect
+              placeholder="Filter by country"
+              onSelect={setSelectedCountry}
+              availableCountries={availableCountries()}
+            />
+          </div>
+          <Button size="sm" onClick={() => setCreateVocabularyOpen(true)}>
+            <HiOutlinePlus size={16} /> Add vocabulary
+          </Button>
+        </div>
         <Sheet
           open={createVocabularyOpen()}
           onOpenChange={open => setCreateVocabularyOpen(open)}
