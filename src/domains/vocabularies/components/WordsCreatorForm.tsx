@@ -1,4 +1,4 @@
-import type { Component } from 'solid-js';
+import { createSignal, Show, type Component } from 'solid-js';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { Textarea } from '~/components/ui/textarea';
@@ -9,10 +9,33 @@ import type { Word } from '../model/vocabulary-model';
 interface Props {
   id: string;
   ref?: HTMLFormElement;
+  existingWords?: WordTranslation[];
   onChange: (word: WordTranslation) => void;
 }
 
 export const WordsCreatorForm: Component<Props> = props => {
+  const [wordAlreadyExists, setWordAlreadyExists] =
+    createSignal<WordTranslation>();
+
+  function onOriginalBlur(value: string) {
+    const existing = props.existingWords?.find(w => {
+      const existingLower = w.original.toLowerCase();
+      const valueLower = value.toLowerCase();
+
+      const existingWords = existingLower
+        .split(/[,\s]+/)
+        .filter(word => word.length > 0);
+      const valueWords = valueLower
+        .split(/[,\s]+/)
+        .filter(word => word.length > 0);
+
+      return valueWords.every(valueWord =>
+        existingWords.some(existingWord => existingWord === valueWord)
+      );
+    });
+    setWordAlreadyExists(existing);
+  }
+
   function onAddWord(e: SubmitEvent) {
     const formData =
       processFormSubmit<Pick<Word, 'original' | 'translation' | 'notes'>>(e);
@@ -44,7 +67,20 @@ export const WordsCreatorForm: Component<Props> = props => {
           <Label class="text-xs" for="word-original">
             Original*
           </Label>
-          <Input id="word-original" name="original" required />
+          <Input
+            id="word-original"
+            name="original"
+            required
+            onBlur={e => onOriginalBlur(e.target.value)}
+          />
+          <Show when={wordAlreadyExists()}>
+            {word => (
+              <p role="alert" class="ml-3 text-xs text-red-500">
+                <strong>{word().original + ' - ' + word().translation}</strong>{' '}
+                already exists.
+              </p>
+            )}
+          </Show>
         </div>
         <div class="flex flex-col gap-2">
           <Label class="text-xs" for="word-translation">

@@ -84,6 +84,7 @@ export const VocabularySummary: Component<Props> = props => {
 
           <WordsAdder
             creatingWords={creatingWords()}
+            existingWords={props.vocabulary.words}
             onCreateWords={onCreateWords}
           />
         </SheetContent>

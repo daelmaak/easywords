@@ -14,6 +14,7 @@ const formId = 'words-input-form';
 export interface WordsInputProps {
   ref?: HTMLFormElement;
   mode: WordsInputMode;
+  existingWords?: WordTranslation[];
   onWordsChange?: (words: WordTranslation[]) => void;
 }
 
@@ -38,7 +39,12 @@ export function WordsInput(props: WordsInputProps) {
   return (
     <div>
       <Show when={props.mode === 'form'}>
-        <WordsCreatorForm id={formId} ref={props.ref} onChange={onAddWord} />
+        <WordsCreatorForm
+          id={formId}
+          existingWords={props.existingWords}
+          ref={props.ref}
+          onChange={onAddWord}
+        />
       </Show>
 
       <Show when={props.mode === 'text'}>

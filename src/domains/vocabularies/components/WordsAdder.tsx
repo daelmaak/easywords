@@ -15,6 +15,7 @@ import type { WordTranslation } from '~/model/word-translation';
 
 interface WordsAdderProps {
   creatingWords: boolean;
+  existingWords?: WordTranslation[];
   onCreateWords: (words: WordTranslation[]) => void;
 }
 
@@ -76,6 +77,7 @@ export const WordsAdder: Component<WordsAdderProps> = props => {
         ref={wordsInputFormRef}
         mode={wordsInputMode()}
         onWordsChange={handleWordsChange}
+        existingWords={props.existingWords}
       />
       <hr />
       <Button loading={props.creatingWords} onClick={onCreateWords}>
