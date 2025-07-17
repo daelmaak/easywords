@@ -60,6 +60,7 @@ export const CountrySelect = (props: Props) => {
               // https://stackoverflow.com/questions/6048710/can-i-apply-the-required-attribute-to-select-fields-in-html
               // Maybe because it's aria-hidden?
               required={props.required}
+              value={COUNTRIES[state.selectedOptions()[0] as CountryCode]}
             />
             <ComboboxTrigger />
           </>
