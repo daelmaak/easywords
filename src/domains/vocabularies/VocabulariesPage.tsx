@@ -26,15 +26,14 @@ import type { CountryCode } from '~/components/country-select/countries';
 
 export const VocabulariesPage = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [createVocabularyOpen, setCreateVocabularyOpen] = createSignal(
     searchParams.openVocabCreator != null
   );
   const [showArchived, setShowArchived] = createSignal(false);
-  const [selectedCountry, setSelectedCountry] = createSignal<
-    CountryCode | undefined
-  >(undefined);
+
+  const selectedCountry = () => searchParams.country as CountryCode | undefined;
 
   const vocabulariesQuery = createQuery(() => ({
     queryKey: [VOCABULARIES_QUERY_KEY, { includeArchived: showArchived() }],
@@ -57,6 +56,10 @@ export const VocabulariesPage = () => {
     ) ?? [];
 
   const anyVocabularies = () => vocabulariesQuery.data?.length ?? 0 > 0;
+
+  const handleCountrySelect = (country: CountryCode | null) => {
+    setSearchParams({ ...searchParams, country });
+  };
 
   const vocabulariesByRecency = () => {
     return filteredVocabularies().toSorted((a, b) => {
@@ -101,8 +104,9 @@ export const VocabulariesPage = () => {
           <div class="w-16 sm:w-48">
             <CountrySelect
               placeholder="Filter by country"
-              onSelect={setSelectedCountry}
+              onSelect={handleCountrySelect}
               availableCountries={availableCountries()}
+              defaultValue={selectedCountry()}
             />
           </div>
           <Button size="sm" onClick={() => setCreateVocabularyOpen(true)}>
