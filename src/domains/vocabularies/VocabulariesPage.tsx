@@ -33,7 +33,7 @@ export const VocabulariesPage = () => {
   );
   const [showArchived, setShowArchived] = createSignal(false);
 
-  const selectedCountry = () => searchParams.country as CountryCode | undefined;
+  const selectedCountry = () => (searchParams.country as CountryCode) ?? null;
 
   const vocabulariesQuery = createQuery(() => ({
     queryKey: [VOCABULARIES_QUERY_KEY, { includeArchived: showArchived() }],
@@ -106,7 +106,7 @@ export const VocabulariesPage = () => {
               placeholder="Filter by country"
               onSelect={handleCountrySelect}
               availableCountries={availableCountries()}
-              defaultValue={selectedCountry()}
+              value={selectedCountry()}
             />
           </div>
           <Button size="sm" onClick={() => setCreateVocabularyOpen(true)}>
