@@ -13,12 +13,15 @@ import type { CountryCode } from './countries';
 import { COUNTRIES, COUNTRY_CODES } from './countries';
 
 import '/node_modules/flag-icons/css/flag-icons.min.css';
+import { HiOutlineXMark } from 'solid-icons/hi';
+import { Button } from '../ui/button';
 
 interface Props {
   id?: string;
   name?: string;
   placeholder?: string;
   required?: boolean;
+  value?: CountryCode;
   defaultValue?: CountryCode;
   onSelect?: (countryCode: CountryCode | null) => void;
   availableCountries?: CountryCode[];
@@ -42,6 +45,7 @@ export const CountrySelect = (props: Props) => {
           </ComboboxItemLabel>
         </ComboboxItem>
       )}
+      value={props.value}
       defaultValue={props.defaultValue}
       onChange={props.onSelect}
     >
@@ -60,8 +64,12 @@ export const CountrySelect = (props: Props) => {
               // https://stackoverflow.com/questions/6048710/can-i-apply-the-required-attribute-to-select-fields-in-html
               // Maybe because it's aria-hidden?
               required={props.required}
-              value={COUNTRIES[state.selectedOptions()[0] as CountryCode]}
             />
+            <Show when={state.selectedOptions().length > 0}>
+              <Button variant="ghost" size="icon" onClick={() => state.clear()}>
+                <HiOutlineXMark size={16} />
+              </Button>
+            </Show>
             <ComboboxTrigger />
           </>
         )}
