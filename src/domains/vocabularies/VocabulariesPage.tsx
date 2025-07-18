@@ -23,6 +23,7 @@ import type { Vocabulary } from './model/vocabulary-model';
 import { Checkbox } from '~/components/ui/checkbox';
 import { CountrySelect } from '~/components/country-select/country-select';
 import type { CountryCode } from '~/components/country-select/countries';
+import { createMediaQuery } from '@solid-primitives/media';
 
 export const VocabulariesPage = () => {
   const navigate = useNavigate();
@@ -32,6 +33,8 @@ export const VocabulariesPage = () => {
     searchParams.openVocabCreator != null
   );
   const [showArchived, setShowArchived] = createSignal(false);
+
+  const isGteSmScreen = createMediaQuery('(min-width: 640px)');
 
   const selectedCountry = () => (searchParams.country as CountryCode) ?? null;
 
@@ -94,14 +97,14 @@ export const VocabulariesPage = () => {
     <main class="min-h-full bg-gray-100">
       <div class="page-container flex flex-wrap items-center justify-between gap-x-4">
         <h1 class="text-lg font-semibold">Your vocabularies</h1>
-        <div class="flex flex-wrap items-center gap-4">
+        <div class="flex items-center gap-4">
           <Checkbox
             class="text-sm"
-            label="Show archived"
+            label={isGteSmScreen() ? 'Show archived' : 'Archived'}
             checked={showArchived()}
             onChange={setShowArchived}
           />
-          <div class="w-16 sm:w-48">
+          <div class="w-auto sm:w-48">
             <CountrySelect
               placeholder="Filter by country"
               onSelect={handleCountrySelect}
@@ -110,7 +113,8 @@ export const VocabulariesPage = () => {
             />
           </div>
           <Button size="sm" onClick={() => setCreateVocabularyOpen(true)}>
-            <HiOutlinePlus size={16} /> Add vocabulary
+            <HiOutlinePlus size={16} />{' '}
+            {isGteSmScreen() ? 'Add vocabulary' : 'Add'}
           </Button>
         </div>
         <Sheet

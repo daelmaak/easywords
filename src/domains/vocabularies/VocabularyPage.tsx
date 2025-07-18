@@ -2,7 +2,7 @@ import { createMediaQuery } from '@solid-primitives/media';
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
 import { createQuery } from '@tanstack/solid-query';
 import type { Component } from 'solid-js';
-import { createMemo, Show, Suspense } from 'solid-js';
+import { createMemo, Show } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { Sheet, SheetContent } from '~/components/ui/sheet';
 import { Routes } from '~/routes/routes';
@@ -171,7 +171,10 @@ export const VocabularyPage: Component = () => {
 
   return (
     <main class="grid gap-4 bg-neutral-100 p-2 sm:grid-cols-[14rem_1fr] sm:grid-rows-[calc(100vh-57px-1rem)] md:grid-cols-[18rem_1fr] lg:grid-cols-[18rem_4fr_3fr] xl:grid-cols-[18rem_1fr_1fr]">
-      <Suspense fallback={<div class="m-auto">Loading ...</div>}>
+      <Show
+        when={vocabularyQuery.isFetched && resultsQuery.isFetched}
+        fallback={<div class="m-auto">Loading ...</div>}
+      >
         <div class="h-full overflow-y-auto rounded-lg bg-white px-3 py-4 shadow-md md:px-6">
           <Show when={vocabularyWithResults()}>
             {v => (
@@ -279,7 +282,7 @@ export const VocabularyPage: Component = () => {
             </Show>
           </div>
         </Show>
-      </Suspense>
+      </Show>
     </main>
   );
 };
