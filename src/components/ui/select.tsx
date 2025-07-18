@@ -88,8 +88,7 @@ const SelectItem = <T extends ValidComponent = 'li'>(
   return (
     <SelectPrimitive.Item
       class={cn(
-        'relative mt-0 flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
-        local.class
+        'relative mt-0 flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50'
       )}
       {...others}
     >
@@ -108,7 +107,9 @@ const SelectItem = <T extends ValidComponent = 'li'>(
           <path d="M5 12l5 5l10 -10" />
         </svg>
       </SelectPrimitive.ItemIndicator>
-      <SelectPrimitive.ItemLabel>{local.children}</SelectPrimitive.ItemLabel>
+      <SelectPrimitive.ItemLabel class={local.class}>
+        {local.children}
+      </SelectPrimitive.ItemLabel>
     </SelectPrimitive.Item>
   );
 };

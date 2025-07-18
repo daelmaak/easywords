@@ -1,20 +1,18 @@
 import { Show } from 'solid-js';
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxControl,
-  ComboboxHiddenSelect,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxItemLabel,
-  ComboboxTrigger,
-} from '../ui/combobox';
 import type { CountryCode } from './countries';
 import { COUNTRIES, COUNTRY_CODES } from './countries';
 
 import '/node_modules/flag-icons/css/flag-icons.min.css';
 import { HiOutlineXMark } from 'solid-icons/hi';
 import { Button } from '../ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectHiddenSelect,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
 
 interface Props {
   id?: string;
@@ -22,60 +20,59 @@ interface Props {
   placeholder?: string;
   required?: boolean;
   value?: CountryCode;
+  clearable?: boolean;
   defaultValue?: CountryCode;
   onSelect?: (countryCode: CountryCode | null) => void;
   availableCountries?: CountryCode[];
 }
 
 export const CountrySelect = (props: Props) => {
+  let inputRef: HTMLInputElement | undefined;
   const countryOptions = () => props.availableCountries ?? COUNTRY_CODES;
 
+  function onSelect(countryCode: CountryCode | null) {
+    props.onSelect?.(countryCode);
+    setTimeout(() => inputRef?.blur(), 100);
+  }
+
   return (
-    <Combobox
-      triggerMode="focus"
+    <Select
       closeOnSelection={true}
       options={countryOptions()}
-      optionLabel={code => COUNTRIES[code]}
       optionValue={code => code}
       itemComponent={props => (
-        <ComboboxItem item={props.item}>
-          <ComboboxItemLabel class="flex items-center gap-2">
-            <span class={`fi h-5 w-5 shrink-0 fi-${props.item.rawValue}`} />
-            {COUNTRIES[props.item.rawValue]}
-          </ComboboxItemLabel>
-        </ComboboxItem>
+        <SelectItem class="flex items-center gap-2" item={props.item}>
+          <span class={`fi h-5 w-5 shrink-0 fi-${props.item.rawValue}`} />
+          {COUNTRIES[props.item.rawValue]}
+        </SelectItem>
       )}
+      placeholder={props.placeholder}
       value={props.value}
       defaultValue={props.defaultValue}
-      onChange={props.onSelect}
+      onChange={onSelect}
     >
-      <ComboboxControl>
-        {state => (
-          <>
-            <Show when={state.selectedOptions().length > 0}>
-              <span
-                class={`fi mr-2 h-5 w-5 shrink-0 fi-${state.selectedOptions()[0]}`}
-              />
-            </Show>
-            <ComboboxInput
-              placeholder={props.placeholder}
-              // For some reason, required on the HiddenSelect doesn't have an effect,
-              // despite the conditions listed in the following link seem to be met.
-              // https://stackoverflow.com/questions/6048710/can-i-apply-the-required-attribute-to-select-fields-in-html
-              // Maybe because it's aria-hidden?
-              required={props.required}
-            />
-            <Show when={state.selectedOptions().length > 0}>
-              <Button variant="ghost" size="icon" onClick={() => state.clear()}>
-                <HiOutlineXMark size={16} />
-              </Button>
-            </Show>
-            <ComboboxTrigger />
-          </>
-        )}
-      </ComboboxControl>
-      <ComboboxHiddenSelect id={props.id} name={props.name} />
-      <ComboboxContent />
-    </Combobox>
+      <SelectTrigger>
+        <SelectValue<CountryCode> class="flex grow items-center gap-2">
+          {s => (
+            <>
+              <span class={`fi h-5 w-5 shrink-0 fi-${s.selectedOption()}`} />
+              {COUNTRIES[s.selectedOption()]}
+              <Show when={props.clearable && s.selectedOptions().length > 0}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => s.clear()}
+                  class="ml-auto"
+                >
+                  <HiOutlineXMark size={16} />
+                </Button>
+              </Show>
+            </>
+          )}
+        </SelectValue>
+      </SelectTrigger>
+      <SelectHiddenSelect id={props.id} name={props.name} />
+      <SelectContent />
+    </Select>
   );
 };

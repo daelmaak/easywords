@@ -7,7 +7,7 @@ import {
 import type { Component } from 'solid-js';
 import { createSignal, Show } from 'solid-js';
 import { BackLink } from '~/components/BackLink';
-import { CountrySelect } from '~/components/country-select/country-select';
+import { CountryCombobox } from '~/components/country-select/country-combobox';
 import { VocabularyResultsMini } from '~/domains/vocabulary-results/components/VocabularyResultsMini';
 import type { Vocabulary } from '../model/vocabulary-model';
 import {
@@ -110,7 +110,7 @@ export const VocabularySummary: Component<Props> = props => {
               >
                 {v().name}
               </span>
-              <CountrySelect id="country" defaultValue={v().country} />
+              <CountryCombobox id="country" defaultValue={v().country} />
             </form>
             <span class="ml-1 mt-1 text-sm">
               <strong>{props.wordCount}</strong> words

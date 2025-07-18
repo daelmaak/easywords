@@ -21,9 +21,9 @@ import {
 import { Routes } from '~/routes/routes';
 import type { Vocabulary } from './model/vocabulary-model';
 import { Checkbox } from '~/components/ui/checkbox';
-import { CountrySelect } from '~/components/country-select/country-select';
 import type { CountryCode } from '~/components/country-select/countries';
 import { createMediaQuery } from '@solid-primitives/media';
+import { CountrySelect } from '~/components/country-select/country-select';
 
 export const VocabulariesPage = () => {
   const navigate = useNavigate();
@@ -110,6 +110,7 @@ export const VocabulariesPage = () => {
               onSelect={handleCountrySelect}
               availableCountries={availableCountries()}
               value={selectedCountry()}
+              clearable
             />
           </div>
           <Button size="sm" onClick={() => setCreateVocabularyOpen(true)}>

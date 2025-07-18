@@ -1,6 +1,6 @@
 import type { Component } from 'solid-js';
 import { For, createSignal } from 'solid-js';
-import { CountrySelect } from '~/components/country-select/country-select';
+import { CountryCombobox } from '~/components/country-select/country-combobox';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
@@ -57,7 +57,7 @@ export const VocabularyCreator: Component<Props> = props => {
         <Label for="vocabulary-name">Vocabulary name</Label>
         <Input id="vocabulary-name" name="vocabularyName" required />
         <Label for="country">Language</Label>
-        <CountrySelect id="country" name="country" required />
+        <CountryCombobox id="country" name="country" required />
       </form>
       <div class="mb-4 flex flex-col gap-2">
         <Label>Add words</Label>
