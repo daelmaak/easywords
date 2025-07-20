@@ -25,7 +25,7 @@ import {
 import { WordsAdder } from './WordsAdder';
 import type { WordTranslation } from '~/model/word-translation';
 import { ConfirmationDialog } from '~/components/ConfirmationDialog';
-import { testResultsRoute, testRoute } from '~/routes/routes';
+import { Routes, testResultsRoute, testRoute } from '~/routes/routes';
 
 interface Props {
   vocabulary: Vocabulary;
@@ -90,7 +90,9 @@ export const VocabularySummary: Component<Props> = props => {
         </SheetContent>
       </Sheet>
 
-      <BackLink class="mb-2 sm:mb-4">Back to vocabularies</BackLink>
+      <BackLink class="mb-2 sm:mb-4" backTo={Routes.Vocabularies}>
+        Back to vocabularies
+      </BackLink>
       <Show when={props.vocabulary}>
         {v => (
           <>

@@ -84,7 +84,9 @@ export const VocabulariesPage = () => {
   }
 
   function onGoToVocabulary(id: number) {
-    navigate(`${Routes.Vocabularies}/${id}`);
+    navigate(`${Routes.Vocabularies}/${id}`, {
+      state: { previous: location.pathname + location.search },
+    });
   }
 
   function onTestVocabulary(vocabulary: Vocabulary, testId?: number) {
