@@ -4,7 +4,6 @@ import { render } from 'solid-js/web';
 import { lazy } from 'solid-js';
 import App from './components/App';
 import { AuthRouteGuard } from './domains/auth/AuthRouteGuard';
-import { DashboardPage } from './domains/dashboard/DashboardPage';
 import { VocabulariesPage } from './domains/vocabularies/VocabulariesPage';
 import { VocabularyTestPage } from './domains/vocabulary-testing/VocabularyTestPage';
 import './index.css';
@@ -36,7 +35,6 @@ render(() => {
     <QueryClientProvider client={queryClient}>
       <Router root={AuthRouteGuard}>
         <Route path="/" component={App}>
-          <Route path={Routes.Dashboard} component={DashboardPage} />
           <Route
             path={Routes.VocabularyTestResults}
             component={VocabularyTestResultsPage}
@@ -49,7 +47,7 @@ render(() => {
             path={`${Routes.Conjugations}/:lang/:verb`}
             component={ConjugationsPage}
           />
-          <Route path="/" component={() => <Navigate href="/dashboard" />} />
+          <Route path="/" component={() => <Navigate href="/vocabularies" />} />
         </Route>
         <Route
           path={Routes.Login}

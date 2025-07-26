@@ -12,7 +12,6 @@ interface Props {
 }
 
 const links = [
-  { label: 'Dashboard', href: Routes.Dashboard },
   { label: 'Vocabularies', href: Routes.Vocabularies },
   { label: 'Conjugations', href: Routes.Conjugations },
 ];
@@ -21,7 +20,7 @@ export const Header: Component<Props> = props => {
   return (
     <nav>
       <div class="hidden items-center border-b px-4 py-2 sm:flex">
-        <A href="/dashboard" class="flex items-center">
+        <A href="/vocabularies" class="flex items-center">
           <img src={logo} alt="logo" class="size-8" />
           <span class="mr-8">Easywords</span>
         </A>
