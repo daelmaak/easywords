@@ -9,7 +9,12 @@ type Props = ComponentProps<'a'> & {
 };
 
 export const BackLink: Component<Props> = props => {
-  const [local, rest] = splitProps(props, ['class', 'children', 'backTo']);
+  const [local, rest] = splitProps(props, [
+    'class',
+    'children',
+    'backTo',
+    'href',
+  ]);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -24,7 +29,7 @@ export const BackLink: Component<Props> = props => {
   };
 
   const href = () => {
-    return backPath() ?? '..';
+    return local.href ?? backPath() ?? '..';
   };
 
   const goBack = (e: Event) => {
