@@ -18,6 +18,7 @@ interface Props {
   defaultLang?: ConjugationLanguageCode;
   ref?: HTMLInputElement;
   verbLoading: boolean;
+  verbNotFound?: boolean;
   onApplyVerb(verb: string, lang: ConjugationLanguageCode): void;
   onLangChange(lang: ConjugationLanguageCode): void;
 }
@@ -83,6 +84,11 @@ export const VerbInput: Component<Props> = props => {
       <Show when={invalid()}>
         <p class="mt-2 text-center text-sm text-red-600">
           Fill out both Language and Verb
+        </p>
+      </Show>
+      <Show when={props.verbNotFound}>
+        <p class="mt-2 text-center text-sm text-red-600">
+          Verb not found. Please check the spelling and try again.
         </p>
       </Show>
     </form>

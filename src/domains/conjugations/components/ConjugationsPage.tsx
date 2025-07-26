@@ -30,6 +30,7 @@ export const ConjugationsPage: Component = () => {
     enabled: params.lang != null && params.verb != null,
     queryKey: ['conjugations', params.lang, params.verb],
     queryFn: () => fetchVerbixConjugations(params.lang, params.verb),
+    retry: false,
   }));
 
   const applyVerb = (verb: string, lang: ConjugationLanguageCode) => {
@@ -78,6 +79,7 @@ export const ConjugationsPage: Component = () => {
               | undefined
           }
           verbLoading={conjugationsQuery.isFetching}
+          verbNotFound={conjugationsQuery.data?.exists === false}
         />
         <span class="text-sm">
           Using{' '}
@@ -88,28 +90,26 @@ export const ConjugationsPage: Component = () => {
       </div>
 
       <main class="mx-auto px-8">
-        <Show when={conjugationsQuery.data}>
-          {conjugations => (
-            <Switch>
-              <Match when={state.mode === 'search'}>
-                <ConjugationsTensesView
-                  verb={params.verb}
-                  verbConjugations={conjugations()}
-                  selectedTenses={state.selectedTenses}
-                  onTenseSelected={onTenseSelected}
-                  onTest={onTest}
-                />
-              </Match>
-              <Match when={state.mode === 'test'}>
-                <ConjugationsTestView
-                  selectedTenses={state.selectedTenses}
-                  verb={params.verb}
-                  verbConjugations={conjugations()}
-                  onExit={onTestExit}
-                />
-              </Match>
-            </Switch>
-          )}
+        <Show when={conjugationsQuery.data?.exists}>
+          <Switch>
+            <Match when={state.mode === 'search'}>
+              <ConjugationsTensesView
+                verb={params.verb}
+                verbConjugations={conjugationsQuery.data!}
+                selectedTenses={state.selectedTenses}
+                onTenseSelected={onTenseSelected}
+                onTest={onTest}
+              />
+            </Match>
+            <Match when={state.mode === 'test'}>
+              <ConjugationsTestView
+                selectedTenses={state.selectedTenses}
+                verb={params.verb}
+                verbConjugations={conjugationsQuery.data!}
+                onExit={onTestExit}
+              />
+            </Match>
+          </Switch>
         </Show>
       </main>
     </div>

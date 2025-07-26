@@ -31,6 +31,6 @@ export async function fetchVerbixConjugations(
 
   return {
     ...rawConjugations,
-    tenses: Object.values(rawConjugations.tenses),
+    tenses: rawConjugations.tenses ? Object.values(rawConjugations.tenses) : [],
   };
 }
