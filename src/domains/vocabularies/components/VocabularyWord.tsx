@@ -15,11 +15,13 @@ import {
 } from '~/components/ui/tooltip';
 import { cx } from 'class-variance-authority';
 import type { VocabularyWordsBlurState } from '../model/vocabulary-state';
+import type { CountryCode } from '../model/countries';
 
 interface Props {
   word: Word;
   selected?: boolean;
   blurState?: VocabularyWordsBlurState;
+  vocabularyLang: CountryCode;
   onWordSelected: (
     word: Word,
     selected: boolean,
@@ -47,6 +49,7 @@ export const VocabularyWord: Component<Props> = props => {
       onClick={() => props.onWordDetailToOpen(props.word)}
     >
       <Checkbox
+        aria-label="Select word"
         class="h-8 -translate-y-1 self-start"
         checked={props.selected}
         id={`word-selector-${props.word.id}`}
@@ -62,13 +65,18 @@ export const VocabularyWord: Component<Props> = props => {
               'text-neutral-600': props.word.archived,
             })}
           >
-            <span class={cx({ 'blur-sm': props.blurState?.original })}>
+            <dt
+              lang={props.vocabularyLang}
+              class={cx({ 'blur-sm': props.blurState?.original })}
+            >
               {props.word.original}
+            </dt>
+            <span aria-hidden="true" class="mx-2 text-center">
+              -
             </span>
-            <span class="mx-2 text-center">-</span>
-            <span class={cx({ 'blur-sm': props.blurState?.translation })}>
+            <dd class={cx({ 'blur-sm': props.blurState?.translation })}>
               {props.word.translation}
-            </span>
+            </dd>
             <Show when={props.word.archived}>
               <span class="ml-2 text-sm">(archived)</span>
             </Show>
@@ -96,7 +104,7 @@ export const VocabularyWord: Component<Props> = props => {
         </div>
 
         <Tooltip openDelay={300} closeDelay={0}>
-          <TooltipTrigger class="ml-auto" tabindex="-1">
+          <TooltipTrigger aria-hidden="true" class="ml-auto" tabindex="-1">
             <LifeLine results={props.word.results} class="h-6 w-28" />
           </TooltipTrigger>
           <TooltipContent>
@@ -105,7 +113,10 @@ export const VocabularyWord: Component<Props> = props => {
         </Tooltip>
       </div>
 
-      <HiOutlineChevronRight class="ml-2 text-neutral-500 md:ml-4" />
+      <HiOutlineChevronRight
+        aria-label="Open word details"
+        class="ml-2 text-neutral-500 md:ml-4"
+      />
     </div>
   );
 };

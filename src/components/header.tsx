@@ -18,7 +18,7 @@ const links = [
 
 export const Header: Component<Props> = props => {
   return (
-    <nav>
+    <nav aria-label="Main navigation">
       <div class="hidden items-center border-b px-4 py-2 sm:flex">
         <A href="/vocabularies" class="flex items-center">
           <img src={logo} alt="logo" class="size-8" />

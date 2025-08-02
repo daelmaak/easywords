@@ -23,14 +23,14 @@ it('should filter words based on search', async () => {
   ));
   await tick();
 
-  let words = screen.getAllByRole('listitem');
+  let words = screen.getAllByRole('term');
   expect(words.length).toBe(2);
 
   const searchInput = screen.getByPlaceholderText('Search words...');
   expect(searchInput).toBeTruthy();
 
   await userInteraction.type(searchInput, 'ahoj');
-  words = screen.getAllByRole('listitem');
+  words = screen.getAllByRole('term');
   expect(words.length).toBe(1);
 
   dispose();

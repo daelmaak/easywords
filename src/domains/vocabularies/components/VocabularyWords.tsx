@@ -5,6 +5,7 @@ import { VocabularyWord } from './VocabularyWord';
 import { wordsSelector } from '~/util/selection';
 import { observeFirstIntersection } from '~/util/scroll';
 import type { VocabularyWordsBlurState } from '../model/vocabulary-state';
+import type { CountryCode } from '~/domains/vocabularies/model/countries';
 
 export interface SortState {
   by: keyof Word;
@@ -16,6 +17,7 @@ interface VocabularyWordsProps {
   selectedWords: Word[];
   blurState?: VocabularyWordsBlurState;
   sortState: SortState;
+  vocabularyLang: CountryCode;
   onWordDetail: (word: Word) => void;
   onWordsSelected: (words: Word[]) => void;
 }
@@ -59,21 +61,22 @@ export const VocabularyWords: Component<VocabularyWordsProps> = props => {
 
   return (
     <>
-      <ul class="mb-24">
+      <dl class="mb-24">
         <For each={sortedPagedWords()}>
           {word => (
-            <li class="border-b border-neutral-200">
+            <div class="border-b border-neutral-200">
               <VocabularyWord
                 selected={wordSelected(word)}
                 word={word}
                 blurState={props.blurState}
+                vocabularyLang={props.vocabularyLang}
                 onWordSelected={onWordSelected}
                 onWordDetailToOpen={props.onWordDetail}
               />
-            </li>
+            </div>
           )}
         </For>
-      </ul>
+      </dl>
       <div ref={scrollNextElement}></div>
     </>
   );

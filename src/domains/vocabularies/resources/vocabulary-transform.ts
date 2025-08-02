@@ -1,4 +1,4 @@
-import type { CountryCode } from '~/components/country-select/countries';
+import type { CountryCode } from '~/domains/vocabularies/model/countries';
 import type { Vocabulary, Word } from '../model/vocabulary-model';
 import type { VocabularyDB, WordDB } from './vocabulary-api';
 

@@ -1,4 +1,4 @@
-import type { CountryCode } from '~/components/country-select/countries';
+import type { CountryCode } from '~/domains/vocabularies/model/countries';
 import type { TestResultWord } from '~/domains/vocabulary-results/model/test-result-model';
 
 export interface Word {

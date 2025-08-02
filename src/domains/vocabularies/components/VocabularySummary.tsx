@@ -94,25 +94,30 @@ export const VocabularySummary: Component<Props> = props => {
         Back to vocabularies
       </BackLink>
       <Show when={props.vocabulary}>
-        {v => (
+        {vocabulary => (
           <>
             <form
               class="flex flex-col gap-2"
               onFocusOut={onVocabularyDataChange}
               autocomplete="off"
             >
-              <Show when={v().archived}>
+              <Show when={vocabulary().archived}>
                 <span class="text-sm text-muted-foreground">(Archived)</span>
               </Show>
-              <span
-                id="vocabulary-name"
-                class="border-none px-1 text-lg font-semibold"
-                contentEditable
-                role="textbox"
-              >
-                {v().name}
-              </span>
-              <CountryCombobox id="country" defaultValue={v().country} />
+              <h1>
+                <span
+                  id="vocabulary-name"
+                  class="border-none px-1 text-lg font-semibold"
+                  contentEditable
+                  role="textbox"
+                >
+                  {vocabulary().name}
+                </span>
+              </h1>
+              <CountryCombobox
+                id="country"
+                defaultValue={vocabulary().country}
+              />
             </form>
             <span class="ml-1 mt-1 text-sm">
               <strong>{props.wordCount}</strong> words

@@ -14,7 +14,7 @@ import {
   WordsInput,
   wordsInputModes,
 } from '~/domains/vocabulary-testing/components/WordsInput';
-import type { CountryCode } from '../../../components/country-select/countries';
+import type { CountryCode } from '../model/countries';
 import type { Word } from '../model/vocabulary-model';
 import type { VocabularyToCreate } from '../resources/vocabulary-resource';
 

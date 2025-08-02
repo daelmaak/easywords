@@ -9,8 +9,11 @@ import {
   ComboboxItemLabel,
   ComboboxTrigger,
 } from '../ui/combobox';
-import type { CountryCode } from './countries';
-import { COUNTRIES, COUNTRY_CODES } from './countries';
+import type { CountryCode } from '../../domains/vocabularies/model/countries';
+import {
+  COUNTRIES,
+  COUNTRY_CODES,
+} from '../../domains/vocabularies/model/countries';
 
 import '/node_modules/flag-icons/css/flag-icons.min.css';
 

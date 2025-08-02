@@ -49,7 +49,10 @@ export const WordDetail: Component<WordDetailProps> = props => {
     };
 
   return (
-    <div class="relative h-full w-full overflow-y-auto rounded-lg bg-white p-6 shadow-md">
+    <section
+      aria-label="Word detail"
+      class="relative h-full w-full overflow-y-auto rounded-lg bg-white p-6 shadow-md"
+    >
       <Show when={props.onClose}>
         <Button
           size="sm"
@@ -225,6 +228,6 @@ export const WordDetail: Component<WordDetailProps> = props => {
           )}
         />
       </div>
-    </div>
+    </section>
   );
 };

@@ -170,12 +170,15 @@ export const VocabularyPage: Component = () => {
   }
 
   return (
-    <main class="grid gap-4 bg-neutral-100 p-2 sm:grid-cols-[14rem_1fr] sm:grid-rows-[calc(100vh-57px-1rem)] md:grid-cols-[18rem_1fr] lg:grid-cols-[18rem_4fr_3fr] xl:grid-cols-[18rem_1fr_1fr]">
+    <div class="grid gap-4 bg-neutral-100 p-2 sm:grid-cols-[14rem_1fr] sm:grid-rows-[calc(100vh-57px-1rem)] md:grid-cols-[18rem_1fr] lg:grid-cols-[18rem_4fr_3fr] xl:grid-cols-[18rem_1fr_1fr]">
       <Show
         when={vocabularyQuery.isFetched && resultsQuery.isFetched}
         fallback={<div class="m-auto">Loading ...</div>}
       >
-        <div class="h-full overflow-y-auto rounded-lg bg-white px-3 py-4 shadow-md md:px-6">
+        <section
+          aria-label="Vocabulary summary"
+          class="h-full overflow-y-auto rounded-lg bg-white px-3 py-4 shadow-md md:px-6"
+        >
           <Show when={vocabularyWithResults()}>
             {v => (
               <VocabularySummary
@@ -190,9 +193,12 @@ export const VocabularyPage: Component = () => {
               />
             )}
           </Show>
-        </div>
+        </section>
 
-        <div class="flex flex-grow flex-col rounded-lg bg-white shadow-md lg:flex-grow-0">
+        <main
+          aria-label="Vocabulary words"
+          class="flex flex-grow flex-col rounded-lg bg-white shadow-md lg:flex-grow-0"
+        >
           <Show when={words()}>
             {words => (
               <>
@@ -231,6 +237,7 @@ export const VocabularyPage: Component = () => {
                       selectedWords={store.selectedWords}
                       blurState={store.blurState}
                       sortState={store.sortState}
+                      vocabularyLang={vocabularyWithResults()!.country}
                       onWordDetail={w => setStore({ wordToShowDetailId: w.id })}
                       onWordsSelected={words =>
                         setStore({ selectedWords: words })
@@ -241,7 +248,7 @@ export const VocabularyPage: Component = () => {
               </>
             )}
           </Show>
-        </div>
+        </main>
 
         <Show
           when={isGteMdScreen()}
@@ -269,7 +276,7 @@ export const VocabularyPage: Component = () => {
             </Show>
           }
         >
-          <div class="hidden h-full grow lg:block">
+          <section class="hidden h-full grow lg:block">
             <Show when={wordToShowDetail()}>
               {word => (
                 <WordDetail
@@ -280,10 +287,10 @@ export const VocabularyPage: Component = () => {
                 />
               )}
             </Show>
-          </div>
+          </section>
         </Show>
       </Show>
-    </main>
+    </div>
   );
 };
 

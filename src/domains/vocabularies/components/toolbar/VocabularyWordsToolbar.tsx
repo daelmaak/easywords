@@ -53,6 +53,7 @@ export const VocabularyWordsToolbar: Component<Props> = props => {
       <Show when={props.selectedWords}>
         <span class="inline-flex items-center">
           <Checkbox
+            aria-label="Select all words"
             checked={props.selectedWords.length === (props.words?.length ?? 0)}
             indeterminate={
               props.selectedWords.length > 0 &&

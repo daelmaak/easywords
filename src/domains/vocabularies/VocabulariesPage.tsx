@@ -21,7 +21,7 @@ import {
 import { Routes } from '~/routes/routes';
 import type { Vocabulary } from './model/vocabulary-model';
 import { Checkbox } from '~/components/ui/checkbox';
-import type { CountryCode } from '~/components/country-select/countries';
+import type { CountryCode } from '~/domains/vocabularies/model/countries';
 import { createMediaQuery } from '@solid-primitives/media';
 import { CountrySelect } from '~/components/country-select/country-select';
 

@@ -1,6 +1,9 @@
 import { Show } from 'solid-js';
-import type { CountryCode } from './countries';
-import { COUNTRIES, COUNTRY_CODES } from './countries';
+import type { CountryCode } from '../../domains/vocabularies/model/countries';
+import {
+  COUNTRIES,
+  COUNTRY_CODES,
+} from '../../domains/vocabularies/model/countries';
 
 import '/node_modules/flag-icons/css/flag-icons.min.css';
 import { HiOutlineXMark } from 'solid-icons/hi';
