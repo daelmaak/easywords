@@ -14,9 +14,11 @@ import {
   formatDate,
   THREE_LETTER_MONTH_WITH_YEAR_OPTIONS,
 } from '~/util/format-date';
+import type { CountryCode } from '../model/countries';
 
 interface WordDetailProps {
   word: Word;
+  vocabularyLang: CountryCode;
   onClose?: () => void;
   // TODO: handle inside the component
   onWordEdited: (word: Word) => void;
@@ -50,7 +52,7 @@ export const WordDetail: Component<WordDetailProps> = props => {
 
   return (
     <section
-      aria-label="Word detail"
+      aria-label={`Word detail: ${props.word.original}`}
       class="relative h-full w-full overflow-y-auto rounded-lg bg-white p-6 shadow-md"
     >
       <Show when={props.onClose}>
@@ -80,7 +82,12 @@ export const WordDetail: Component<WordDetailProps> = props => {
             </Button>
           </div>
         </Show>
-        <h2 class="text-2xl font-bold text-gray-800">{props.word.original}</h2>
+        <h2
+          class="text-2xl font-bold text-gray-800"
+          lang={props.vocabularyLang}
+        >
+          {props.word.original}
+        </h2>
         <p class="text-xl text-gray-800">{props.word.translation}</p>
       </div>
 
@@ -94,6 +101,7 @@ export const WordDetail: Component<WordDetailProps> = props => {
             id="original"
             class="rounded-lg border-input bg-gray-50 px-3 py-2 text-gray-800"
             name="original"
+            lang={props.vocabularyLang}
             value={props.word.original}
             onBlur={handleBlur('original')}
           />

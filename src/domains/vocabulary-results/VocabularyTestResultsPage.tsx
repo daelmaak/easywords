@@ -77,8 +77,8 @@ export const VocabularyTestResultsPage: Component = () => {
           <span class={`fi mx-2 size-4 fi-${vocabularyQuery.data?.country}`} />
           {vocabularyQuery.data?.name}
         </h1>
-        <Show when={vocabularyQuery.data?.words}>
-          {words => (
+        <Show when={vocabularyQuery.data}>
+          {vocabulary => (
             <>
               <Show when={testResultQuery.data}>
                 {results => (
@@ -87,7 +87,7 @@ export const VocabularyTestResultsPage: Component = () => {
                     previousWordResults={
                       previousWordResultsQuery.data ?? undefined
                     }
-                    words={words()}
+                    words={vocabulary().words}
                     onWordClick={setWordToShowDetail}
                     onArchive={onArchive}
                     onRepeatAll={onRepeatAll}
@@ -109,6 +109,7 @@ export const VocabularyTestResultsPage: Component = () => {
                         word={word()}
                         onWordDelete={() => onDeleteWord(word())}
                         onWordEdited={onWordsEdited}
+                        vocabularyLang={vocabulary().country}
                       />
                     )}
                   </Show>

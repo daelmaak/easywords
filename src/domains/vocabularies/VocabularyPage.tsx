@@ -269,6 +269,7 @@ export const VocabularyPage: Component = () => {
                       word={word()}
                       onWordDelete={() => onDeleteWord(word())}
                       onWordEdited={onWordsEdited}
+                      vocabularyLang={vocabularyWithResults()!.country}
                     />
                   </SheetContent>
                 </Sheet>
@@ -276,7 +277,7 @@ export const VocabularyPage: Component = () => {
             </Show>
           }
         >
-          <section class="hidden h-full grow lg:block">
+          <div class="hidden h-full grow lg:block">
             <Show when={wordToShowDetail()}>
               {word => (
                 <WordDetail
@@ -284,10 +285,11 @@ export const VocabularyPage: Component = () => {
                   onClose={() => setStore({ wordToShowDetailId: undefined })}
                   onWordDelete={() => onDeleteWord(word())}
                   onWordEdited={onWordsEdited}
+                  vocabularyLang={vocabularyWithResults()!.country}
                 />
               )}
             </Show>
-          </section>
+          </div>
         </Show>
       </Show>
     </div>
