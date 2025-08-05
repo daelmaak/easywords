@@ -18,6 +18,10 @@ export const WordsCreatorForm: Component<Props> = props => {
     createSignal<WordTranslation>();
 
   function onOriginalBlur(value: string) {
+    if (!value.trim()) {
+      setWordAlreadyExists(undefined);
+      return;
+    }
     const existing = props.existingWords?.find(w => {
       const existingLower = w.original.toLowerCase();
       const valueLower = value.toLowerCase();
