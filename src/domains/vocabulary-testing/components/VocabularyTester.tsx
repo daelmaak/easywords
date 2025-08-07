@@ -211,7 +211,7 @@ export const VocabularyTester: Component<TesterProps> = (
     props.onEditWord(updatedWord);
   }
 
-  function onWordValidated(valid: boolean) {
+  function onWriteResult(valid: boolean) {
     setStore('peek', true);
 
     const resultWordIndex = store.resultWords.findIndex(
@@ -242,17 +242,15 @@ export const VocabularyTester: Component<TesterProps> = (
       return;
     }
 
+    // I expect the user to know the word well so I give it an automatic "correct" note.
+    if (props.testSettings.mode === 'guess') {
+      onGuessResult(TestWordStatus.Correct);
+    } else {
+      onWriteResult(true);
+    }
+    setStore('peek', false);
+
     props.onArchiveWord(word);
-
-    setStore('resultWords', rw => rw.filter(w => w.word_id !== word.id));
-
-    const filteredResults = store.resultWords.filter(
-      rw => rw.word_id !== word.id
-    );
-    setStore({
-      peek: false,
-      resultWords: filteredResults,
-    });
     markProgress();
 
     setNextWord();
@@ -352,7 +350,7 @@ export const VocabularyTester: Component<TesterProps> = (
                   word={word()}
                   onDone={setNextWord}
                   onSkip={skip}
-                  onValidated={onWordValidated}
+                  onValidated={onWriteResult}
                 />
               </Match>
               <Match when={props.testSettings.mode === 'guess'}>

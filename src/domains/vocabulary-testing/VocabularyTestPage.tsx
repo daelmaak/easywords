@@ -74,6 +74,8 @@ export const VocabularyTestPage = () => {
       return;
     }
 
+    let words = vocabulary.words;
+
     if (testProgressQuery.data) {
       // This dict is a performance optimization to avoid having to filter the words
       // by iterating over the saved progress words.
@@ -85,10 +87,9 @@ export const VocabularyTestPage = () => {
         {} as Record<number, TestResultWord>
       );
 
-      return vocabulary.words.filter(w => savedProgressDict[w.id] != null);
+      words = vocabulary.words.filter(w => savedProgressDict[w.id] != null);
     }
-
-    return vocabulary.words.filter(w => !w.archived);
+    return words;
   };
 
   createEffect(async () => {
