@@ -8,14 +8,9 @@
     "esModuleInterop": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "types": ["vite/client"],
     "noEmit": true,
     "isolatedModules": true,
-    "paths": {
-      "~/*": ["./src/*"]
-    },
-    // In order to prevent tsc from processing the node_modules folder
     "skipLibCheck": true
   },
-  "exclude": ["./supabase"]
+  "include": ["./supabase"]
 }
