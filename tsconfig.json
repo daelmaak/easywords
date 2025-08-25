@@ -17,5 +17,5 @@
     // In order to prevent tsc from processing the node_modules folder
     "skipLibCheck": true
   },
-  "exclude": ["./supabase"]
+  "exclude": ["./supabase", "./firebase-messaging-sw.ts"]
 }

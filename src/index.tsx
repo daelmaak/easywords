@@ -1,5 +1,7 @@
 import { Navigate, Route, Router } from '@solidjs/router';
 import { render } from 'solid-js/web';
+import { initializeApp } from 'firebase/app';
+import { getMessaging, onMessage } from 'firebase/messaging';
 
 import { lazy } from 'solid-js';
 import App from './components/App';
@@ -11,6 +13,7 @@ import { VocabularyTestResultsPage } from './domains/vocabulary-results/Vocabula
 import { QueryClientProvider } from '@tanstack/solid-query';
 import { initApp } from './init/app-init';
 import { Routes } from './routes/routes';
+import { requestPermission } from './domains/notifications/notifications';
 
 const root = document.getElementById('root');
 
@@ -62,3 +65,23 @@ render(() => {
     </QueryClientProvider>
   );
 }, root!);
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyDZG8HNUdn-saTnYv9Ren0nQbSQRPnzngk',
+  authDomain: 'easywords-3083d.firebaseapp.com',
+  projectId: 'easywords-3083d',
+  storageBucket: 'easywords-3083d.firebasestorage.app',
+  messagingSenderId: '386545686156',
+  appId: '1:386545686156:web:0d7bb2cd0069c21df40da9',
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+export const messaging = getMessaging(app);
+
+requestPermission();
+
+onMessage(messaging, payload => {
+  console.log('Message received. ', payload);
+  // ...
+});

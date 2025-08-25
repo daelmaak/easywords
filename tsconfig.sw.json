@@ -9,8 +9,8 @@
     "jsx": "preserve",
     "noEmit": true,
     "isolatedModules": true,
-    "skipLibCheck": true,
-    "types": ["deno.ns"]
+    // In order to prevent tsc from processing the node_modules folder
+    "skipLibCheck": true
   },
-  "include": ["./supabase"]
+  "include": ["./firebase-messaging.sw.ts"]
 }

@@ -26,5 +26,5 @@
     "titleBar.inactiveForeground": "#e7e7e799"
   },
   "peacock.color": "#28002d",
-  "deno.enablePaths": ["./supabase"]
+  "deno.enablePaths": ["supabase", "node_modules", "package.json"]
 }
