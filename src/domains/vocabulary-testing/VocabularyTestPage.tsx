@@ -106,7 +106,7 @@ export const VocabularyTestPage = () => {
     let words: Word[] | undefined;
 
     if (searchParams.wordIds) {
-      const wordIds = searchParams.wordIds.split(',').map(Number);
+      const wordIds = (searchParams.wordIds as string).split(',').map(Number);
       words = vocabulary.words.filter(w => wordIds.includes(w.id));
     } else {
       words = vocabulary.words.filter(w => !w.archived);

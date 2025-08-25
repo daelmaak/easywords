@@ -40,7 +40,11 @@ export default tseslint.config(
     },
     languageOptions: {
       parserOptions: {
-        project: ['tsconfig.json', 'tsconfig.supabase.json'],
+        project: [
+          'tsconfig.json',
+          'tsconfig.supabase.json',
+          'tsconfig.sw.json',
+        ],
       },
     },
   },
