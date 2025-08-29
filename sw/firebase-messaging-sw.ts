@@ -1,7 +1,3 @@
-/// <reference no-default-lib="true"/>
-/// <reference lib="esnext" />
-/// <reference lib="webworker" />
-
 import { initializeApp } from 'firebase/app';
 import { getMessaging } from 'firebase/messaging/sw';
 import { onBackgroundMessage } from 'firebase/messaging/sw';

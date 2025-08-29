@@ -43,7 +43,7 @@ export default tseslint.config(
         project: [
           'tsconfig.json',
           'tsconfig.supabase.json',
-          'tsconfig.sw.json',
+          'sw/tsconfig.json',
         ],
       },
     },

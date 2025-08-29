@@ -7,10 +7,10 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "jsx": "preserve",
+    "lib": ["ESNext", "WebWorker"],
     "noEmit": true,
     "isolatedModules": true,
     // In order to prevent tsc from processing the node_modules folder
     "skipLibCheck": true
-  },
-  "include": ["./firebase-messaging-sw.ts"]
+  }
 }
